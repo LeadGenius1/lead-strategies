@@ -1,0 +1,184 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { signup } from '@/lib/auth'
+import toast from 'react-hot-toast'
+
+const TIERS = [
+  { id: 'leadsite-ai', name: 'LeadSite.AI', price: '$49/mo', description: 'Email lead generation' },
+  { id: 'leadsite-io', name: 'LeadSite.IO', price: '$29/mo', description: 'AI website builder' },
+  { id: 'clientcontact', name: 'ClientContact.IO', price: '$149/mo', description: '22+ social channels' },
+  { id: 'tackle', name: 'Tackle.IO', price: '$499/mo', description: 'Full suite + Voice + CRM' },
+]
+
+export default function SignupPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [selectedTier, setSelectedTier] = useState('leadsite-ai')
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    password: '',
+    confirmPassword: '',
+  })
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      await signup({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        password: formData.password,
+        tier: selectedTier,
+      })
+      toast.success('Account created! Welcome to AI Lead Strategies.')
+      router.push('/dashboard')
+    } catch (error) {
+      toast.error(error.message || 'Signup failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-dark-bg px-4 py-12">
+      <div className="w-full max-w-2xl">
+        <div className="bg-dark-surface border border-dark-border rounded-2xl p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-dark-text">Create your account</h1>
+            <p className="text-dark-textMuted mt-2">Choose your plan and get started</p>
+          </div>
+
+          {/* Tier Selection */}
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {TIERS.map((tier) => (
+              <button
+                key={tier.id}
+                type="button"
+                onClick={() => setSelectedTier(tier.id)}
+                className={`p-4 rounded-lg border text-left transition ${
+                  selectedTier === tier.id
+                    ? 'border-dark-primary bg-dark-primary/10'
+                    : 'border-dark-border hover:border-dark-textMuted'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <span className="font-medium text-dark-text">{tier.name}</span>
+                  <span className="text-sm text-dark-primary">{tier.price}</span>
+                </div>
+                <p className="text-sm text-dark-textMuted mt-1">{tier.description}</p>
+              </button>
+            ))}
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-dark-text mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-dark-text mb-2">
+                  Company
+                </label>
+                <input
+                  type="text"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                  placeholder="Acme Inc (optional)"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-dark-text mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                placeholder="you@company.com"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-dark-text mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                  placeholder="••••••••"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-dark-text mb-2">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 rounded-lg bg-dark-primary hover:bg-dark-primaryHover text-white font-medium transition disabled:opacity-50"
+            >
+              {loading ? 'Creating account...' : 'Create account'}
+            </button>
+          </form>
+
+          {/* Links */}
+          <div className="mt-6 text-center">
+            <p className="text-dark-textMuted">
+              Already have an account?{' '}
+              <Link href="/login" className="text-dark-primary hover:text-dark-primaryHover">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

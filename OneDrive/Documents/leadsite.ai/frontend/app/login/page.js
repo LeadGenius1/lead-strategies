@@ -23,25 +23,25 @@ export default function LoginPage() {
     
     try {
       // Try to authenticate with API, fallback to mock if unavailable
-      let response
+      let loginSuccess = false
       try {
-        response = await auth.login(formData.email, formData.password)
+        await auth.login(formData.email, formData.password)
+        loginSuccess = true
       } catch (apiError) {
         // API unavailable - use mock authentication (works in dev and production)
-        console.warn('API not available, using mock authentication')
+        console.warn('API not available, using mock authentication', apiError)
         console.log('Login attempt:', { email: formData.email })
-        
-        // Create mock session for any email/password combination
+        loginSuccess = false
+      }
+      
+      // If API login failed, create mock session
+      if (!loginSuccess) {
         auth.setSession('mock-token-' + Date.now(), {
           email: formData.email,
           subscription_tier: 'leadsite-ai',
           full_name: formData.email.split('@')[0],
           id: 'mock-user-' + Date.now()
         })
-        
-        // Redirect to dashboard
-        router.push('/dashboard/leadsite-ai')
-        return
       }
       
       // Get user tier and redirect to appropriate dashboard
@@ -61,8 +61,23 @@ export default function LoginPage() {
       }
       
       const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'
-      router.push(dashboardRoute)
+      
+      // Use window.location for reliable redirect
+      console.log('Login successful, redirecting to:', dashboardRoute)
+      console.log('User data:', user)
+      
+      // Small delay to ensure state is saved
+      setTimeout(() => {
+        try {
+          window.location.href = dashboardRoute
+        } catch (redirectError) {
+          console.error('Redirect error:', redirectError)
+          // Fallback to router if window.location fails
+          router.push(dashboardRoute)
+        }
+      }, 200)
     } catch (err) {
+      console.error('Login error:', err)
       setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.')
       setIsLoading(false)
     }

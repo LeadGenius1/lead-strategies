@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Navigation from '../../../components/Navigation'
+import ProtectedRoute from '../../../components/ProtectedRoute'
 import { Mail, TrendingUp, Users, Target, Plus, Search, Download, Filter } from 'lucide-react'
 
-export default function LeadSiteAIDashboard() {
+function LeadSiteAIDashboardContent() {
   const [stats, setStats] = useState({
     totalLeads: 8547,
     activeLeads: 2341,
@@ -194,5 +195,13 @@ export default function LeadSiteAIDashboard() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LeadSiteAIDashboard() {
+  return (
+    <ProtectedRoute requiredTier="leadsite-ai">
+      <LeadSiteAIDashboardContent />
+    </ProtectedRoute>
   )
 }

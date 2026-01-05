@@ -48,9 +48,11 @@ export const auth = {
    * OAuth login (Google, Microsoft, Twitter)
    */
   async oauthLogin(provider) {
-    // Redirect to backend OAuth endpoint
-    const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/${provider}`
-    window.location.href = redirectUrl
+    // For now, just log - OAuth will be implemented later
+    console.log('OAuth login:', provider)
+    // TODO: Implement OAuth redirect when backend is ready
+    // const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/${provider}`
+    // window.location.href = redirectUrl
   },
 
   /**

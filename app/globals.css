@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+  }
+  
+  body {
+    @apply bg-black text-white antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Space Background Animation */
+.stars {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 1744px 122px #FFF, 134px 1321px #FFF, 92px 859px #FFF, 
+              1515px 1844px #FFF, 768px 883px #FFF, 1223px 596px #FFF,
+              551px 1704px #FFF, 1696px 825px #FFF, 1966px 1699px #FFF,
+              1728px 617px #FFF, 1497px 1952px #FFF, 1768px 1234px #FFF;
+  animation: animStar 50s linear infinite;
+}
+
+.stars::after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 1744px 122px #FFF, 134px 1321px #FFF, 92px 859px #FFF,
+              1515px 1844px #FFF, 768px 883px #FFF, 1223px 596px #FFF,
+              551px 1704px #FFF, 1696px 825px #FFF, 1966px 1699px #FFF,
+              1728px 617px #FFF, 1497px 1952px #FFF, 1768px 1234px #FFF;
+}
+
+@keyframes animStar {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-2000px); }
+}
+
+/* Subtle Grid */
+.bg-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(99, 102, 241, 0.3);
+  color: rgba(199, 210, 254, 1);
+}

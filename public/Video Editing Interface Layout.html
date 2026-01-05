@@ -1,0 +1,555 @@
+<html lang="en" class="h-full"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VideoForge - Professional Video Editing Redefined</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.opacity-0 { opacity: 0; }
+</style>
+<style>.font-geist { font-family: 'Geist', sans-serif !important; }</style>
+<style>.font-space-grotesk { font-family: 'Space Grotesk', sans-serif !important; }</style>
+<link id="all-fonts-link-font-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-roboto" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-montserrat" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-poppins" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-playfair" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&amp;display=swap"><link id="all-fonts-link-font-instrument-serif" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-merriweather" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&amp;display=swap"><link id="all-fonts-link-font-bricolage" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-jakarta" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap"><link id="all-fonts-link-font-manrope" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"><link id="all-fonts-link-font-space-grotesk" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-work-sans" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&amp;display=swap"><link id="all-fonts-link-font-pt-serif" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&amp;display=swap"><link id="all-fonts-link-font-geist-mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-space-mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap"><link id="all-fonts-link-font-quicksand" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap"><link id="all-fonts-link-font-nunito" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&amp;display=swap"><style id="all-fonts-style-font-geist">.font-geist { font-family: 'Geist', sans-serif !important; }</style><style id="all-fonts-style-font-roboto">.font-roboto { font-family: 'Roboto', sans-serif !important; }</style><style id="all-fonts-style-font-montserrat">.font-montserrat { font-family: 'Montserrat', sans-serif !important; }</style><style id="all-fonts-style-font-poppins">.font-poppins { font-family: 'Poppins', sans-serif !important; }</style><style id="all-fonts-style-font-playfair">.font-playfair { font-family: 'Playfair Display', serif !important; }</style><style id="all-fonts-style-font-instrument-serif">.font-instrument-serif { font-family: 'Instrument Serif', serif !important; }</style><style id="all-fonts-style-font-merriweather">.font-merriweather { font-family: 'Merriweather', serif !important; }</style><style id="all-fonts-style-font-bricolage">.font-bricolage { font-family: 'Bricolage Grotesque', sans-serif !important; }</style><style id="all-fonts-style-font-jakarta">.font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif !important; }</style><style id="all-fonts-style-font-manrope">.font-manrope { font-family: 'Manrope', sans-serif !important; }</style><style id="all-fonts-style-font-space-grotesk">.font-space-grotesk { font-family: 'Space Grotesk', sans-serif !important; }</style><style id="all-fonts-style-font-work-sans">.font-work-sans { font-family: 'Work Sans', sans-serif !important; }</style><style id="all-fonts-style-font-pt-serif">.font-pt-serif { font-family: 'PT Serif', serif !important; }</style><style id="all-fonts-style-font-geist-mono">.font-geist-mono { font-family: 'Geist Mono', monospace !important; }</style><style id="all-fonts-style-font-space-mono">.font-space-mono { font-family: 'Space Mono', monospace !important; }</style><style id="all-fonts-style-font-quicksand">.font-quicksand { font-family: 'Quicksand', sans-serif !important; }</style><style id="all-fonts-style-font-nunito">.font-nunito { font-family: 'Nunito', sans-serif !important; }</style></head>
+
+<body class="min-h-full bg-gray-950 pt-8 pb-16 font-geist">
+  <!-- Page Container -->
+  <div class="relative max-w-7xl lg:rounded-xl overflow-hidden shadow-2xl bg-gray-900 mr-auto ml-auto border border-gray-800">
+    
+    <!-- Navigation -->
+    <nav class="flex lg:px-12 opacity-0 animate-fade-in-up border-gray-800 border-b pt-6 pr-6 pb-6 pl-6 items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <button class="p-2 rounded-full hover:bg-gray-800 transition-colors duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-left" class="lucide lucide-arrow-left w-5 h-5 text-gray-400"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+        </button>
+        <div class="text-lg font-semibold text-white tracking-tight font-sans" style="">VIDEOFORGE</div>
+      </div>
+      
+      <ul class="hidden md:flex space-x-8 text-sm font-medium">
+        <li><a href="#" class="hover:text-white transition-colors flex items-center space-x-1 text-gray-400">
+          <span class="font-sans" style="">Features</span>
+        </a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center space-x-1">
+          <span class="font-sans" style="">Templates</span>
+        </a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center space-x-1">
+          <span class="font-sans" style="">Pricing</span>
+        </a></li>
+        <li><a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center space-x-1">
+          <span class="font-sans" style="">Export</span>
+        </a></li>
+      </ul>
+      
+      <button class="inline-flex hover:bg-indigo-500 transition-all duration-200 hover:shadow-lg text-sm font-medium text-white bg-indigo-600 rounded-full pt-2.5 pr-6 pb-2.5 pl-6 shadow-lg items-center font-sans" style="">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="download" class="lucide lucide-download w-4 h-4 mr-2"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>
+        Download Free
+      </button>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="relative lg:px-12 md:pb-24 grid md:grid-cols-12 gap-8 lg:gap-12 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c0db4836-41ab-43d4-9f3e-1481aec32248_1600w.jpg)] bg-cover pr-6 pb-16 pl-6">
+      
+      <!-- Textual Content -->
+      <div class="md:col-span-6 lg:col-span-5 flex flex-col md:pt-16 pt-8">
+        <div class="inline-flex items-center bg-gray-800 text-indigo-300 text-xs font-medium px-3 py-1.5 rounded-full mb-6 w-fit opacity-0 animate-fade-in-up delay-100 font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" class="lucide lucide-zap w-3 h-3 mr-2"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+          GPU-Accelerated Editing
+        </div>
+        
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl leading-[0.95] text-white opacity-0 animate-fade-in-up delay-200 tracking-tight font-manrope" style="">
+          Video Editing<br class="hidden md:block">
+          <span class="text-gray-400 tracking-tight font-manrope" style="">Redefined</span><br class="md:hidden">
+          for Creators
+        </h1>
+        
+        <p class="mt-6 text-gray-400 max-w-lg text-base leading-relaxed opacity-0 animate-fade-in-up delay-300 font-sans" style="">
+          Professional-grade video editing tools with AI-powered features, real-time collaboration, and lightning-fast rendering. Create cinematic content that captivates your audience.
+        </p>
+        
+        <div class="mt-8 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 opacity-0 animate-fade-in-up delay-400">
+          <a href="#" class="inline-flex items-center justify-center hover:bg-indigo-500 transition-all duration-200 hover:shadow-lg text-sm font-medium text-white bg-indigo-600 rounded-full pt-3.5 pr-8 pb-3.5 pl-8 shadow-lg font-sans" style="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play w-4 h-4 mr-2"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+            Start Creating
+          </a>
+          <a href="#" class="inline-flex items-center justify-center border border-gray-700 text-gray-300 text-sm font-medium rounded-full px-8 py-3.5 hover:bg-gray-800 hover:border-gray-600 transition-all duration-200 font-sans" style="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="video" class="lucide lucide-video w-4 h-4 mr-2"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg>
+            Watch Demo
+          </a>
+        </div>
+        
+        <!-- Feature Thumbnails -->
+        <div class="mt-12 opacity-0 animate-fade-in-up delay-500">
+          <p class="text-xs font-medium text-gray-500 mb-4 uppercase tracking-wide font-sans" style="">Key Features</p>
+          <div class="flex space-x-3">
+            <div class="relative group cursor-pointer" style="aspect-ratio: 3 / 4; width: 5rem;">
+              <div class="h-full w-full bg-gray-800 rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center border border-gray-700 overflow-hidden">
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bb990be3-dd53-4b38-aca4-7b6423eb2baa_320w.jpg" alt="Scissors feature" class="object-cover rounded-lg w-full h-auto" style="">
+              </div>
+              <div class="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/20 rounded-lg transition-colors flex items-center justify-center">
+                
+              </div>
+            </div>
+            <div class="relative group cursor-pointer" style="aspect-ratio: 3 / 4; width: 5rem;">
+              <div class="h-full w-full bg-gray-800 rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center border border-gray-700 overflow-hidden">
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/2f6f4175-875a-4059-9116-4092f6f66a7d_320w.jpg" alt="Layers feature" class="object-cover rounded-lg w-full h-auto" style="">
+              </div>
+              <div class="absolute inset-0 bg-purple-600/0 group-hover:bg-purple-600/20 rounded-lg transition-colors flex items-center justify-center">
+                
+              </div>
+            </div>
+            <div class="relative group cursor-pointer" style="aspect-ratio: 3 / 4; width: 5rem;">
+              <div class="h-full w-full bg-gray-800 rounded-lg shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center border border-gray-700 overflow-hidden">
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bdbc3fac-8ff6-4dcb-9370-a8a753644b4a_800w.jpg" alt="Wand feature" class="object-cover rounded-lg w-full h-auto" style="">
+              </div>
+              <div class="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/20 rounded-lg transition-colors flex items-center justify-center">
+                
+              </div>
+            </div>
+            <div class="flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-700 transition-colors cursor-pointer border border-gray-700" style="aspect-ratio: 3 / 4; width: 5rem; background-color: #1f2937;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus w-5 h-5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hero Video/Image -->
+      <div class="md:col-span-6 lg:col-span-7 relative opacity-0 animate-fade-in-up delay-300">
+        <div class="absolute top-8 -left-8 z-10 hidden lg:block">
+          <div class="w-24 h-24 flex hover:rotate-12 transition-transform duration-300 cursor-pointer shadow-lg bg-gray-800 bg-opacity-30 backdrop-blur-md rounded-2xl border border-gray-700 border-opacity-30 items-center justify-center">            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-8 h-8 text-indigo-400"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+          </div>
+        </div>
+        
+        <div class="absolute -bottom-6 -right-6 z-10 hidden lg:block">
+          <div class="bg-gray-800 border-gray-700 border rounded-xl pt-4 pr-4 pb-4 pl-4 shadow-lg backdrop-blur-md bg-opacity-30">
+            <div class="flex items-center space-x-3">
+              <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-sm font-medium text-gray-300 font-sans" style="">Real-time Rendering</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="relative overflow-hidden rounded-2xl mt-24 shadow-xl border border-gray-700">
+          <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5fd1653c-11bc-4f82-b15d-268e3c7a8ebd_1600w.jpg" alt="Video editing interface" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-6 left-6 flex space-x-3 items-center" style="background: rgba(255 255 255 / 0.15); backdrop-filter: saturate(180%) blur(12px); -webkit-backdrop-filter: saturate(180%) blur(12px); border-radius: 0.5rem; padding: 0.5rem 0.75rem;">
+  <div class="bg-gray-900/30 backdrop-blur-sm rounded-lg px-3 py-2">
+    <span class="text-sm font-medium text-white font-sans" style="">4K 60fps</span>
+  </div>
+  <div class="bg-indigo-600/30 backdrop-blur-sm rounded-lg px-3 py-2">
+    <span class="text-sm font-medium text-white font-sans" style="">AI Enhanced</span>
+  </div>
+</div>
+        </div>
+      </div>
+      
+    </section><section class="lg:px-12 pt-20 pb-24 px-6 bg-gray-900 border-t border-gray-800">
+  <h2 class="text-3xl text-white mb-12 max-w-4xl mx-auto text-center tracking-tight font-manrope" style="">
+    Explore Powerful Features Designed for Creators
+  </h2>
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div class="group relative rounded-xl overflow-hidden bg-gray-800 border border-gray-700 shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col">
+      <div class="p-6 flex flex-col flex-grow">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cpu" class="lucide lucide-cpu w-6 h-6 text-white"><path d="M12 20v2"></path><path d="M12 2v2"></path><path d="M17 20v2"></path><path d="M17 2v2"></path><path d="M2 12h2"></path><path d="M2 17h2"></path><path d="M2 7h2"></path><path d="M20 12h2"></path><path d="M20 17h2"></path><path d="M20 7h2"></path><path d="M7 20v2"></path><path d="M7 2v2"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2 font-sans" style="">AI-Powered Editing</h3>
+        <p class="text-gray-400 text-sm flex-grow font-sans" style="">
+          Intelligent algorithms automate routine tasks, giving you more time to focus on creativity.
+        </p>
+      </div>
+      <div class="bg-indigo-700/20 px-6 py-4 border-t border-indigo-600 text-indigo-300 text-xs font-medium flex items-center justify-between">
+        <span class="font-sans" style="">Learn More</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </div>
+    </div>
+    <div class="group relative rounded-xl overflow-hidden bg-gray-800 border border-gray-700 shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col">
+      <div class="p-6 flex flex-col flex-grow">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layers" class="lucide lucide-layers w-6 h-6 text-white"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2 font-sans" style="">Multi-Layer Compositing</h3>
+        <p class="text-gray-400 text-sm flex-grow font-sans" style="">
+          Combine multiple video and audio layers seamlessly with full control and precision.
+        </p>
+      </div>
+      <div class="bg-purple-700/20 px-6 py-4 border-t border-purple-600 text-purple-300 text-xs font-medium flex items-center justify-between">
+        <span class="font-sans" style="">Discover How</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </div>
+    </div>
+    <div class="group relative rounded-xl overflow-hidden bg-gray-800 border border-gray-700 shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col">
+      <div class="p-6 flex flex-col flex-grow">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="wand-2" class="lucide lucide-wand-2 w-6 h-6 text-white"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2 font-sans" style="">AI-Enhanced Effects</h3>
+        <p class="text-gray-400 text-sm flex-grow font-sans" style="">
+          Apply smart filters and effects that adapt to your footage for stunning results.
+        </p>
+      </div>
+      <div class="bg-emerald-700/20 px-6 py-4 border-t border-emerald-600 text-emerald-300 text-xs font-medium flex items-center justify-between">
+        <span class="font-sans" style="">Try It Out</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </div>
+    </div>
+    <div class="group relative rounded-xl overflow-hidden bg-gray-800 border border-gray-700 shadow-md hover:shadow-lg transition-shadow cursor-pointer flex flex-col">
+      <div class="p-6 flex flex-col flex-grow">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" class="lucide lucide-users w-6 h-6 text-white"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2 font-sans" style="">Team Collaboration</h3>
+        <p class="text-gray-400 text-sm flex-grow font-sans" style="">
+          Real-time project sharing with comments, version control, and seamless teamwork.
+        </p>
+      </div>
+      <div class="bg-indigo-600/20 px-6 py-4 border-t border-indigo-500 text-indigo-300 text-xs font-medium flex items-center justify-between">
+        <span class="font-sans" style="">Get Started</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-4 h-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Stats & Features Section -->
+    <section class="lg:px-12 md:py-24 bg-gray-800/50 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4e0cbf81-c818-456c-86ca-032ee9fed4c2_1600w.jpg)] bg-cover border-gray-800 border-t pt-16 pr-6 pb-16 pl-6">
+      <div class="grid md:grid-cols-12 gap-10 lg:gap-16 items-center">
+        
+        <div class="md:col-span-5 opacity-0 animate-fade-in-up delay-100">
+          <div class="inline-flex items-center bg-gray-800 text-indigo-300 text-xs font-medium px-3 py-1.5 rounded-full mb-6 font-sans" style="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cpu" class="lucide lucide-cpu w-3 h-3 mr-2"><path d="M12 20v2"></path><path d="M12 2v2"></path><path d="M17 20v2"></path><path d="M17 2v2"></path><path d="M2 12h2"></path><path d="M2 17h2"></path><path d="M2 7h2"></path><path d="M20 12h2"></path><path d="M20 17h2"></path><path d="M20 7h2"></path><path d="M7 20v2"></path><path d="M7 2v2"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg>
+            AI-Powered Workflow
+          </div>
+          <h2 class="md:text-3xl leading-tight text-2xl text-white tracking-tight font-manrope" style="">
+            Create stunning videos with <span class="text-gray-400 tracking-tight font-manrope" style="">intelligent</span> tools that adapt to your creative vision
+          </h2>
+          <p class="mt-4 text-gray-400 text-base leading-relaxed font-sans" style="">
+            Our advanced algorithms learn from your editing patterns to suggest cuts, transitions, and effects that enhance your storytelling.
+          </p>
+        </div>
+        
+        <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 opacity-0 animate-fade-in-up delay-200">
+          <div class="text-center group">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-gray-800 rounded-xl shadow-sm mb-4 group-hover:shadow-md transition-shadow border border-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="gauge" class="lucide lucide-gauge w-6 h-6 text-indigo-400"><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg>
+            </div>
+            <p class="text-3xl md:text-4xl text-white mb-2 tracking-tight font-manrope" style="">10x</p>
+            <p class="text-sm text-gray-300 font-medium font-sans" style="">Faster Rendering</p>
+            <p class="text-xs text-gray-500 mt-1 font-sans" style="">GPU acceleration</p>
+          </div>
+          
+          <div class="text-center group">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-gray-800 rounded-xl shadow-sm mb-4 group-hover:shadow-md transition-shadow border border-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" class="lucide lucide-users w-6 h-6 text-purple-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            </div>
+            <p class="text-3xl md:text-4xl text-white mb-2 tracking-tight font-manrope" style="">2M+</p>
+            <p class="text-sm text-gray-300 font-medium font-sans" style="">Active Creators</p>
+            <p class="text-xs text-gray-500 mt-1 font-sans" style="">Worldwide community</p>
+          </div>
+          
+          <div class="text-center group">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-gray-800 rounded-xl shadow-sm mb-4 group-hover:shadow-md transition-shadow border border-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="award" class="lucide lucide-award w-6 h-6 text-emerald-400"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path><circle cx="12" cy="8" r="6"></circle></svg>
+            </div>
+            <p class="md:text-4xl text-3xl text-white mb-2 tracking-tight font-manrope" style="">500+</p>
+            <p class="text-sm font-medium text-gray-300 font-sans" style="">Effects &amp; Filters</p>
+            <p class="text-xs text-gray-500 mt-1 font-sans" style="">Professional grade</p>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Features Preview -->
+      <div class="border-gray-800 border-t mt-16 pt-16">
+        <div class="grid md:grid-cols-3 gap-6 opacity-0 animate-fade-in-up delay-300">
+          <div class="hover:shadow-lg transition-shadow group cursor-pointer bg-gray-800/50 border-gray-700 border rounded-xl pt-6 pr-6 pb-6 pl-6 shadow-md">
+            <div class="flex items-center justify-between mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="film" class="lucide lucide-film w-8 h-8 text-indigo-400 group-hover:text-indigo-300 transition-colors"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 3v18"></path><path d="M3 7.5h4"></path><path d="M3 12h18"></path><path d="M3 16.5h4"></path><path d="M17 3v18"></path><path d="M17 7.5h4"></path><path d="M17 16.5h4"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-right" class="lucide lucide-arrow-up-right w-5 h-5 text-gray-500 group-hover:text-gray-400 transition-colors"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+            </div>
+            <h3 class="font-semibold text-white mb-2 font-sans" style="">Timeline Editing</h3>
+            <p class="text-sm text-gray-400 leading-relaxed font-sans" style="">Multi-track timeline with precision editing tools and magnetic timeline for seamless workflow.</p>
+          </div>
+          
+          <div class="hover:shadow-lg transition-shadow group cursor-pointer bg-gray-800/50 border-gray-700 border rounded-xl pt-6 pr-6 pb-6 pl-6 shadow-md">
+            <div class="flex mb-4 items-center justify-between">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="palette" class="lucide lucide-palette w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-right" class="lucide lucide-arrow-up-right w-5 h-5 text-gray-500 group-hover:text-gray-400 transition-colors"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+            </div>
+            <h3 class="font-semibold text-white mb-2 font-sans" style="">Color Grading</h3>
+            <p class="text-sm text-gray-400 leading-relaxed font-sans" style="">Professional color correction and grading tools with LUTs support and HDR workflow.</p>
+          </div>
+          
+          <div class="hover:shadow-lg transition-shadow group cursor-pointer bg-gray-800/50 border-gray-700 border rounded-xl pt-6 pr-6 pb-6 pl-6 shadow-md">
+            <div class="flex items-center justify-between mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="share-2" class="lucide lucide-share-2 w-8 h-8 text-emerald-400 group-hover:text-emerald-300 transition-colors"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-right" class="lucide lucide-arrow-up-right w-5 h-5 text-gray-500 group-hover:text-gray-400 transition-colors"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+            </div>
+            <h3 class="font-semibold text-white mb-2 font-sans" style="">Team Collaboration</h3>
+            <p class="text-sm text-gray-400 leading-relaxed font-sans" style="">Real-time collaboration with version control, comments, and shared project libraries.</p>
+          </div>
+        </div>
+      </div>
+    </section><section class="lg:px-12 md:py-24 bg-gray-800/50 border-gray-800 border-t pt-16 pr-6 pb-24 pl-6">
+  <h2 class="text-3xl text-white mb-12 max-w-4xl mx-auto text-center tracking-tight font-manrope" style="">
+    What Creators Are Saying
+  </h2>
+  <div class="max-w-6xl mx-auto grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow flex flex-col">
+      <p class="text-gray-400 text-base leading-relaxed mb-6 flex-grow font-sans" style="">
+        “VideoForge has transformed my editing workflow. The AI suggestions feel like having a professional assistant by my side.”
+      </p>
+      <div class="flex items-center space-x-4">
+        <img src="https://images.unsplash.com/photo-1629946832022-c327f74956e0?w=96&amp;q=80" alt="User avatar" class="w-12 h-12 rounded-full object-cover border border-gray-700" style="">
+        <div>
+          <p class="text-white font-semibold tracking-tight text-sm font-sans" style="">Mia Thompson</p>
+          <p class="text-gray-500 text-xs font-sans" style="">Freelance Filmmaker</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow flex flex-col">
+      <p class="text-gray-400 text-base leading-relaxed mb-6 flex-grow font-sans" style="">
+        “The collaborative tools are seamless and intuitive. Our team can now edit and review projects in real-time without confusion.”
+      </p>
+      <div class="flex items-center space-x-4">
+        <img src="https://images.unsplash.com/photo-1640906152676-dace6710d24b?w=96&amp;q=80" alt="User avatar" class="w-12 h-12 rounded-full object-cover border border-gray-700" style="">
+        <div>
+          <p class="text-white font-semibold tracking-tight text-sm font-sans" style="">Jared Collins</p>
+          <p class="text-gray-500 text-xs font-sans" style="">Creative Director</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow flex flex-col">
+      <p class="text-gray-400 text-base leading-relaxed mb-6 flex-grow font-sans" style="">
+        “The color grading tools are professional yet easy to use. VideoForge makes complex edits feel simple and fast.”
+      </p>
+      <div class="flex items-center space-x-4">
+        <img src="https://images.unsplash.com/photo-1724525647065-f948fc102e68?w=96&amp;q=80" alt="User avatar" class="w-12 h-12 rounded-full object-cover border border-gray-700">
+        <div>
+          <p class="text-white font-semibold tracking-tight text-sm font-sans" style="">Sophie Lee</p>
+          <p class="text-gray-500 text-xs font-sans" style="">Video Producer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><section class="lg:px-12 md:py-24 bg-gray-800/50 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/26f646ba-25cc-4ae0-a56b-ba082969583d_1600w.jpg)] bg-cover border-gray-800 border-t pt-16 pr-6 pb-24 pl-6">
+  <h2 class="text-3xl text-white mb-12 max-w-4xl mx-auto text-center tracking-tight font-manrope" style="">
+    Simple, Transparent Pricing
+  </h2>
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow flex flex-col">
+      <h3 class="text-xl font-semibold text-white mb-4 tracking-tight font-sans" style="">Starter</h3>
+      <p class="text-gray-400 text-sm mb-6 flex-grow font-sans" style="">
+        Perfect for hobbyists and beginners looking to explore professional video editing.
+      </p>
+      <div class="mb-6">
+        <span class="text-4xl text-white tracking-tight font-manrope" style="">$9</span>
+        <span class="text-gray-400 text-sm font-sans" style="">/month</span>
+      </div>
+      <ul class="mb-8 space-y-3 text-gray-400 text-sm">
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          Access to basic editing tools
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          Up to 5 video exports per month
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          Community support
+        </li>
+      </ul>
+      <a href="#" class="mt-auto inline-flex items-center justify-center hover:bg-indigo-500 transition-all duration-200 hover:shadow-lg text-sm font-medium text-white bg-indigo-600 rounded-full pt-3.5 pr-8 pb-3.5 pl-8 shadow-lg font-sans" style="">
+        Choose Starter
+      </a>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow flex flex-col">
+      <h3 class="text-xl font-semibold text-white mb-4 tracking-tight font-sans" style="">Professional</h3>
+      <p class="text-gray-400 text-sm mb-6 flex-grow font-sans" style="">
+        For creators who need advanced features, AI enhancements, and increased export limits.
+      </p>
+      <div class="mb-6">
+        <span class="text-4xl text-white tracking-tight font-manrope" style="">$29</span>
+        <span class="text-gray-400 text-sm font-sans" style="">/month</span>
+      </div>
+      <ul class="mb-8 space-y-3 text-gray-400 text-sm">
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          All Starter features included
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          AI-powered editing suggestions
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          Unlimited video exports
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          Priority email support
+        </li>
+      </ul>
+      <a href="#" class="mt-auto inline-flex items-center justify-center hover:bg-indigo-500 transition-all duration-200 hover:shadow-lg text-sm font-medium text-white bg-indigo-600 rounded-full pt-3.5 pr-8 pb-3.5 pl-8 shadow-lg font-sans" style="">
+        Choose Professional
+      </a>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow flex flex-col">
+      <h3 class="text-xl font-semibold text-white mb-4 tracking-tight font-sans" style="">Enterprise</h3>
+      <p class="text-gray-400 text-sm mb-6 flex-grow font-sans" style="">
+        Tailored solutions for teams and organizations requiring advanced collaboration and premium support.
+      </p>
+      <div class="mb-6">
+        <span class="text-4xl text-white tracking-tight font-manrope" style="">Custom</span>
+        <span class="text-gray-400 text-sm font-sans" style="">/contact us</span>
+      </div>
+      <ul class="mb-8 space-y-3 text-gray-400 text-sm">
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          All Professional features included
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          Dedicated account manager
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10" class=""></circle></svg>
+          Custom integration and training
+        </li>
+        <li class="flex items-center font-sans" style="">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-check-circle w-5 h-5 text-indigo-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+          24/7 premium support
+        </li>
+      </ul>
+      <a href="#" class="mt-auto inline-flex items-center justify-center hover:bg-indigo-500 transition-all duration-200 hover:shadow-lg text-sm font-medium text-white bg-indigo-600 rounded-full pt-3.5 pr-8 pb-3.5 pl-8 shadow-lg font-sans" style="">
+        Contact Sales
+      </a>
+    </div>
+  </div>
+</section><section class="lg:px-12 md:py-24 bg-gray-800/50 border-gray-800 border-t pt-16 pr-6 pb-24 pl-6">
+  <h2 class="text-3xl text-white mb-12 max-w-4xl mx-auto text-center tracking-tight font-manrope" style="">
+    Frequently Asked Questions
+  </h2>
+  <div class="max-w-4xl mx-auto space-y-6">
+    <details class="bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md group">
+      <summary class="cursor-pointer list-none flex items-center justify-between text-white font-semibold tracking-tight text-lg font-sans" style="">
+        How does VideoForge utilize AI to improve editing?
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 text-indigo-400 group-open:rotate-180 transition-transform duration-300"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <p class="mt-4 text-gray-400 text-sm leading-relaxed font-sans" style="">
+        VideoForge leverages AI to analyze your footage and suggest optimal cuts, transitions, and effects, streamlining your editing process and boosting creativity.
+      </p>
+    </details>
+
+    <details class="bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md group">
+      <summary class="cursor-pointer list-none flex items-center justify-between text-white font-semibold tracking-tight text-lg font-sans" style="">
+        Can multiple users collaborate in real-time?
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 text-indigo-400 group-open:rotate-180 transition-transform duration-300"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <p class="mt-4 text-gray-400 text-sm leading-relaxed font-sans" style="">
+        Yes, VideoForge supports real-time collaboration allowing teams to edit, comment, and review projects simultaneously with version control and seamless communication.
+      </p>
+    </details>
+
+    <details class="bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md group">
+      <summary class="cursor-pointer list-none flex items-center justify-between text-white font-semibold tracking-tight text-lg font-sans" style="">
+        What video formats are supported for export?
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 text-indigo-400 group-open:rotate-180 transition-transform duration-300"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <p class="mt-4 text-gray-400 text-sm leading-relaxed font-sans" style="">
+        VideoForge supports a wide range of export formats including MP4, MOV, AVI, and more, optimized for various platforms such as social media, broadcast, and cinema.
+      </p>
+    </details>
+
+    <details class="bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md group">
+      <summary class="cursor-pointer list-none flex items-center justify-between text-white font-semibold tracking-tight text-lg font-sans" style="">
+        How does the color grading tool enhance my footage?
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 text-indigo-400 group-open:rotate-180 transition-transform duration-300"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <p class="mt-4 text-gray-400 text-sm leading-relaxed font-sans" style="">
+        Our color grading tools provide professional LUTs, HDR workflow, and intuitive controls to help you achieve cinematic looks and correct color inconsistencies effortlessly.
+      </p>
+    </details>
+
+    <details class="bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md group">
+      <summary class="cursor-pointer list-none flex items-center justify-between text-white font-semibold tracking-tight text-lg font-sans" style="">
+        Is there a free trial available for VideoForge?
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 text-indigo-400 group-open:rotate-180 transition-transform duration-300"><path d="m6 9 6 6 6-6"></path></svg>
+      </summary>
+      <p class="mt-4 text-gray-400 text-sm leading-relaxed font-sans" style="">
+        Yes, you can start with a free trial that gives full access to core features so you can explore and create without limitations before committing.
+      </p>
+    </details>
+  </div>
+</section>
+
+    <footer class="lg:px-12 select-none text-gray-400 font-geist bg-gray-950 bg-[url(https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/2fa50c7c-7803-483c-8fbd-085ee3b9b7de_1600w.jpg)] bg-cover border-gray-800 border-t pt-12 pr-6 pb-12 pl-6">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="">
+          <h4 class="text-white font-semibold mb-4 tracking-tighter text-lg font-sans" style="">VideoForge</h4>
+          <p class="leading-relaxed max-w-xs text-sm" style="">
+            Empowering creators with professional video editing tools designed for the modern workflow.
+          </p>
+          <p class="text-xs text-gray-400 mt-6" style="">© 2024 VideoForge. All rights reserved.</p>
+        </div>
+        <div class="">
+          <h5 class="text-white font-semibold mb-4 tracking-tight text-sm font-sans" style="">Product</h5>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-indigo-400 transition-colors font-sans" style="">Features</a></li>
+            <li class=""><a href="#" class="hover:text-indigo-400 transition-colors font-sans" style="">Templates</a></li>
+            <li class=""><a href="#" class="hover:text-indigo-400 transition-colors font-sans" style="">Export Options</a></li>
+          </ul>
+        </div>
+        <div class="">
+          <h5 class="text-white font-semibold mb-4 tracking-tight text-sm font-sans" style="">Company</h5>
+          <ul class="space-y-2 text-sm">
+            <li class=""><a href="#" class="hover:text-indigo-400 transition-colors font-sans" style="">About</a></li>
+            <li class=""><a href="#" class="hover:text-indigo-400 transition-colors font-sans" style="">Careers</a></li>
+            <li class=""><a href="#" class="hover:text-indigo-400 transition-colors font-sans" style="">Support</a></li>
+          </ul>
+        </div>
+        <div class="">
+          <h5 class="text-white font-semibold mb-4 tracking-tight text-sm font-sans" style="">Connect</h5>
+          <ul class="flex space-x-4">
+            <li><a href="#" aria-label="Twitter" class="hover:text-indigo-400 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="twitter" class="lucide lucide-twitter w-6 h-6"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+            </a></li>
+            <li><a href="#" aria-label="YouTube" class="hover:text-indigo-400 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="youtube" class="lucide lucide-youtube w-6 h-6"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
+            </a></li>
+            <li><a href="#" aria-label="Discord" class="hover:text-indigo-400 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle" class="lucide lucide-message-circle w-6 h-6"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+            </a></li>
+          </ul>
+          <form action="#" method="post" class="mt-6">
+            <div class="flex">
+              <input type="email" placeholder="Updates &amp; tips" class="w-full rounded-l-md border border-gray-700 bg-gray-800 placeholder-gray-500 text-gray-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+              <button type="submit" class="bg-indigo-600 text-white font-semibold rounded-r-md px-5 py-2 hover:bg-indigo-500 transition-colors text-sm font-sans" style="">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons({ strokeWidth: 1.5 });
+    });
+  </script>
+
+</body></html>

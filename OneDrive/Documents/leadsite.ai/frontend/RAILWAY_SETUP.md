@@ -87,3 +87,4 @@ railway variables set NEXT_PUBLIC_API_URL=https://api.leadsite.ai
 - **Service:** https://railway.com/project/fc3a1567-b76f-4ba1-9e5c-b288b16854e9/service/6356e560-260f-4311-b92f-022ddc4e39e5
 - **Public URL:** https://superb-possibility-production.up.railway.app
 
+

@@ -163,10 +163,19 @@ export default function SignupPage() {
       const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'
       
       // Use window.location for reliable redirect - ensure it happens
-      console.log('Redirecting to:', dashboardRoute)
+      console.log('Signup successful, redirecting to:', dashboardRoute)
+      console.log('User data:', user)
+      
+      // Small delay to ensure state is saved
       setTimeout(() => {
-        window.location.href = dashboardRoute
-      }, 100)
+        try {
+          window.location.href = dashboardRoute
+        } catch (redirectError) {
+          console.error('Redirect error:', redirectError)
+          // Fallback to router if window.location fails
+          router.push(dashboardRoute)
+        }
+      }, 200)
     } catch (err) {
       console.error('Signup error:', err)
       setError(err.response?.data?.message || err.message || 'Signup failed. Please try again.')

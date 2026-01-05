@@ -5,6 +5,7 @@ import Navigation from '../../components/Navigation'
 import { ExternalLink, FileText } from 'lucide-react'
 
 export default function HTMLPagesPage() {
+  // All HTML pages available in the public directory
   const htmlPages = [
     {
       name: 'AI Lead Strategies Homepage',

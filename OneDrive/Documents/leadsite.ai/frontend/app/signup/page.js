@@ -156,7 +156,9 @@ export default function SignupPage() {
       }
       
       const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'
-      router.push(dashboardRoute)
+      
+      // Use window.location for reliable redirect
+      window.location.href = dashboardRoute
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Signup failed. Please try again.')
       setIsLoading(false)

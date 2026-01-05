@@ -1,12 +1,28 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import Navigation from '../components/Navigation'
 import { ChevronRight, BrainCircuit, Zap, ShieldCheck, Check, Mail, Globe, MessageSquare, Video, Briefcase } from 'lucide-react'
 
 export default function HomePage() {
+  // Ensure page scrolls to top on load and all sections are visible
+  useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0)
+    
+    // Verify all sections are present
+    const sections = ['platforms', 'features', 'pricing']
+    sections.forEach(id => {
+      const element = document.getElementById(id)
+      if (!element) {
+        console.warn(`Section #${id} not found`)
+      }
+    })
+  }, [])
+
   return (
-    <div>
+    <div className="min-h-screen w-full">
       <Navigation />
 
       {/* Hero Section */}

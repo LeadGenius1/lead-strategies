@@ -117,6 +117,7 @@ export default function SignupPage() {
     
     try {
       // Try to signup with API, fallback to mock if unavailable
+      let signupSuccess = false
       try {
         await auth.signup({
           email: formData.email,
@@ -125,11 +126,15 @@ export default function SignupPage() {
           company: formData.company,
           tier: selectedTier
         })
+        signupSuccess = true
       } catch (apiError) {
         // API unavailable - use mock signup (works in dev and production)
-        console.warn('API not available, using mock signup')
-        
-        // Create mock session
+        console.warn('API not available, using mock signup', apiError)
+        signupSuccess = false
+      }
+      
+      // If API signup failed, create mock session
+      if (!signupSuccess) {
         auth.setSession('mock-token-' + Date.now(), {
           email: formData.email,
           subscription_tier: selectedTier,
@@ -157,9 +162,13 @@ export default function SignupPage() {
       
       const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'
       
-      // Use window.location for reliable redirect
-      window.location.href = dashboardRoute
+      // Use window.location for reliable redirect - ensure it happens
+      console.log('Redirecting to:', dashboardRoute)
+      setTimeout(() => {
+        window.location.href = dashboardRoute
+      }, 100)
     } catch (err) {
+      console.error('Signup error:', err)
       setError(err.response?.data?.message || err.message || 'Signup failed. Please try again.')
       setIsLoading(false)
     }

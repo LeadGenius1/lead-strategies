@@ -3,58 +3,26 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+  body {
+    @apply bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 text-white min-h-screen;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl;
   }
   
-  body {
-    @apply bg-black text-white antialiased;
-    font-family: 'Inter', sans-serif;
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-cyan-700 transition-all;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-white/5 border border-white/10 text-white rounded-lg font-medium hover:bg-white/10 transition-all;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors;
   }
 }
 
-/* Space Background Animation */
-.stars {
-  width: 1px;
-  height: 1px;
-  background: transparent;
-  box-shadow: 1744px 122px #FFF, 134px 1321px #FFF, 92px 859px #FFF, 
-              1515px 1844px #FFF, 768px 883px #FFF, 1223px 596px #FFF,
-              551px 1704px #FFF, 1696px 825px #FFF, 1966px 1699px #FFF,
-              1728px 617px #FFF, 1497px 1952px #FFF, 1768px 1234px #FFF;
-  animation: animStar 50s linear infinite;
-}
-
-.stars::after {
-  content: " ";
-  position: absolute;
-  top: 2000px;
-  width: 1px;
-  height: 1px;
-  background: transparent;
-  box-shadow: 1744px 122px #FFF, 134px 1321px #FFF, 92px 859px #FFF,
-              1515px 1844px #FFF, 768px 883px #FFF, 1223px 596px #FFF,
-              551px 1704px #FFF, 1696px 825px #FFF, 1966px 1699px #FFF,
-              1728px 617px #FFF, 1497px 1952px #FFF, 1768px 1234px #FFF;
-}
-
-@keyframes animStar {
-  from { transform: translateY(0px); }
-  to { transform: translateY(-2000px); }
-}
-
-/* Subtle Grid */
-.bg-grid {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-}
-
-/* Selection */
-::selection {
-  background-color: rgba(99, 102, 241, 0.3);
-  color: rgba(199, 210, 254, 1);
-}

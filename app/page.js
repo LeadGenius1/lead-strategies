@@ -1,273 +1,134 @@
-'use client'
-
-import { useEffect } from 'react'
 import Link from 'next/link'
-import Navigation from '../components/Navigation'
-import { ChevronRight, BrainCircuit, Zap, ShieldCheck, Check, Mail, Globe, MessageSquare, Video, Briefcase } from 'lucide-react'
+import { Zap, Users, Mail, TrendingUp, CheckCircle } from 'lucide-react'
 
 export default function HomePage() {
-  // Ensure page scrolls to top on load and all sections are visible
-  useEffect(() => {
-    // Scroll to top when component mounts
-    window.scrollTo(0, 0)
-    
-    // Verify all sections are present
-    const sections = ['platforms', 'features', 'pricing']
-    sections.forEach(id => {
-      const element = document.getElementById(id)
-      if (!element) {
-        console.warn(`Section #${id} not found`)
-      }
-    })
-  }, [])
-
   return (
-    <div className="min-h-screen w-full">
-      <Navigation />
-
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative z-10 pt-32 pb-20 md:pt-48 md:pb-32 px-6 flex flex-col items-center justify-center text-center">
-        
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-[10px] md:text-xs font-medium tracking-wide mb-8">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-          </span>
-          ALL SYSTEMS OPERATIONAL
-        </div>
-
-        <h1 className="text-4xl md:text-7xl font-medium tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500 max-w-4xl mx-auto mb-6 leading-[1.1]">
-          ONE PLATFORM<br className="hidden md:block" /> INFINITE REVENUE
-        </h1>
-        
-        <p className="text-neutral-400 text-sm md:text-lg max-w-xl mx-auto mb-4 leading-relaxed font-light">
-          The Only Growth Engine You'll Ever Need
-        </p>
-
-        <p className="text-neutral-500 text-xs md:text-sm max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-          From pricing for 50 leads, turn into placements+ website builder, 22-channel outreach, website builder, video platform hosting 22 social platforms, voice calls, AI-agent CRM — all one single dashboard, full-tier access.
-        </p>
-
-        {/* Animated Button */}
-        <div className="relative group">
-          <Link href="/signup">
-            <button className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none transition-transform hover:scale-105 active:scale-95 duration-200">
-              <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#000000_0%,#6366f1_50%,#000000_100%)]"></span>
-              <span className="inline-flex h-full w-full items-center justify-center rounded-full bg-black px-8 py-1 text-sm font-medium text-white backdrop-blur-3xl border border-white/10 group-hover:bg-neutral-900/80 transition-colors">
-                Start Free Trial
-                <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </button>
-          </Link>
-          {/* Glow under button */}
-          <div className="absolute inset-0 -z-10 bg-indigo-500/50 blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-full"></div>
-        </div>
-      </section>
-
-      {/* Platform Cards Section */}
-      <section id="platforms" className="relative z-10 py-20 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-2xl md:text-3xl font-medium tracking-tight mb-4">Choose Your Growth Engine</h2>
-          <p className="text-neutral-500 text-sm">Five platforms. One ecosystem. Infinite possibilities.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          {/* LeadSite.AI */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-indigo-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-indigo-400">
-                <Mail className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">LeadSite.AI</h3>
-              <div className="text-2xl font-bold text-white mb-4">$59<span className="text-sm text-neutral-500 font-normal">/mo</span></div>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
-                Email lead generation with AI-powered prospecting. Perfect for targeted outreach campaigns.
-              </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center">
+          <div className="inline-block mb-4 px-4 py-2 bg-green-500/20 border border-green-500/50 rounded-full text-green-400 text-sm">
+            🟢 ALL SYSTEMS OPERATIONAL
           </div>
-
-          {/* LeadSite.IO */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-purple-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-purple-400">
-                <Globe className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">LeadSite.IO</h3>
-              <div className="text-2xl font-bold text-white mb-4">$79<span className="text-sm text-neutral-500 font-normal">/mo</span></div>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
-                AI website builder with integrated outreach. Build stunning sites and generate leads simultaneously.
-              </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* ClientContact.IO */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-cyan-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-cyan-400">
-                <MessageSquare className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">ClientContact.IO</h3>
-              <div className="text-2xl font-bold text-white mb-4">$149<span className="text-sm text-neutral-500 font-normal">/mo</span></div>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
-                Omnichannel marketing across 22+ platforms. LinkedIn, Instagram, Facebook, Twitter, TikTok, YouTube, Email, SMS, WhatsApp and more.
-              </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* VideoSite.IO */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-pink-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-pink-400">
-                <Video className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">VideoSite.IO</h3>
-              <div className="text-2xl font-bold text-white mb-4">$99<span className="text-sm text-neutral-500 font-normal">/mo</span></div>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
-                YouTube competitor with creator payment system. Host, monetize, and distribute video content globally.
-              </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-pink-400 hover:text-pink-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Tackle.IO - Featured */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border-2 border-indigo-500/50 hover:border-indigo-500 transition-all duration-500 overflow-hidden md:col-span-2 lg:col-span-1">
-            <div className="absolute top-4 right-4 px-2 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/50 text-[10px] text-indigo-300 font-medium">
-              MOST POPULAR
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-indigo-400">
-                <Briefcase className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">Tackle.IO</h3>
-              <div className="text-2xl font-bold text-white mb-4">$499<span className="text-sm text-neutral-500 font-normal">/mo</span></div>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
-                Full suite with Voice + CRM. Complete marketing automation with AI-powered voice calls, advanced CRM, and every feature from all platforms.
-              </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section id="features" className="relative z-10 py-20 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-2xl md:text-3xl font-medium tracking-tight mb-4">Core Capabilities</h2>
-          <p className="text-neutral-500 text-sm">Designed for autonomous scalability.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Feature 1 */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-indigo-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-indigo-400">
-                <BrainCircuit className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">AI-Powered Intelligence</h3>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                Claude 4.1 Sonnet integration that adapts to your business in real-time, offering cognitive reasoning capabilities across all platforms.
-              </p>
-            </div>
-          </div>
-
-          {/* Feature 2 */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-purple-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-purple-400">
-                <Zap className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">Lightning Fast Deploy</h3>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                Edge-optimized infrastructure ensures campaigns launch in seconds. Scale from 0 to 10,000 leads without breaking a sweat.
-              </p>
-            </div>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-cyan-500/50 transition-all duration-500 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-cyan-400">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg font-medium text-white mb-2">Enterprise Security</h3>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                Military-grade encryption for all data. Your proprietary information remains isolated and protected at all times.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section id="pricing" className="relative z-10 py-24 px-6">
-        <div className="max-w-4xl mx-auto rounded-3xl bg-neutral-900/40 border border-white/10 p-8 md:p-12 text-center overflow-hidden relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none"></div>
-          
-          <h2 className="text-3xl md:text-5xl font-medium tracking-tight mb-6 relative z-10">Ready to scale?</h2>
-          <p className="text-neutral-400 text-sm md:text-base mb-10 max-w-lg mx-auto font-light relative z-10">
-            Start your 14-day free trial. No credit card required. Cancel anytime.
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              Email Campaigns
+            </span>
+            <br />
+            That Actually Convert
+          </h1>
+          <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+            Automate your email outreach with LeadSite.AI. Manage up to 50 leads, 
+            create unlimited campaigns, and track your success - all for just $59/month.
           </p>
-
-          <div className="flex flex-col md:flex-row gap-4 max-w-md mx-auto relative z-10">
-            <Link href="/signup" className="flex-1">
-              <button className="w-full bg-white text-black px-6 py-3 rounded-lg font-medium text-sm hover:bg-neutral-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                Start Free Trial
-              </button>
+          <div className="flex gap-4 justify-center">
+            <Link href="/signup" className="btn-primary text-lg px-8 py-4">
+              Start Free Trial
             </Link>
-            <Link href="/login" className="flex-1">
-              <button className="w-full bg-white/10 text-white px-6 py-3 rounded-lg font-medium text-sm hover:bg-white/20 border border-white/10 transition-colors">
-                Sign In
-              </button>
+            <Link href="/login" className="btn-secondary text-lg px-8 py-4">
+              Login
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="glass-card p-6">
+            <div className="p-3 bg-blue-500/20 rounded-lg w-fit mb-4">
+              <Mail className="w-6 h-6 text-blue-400" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Email Campaigns</h3>
+            <p className="text-slate-300">
+              Create and automate email campaigns with our easy-to-use template editor.
+            </p>
+          </div>
           
-          <p className="mt-6 text-xs text-neutral-600 relative z-10">Join 1,000+ businesses automating their growth.</p>
+          <div className="glass-card p-6">
+            <div className="p-3 bg-cyan-500/20 rounded-lg w-fit mb-4">
+              <Users className="w-6 h-6 text-cyan-400" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Lead Management</h3>
+            <p className="text-slate-300">
+              Organize and track up to 50 leads with our intuitive CRM system.
+            </p>
+          </div>
+          
+          <div className="glass-card p-6">
+            <div className="p-3 bg-teal-500/20 rounded-lg w-fit mb-4">
+              <TrendingUp className="w-6 h-6 text-teal-400" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Analytics</h3>
+            <p className="text-slate-300">
+              Track opens, clicks, and replies to optimize your campaigns.
+            </p>
+          </div>
+          
+          <div className="glass-card p-6">
+            <div className="p-3 bg-purple-500/20 rounded-lg w-fit mb-4">
+              <Zap className="w-6 h-6 text-purple-400" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Automation</h3>
+            <p className="text-slate-300">
+              Set it and forget it. Your campaigns run on autopilot 24/7.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+          <p className="text-xl text-slate-300">Everything you need to start growing</p>
+        </div>
+        
+        <div className="max-w-md mx-auto glass-card p-8">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl font-bold mb-2">LeadSite.AI</h3>
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-5xl font-bold">$59</span>
+              <span className="text-slate-400">/month</span>
+            </div>
+          </div>
+          
+          <ul className="space-y-3 mb-8">
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span>Up to 50 leads</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span>Unlimited email campaigns</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span>Basic CRM</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span>Email analytics</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <span>Email support</span>
+            </li>
+          </ul>
+          
+          <Link href="/signup" className="btn-primary w-full block text-center">
+            Start Free Trial
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5 bg-black py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full"></div>
-              <span className="text-sm font-medium tracking-widest uppercase text-white">AI LEAD STRATEGIES</span>
-            </div>
-            <p className="text-xs text-neutral-500">© 2024 AI Lead Strategies LLC. All rights reserved.</p>
-          </div>
-          
-          <div className="flex gap-8">
-            <a href="#" className="text-xs text-neutral-400 hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="text-xs text-neutral-400 hover:text-white transition-colors">Terms</a>
-            <a href="#" className="text-xs text-neutral-400 hover:text-white transition-colors">Support</a>
-            <a href="#" className="text-xs text-neutral-400 hover:text-white transition-colors">Contact</a>
-          </div>
+      <footer className="border-t border-white/10 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-400">
+          <p>© 2025 LeadSite.AI - All rights reserved</p>
         </div>
       </footer>
     </div>
   )
 }
+

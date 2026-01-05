@@ -7,29 +7,21 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+      colors: {
+        primary: {
+          DEFAULT: '#3b82f6',
+          dark: '#1e40af',
+        },
+        secondary: {
+          DEFAULT: '#06b6d4',
+          dark: '#0891b2',
+        },
       },
-      animation: {
-        'text-shimmer': 'textShimmer 3s linear infinite',
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-glow': 'pulse-glow 8s infinite',
-      },
-      keyframes: {
-        textShimmer: {
-          to: { backgroundPosition: '200% center' },
-        },
-        float: {
-          '0%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
-          '100%': { transform: 'translateY(0px)' },
-        },
-        'pulse-glow': {
-          '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
-          '50%': { opacity: '0.8', transform: 'scale(1.05)' },
-        },
+      backdropBlur: {
+        xs: '2px',
       },
     },
   },
   plugins: [],
 }
+

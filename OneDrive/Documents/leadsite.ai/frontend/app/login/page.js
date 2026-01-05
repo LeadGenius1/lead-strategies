@@ -1,25 +1,72 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Navigation from '../../components/Navigation'
 import { ChevronRight } from 'lucide-react'
+import { auth } from '../../lib/auth'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log('Login:', formData)
+    setIsLoading(true)
+    setError('')
+    
+    try {
+      // For development: if API is not available, use mock authentication
+      let response
+      try {
+        response = await auth.login(formData.email, formData.password)
+      } catch (apiError) {
+        // Fallback for local development - create mock session
+        if (process.env.NODE_ENV === 'development' || !process.env.NEXT_PUBLIC_API_URL) {
+          console.warn('API not available, using mock authentication for development')
+          auth.setSession('mock-token-dev', {
+            email: formData.email,
+            subscription_tier: 'leadsite-ai',
+            full_name: formData.email.split('@')[0]
+          })
+          router.push('/dashboard/leadsite-ai')
+          return
+        }
+        throw apiError
+      }
+      
+      // Get user tier and redirect to appropriate dashboard
+      const user = auth.getCurrentUser()
+      const tier = user?.subscription_tier || 'leadsite-ai'
+      
+      // Map tier names to dashboard routes
+      const tierRouteMap = {
+        'leadsite-ai': '/dashboard/leadsite-ai',
+        'leadsite-io': '/dashboard/leadsite-io',
+        'clientcontact': '/dashboard/clientcontact-io',
+        'clientcontact-io': '/dashboard/clientcontact-io',
+        'videosite': '/dashboard/videosite-io',
+        'videosite-io': '/dashboard/videosite-io',
+        'tackle': '/dashboard/tackle-io',
+        'tackle-io': '/dashboard/tackle-io'
+      }
+      
+      const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'
+      router.push(dashboardRoute)
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.')
+      setIsLoading(false)
+    }
   }
 
   const handleOAuthLogin = (provider) => {
-    // Handle OAuth logic here
-    console.log('OAuth login:', provider)
+    auth.oauthLogin(provider)
   }
 
   return (
@@ -135,15 +182,23 @@ export default function LoginPage() {
                 />
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/50 text-red-400 text-sm px-4 py-3 rounded-lg">
+                  {error}
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="relative group pt-2">
                 <button 
                   type="submit"
-                  className="relative w-full inline-flex h-12 overflow-hidden rounded-lg p-[1px] focus:outline-none transition-transform hover:scale-[1.02] active:scale-[0.98] duration-200"
+                  disabled={isLoading}
+                  className="relative w-full inline-flex h-12 overflow-hidden rounded-lg p-[1px] focus:outline-none transition-transform hover:scale-[1.02] active:scale-[0.98] duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#000000_0%,#6366f1_50%,#000000_100%)]"></span>
                   <span className="inline-flex h-full w-full items-center justify-center rounded-lg bg-black px-8 py-1 text-sm font-medium text-white backdrop-blur-3xl border border-white/10 group-hover:bg-neutral-900/80 transition-colors">
-                    Sign In <ChevronRight className="w-4 h-4 ml-2" />
+                    {isLoading ? 'Signing in...' : 'Sign In'} <ChevronRight className="w-4 h-4 ml-2" />
                   </span>
                 </button>
                 <div className="absolute inset-0 -z-10 bg-indigo-500/50 blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-lg"></div>

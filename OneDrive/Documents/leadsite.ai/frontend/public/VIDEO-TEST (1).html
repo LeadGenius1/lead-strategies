@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Background Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #030303;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .video-background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .video-background-container video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.8;
+            filter: brightness(0.9);
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+        
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            z-index: 100;
+        }
+        
+        .status.loading { color: #fbbf24; }
+        .status.playing { color: #10b981; }
+        .status.error { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+    <!-- Video Background -->
+    <div class="video-background-container">
+        <video id="bgVideo" autoplay muted loop playsinline>
+            <source src="/mnt/user-data/uploads/Handshake.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Status Indicator -->
+    <div id="status" class="status loading">
+        Video: Loading...
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div>
+            <h1>🎬 Video Background Test</h1>
+            <p>If you see video playing behind this text, it's working!</p>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('bgVideo');
+        const status = document.getElementById('status');
+        
+        video.addEventListener('loadeddata', () => {
+            status.textContent = 'Video: ✅ Loaded';
+            status.className = 'status playing';
+        });
+        
+        video.addEventListener('playing', () => {
+            status.textContent = 'Video: ▶️ Playing';
+            status.className = 'status playing';
+        });
+        
+        video.addEventListener('error', (e) => {
+            status.textContent = 'Video: ❌ Error loading';
+            status.className = 'status error';
+            console.error('Video error:', e);
+        });
+        
+        // Force play
+        video.play().catch(err => {
+            console.error('Autoplay failed:', err);
+            status.textContent = 'Video: ⚠️ Click to play';
+            video.addEventListener('click', () => video.play());
+        });
+    </script>
+
+</body>
+</html>

@@ -104,9 +104,14 @@ export default function HomePage() {
               <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
                 AI website builder with integrated outreach. Build stunning sites and generate leads simultaneously.
               </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link href="/leadsite-io" className="inline-flex items-center text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                  Learn More <ChevronRight className="w-4 h-4 ml-1" />
+                </Link>
+                <Link href="/signup" className="inline-flex items-center text-xs text-neutral-500 hover:text-neutral-400 transition-colors">
+                  Get Started
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -122,9 +127,14 @@ export default function HomePage() {
               <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
                 Omnichannel marketing across 22+ platforms. LinkedIn, Instagram, Facebook, Twitter, TikTok, YouTube, Email, SMS, WhatsApp and more.
               </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link href="/clientcontact-io" className="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
+                  Learn More <ChevronRight className="w-4 h-4 ml-1" />
+                </Link>
+                <Link href="/signup" className="inline-flex items-center text-xs text-neutral-500 hover:text-neutral-400 transition-colors">
+                  Get Started
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -140,9 +150,14 @@ export default function HomePage() {
               <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
                 YouTube competitor with creator payment system. Host, monetize, and distribute video content globally.
               </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-pink-400 hover:text-pink-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link href="/videosite-io" className="inline-flex items-center text-sm text-pink-400 hover:text-pink-300 transition-colors">
+                  Learn More <ChevronRight className="w-4 h-4 ml-1" />
+                </Link>
+                <Link href="/signup" className="inline-flex items-center text-xs text-neutral-500 hover:text-neutral-400 transition-colors">
+                  Get Started
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -161,9 +176,14 @@ export default function HomePage() {
               <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
                 Full suite with Voice + CRM. Complete marketing automation with AI-powered voice calls, advanced CRM, and every feature from all platforms.
               </p>
-              <Link href="/signup" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
-                Get Started <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link href="/tackle-io" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+                  Learn More <ChevronRight className="w-4 h-4 ml-1" />
+                </Link>
+                <Link href="/signup" className="inline-flex items-center text-xs text-neutral-500 hover:text-neutral-400 transition-colors">
+                  Get Started
+                </Link>
+              </div>
             </div>
           </div>
 

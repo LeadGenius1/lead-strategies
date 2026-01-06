@@ -90,10 +90,13 @@ export default function LeadDetailsPage() {
               <p className="text-slate-300">Lead details and information</p>
             </div>
             <div className="flex gap-2">
-              <button className="btn-secondary flex items-center gap-2">
+              <Link
+                href={`/dashboard/leads/${leadId}/edit`}
+                className="btn-secondary flex items-center gap-2"
+              >
                 <Edit className="w-5 h-5" />
                 Edit
-              </button>
+              </Link>
               <button
                 onClick={handleDelete}
                 className="btn-secondary flex items-center gap-2 text-red-400 hover:text-red-300"

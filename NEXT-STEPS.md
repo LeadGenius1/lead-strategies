@@ -89,21 +89,23 @@ The frontend expects these endpoints:
 After core functionality works, add these pages:
 
 ### Campaign Management
-- [ ] `/dashboard/campaigns/page.js` - Full campaign list
-- [ ] `/dashboard/campaigns/new/page.js` - Create campaign
-- [ ] `/dashboard/campaigns/[id]/page.js` - Campaign details
-- [ ] `/dashboard/campaigns/[id]/edit/page.js` - Edit campaign
+- [x] `/dashboard/campaigns/page.js` - Full campaign list
+- [x] `/dashboard/campaigns/new/page.js` - Create campaign
+- [x] `/dashboard/campaigns/[id]/page.js` - Campaign details
+- [x] `/dashboard/campaigns/[id]/edit/page.js` - Edit campaign
 
 ### Lead Management
-- [ ] `/dashboard/leads/page.js` - Full lead list
-- [ ] `/dashboard/leads/import/page.js` - CSV import
-- [ ] `/dashboard/leads/[id]/page.js` - Lead details
+- [x] `/dashboard/leads/page.js` - Full lead list
+- [x] `/dashboard/leads/new/page.js` - Create new lead
+- [x] `/dashboard/leads/import/page.js` - CSV import
+- [x] `/dashboard/leads/[id]/page.js` - Lead details
+- [x] `/dashboard/leads/[id]/edit/page.js` - Edit lead
 
 ### Analytics
-- [ ] `/dashboard/analytics/page.js` - Analytics dashboard
+- [x] `/dashboard/analytics/page.js` - Analytics dashboard
 
 ### Settings
-- [ ] `/dashboard/settings/page.js` - User settings
+- [x] `/dashboard/settings/page.js` - User settings
 
 ## 🎨 Styling & Customization
 

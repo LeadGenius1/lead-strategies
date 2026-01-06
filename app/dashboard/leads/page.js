@@ -56,10 +56,10 @@ export default function LeadsPage() {
               <Upload className="w-5 h-5" />
               Import CSV
             </Link>
-            <button className="btn-primary flex items-center gap-2">
+            <Link href="/dashboard/leads/new" className="btn-primary flex items-center gap-2">
               <Plus className="w-5 h-5" />
               Add Lead
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -94,10 +94,10 @@ export default function LeadsPage() {
                   <Upload className="w-5 h-5" />
                   Import CSV
                 </Link>
-                <button className="btn-secondary inline-flex items-center gap-2">
+                <Link href="/dashboard/leads/new" className="btn-secondary inline-flex items-center gap-2">
                   <Plus className="w-5 h-5" />
                   Add Lead
-                </button>
+                </Link>
               </div>
             )}
           </div>

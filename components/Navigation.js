@@ -16,8 +16,8 @@ export default function Navigation() {
     router.push('/login')
   }
 
-  // Don't show nav on login/signup pages
-  if (pathname === '/login' || pathname === '/signup') {
+  // Don't show nav on login/signup pages or homepage (has its own nav)
+  if (pathname === '/login' || pathname === '/signup' || pathname === '/') {
     return null
   }
 

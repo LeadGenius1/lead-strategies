@@ -370,7 +370,7 @@ export default function HomePage() {
         <div className="container mx-auto max-w-2xl">
           <div className="text-center mb-12 sm:mb-16" data-aos="fade-up">
             <h2 className="text-display mb-4">Get In Touch</h2>
-            <p className="text-headline text-gray-400">Have questions? We'd love to hear from you</p>
+            <p className="text-headline text-gray-400">Have questions? We&apos;d love to hear from you</p>
           </div>
           
           <form onSubmit={handleContactSubmit} className="glass-strong p-6 sm:p-8 lg:p-10 rounded-2xl" data-aos="fade-up" data-aos-delay="200">

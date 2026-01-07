@@ -26,13 +26,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}>
       <head>
-        <Script src="https://code.iconify.design/2/2.2.1/iconify.min.js" strategy="afterInteractive" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
       </head>
-      <body style={{ fontFamily: 'var(--font-plus-jakarta)' }}>{children}</body>
-    </html>
-  )
-}
+      <body style={{ fontFamily: 'var(--font-plus-jakarta)' }}>
+        <Script src="https://code.iconify.design/2/2.2.1/iconify.min.js" strategy="afterInteractive" />
+        {children}
+      </body>
     </html>
   )
 }

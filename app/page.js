@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
+import Script from 'next/script'
 import { Icon } from '@iconify/react'
 
 export default function HomePage() {
@@ -156,8 +157,9 @@ export default function HomePage() {
             data-us-project="ZHhDKfVqqu8PKOSMwfuA"
             className="absolute w-full h-full left-0 top-0 -z-10"
           ></div>
-          <script
-            type="text/javascript"
+          <Script
+            id="unicorn-studio-bg"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();`,
             }}

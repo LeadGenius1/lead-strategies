@@ -1,3 +1,4 @@
+// Force Vercel rebuild - fixed ESLint issues
 import './globals.css'
 import Script from 'next/script'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'

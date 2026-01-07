@@ -1,21 +1,8 @@
 import './globals.css'
 import Navigation from '../components/Navigation'
 import Script from 'next/script'
-import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google'
-
-const geist = Geist({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-geist',
-  display: 'swap',
-})
-
-const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-geist-mono',
-  display: 'swap',
-})
+import { GeistSans, GeistMono } from 'geist/font'
+import { Space_Grotesk } from 'next/font/google'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -31,7 +18,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`scroll-smooth bg-[#030303] ${geist.variable} ${geistMono.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`scroll-smooth bg-[#030303] ${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable}`}>
       <body className="text-slate-400 antialiased selection:bg-white/10 selection:text-white relative overflow-x-hidden" style={{ fontFamily: 'var(--font-geist-mono)' }}>
         <Script
           src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"

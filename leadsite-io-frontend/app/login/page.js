@@ -53,7 +53,7 @@ export default function LoginPage() {
             <span className="text-sm font-medium tracking-widest uppercase text-white">LeadSite.IO</span>
           </Link>
           <Link href="/signup" className="text-xs font-medium text-neutral-400 hover:text-white transition-colors">
-            Don't have an account? Sign up
+            Don&apos;t have an account? Sign up
           </Link>
         </div>
       </nav>
@@ -121,7 +121,7 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center">
               <Link href="/signup" className="text-xs text-neutral-400 hover:text-white transition-colors">
-                Don't have an account? <span className="text-indigo-400">Sign up</span>
+                Don&apos;t have an account? <span className="text-indigo-400">Sign up</span>
               </Link>
             </div>
           </div>

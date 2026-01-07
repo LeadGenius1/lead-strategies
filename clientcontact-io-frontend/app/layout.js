@@ -1,4 +1,20 @@
 import './globals.css'
+import Script from 'next/script'
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta',
+  display: 'swap',
+})
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+})
 
 export const metadata = {
   title: 'Client Contact AI - Multi-Channel Outreach Platform | AI Lead Strategies',
@@ -8,15 +24,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-        <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+        <Script src="https://code.iconify.design/2/2.2.1/iconify.min.js" strategy="afterInteractive" />
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
       </head>
-      <body>{children}</body>
+      <body style={{ fontFamily: 'var(--font-plus-jakarta)' }}>{children}</body>
+    </html>
+  )
+}
     </html>
   )
 }

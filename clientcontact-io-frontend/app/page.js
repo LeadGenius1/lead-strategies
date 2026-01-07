@@ -5,21 +5,6 @@ import Script from 'next/script'
 
 export default function HomePage() {
   useEffect(() => {
-    // Load AOS after component mounts
-    if (typeof window !== 'undefined') {
-      import('https://unpkg.com/aos@2.3.1/dist/aos.js').then(() => {
-        if (window.AOS) {
-          window.AOS.init({
-            duration: 1000,
-            once: true,
-            offset: 100
-          })
-        }
-      })
-    }
-  }, [])
-
-  useEffect(() => {
     // Generate animated stars
     function createStars() {
       const starsContainer = document.getElementById('stars')
@@ -38,10 +23,32 @@ export default function HomePage() {
       }
     }
 
-    // Typed.js effect
-    if (typeof window !== 'undefined') {
-      import('https://cdn.jsdelivr.net/npm/typed.js@2.0.12').then(() => {
-        if (window.Typed) {
+    createStars()
+  }, [])
+
+  useEffect(() => {
+    // Initialize AOS after script loads
+    const initAOS = () => {
+      if (typeof window !== 'undefined' && window.AOS) {
+        window.AOS.init({
+          duration: 1000,
+          once: true,
+          offset: 100
+        })
+      } else {
+        setTimeout(initAOS, 100)
+      }
+    }
+    initAOS()
+  }, [])
+
+  useEffect(() => {
+    // Initialize Typed.js after script loads
+    const initTyped = () => {
+      if (typeof window !== 'undefined' && window.Typed) {
+        const typedElement = document.getElementById('typed-text')
+        if (typedElement && !typedElement.dataset.initialized) {
+          typedElement.dataset.initialized = 'true'
           new window.Typed('#typed-text', {
             strings: [
               'Unify LinkedIn, Instagram, Facebook, and 19+ more channels',
@@ -54,10 +61,11 @@ export default function HomePage() {
             loop: true
           })
         }
-      })
-      
-      createStars()
+      } else {
+        setTimeout(initTyped, 100)
+      }
     }
+    initTyped()
   }, [])
 
   const handleContactSubmit = (e) => {

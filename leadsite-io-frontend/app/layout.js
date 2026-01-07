@@ -1,5 +1,13 @@
 import './globals.css'
 import Script from 'next/script'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata = {
   title: 'LeadSite.IO - Website + Email Lead Generation Platform',
@@ -8,15 +16,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-      </head>
-      <body>
+    <html lang="en" className={`scroll-smooth ${inter.variable}`}>
+      <body style={{ fontFamily: 'var(--font-inter)' }}>
         <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
         <Script src="https://unpkg.com/lucide@latest" strategy="afterInteractive" />
         {children}

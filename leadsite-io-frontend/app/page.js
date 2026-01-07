@@ -202,7 +202,7 @@ export default function HomePage() {
                   <span className="text-blue-400">initializeLeads</span>(<span className="text-yellow-400">true</span>);
                 </div>
                 <div className="mt-1 text-neutral-600">
-                  // Lead capture active...
+                  {'// Lead capture active...'}
                 </div>
               </div>
             </div>

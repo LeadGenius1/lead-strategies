@@ -62,3 +62,5 @@ export default function LeadTable({ leads, onLeadClick }) {
   )
 }
 
+
+

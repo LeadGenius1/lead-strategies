@@ -2,6 +2,7 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "@next/next/no-page-custom-font": "off",
-    "@next/next/no-sync-scripts": "off"
+    "@next/next/no-sync-scripts": "off",
+    "react/no-unescaped-entities": "off"
   }
 }

@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Lead Strategies Website
 
-## Getting Started
+Complete Next.js 14 website for AI Lead Strategies platform ecosystem.
 
-First, run the development server:
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env.local` file:
+
+```bash
+RAILWAY_API_URL=https://your-railway-app.up.railway.app
+```
+
+See [ENV_SETUP.md](./ENV_SETUP.md) for detailed instructions.
+
+### 3. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Deploy to Vercel
 
-## Learn More
+```bash
+npm install -g vercel
+vercel --prod
+```
 
-To learn more about Next.js, take a look at the following resources:
+**Important:** Add `RAILWAY_API_URL` environment variable in Vercel dashboard:
+1. Go to Project Settings → Environment Variables
+2. Add: `RAILWAY_API_URL` = `https://your-railway-app.up.railway.app`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔌 Backend Connection
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The frontend connects to Railway backend via API routes:
 
-## Deploy on Vercel
+- `/api/auth/signup` - User registration
+- `/api/auth/login` - User authentication  
+- `/api/health` - Health check
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+All API routes forward requests to your Railway backend configured via `RAILWAY_API_URL`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── api/              # Next.js API routes (proxies to Railway)
+│   │   └── auth/
+│   ├── signup/           # Signup page (connected to backend)
+│   ├── tackle-io/        # Enterprise platform page
+│   ├── leadsite-ai/      # Lead generation page
+│   ├── leadsite-io/      # Website builder page
+│   ├── clientcontact-io/ # Communication hub page
+│   └── videosite-io/     # Video marketing page
+├── lib/
+│   └── api.ts           # API client library
+└── components/          # Reusable components
+```
+
+## ✅ Features
+
+- ✅ All 5 platform pages built
+- ✅ Signup form connected to backend
+- ✅ API routes for backend communication
+- ✅ Environment variable configuration
+- ✅ Error handling and loading states
+- ✅ Responsive design
+- ✅ Deployed to Vercel
+
+## 🔗 Links
+
+- **Production:** https://ai-lead-strategies-website.vercel.app
+- **Health Check:** https://ai-lead-strategies-website.vercel.app/api/health
+
+## 📚 Documentation
+
+- [Environment Setup](./ENV_SETUP.md) - Backend connection configuration
+- [Quick Setup Guide](../QUICK-SETUP-GUIDE.md) - Initial setup instructions

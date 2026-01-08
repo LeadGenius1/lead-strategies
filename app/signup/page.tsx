@@ -2,10 +2,72 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [tier, setTier] = useState('tackle-io');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Form data state
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    companyName: '',
+    password: '',
+    industry: '',
+    companySize: '',
+    currentTools: '',
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setError(null);
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Validate required fields
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.companyName) {
+        setError('Please fill in all required fields');
+        setLoading(false);
+        return;
+      }
+
+      // Submit to API
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          tier,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        setError(result.error || 'Signup failed. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      // Success - move to confirmation step
+      setStep(4);
+      setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#030303]">
@@ -137,22 +199,34 @@ export default function SignupPage() {
                 <h2 className="text-2xl font-space-grotesk text-white mb-8">Account Details</h2>
                 
                 <div className="space-y-6">
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/30 p-4 text-red-400 text-sm font-geist">
+                      {error}
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                        First Name
+                        First Name *
                       </label>
                       <input
                         type="text"
+                        required
+                        value={formData.firstName}
+                        onChange={(e) => handleInputChange('firstName', e.target.value)}
                         className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
                       />
                     </div>
                     <div>
                       <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                        Last Name
+                        Last Name *
                       </label>
                       <input
                         type="text"
+                        required
+                        value={formData.lastName}
+                        onChange={(e) => handleInputChange('lastName', e.target.value)}
                         className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
                       />
                     </div>
@@ -160,32 +234,43 @@ export default function SignupPage() {
 
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                      Email Address
+                      Email Address *
                     </label>
                     <input
                       type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
                       className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                      Company Name
+                      Company Name *
                     </label>
                     <input
                       type="text"
+                      required
+                      value={formData.companyName}
+                      onChange={(e) => handleInputChange('companyName', e.target.value)}
                       className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                      Password
+                      Password *
                     </label>
                     <input
                       type="password"
+                      required
+                      value={formData.password}
+                      onChange={(e) => handleInputChange('password', e.target.value)}
+                      minLength={8}
                       className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
                     />
+                    <p className="text-xs text-neutral-500 font-geist mt-1">Minimum 8 characters</p>
                   </div>
                 </div>
 
@@ -198,7 +283,8 @@ export default function SignupPage() {
                   </button>
                   <button
                     onClick={() => setStep(3)}
-                    className="flex-1 bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist"
+                    disabled={!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.companyName}
+                    className="flex-1 bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Continue →
                   </button>
@@ -215,7 +301,11 @@ export default function SignupPage() {
                     <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
                       Industry
                     </label>
-                    <select className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist">
+                    <select 
+                      value={formData.industry}
+                      onChange={(e) => handleInputChange('industry', e.target.value)}
+                      className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
+                    >
                       <option value="" className="bg-[#050505]">Select industry...</option>
                       <option value="saas" className="bg-[#050505]">B2B SaaS</option>
                       <option value="agency" className="bg-[#050505]">Marketing Agency</option>
@@ -229,7 +319,11 @@ export default function SignupPage() {
                     <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
                       Company Size
                     </label>
-                    <select className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist">
+                    <select 
+                      value={formData.companySize}
+                      onChange={(e) => handleInputChange('companySize', e.target.value)}
+                      className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist"
+                    >
                       <option value="" className="bg-[#050505]">Select size...</option>
                       <option value="1-10" className="bg-[#050505]">1-10 employees</option>
                       <option value="11-50" className="bg-[#050505]">11-50 employees</option>
@@ -244,6 +338,8 @@ export default function SignupPage() {
                     </label>
                     <textarea
                       rows={3}
+                      value={formData.currentTools}
+                      onChange={(e) => handleInputChange('currentTools', e.target.value)}
                       placeholder="e.g., HubSpot, Mailchimp, Salesforce..."
                       className="w-full bg-transparent border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist placeholder-neutral-600"
                     />
@@ -258,10 +354,21 @@ export default function SignupPage() {
                     ← Back
                   </button>
                   <button
-                    onClick={() => setStep(4)}
-                    className="flex-1 bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="flex-1 bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Skip Payment (Trial) →
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Creating Account...
+                      </>
+                    ) : (
+                      'Start Free Trial →'
+                    )}
                   </button>
                 </div>
               </div>

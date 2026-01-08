@@ -16,19 +16,10 @@ export async function GET(request: NextRequest) {
     }
 
     if (!RAILWAY_API_URL) {
-      // Demo mode - return mock user
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: 'demo-user',
-          email: 'demo@example.com',
-          firstName: 'Demo',
-          lastName: 'User',
-          companyName: 'Demo Company',
-          tier: 'leadsite-io',
-          createdAt: new Date().toISOString(),
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     // Forward to backend with token

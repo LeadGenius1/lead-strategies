@@ -20,22 +20,10 @@ export async function GET(
     }
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          campaignId: params.id,
-          sent: 0,
-          delivered: 0,
-          opened: 0,
-          clicked: 0,
-          bounced: 0,
-          unsubscribed: 0,
-          openRate: 0,
-          clickRate: 0,
-          bounceRate: 0,
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/campaigns/${params.id}/analytics`, {

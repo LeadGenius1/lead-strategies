@@ -35,16 +35,10 @@ export async function GET(request: NextRequest) {
     if (search) queryParams.append('search', search);
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          leads: [],
-          total: 0,
-          page: parseInt(page),
-          limit: parseInt(limit),
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/leads?${queryParams}`, {
@@ -95,16 +89,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: 'demo-lead-' + Date.now(),
-          ...body,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/leads`, {

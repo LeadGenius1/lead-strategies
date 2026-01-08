@@ -78,12 +78,10 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        message: 'Profile updated (demo mode)',
-        data: body,
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/user/profile`, {

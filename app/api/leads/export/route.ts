@@ -30,14 +30,10 @@ export async function GET(request: NextRequest) {
     queryParams.append('limit', '10000'); // Get all leads for export
 
     if (!RAILWAY_API_URL) {
-      // Demo mode - return empty CSV
-      return new NextResponse('', {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/csv',
-          'Content-Disposition': 'attachment; filename="leads-export.csv"',
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/leads?${queryParams}`, {

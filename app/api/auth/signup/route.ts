@@ -18,17 +18,10 @@ export async function POST(request: NextRequest) {
 
     // Forward to Railway backend
     if (!RAILWAY_API_URL) {
-      // If no backend URL, return success for demo purposes
-      console.warn('No RAILWAY_API_URL configured. Running in demo mode.');
-      return NextResponse.json({
-        success: true,
-        message: 'Account created successfully (demo mode)',
-        data: {
-          id: 'demo-' + Date.now(),
-          email,
-          tier,
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/auth/signup`, {

@@ -20,18 +20,10 @@ export async function GET(
     }
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: params.id,
-          firstName: 'Demo',
-          lastName: 'Lead',
-          email: 'demo@example.com',
-          status: 'new',
-          createdAt: new Date().toISOString(),
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/leads/${params.id}`, {
@@ -85,15 +77,10 @@ export async function PUT(
     const body = await request.json();
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          id: params.id,
-          ...body,
-          updatedAt: new Date().toISOString(),
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/leads/${params.id}`, {
@@ -146,11 +133,10 @@ export async function DELETE(
     }
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        message: 'Lead deleted',
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/leads/${params.id}`, {

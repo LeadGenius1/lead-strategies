@@ -21,23 +21,10 @@ export async function POST(request: NextRequest) {
     const { leadInfo, campaignType, tone, length } = body;
 
     if (!ANTHROPIC_API_KEY) {
-      // Demo mode - return template
-      return NextResponse.json({
-        success: true,
-        data: {
-          subject: `Quick introduction from ${leadInfo?.company || 'our company'}`,
-          body: `Hi ${leadInfo?.firstName || 'there'},
-
-I hope this email finds you well. I'm reaching out from ${leadInfo?.company || 'our company'} to introduce ourselves.
-
-We specialize in ${leadInfo?.industry || 'business solutions'} and thought you might be interested in learning more.
-
-Would you be open to a brief conversation this week?
-
-Best regards,
-${leadInfo?.senderName || 'Team'}`,
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'AI API not configured. Please set ANTHROPIC_API_KEY environment variable for AI email generation.' },
+        { status: 503 }
+      );
     }
 
     // Use Claude API to generate email

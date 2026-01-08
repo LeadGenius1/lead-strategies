@@ -83,15 +83,10 @@ export async function POST(request: NextRequest) {
 
     // Import to backend
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          imported: validLeads.length,
-          failed: errors.length,
-          errors: errors.length > 0 ? errors : undefined,
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     // Batch import leads

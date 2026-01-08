@@ -23,15 +23,10 @@ export async function POST(
     const { scheduledAt } = body;
 
     if (!RAILWAY_API_URL) {
-      // Demo mode
-      return NextResponse.json({
-        success: true,
-        data: {
-          campaignId: params.id,
-          status: scheduledAt ? 'scheduled' : 'sending',
-          scheduledAt: scheduledAt || null,
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/campaigns/${params.id}/send`, {

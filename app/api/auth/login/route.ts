@@ -15,15 +15,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (!RAILWAY_API_URL) {
-      console.warn('No RAILWAY_API_URL configured. Running in demo mode.');
-      return NextResponse.json({
-        success: true,
-        message: 'Login successful (demo mode)',
-        data: {
-          token: 'demo-token-' + Date.now(),
-          user: { email },
-        },
-      });
+      return NextResponse.json(
+        { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
+        { status: 503 }
+      );
     }
 
     const response = await fetch(`${RAILWAY_API_URL}/api/auth/login`, {

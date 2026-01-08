@@ -1,0 +1,285 @@
+// Prisma Schema for LeadSite.AI - Unified Database for All 5 Tiers
+// Each tier unlocks different features via the 'tier' field
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USERS & AUTH ====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  name          String?
+  company       String?
+  
+  // Tier System (1-5)
+  // 1 = LeadSite.AI ($79/mo) - 50 leads, email campaigns
+  // 2 = LeadSite.IO ($149/mo) - 100 leads, website builder
+  // 3 = ClientContact.IO ($249/mo) - 500 leads, 22+ channels
+  // 4 = VideoSite.IO ($99/mo) - 1000 leads, video monetization
+  // 5 = Tackle.AI ($599/mo) - 10000 leads, all features + API
+  tier          Int       @default(1)
+  
+  // Subscription
+  stripeCustomerId    String?   @map("stripe_customer_id")
+  stripeSubscriptionId String?  @map("stripe_subscription_id")
+  subscriptionStatus   String?  @map("subscription_status") @default("trial")
+  trialEndsAt          DateTime? @map("trial_ends_at")
+  
+  // Timestamps
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  lastLoginAt   DateTime? @map("last_login_at")
+  
+  // Relations
+  leads         Lead[]
+  campaigns     Campaign[]
+  emailTemplates EmailTemplate[]
+  websites      Website[]
+  videos        Video[]
+  apiKeys       ApiKey[]
+  
+  @@map("users")
+}
+
+// ==================== LEADS ====================
+
+model Lead {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  // Contact Info
+  email       String
+  name        String?
+  company     String?
+  phone       String?
+  title       String?   // Job title
+  website     String?
+  linkedinUrl String?   @map("linkedin_url")
+  
+  // Lead Data
+  source      String?   // Where the lead came from
+  status      String    @default("new") // new, contacted, replied, qualified, converted, lost
+  score       Int?      @default(0) // Lead score 0-100
+  notes       String?
+  tags        String[]  @default([])
+  
+  // Custom Fields (JSON)
+  customFields Json?    @map("custom_fields")
+  
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastContactedAt DateTime? @map("last_contacted_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaignLeads CampaignLead[]
+  emailEvents EmailEvent[]
+  
+  @@unique([userId, email])
+  @@map("leads")
+}
+
+// ==================== CAMPAIGNS ====================
+
+model Campaign {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  // Campaign Info
+  name        String
+  description String?
+  type        String    @default("email") // email, sms, social, video (tier-gated)
+  status      String    @default("draft") // draft, scheduled, active, paused, completed
+  
+  // Email Campaign Settings
+  subject     String?
+  fromName    String?   @map("from_name")
+  fromEmail   String?   @map("from_email")
+  replyTo     String?   @map("reply_to")
+  
+  // Content
+  templateId  String?   @map("template_id")
+  htmlContent String?   @map("html_content")
+  textContent String?   @map("text_content")
+  
+  // Scheduling
+  scheduledAt DateTime? @map("scheduled_at")
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  
+  // Stats (denormalized for quick access)
+  totalLeads  Int       @default(0) @map("total_leads")
+  sentCount   Int       @default(0) @map("sent_count")
+  openCount   Int       @default(0) @map("open_count")
+  clickCount  Int       @default(0) @map("click_count")
+  replyCount  Int       @default(0) @map("reply_count")
+  bounceCount Int       @default(0) @map("bounce_count")
+  
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template    EmailTemplate? @relation(fields: [templateId], references: [id])
+  campaignLeads CampaignLead[]
+  emailEvents EmailEvent[]
+  
+  @@map("campaigns")
+}
+
+model CampaignLead {
+  id          String    @id @default(uuid())
+  campaignId  String    @map("campaign_id")
+  leadId      String    @map("lead_id")
+  
+  status      String    @default("pending") // pending, sent, delivered, opened, clicked, replied, bounced, unsubscribed
+  sentAt      DateTime? @map("sent_at")
+  openedAt    DateTime? @map("opened_at")
+  clickedAt   DateTime? @map("clicked_at")
+  repliedAt   DateTime? @map("replied_at")
+  
+  // Relations
+  campaign    Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  @@unique([campaignId, leadId])
+  @@map("campaign_leads")
+}
+
+// ==================== EMAIL TEMPLATES ====================
+
+model EmailTemplate {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  name        String
+  subject     String?
+  htmlContent String?   @map("html_content")
+  textContent String?   @map("text_content")
+  
+  // Template Variables (placeholders)
+  variables   String[]  @default([]) // ["firstName", "company", etc.]
+  
+  isDefault   Boolean   @default(false) @map("is_default")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns   Campaign[]
+  
+  @@map("email_templates")
+}
+
+// ==================== EMAIL EVENTS (Analytics) ====================
+
+model EmailEvent {
+  id          String    @id @default(uuid())
+  campaignId  String    @map("campaign_id")
+  leadId      String    @map("lead_id")
+  
+  eventType   String    // sent, delivered, opened, clicked, replied, bounced, complained, unsubscribed
+  eventData   Json?     @map("event_data")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  campaign    Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead        Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  @@map("email_events")
+}
+
+// ==================== WEBSITES (Tier 2+) ====================
+
+model Website {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  name        String
+  domain      String?
+  subdomain   String?   @unique
+  
+  // Website Builder Data
+  pages       Json?     @default("[]")
+  settings    Json?     @default("{}")
+  theme       String?   @default("default")
+  
+  isPublished Boolean   @default(false) @map("is_published")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("websites")
+}
+
+// ==================== VIDEOS (Tier 4+) ====================
+
+model Video {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  title       String
+  description String?
+  
+  // Video File
+  filename    String?
+  fileUrl     String?   @map("file_url")
+  thumbnailUrl String?  @map("thumbnail_url")
+  duration    Int?      // Duration in seconds
+  fileSize    Int?      @map("file_size")
+  
+  // Monetization
+  isMonetized Boolean   @default(false) @map("is_monetized")
+  viewCount   Int       @default(0) @map("view_count")
+  earnings    Decimal   @default(0) @db.Decimal(10, 2)
+  
+  // Status
+  status      String    @default("processing") // processing, ready, published, private
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("videos")
+}
+
+// ==================== API KEYS (Tier 5) ====================
+
+model ApiKey {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  name        String
+  key         String    @unique
+  
+  permissions String[]  @default(["read"])
+  lastUsedAt  DateTime? @map("last_used_at")
+  expiresAt   DateTime? @map("expires_at")
+  
+  isActive    Boolean   @default(true) @map("is_active")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("api_keys")
+}
+

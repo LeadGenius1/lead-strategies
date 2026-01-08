@@ -1,0 +1,54 @@
+# Docker Compose for Local Development (Optional)
+# This is ONLY for local backend development
+# Production uses Railway, NOT Docker
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Local Development Only)
+  postgres:
+    image: postgres:14
+    container_name: leadsite-postgres-dev
+    environment:
+      POSTGRES_USER: leadsite_user
+      POSTGRES_PASSWORD: leadsite_password_dev
+      POSTGRES_DB: leadsite_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U leadsite_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - leadsite-network
+
+  # Backend API (Only if you're developing the backend locally)
+  # Uncomment if you need to run backend locally
+  # backend:
+  #   build: ./backend
+  #   container_name: leadsite-backend-dev
+  #   environment:
+  #     DATABASE_URL: postgresql://leadsite_user:leadsite_password_dev@postgres:5432/leadsite_dev
+  #     JWT_SECRET: local-dev-secret-key
+  #     NODE_ENV: development
+  #     PORT: 3001
+  #   ports:
+  #     - "3001:3001"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - leadsite-network
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  leadsite-network:
+    driver: bridge
+
+

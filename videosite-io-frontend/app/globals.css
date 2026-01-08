@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #050505;
+    color: #F5F5DC;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #333;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hero Parallax */
+  .hero-bg-container {
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  /* Seating Map Styles */
+  .seat {
+    transition: all 0.3s ease;
+  }
+  .seat.available:hover {
+    background-color: #E5C985;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  }
+  .seat.selected {
+    background-color: #D4AF37;
+    border-color: #D4AF37;
+    color: #050505;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+  }
+  .seat.occupied {
+    background-color: #1a1a1a;
+    border-color: #333;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Card Hover Effects */
+  .membership-card {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .membership-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+}
+
+
+
+

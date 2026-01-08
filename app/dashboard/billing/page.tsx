@@ -46,9 +46,38 @@ export default function BillingPage() {
     }
   };
 
-  const handleUpgrade = (newTier: string) => {
-    // TODO: Implement Stripe checkout
-    console.log('Upgrade to:', newTier);
+  const handleUpgrade = async (newTier: string) => {
+    try {
+      setLoadingSubscription(true);
+      
+      const response = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tier: newTier,
+          userId: user.id,
+          email: user.email,
+        }),
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data.url) {
+        // Redirect to Stripe checkout
+        window.location.href = result.data.url;
+      } else {
+        console.error('Failed to create checkout:', result.error);
+        alert('Failed to start checkout. Please try again.');
+      }
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setLoadingSubscription(false);
+    }
   };
 
   if (loading || loadingSubscription) {

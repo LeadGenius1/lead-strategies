@@ -113,5 +113,5 @@ if ($errors -eq 0) {
 }
 
 Write-Host "`nFrontend URL: $baseUrl" -ForegroundColor Cyan
-Write-Host "Custom Domain: https://aileadstrategies.com" -ForegroundColor Cyan
-Write-Host "GitHub: https://github.com/LeadGenius1/lead-strategies" -ForegroundColor Cyan
+Write-Host 'Custom Domain: https://aileadstrategies.com' -ForegroundColor Cyan
+Write-Host 'GitHub: https://github.com/LeadGenius1/lead-strategies' -ForegroundColor Cyan

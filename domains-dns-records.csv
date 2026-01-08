@@ -1,0 +1,7 @@
+Domain,Type,Name,Value,TTL,Purpose,Priority,Status
+leadsite.io,CNAME,@,nevuabwf.up.railway.app,Auto,Main LeadSite platform,High,Added to Railway - DNS Pending
+clientcontact.io,CNAME,@,lipy7nr6.up.railway.app,Auto,ClientContact platform,Medium,Added to Railway - DNS Pending
+leadsite.ai,CNAME,@,ue205c3b.up.railway.app,Auto,AI-powered lead generation,High,Added to Railway - DNS Pending
+aileadstrategies.com,CNAME,@,q8hj95mm.up.railway.app,Auto,Company website,Critical,Added to Railway - DNS Pending
+tackle.io,CNAME,@,r6ozv066.up.railway.app,Auto,Tackle platform,Medium,Added to Railway - DNS Pending
+video-site.com,CNAME,@,oy74xvsq.up.railway.app,Auto,VideoSite platform,Medium,Added to Railway - DNS Pending

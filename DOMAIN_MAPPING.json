@@ -1,0 +1,79 @@
+{
+  "project": "strong-communication",
+  "environment": "production",
+  "service": "superb-possibility",
+  "railway_url": "https://superb-possibility-production.up.railway.app",
+  "domains": [
+    {
+      "domain": "leadsite.io",
+      "purpose": "Main LeadSite platform",
+      "cname_target": "nevuabwf.up.railway.app",
+      "status": "added_to_railway",
+      "dns_configured": false,
+      "priority": "high"
+    },
+    {
+      "domain": "clientcontact.io",
+      "purpose": "ClientContact platform",
+      "cname_target": "lipy7nr6.up.railway.app",
+      "status": "added_to_railway",
+      "dns_configured": false,
+      "priority": "medium"
+    },
+    {
+      "domain": "leadsite.ai",
+      "purpose": "AI-powered lead generation features",
+      "cname_target": "ue205c3b.up.railway.app",
+      "status": "added_to_railway",
+      "dns_configured": false,
+      "priority": "high"
+    },
+    {
+      "domain": "aileadstrategies.com",
+      "purpose": "AI Lead Strategies company website",
+      "cname_target": "q8hj95mm.up.railway.app",
+      "status": "added_to_railway",
+      "dns_configured": false,
+      "priority": "critical"
+    },
+    {
+      "domain": "tackle.io",
+      "purpose": "Tackle platform",
+      "cname_target": "r6ozv066.up.railway.app",
+      "status": "added_to_railway",
+      "dns_configured": false,
+      "priority": "medium"
+    },
+    {
+      "domain": "video-site.com",
+      "purpose": "VideoSite platform",
+      "cname_target": "oy74xvsq.up.railway.app",
+      "status": "added_to_railway",
+      "dns_configured": false,
+      "priority": "medium"
+    }
+  ],
+  "dns_instructions": {
+    "record_type": "CNAME",
+    "record_name": "@",
+    "ttl": "Auto or 3600",
+    "note": "Delete any existing A records before adding CNAME"
+  },
+  "verification": {
+    "command": "nslookup [domain]",
+    "online_tool": "https://dnschecker.org",
+    "expected_result": "Should return the corresponding cname_target"
+  },
+  "timeline": {
+    "dns_propagation": "15-30 minutes (typical)",
+    "ssl_provisioning": "30-60 minutes",
+    "full_operational": "1-2 hours",
+    "max_propagation": "72 hours"
+  },
+  "support": {
+    "find_registrar": "https://lookup.icann.org/en/lookup",
+    "railway_help": "https://railway.app/help",
+    "dns_checker": "https://dnschecker.org"
+  },
+  "last_updated": "2026-01-08T00:00:00Z"
+}

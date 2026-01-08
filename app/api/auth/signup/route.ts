@@ -41,10 +41,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    // Set HTTP-only cookie for token if provided (auto-login after signup)
+    const responseData = NextResponse.json({
       success: true,
       data,
     });
+
+    if (data.token) {
+      responseData.cookies.set('auth-token', data.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      });
+    }
+
+    return responseData;
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json(

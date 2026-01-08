@@ -61,6 +61,7 @@ export default function SignupPage() {
       }
 
       // Success - move to confirmation step
+      // User is now automatically logged in (auth-token cookie set by API)
       setStep(4);
       setLoading(false);
     } catch (err) {
@@ -406,7 +407,7 @@ export default function SignupPage() {
                 </div>
 
                 <Link
-                  href={`/dashboard/${tier}`}
+                  href="/dashboard"
                   className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist"
                 >
                   Go to Dashboard →

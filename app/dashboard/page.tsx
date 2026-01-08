@@ -156,6 +156,20 @@ export default function DashboardPage() {
           <div className="mb-12">
             <h2 className="text-2xl font-space-grotesk text-white mb-6">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Link href="/dashboard/analytics" className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all group">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-space-grotesk text-white group-hover:text-purple-400 transition-colors">View Analytics</h3>
+                    <p className="text-sm text-neutral-400 font-geist">Performance insights</p>
+                  </div>
+                </div>
+              </Link>
+
               <Link href="/dashboard/leads/import" className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all group">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 rounded-full flex items-center justify-center">

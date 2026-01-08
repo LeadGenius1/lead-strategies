@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
@@ -28,9 +28,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify webhook signature
+    const stripeInstance = getStripe();
+    if (!stripeInstance) {
+      return NextResponse.json(
+        { error: 'Stripe not configured' },
+        { status: 500 }
+      );
+    }
+    
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      event = stripeInstance.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err);
       return NextResponse.json(

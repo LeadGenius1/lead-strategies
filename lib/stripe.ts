@@ -1,10 +1,23 @@
 import Stripe from 'stripe';
 
-// Initialize Stripe (server-side only)
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
-  typescript: true,
-});
+// Initialize Stripe (server-side only) - lazy initialization to avoid build errors
+let stripeInstance: Stripe | null = null;
+
+export function getStripe(): Stripe | null {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) {
+    return null;
+  }
+  
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(secretKey, {
+      apiVersion: '2025-12-15.clover',
+      typescript: true,
+    });
+  }
+  
+  return stripeInstance;
+}
 
 // Stripe pricing tiers
 export const STRIPE_PLANS = {
@@ -60,13 +73,18 @@ export async function createCheckoutSession(
   tier: string,
   email: string
 ): Promise<Stripe.Checkout.Session> {
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    throw new Error('Stripe not configured');
+  }
+  
   const plan = STRIPE_PLANS[tier as keyof typeof STRIPE_PLANS];
   
   if (!plan || !plan.priceId) {
     throw new Error('Invalid tier or price ID not configured');
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await stripeInstance.checkout.sessions.create({
     customer_email: email,
     client_reference_id: userId,
     payment_method_types: ['card'],
@@ -92,7 +110,12 @@ export async function createCheckoutSession(
 export async function createPortalSession(
   customerId: string
 ): Promise<Stripe.BillingPortal.Session> {
-  const session = await stripe.billingPortal.sessions.create({
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    throw new Error('Stripe not configured');
+  }
+  
+  const session = await stripeInstance.billingPortal.sessions.create({
     customer: customerId,
     return_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/dashboard/billing`,
   });
@@ -102,8 +125,13 @@ export async function createPortalSession(
 
 // Get subscription by customer ID
 export async function getSubscription(customerId: string): Promise<Stripe.Subscription | null> {
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    return null;
+  }
+  
   try {
-    const subscriptions = await stripe.subscriptions.list({
+    const subscriptions = await stripeInstance.subscriptions.list({
       customer: customerId,
       status: 'active',
       limit: 1,

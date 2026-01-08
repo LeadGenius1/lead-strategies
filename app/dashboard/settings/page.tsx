@@ -111,6 +111,9 @@ export default function SettingsPage() {
             <Link href="/dashboard/campaigns" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               Campaigns
             </Link>
+            <Link href="/dashboard/analytics" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              Analytics
+            </Link>
             <Link href="/dashboard/settings" className="bg-white/5 px-4 py-2 text-xs tracking-widest uppercase text-white font-geist">
               Settings
             </Link>

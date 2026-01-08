@@ -53,10 +53,20 @@ async function request(method, path, body = null, useAuth = true) {
   }
 
   const response = await fetch(`${BASE_URL}${path}`, options);
+  
+  // Check if response is JSON
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    throw new Error(`Expected JSON but got ${contentType}. Response: ${text.substring(0, 200)}`);
+  }
+  
   const data = await response.json();
   
-  if (!response.ok && !data.success) {
-    throw new Error(data.error || `HTTP ${response.status}`);
+  // Handle different response formats
+  if (!response.ok) {
+    const errorMsg = data.error || data.message || data.status || `HTTP ${response.status}`;
+    throw new Error(errorMsg);
   }
 
   return { response, data };
@@ -72,7 +82,7 @@ async function runTests() {
   // Test 1: Health Check
   const healthTest = await test('Health Check', async () => {
     const { data } = await request('GET', '/api/health', null, false);
-    if (!data.success) throw new Error('Health check failed');
+    if (data.status !== 'ok') throw new Error('Health check failed');
   });
   healthTest ? passed++ : failed++;
 
@@ -88,8 +98,11 @@ async function runTests() {
       tier: 'leadsite-io',
     }, false);
     
-    if (!data.success) throw new Error('Signup failed');
-    userId = data.data?.id;
+    // Handle both success:true and status:ok formats
+    if (data.success === false || (data.status && data.status !== 'ok')) {
+      throw new Error(data.error || data.message || 'Signup failed');
+    }
+    userId = data.data?.id || data.user?.id || data.id;
   });
   signupTest ? passed++ : failed++;
 
@@ -112,7 +125,10 @@ async function runTests() {
       password: 'Test1234!',
     }, false);
     
-    if (!data.success) throw new Error('Login failed');
+    // Handle both success:true and status:ok formats
+    if (data.success === false || (data.status && data.status !== 'ok')) {
+      throw new Error(data.error || data.message || 'Login failed');
+    }
     
     // Extract token from Set-Cookie header
     const cookies = response.headers.get('set-cookie');

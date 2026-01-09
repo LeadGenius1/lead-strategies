@@ -22,7 +22,7 @@ export async function GET() {
     // Try to ping backend if URL is configured
     if (RAILWAY_API_URL) {
       try {
-        const response = await fetch(`${RAILWAY_API_URL}/api/health`, {
+        const response = await fetch(`${RAILWAY_API_URL}/health`, {
           method: 'GET',
           signal: AbortSignal.timeout(5000), // 5 second timeout
         });

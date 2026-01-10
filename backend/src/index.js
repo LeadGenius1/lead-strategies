@@ -14,6 +14,7 @@ const analyticsRoutes = require('./routes/analytics');
 const stripeRoutes = require('./routes/stripe');
 const webhookRoutes = require('./routes/webhooks');
 const websiteRoutes = require('./routes/websites');
+const conversationRoutes = require('./routes/conversations');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
@@ -108,6 +109,7 @@ app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/stripe', stripeRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
 app.use('/api/v1/websites', websiteRoutes);
+app.use('/api/v1/conversations', conversationRoutes);
 
 // Also support /api/ routes for backward compatibility
 app.use('/api/auth', authRoutes);
@@ -118,6 +120,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/websites', websiteRoutes);
+app.use('/api/conversations', conversationRoutes);
 
 // 404 handler
 app.use((req, res) => {

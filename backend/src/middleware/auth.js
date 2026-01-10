@@ -18,9 +18,9 @@ const TIER_LIMITS = {
 const TIER_FEATURES = {
   1: ['email_campaigns', 'leads', 'basic_analytics'],
   2: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder'],
-  3: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder', 'sms', 'social_channels'],
-  4: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder', 'sms', 'social_channels', 'video'],
-  5: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder', 'sms', 'social_channels', 'video', 'api_access', 'white_label']
+  3: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder', 'unified_inbox', 'sms', 'social_channels'],
+  4: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder', 'unified_inbox', 'sms', 'social_channels', 'video'],
+  5: ['email_campaigns', 'leads', 'basic_analytics', 'website_builder', 'unified_inbox', 'sms', 'social_channels', 'video', 'api_access', 'white_label']
 };
 
 /**

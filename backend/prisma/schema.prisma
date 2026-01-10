@@ -45,6 +45,8 @@ model User {
   websites      Website[]
   videos        Video[]
   apiKeys       ApiKey[]
+  conversations Conversation[]
+  messages      Message[]
   
   @@map("users")
 }
@@ -281,5 +283,91 @@ model ApiKey {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@map("api_keys")
+}
+
+// ==================== CONVERSATIONS & MESSAGES (Tier 3+) ====================
+
+model Conversation {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  
+  // Contact Info
+  contactName String?   @map("contact_name")
+  contactEmail String?  @map("contact_email")
+  contactPhone String?  @map("contact_phone")
+  contactId   String?   @map("contact_id") // Link to Lead if exists
+  
+  // Channel Info
+  channel     String    // email, sms, whatsapp, messenger, instagram, linkedin, twitter, slack, discord, telegram, webchat, voice, video
+  channelId   String?   @map("channel_id") // External channel ID (e.g., email address, phone number)
+  
+  // Conversation Metadata
+  subject     String?
+  status      String    @default("open") // open, closed, archived, spam
+  priority    String    @default("normal") // low, normal, high, urgent
+  assignedTo  String?   @map("assigned_to") // User ID if team feature enabled
+  
+  // Tags and Labels
+  tags        String[]  @default([])
+  labels      String[]  @default([])
+  
+  // Stats
+  messageCount Int      @default(0) @map("message_count")
+  unreadCount  Int      @default(0) @map("unread_count")
+  
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastMessageAt DateTime? @map("last_message_at")
+  closedAt    DateTime? @map("closed_at")
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+  
+  @@index([userId, status])
+  @@index([userId, channel])
+  @@index([userId, lastMessageAt])
+  @@map("conversations")
+}
+
+model Message {
+  id            String    @id @default(uuid())
+  conversationId String    @map("conversation_id")
+  userId        String    @map("user_id")
+  
+  // Message Content
+  content       String    // Text content
+  htmlContent   String?   @map("html_content") // HTML content if available
+  subject       String?   // Subject line (for email)
+  
+  // Channel Info
+  channel       String    // Same as conversation channel
+  channelMessageId String? @map("channel_message_id") // External message ID
+  
+  // Direction
+  direction     String    @default("inbound") // inbound, outbound
+  
+  // Status
+  status        String    @default("sent") // sent, delivered, read, failed
+  isRead        Boolean   @default(false) @map("is_read")
+  
+  // Attachments
+  attachments   Json?     // Array of attachment metadata
+  
+  // Metadata
+  metadata      Json?     // Channel-specific metadata
+  
+  // Timestamps
+  createdAt     DateTime  @default(now()) @map("created_at")
+  readAt        DateTime? @map("read_at")
+  
+  // Relations
+  conversation  Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([conversationId, createdAt])
+  @@index([userId, createdAt])
+  @@map("messages")
 }
 

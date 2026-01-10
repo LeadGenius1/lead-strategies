@@ -681,6 +681,20 @@
 - ✅ `PORT`: `3000`
 - ⚠️ `ANTHROPIC_API_KEY`: **NOT CONFIGURED**
 
+### **Domain Configuration Status**
+
+**Domains with Cloudflare Proxy Enabled** 🟠:
+- ✅ `tackleai.ai` - Cloudflare proxy detected (orange cloud)
+- ✅ `videosite.ai` - Cloudflare proxy detected (orange cloud)
+
+**Domains with Cloudflare Proxy Disabled** ✅:
+- ⚠️ `leadsite.io` - Setup complete (grey cloud - should enable proxy)
+- ⚠️ `leadsite.ai` - Setup complete (grey cloud - should enable proxy)
+- ⚠️ `aileadstrategies.com` - Setup complete (grey cloud - should enable proxy)
+- ⚠️ `clientcontact.io` - Setup complete (grey cloud - should enable proxy)
+
+**Recommendation:** Enable Cloudflare proxy (orange cloud) for all domains for consistent security and performance. See `DOMAIN_CONFIGURATION_EXPLAINED.md` for details.
+
 ### **Backend Service Variables** (api.leadsite.ai)
 - ⚠️ `EMAIL_SERVICE`: **NOT CONFIGURED** (defaults to 'mock')
 - ⚠️ `SENDGRID_API_KEY` or `AWS_SES_*`: **NOT CONFIGURED**

@@ -136,9 +136,11 @@ export default function NewCampaignPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...campaign,
+          name: campaign.name,
+          subject_line: campaign.subject,
+          email_body: campaign.template,
           leadIds: selectedLeads,
-          recipientCount: selectedLeads.length,
+          status: campaign.status || 'draft',
         }),
         credentials: 'include',
       });
@@ -146,7 +148,7 @@ export default function NewCampaignPage() {
       const result = await response.json();
 
       if (result.success) {
-        router.push(`/dashboard/campaigns/${result.data.id}`);
+        router.push(`/dashboard/campaigns/${result.data.campaign?.id || result.data.id}`);
       } else {
         setError(result.error || 'Failed to create campaign');
       }

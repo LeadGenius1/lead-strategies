@@ -89,28 +89,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Batch import leads
-    const importPromises = validLeads.map(lead =>
-      fetch(`${RAILWAY_API_URL}/api/leads`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(lead),
-      })
-    );
+    // Use bulk import endpoint
+    const response = await fetch(`${RAILWAY_API_URL}/api/leads/bulk`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ leads: validLeads }),
+    });
 
-    const results = await Promise.allSettled(importPromises);
-    const imported = results.filter(r => r.status === 'fulfilled').length;
-    const failed = results.filter(r => r.status === 'rejected').length;
+    if (!response.ok) {
+      const errorData = await response.json();
+      return NextResponse.json(
+        {
+          success: false,
+          error: errorData.error || 'Import failed',
+          errors: errorData.errors || errors,
+        },
+        { status: response.status }
+      );
+    }
+
+    const result = await response.json();
+    const imported = result.data?.created || 0;
+    const failed = result.data?.failed || 0;
+    const allErrors = [...errors, ...(result.data?.errors || [])];
 
     return NextResponse.json({
       success: true,
       data: {
         imported,
         failed,
-        errors: errors.length > 0 ? errors : undefined,
+        errors: allErrors.length > 0 ? allErrors : undefined,
       },
     });
   } catch (error) {

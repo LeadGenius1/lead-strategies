@@ -18,18 +18,35 @@ export async function POST(request: NextRequest) {
 
     // Forward to Railway backend
     if (!RAILWAY_API_URL) {
+      console.error('RAILWAY_API_URL not configured');
       return NextResponse.json(
         { success: false, error: 'Backend API not configured. Please set RAILWAY_API_URL environment variable.' },
         { status: 503 }
       );
     }
 
+    // Map frontend fields to backend expected format
+    // Backend supports both formats now
+    const backendPayload = {
+      email: body.email,
+      password: body.password,
+      firstName: body.firstName,
+      lastName: body.lastName,
+      companyName: body.companyName,
+      tier: body.tier || 'leadsite-ai', // Backend will map to tier number
+      industry: body.industry,
+      companySize: body.companySize,
+      currentTools: body.currentTools,
+    };
+
+    console.log('Signup request to backend:', RAILWAY_API_URL);
+
     const response = await fetch(`${RAILWAY_API_URL}/api/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(backendPayload),
     });
 
     const data = await response.json();

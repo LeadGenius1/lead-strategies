@@ -2,6 +2,8 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
+const channelService = require('../services/channelService');
+const emailService = require('../services/emailService');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -202,8 +204,71 @@ router.post('/:id/messages', async (req, res) => {
       },
     });
 
-    // TODO: Send message via appropriate channel (email, SMS, etc.)
-    // For now, just save to database
+    // Send message via appropriate channel
+    try {
+      // Get previous message for threading (email only)
+      let inReplyTo = null;
+      let references = null;
+      if (conversation.channel === 'email') {
+        const previousMessage = await prisma.message.findFirst({
+          where: {
+            conversationId: id,
+            direction: 'outbound',
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+        
+        if (previousMessage && previousMessage.externalMessageId) {
+          const threadHeaders = emailService.generateThreadHeaders(
+            id,
+            message.id,
+            previousMessage.externalMessageId
+          );
+          inReplyTo = threadHeaders.inReplyTo;
+          references = threadHeaders.references;
+        }
+      }
+
+      // Send via channel service
+      const sendResult = await channelService.sendMessage({
+        channel: conversation.channel,
+        to: conversation.channel === 'email' ? conversation.contactEmail : conversation.contactPhone,
+        content: content.trim(),
+        htmlContent,
+        subject: subject || conversation.subject || 'Re: ' + (conversation.subject || 'Message'),
+        from: conversation.channel === 'email' ? (req.user.email || process.env.FROM_EMAIL) : undefined,
+        fromName: req.user.firstName ? `${req.user.firstName} ${req.user.lastName || ''}`.trim() : undefined,
+        replyTo: conversation.channel === 'email' ? conversation.contactEmail : undefined,
+        inReplyTo,
+        references,
+      });
+
+      // Update message with external message ID
+      await prisma.message.update({
+        where: { id: message.id },
+        data: {
+          externalMessageId: sendResult.messageId,
+          status: sendResult.status || 'sent',
+          sentAt: new Date(),
+        },
+      });
+
+      console.log(`Message sent via ${conversation.channel}:`, sendResult.messageId);
+    } catch (sendError) {
+      console.error('Failed to send message via channel:', sendError);
+      
+      // Update message status to failed
+      await prisma.message.update({
+        where: { id: message.id },
+        data: {
+          status: 'failed',
+          errorMessage: sendError.message,
+        },
+      });
+
+      // Still return success to user, but log the error
+      // In production, you might want to return an error or queue for retry
+    }
 
     res.json({
       success: true,

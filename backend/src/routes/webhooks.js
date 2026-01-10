@@ -6,6 +6,14 @@ const { PrismaClient } = require('@prisma/client');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// Channel webhook routes
+const emailWebhooks = require('./webhooks/email');
+const smsWebhooks = require('./webhooks/sms');
+
+// Mount channel webhooks
+router.use('/email', emailWebhooks);
+router.use('/sms', smsWebhooks);
+
 // Stripe webhook handler
 router.post('/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];

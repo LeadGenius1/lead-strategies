@@ -187,7 +187,7 @@ export default function WebsitesPage() {
                   </p>
                   <div className="flex gap-2 pt-4 border-t border-subtle">
                     <Link
-                      href={`/dashboard/websites/${website.id}`}
+                      href={`/dashboard/websites/${website.id}/builder`}
                       className="flex-1 bg-white text-black px-4 py-2 text-xs font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center"
                     >
                       Edit

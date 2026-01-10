@@ -60,10 +60,10 @@ export default function SignupPage() {
         return;
       }
 
-      // Success - move to confirmation step
-      // User is now automatically logged in (auth-token cookie set by API)
-      setStep(4);
-      setLoading(false);
+      // Success - user is now automatically logged in (auth-token cookie set by API)
+      // Redirect to dashboard immediately
+      router.push('/dashboard');
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
       setLoading(false);

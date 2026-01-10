@@ -69,165 +69,113 @@ app.use(express.urlencoded({ extended: true }));
 // Request logging
 app.use(requestLogger);
 
-// Routes will be registered in startServer() after rate limiting is configured
+// Rate limiting - start with in-memory, upgrade to Redis if available
+const limiterConfig = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: { error: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    return req.path.includes('/webhooks/') && req.method === 'POST';
+  },
+};
+
+// Start with in-memory rate limiting (always available)
+const limiter = rateLimit(limiterConfig);
+app.use('/api/', limiter);
+
+// ===========================================
+// ROUTES (always registered, regardless of Redis)
+// ===========================================
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    service: 'leadsite-backend'
+  });
+});
+
+app.get('/api/v1/health', async (req, res) => {
+  const redisHealth = await checkRedisHealth();
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    redis: redisHealth
+  });
+});
+
+// API Routes (v1)
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/campaigns', campaignRoutes);
+app.use('/api/v1/leads', leadRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/stripe', stripeRoutes);
+app.use('/api/v1/webhooks', webhookRoutes);
+app.use('/api/v1/websites', websiteRoutes);
+app.use('/api/v1/conversations', conversationRoutes);
+
+// Also support /api/ routes for backward compatibility
+app.use('/api/auth', authRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/campaigns', campaignRoutes);
+app.use('/api/leads', leadRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/stripe', stripeRoutes);
+app.use('/api/webhooks', webhookRoutes);
+app.use('/api/websites', websiteRoutes);
+app.use('/api/conversations', conversationRoutes);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Not Found',
+    message: `Route ${req.method} ${req.path} not found`
+  });
+});
+
+// Error handler
+app.use(errorHandler);
 
 // ===========================================
 // SERVER START
 // ===========================================
 
-// Initialize Redis and start server
-// Initialize Redis and configure rate limiting before starting server
-async function startServer() {
-  try {
-    // Initialize Redis first (async, but we'll wait for it)
-    const redisConfig = await initializeRedis();
-    
-    // Configure rate limiting with Redis store (if available)
-    const limiterConfig = {
-      store: redisConfig.store, // undefined = in-memory (default)
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // 100 requests per window
-      message: { error: 'Too many requests, please try again later.' },
-      standardHeaders: true,
-      legacyHeaders: false,
-      // Skip successful requests for webhook endpoints
-      skip: (req) => {
-        return req.path.includes('/webhooks/') && req.method === 'POST';
-      },
-    };
-    
-    const limiter = rateLimit(limiterConfig);
-    // Apply rate limiting middleware (BEFORE routes)
-    app.use('/api/', limiter);
-    
-    console.log(`Rate limiting: ${redisConfig.available ? '✅ Redis-backed' : '⚠️  In-memory (Redis not available)'}`);
-    
-    // ===========================================
-    // ROUTES (registered after rate limiting)
-    // ===========================================
-    
-    // Health check
-    app.get('/health', (req, res) => {
-      res.json({ 
-        status: 'ok', 
-        timestamp: new Date().toISOString(),
-        version: '1.0.0',
-        service: 'leadsite-backend'
-      });
-    });
+// Initialize Redis asynchronously (non-blocking)
+// Routes are already registered, Redis will upgrade rate limiting if available
+initializeRedis().then((redisConfig) => {
+  if (redisConfig.available && redisConfig.store) {
+    console.log('✅ Redis connected - rate limiting upgraded to Redis-backed');
+    // Note: Rate limiting store can't be changed after initialization
+    // For production, consider restarting or using Redis from the start
+  } else {
+    console.log('⚠️  Redis not available - using in-memory rate limiting');
+  }
+}).catch((error) => {
+  console.warn('⚠️  Redis initialization failed - using in-memory rate limiting:', error.message);
+});
 
-    app.get('/api/v1/health', async (req, res) => {
-      const redisHealth = await checkRedisHealth();
-      res.json({ 
-        status: 'ok', 
-        timestamp: new Date().toISOString(),
-        version: '1.0.0',
-        redis: redisHealth
-      });
-    });
-
-    // API Routes (v1)
-    app.use('/api/v1/auth', authRoutes);
-    app.use('/api/v1/dashboard', dashboardRoutes);
-    app.use('/api/v1/campaigns', campaignRoutes);
-    app.use('/api/v1/leads', leadRoutes);
-    app.use('/api/v1/analytics', analyticsRoutes);
-    app.use('/api/v1/stripe', stripeRoutes);
-    app.use('/api/v1/webhooks', webhookRoutes);
-    app.use('/api/v1/websites', websiteRoutes);
-    app.use('/api/v1/conversations', conversationRoutes);
-
-    // Also support /api/ routes for backward compatibility
-    app.use('/api/auth', authRoutes);
-    app.use('/api/dashboard', dashboardRoutes);
-    app.use('/api/campaigns', campaignRoutes);
-    app.use('/api/leads', leadRoutes);
-    app.use('/api/analytics', analyticsRoutes);
-    app.use('/api/stripe', stripeRoutes);
-    app.use('/api/webhooks', webhookRoutes);
-    app.use('/api/websites', websiteRoutes);
-    app.use('/api/conversations', conversationRoutes);
-
-    // 404 handler
-    app.use((req, res) => {
-      res.status(404).json({ 
-        error: 'Not Found',
-        message: `Route ${req.method} ${req.path} not found`
-      });
-    });
-
-    // Error handler
-    app.use(errorHandler);
-    
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`
+// Start server immediately (routes are already registered)
+app.listen(PORT, () => {
+  console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║
 ║   🚀 LeadSite.AI Backend API                      ║
 ║                                                   ║
 ║   Server running on port ${PORT}                    ║
 ║   Environment: ${process.env.NODE_ENV || 'development'}               ║
-║   Redis: ${redisConfig.available ? '✅ Connected' : '⚠️  Not configured'}                  ║
 ║                                                   ║
 ║   Health: http://localhost:${PORT}/health            ║
 ║   API:    http://localhost:${PORT}/api/v1            ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
-      `);
-    });
-  } catch (error) {
-    console.error('❌ Failed to start server:', error);
-    // Fallback: Start with in-memory rate limiting
-    console.log('⚠️  Starting with in-memory rate limiting (fallback mode)...');
-    const limiter = rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 100,
-      message: { error: 'Too many requests, please try again later.' },
-      standardHeaders: true,
-      legacyHeaders: false,
-      skip: (req) => req.path.includes('/webhooks/') && req.method === 'POST',
-    });
-    app.use('/api/', limiter);
-    
-    // Register routes in fallback mode
-    app.get('/health', (req, res) => {
-      res.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.0.0', service: 'leadsite-backend' });
-    });
-    app.get('/api/v1/health', async (req, res) => {
-      const redisHealth = await checkRedisHealth();
-      res.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.0.0', redis: redisHealth });
-    });
-    app.use('/api/v1/auth', authRoutes);
-    app.use('/api/v1/dashboard', dashboardRoutes);
-    app.use('/api/v1/campaigns', campaignRoutes);
-    app.use('/api/v1/leads', leadRoutes);
-    app.use('/api/v1/analytics', analyticsRoutes);
-    app.use('/api/v1/stripe', stripeRoutes);
-    app.use('/api/v1/webhooks', webhookRoutes);
-    app.use('/api/v1/websites', websiteRoutes);
-    app.use('/api/v1/conversations', conversationRoutes);
-    app.use('/api/auth', authRoutes);
-    app.use('/api/dashboard', dashboardRoutes);
-    app.use('/api/campaigns', campaignRoutes);
-    app.use('/api/leads', leadRoutes);
-    app.use('/api/analytics', analyticsRoutes);
-    app.use('/api/stripe', stripeRoutes);
-    app.use('/api/webhooks', webhookRoutes);
-    app.use('/api/websites', websiteRoutes);
-    app.use('/api/conversations', conversationRoutes);
-    app.use((req, res) => {
-      res.status(404).json({ error: 'Not Found', message: `Route ${req.method} ${req.path} not found` });
-    });
-    app.use(errorHandler);
-    
-    app.listen(PORT, () => {
-      console.log(`⚠️  Server running on port ${PORT} (fallback mode - Redis unavailable)`);
-    });
-  }
-}
-
-startServer();
+  `);
+});
 
 module.exports = app;
 

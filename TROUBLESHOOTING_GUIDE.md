@@ -6,7 +6,9 @@
 
 ---
 
-## 🐛 CRITICAL ISSUE: Redis Service Deployment Failure
+## 🐛 CRITICAL ISSUES
+
+### **Issue 1: Redis Service Deployment Failure** 🔴
 
 ### **Problem Description**
 
@@ -89,6 +91,75 @@ railway logs --service redis
 ```
 
 **If you see Node.js/npm/prisma logs, the fix didn't work.**
+
+---
+
+### **Issue 2: Prisma Version Mismatch** ⚠️ **HIGH**
+
+**Problem:**
+- Local Prisma CLI version: 7.2.0 (newer)
+- Package.json Prisma version: 5.7.1 (older)
+- Prisma 7 has breaking changes (datasource `url` property removed)
+
+**Error:**
+```
+Error: The datasource property `url` is no longer supported in schema files.
+Move connection URLs for Migrate to `prisma.config.ts`
+```
+
+**Root Cause:**
+- Prisma 7 changed schema format
+- Local environment has Prisma 7 installed globally
+- Package.json specifies Prisma 5.7.1
+- Railway should use Prisma 5.7.1 from package.json
+
+**Solution:**
+
+**Option A: Use Prisma 5.7.1 (Recommended - No Schema Changes)**
+
+1. Ensure Railway uses Prisma from package.json:
+   ```json
+   {
+     "dependencies": {
+       "@prisma/client": "^5.7.1",
+       "prisma": "^5.7.1"
+     }
+   }
+   ```
+
+2. Verify Railway build uses correct version:
+   - Railway should run `npm install` which installs Prisma 5.7.1
+   - Check Railway build logs for Prisma version
+
+3. If Prisma 7 is being used, pin version:
+   ```json
+   {
+     "dependencies": {
+       "@prisma/client": "5.7.1",
+       "prisma": "5.7.1"
+     }
+   }
+   ```
+   (Remove `^` to pin exact version)
+
+**Option B: Update to Prisma 7 (Breaking Changes)**
+
+If Railway is using Prisma 7, update schema:
+1. Create `prisma.config.ts` file
+2. Move `DATABASE_URL` to config file
+3. Update Prisma client initialization
+4. Update all Prisma usage in code
+
+**Recommendation:** Stick with Prisma 5.7.1 for now (no breaking changes needed)
+
+**Verification:**
+```bash
+# Check Railway build logs for Prisma version
+railway logs --build
+
+# Should see: "Installing prisma@5.7.1"
+# NOT: "Installing prisma@7.x.x"
+```
 
 ---
 

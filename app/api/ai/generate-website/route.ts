@@ -68,7 +68,7 @@ Return a JSON object with this exact structure:
             "subtitle": "...",
             "features": [
               {
-                "icon": "🚀",
+                "icon": "rocket",
                 "title": "...",
                 "description": "..."
               }

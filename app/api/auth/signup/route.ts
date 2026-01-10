@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       token: token, // Also include in response for debugging
     });
 
-    // Set cookie with proper domain (for production)
+    // Set cookie - let browser handle domain automatically
     const isProduction = process.env.NODE_ENV === 'production';
     responseData.cookies.set('auth-token', token, {
       httpOnly: true,
@@ -85,12 +85,10 @@ export async function POST(request: NextRequest) {
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
-      ...(isProduction && { domain: '.clientcontact.io' }), // Allow cookie on all subdomains
+      // Don't set domain - browser will use current domain automatically
     });
 
     console.log(`✅ Auth token cookie set for signup (user: ${user?.email || 'unknown'})`);
-
-    return responseData;
 
     return responseData;
   } catch (error) {

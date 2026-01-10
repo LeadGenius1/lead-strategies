@@ -29,29 +29,46 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json();
+    const backendData = await response.json();
 
     if (!response.ok) {
       return NextResponse.json(
-        { success: false, error: data.message || data.error || 'Login failed' },
+        { success: false, error: backendData.message || backendData.error || 'Login failed' },
         { status: response.status }
       );
     }
 
-    // Set HTTP-only cookie for token if provided
+    // Backend returns: { success: true, token, data: { user } }
+    const token = backendData.token || backendData.data?.token;
+
+    if (!token) {
+      console.error('❌ No token received from backend login');
+      return NextResponse.json(
+        { success: false, error: 'Authentication token not received' },
+        { status: 500 }
+      );
+    }
+
+    // Set HTTP-only cookie for token
     const responseData = NextResponse.json({
       success: true,
-      data,
+      data: backendData.data || backendData,
     });
 
-    if (data.token) {
-      responseData.cookies.set('auth-token', data.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      });
-    }
+    // Set cookie with proper domain (for production)
+    const isProduction = process.env.NODE_ENV === 'production';
+    responseData.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+      ...(isProduction && { domain: '.clientcontact.io' }), // Allow cookie on all subdomains
+    });
+
+    console.log(`✅ Auth token cookie set for login (user: ${backendData.data?.user?.email || 'unknown'})`);
+
+    return responseData;
 
     return responseData;
   } catch (error) {

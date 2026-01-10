@@ -2,7 +2,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
-const { generateToken, TIER_LIMITS } = require('../middleware/auth');
+const { generateToken, TIER_LIMITS, TIER_FEATURES } = require('../middleware/auth');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -91,19 +91,25 @@ router.post('/signup', async (req, res) => {
     // Generate token
     const token = generateToken(user.id, user.tier);
 
+    // Return response with token at top level for easier access
     res.status(201).json({
       success: true,
+      token, // Token at top level for cookie setting
       data: {
-        user,
-        subscription: {
-          tier: TIER_LIMITS[user.tier].name.toLowerCase().replace('.', '-'),
-          features: {
-            email: true,
-            campaigns: true,
-            prospects: true
-          }
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          company: user.company,
+          tier: user.tier,
+          subscriptionStatus: user.subscriptionStatus,
+          trialEndsAt: user.trialEndsAt,
+          createdAt: user.createdAt
         },
-        token
+        subscription: {
+          tier: TIER_LIMITS[user.tier]?.name?.toLowerCase().replace(/\./g, '-') || 'leadsite-ai',
+          features: TIER_FEATURES[user.tier] || []
+        }
       }
     });
   } catch (error) {
@@ -148,6 +154,7 @@ router.post('/login', async (req, res) => {
 
     res.json({
       success: true,
+      token, // Token at top level for cookie setting
       data: {
         user: {
           id: user.id,
@@ -157,8 +164,7 @@ router.post('/login', async (req, res) => {
           tier: user.tier,
           subscriptionStatus: user.subscriptionStatus,
           trialEndsAt: user.trialEndsAt
-        },
-        token
+        }
       }
     });
   } catch (error) {

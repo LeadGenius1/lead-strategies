@@ -49,29 +49,48 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(backendPayload),
     });
 
-    const data = await response.json();
+    const backendData = await response.json();
 
     if (!response.ok) {
       return NextResponse.json(
-        { success: false, error: data.message || data.error || 'Signup failed' },
+        { success: false, error: backendData.message || backendData.error || 'Signup failed' },
         { status: response.status }
       );
     }
 
-    // Set HTTP-only cookie for token if provided (auto-login after signup)
+    // Backend returns: { success: true, token, data: { user, subscription } }
+    const token = backendData.token || backendData.data?.token;
+    const user = backendData.data?.user || backendData.user;
+
+    if (!token) {
+      console.error('❌ No token received from backend signup');
+      return NextResponse.json(
+        { success: false, error: 'Authentication token not received' },
+        { status: 500 }
+      );
+    }
+
+    // Set HTTP-only cookie for token (auto-login after signup)
     const responseData = NextResponse.json({
       success: true,
-      data,
+      data: backendData.data || backendData,
+      token: token, // Also include in response for debugging
     });
 
-    if (data.token) {
-      responseData.cookies.set('auth-token', data.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      });
-    }
+    // Set cookie with proper domain (for production)
+    const isProduction = process.env.NODE_ENV === 'production';
+    responseData.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+      ...(isProduction && { domain: '.clientcontact.io' }), // Allow cookie on all subdomains
+    });
+
+    console.log(`✅ Auth token cookie set for signup (user: ${user?.email || 'unknown'})`);
+
+    return responseData;
 
     return responseData;
   } catch (error) {

@@ -54,16 +54,19 @@ export default function SignupPage() {
 
       const result = await response.json();
 
-      if (!result.success) {
-        setError(result.error || 'Signup failed. Please try again.');
+      if (!response.ok || !result.success) {
+        setError(result.error || result.message || 'Signup failed. Please try again.');
         setLoading(false);
         return;
       }
 
       // Success - user is now automatically logged in (auth-token cookie set by API)
-      // Redirect to dashboard immediately
-      router.push('/dashboard');
-      router.refresh();
+      // Wait briefly for cookie to be set, then redirect
+      console.log('✅ Signup successful, redirecting to dashboard...');
+      setTimeout(() => {
+        router.push('/dashboard');
+        router.refresh();
+      }, 300);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
       setLoading(false);

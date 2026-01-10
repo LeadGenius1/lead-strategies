@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import ChannelIcon from '@/components/icons/ChannelIcon';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Conversation {
   id: string;
@@ -94,22 +96,6 @@ export default function InboxPage() {
     }
   };
 
-  const getChannelIcon = (channel: string) => {
-    const icons: Record<string, string> = {
-      email: '📧',
-      sms: '💬',
-      whatsapp: '💚',
-      messenger: '💙',
-      instagram: '📷',
-      linkedin: '💼',
-      twitter: '🐦',
-      slack: '💬',
-      discord: '🎮',
-      telegram: '✈️',
-      webchat: '🌐',
-    };
-    return icons[channel] || '💬';
-  };
 
   const formatTime = (dateString?: string) => {
     if (!dateString) return '';
@@ -198,10 +184,10 @@ export default function InboxPage() {
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+            <h1 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-bold" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
               Unified <span className="text-gradient">Inbox</span>
             </h1>
-            <p className="text-neutral-400 font-geist">All your conversations in one place</p>
+            <p className="text-neutral-400" style={{ fontFamily: 'Inter, sans-serif' }}>All your conversations in one place</p>
           </div>
 
           {/* Stats */}
@@ -269,7 +255,9 @@ export default function InboxPage() {
                   className="block bg-[#050505] border border-subtle p-4 hover:border-purple-500/30 transition-all group"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="text-2xl">{getChannelIcon(conv.channel)}</div>
+                    <div className="text-purple-400">
+                      <ChannelIcon channel={conv.channel} size={24} />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <div className="flex-1 min-w-0">
@@ -294,8 +282,13 @@ export default function InboxPage() {
                             <p className="text-sm text-neutral-400 font-geist mb-1">{conv.subject}</p>
                           )}
                           {conv.lastMessage && (
-                            <p className="text-sm text-neutral-500 font-geist truncate">
-                              {conv.lastMessage.direction === 'inbound' ? '←' : '→'} {conv.lastMessage.content}
+                            <p className="text-sm text-neutral-500 truncate flex items-center gap-1" style={{ fontFamily: 'Inter, sans-serif' }}>
+                              {conv.lastMessage.direction === 'inbound' ? (
+                                <ArrowLeft size={14} className="text-purple-400" />
+                              ) : (
+                                <ArrowRight size={14} className="text-purple-400" />
+                              )}
+                              {conv.lastMessage.content}
                             </p>
                           )}
                         </div>

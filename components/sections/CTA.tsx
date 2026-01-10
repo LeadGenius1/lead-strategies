@@ -36,7 +36,7 @@ export default function CTA({ section, isEditing = false, onUpdate }: CTAProps) 
                 type="text"
                 value={content.title || ''}
                 onChange={(e) => onUpdate?.({ ...content, title: e.target.value })}
-                className="w-full bg-transparent border border-purple-500/30 p-3 text-2xl font-bold text-white outline-none focus:border-purple-500 font-space-grotesk mb-2"
+                className="w-full bg-transparent border border-purple-500/30 p-3 text-2xl font-bold text-white outline-none focus:border-purple-500 mb-2" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}
                 placeholder="CTA title"
               />
               <input
@@ -65,18 +65,18 @@ export default function CTA({ section, isEditing = false, onUpdate }: CTAProps) 
             </>
           ) : (
             <>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-space-grotesk">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
                 {content.title || 'Ready to Get Started?'}
               </h2>
               {content.subtitle && (
-                <p className="text-lg text-neutral-300 mb-8 font-geist">
+                <p className="text-lg text-neutral-300 mb-8" style={{ fontFamily: 'Inter, sans-serif' }}>
                   {content.subtitle}
                 </p>
               )}
               {content.ctaText && (
                 <a
                   href={content.ctaLink || '#'}
-                  className="inline-block bg-white text-black px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist"
+                  className="inline-block bg-white text-black px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}
                 >
                   {content.ctaText}
                 </a>

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import ChannelIcon from '@/components/icons/ChannelIcon';
+import { ArrowLeft } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -128,22 +130,6 @@ export default function ConversationPage() {
     }
   };
 
-  const getChannelIcon = (channel: string) => {
-    const icons: Record<string, string> = {
-      email: '📧',
-      sms: '💬',
-      whatsapp: '💚',
-      messenger: '💙',
-      instagram: '📷',
-      linkedin: '💼',
-      twitter: '🐦',
-      slack: '💬',
-      discord: '🎮',
-      telegram: '✈️',
-      webchat: '🌐',
-    };
-    return icons[channel] || '💬';
-  };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -208,16 +194,19 @@ export default function ConversationPage() {
           <div className="mb-6">
             <Link
               href="/dashboard/inbox"
-              className="text-purple-400 hover:text-purple-300 font-geist text-sm uppercase tracking-widest mb-4 inline-block"
+              className="text-purple-400 hover:text-purple-300 text-sm uppercase tracking-widest mb-4 inline-flex items-center gap-2 transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}
             >
-              ← Back to Inbox
+              <ArrowLeft size={16} />
+              Back to Inbox
             </Link>
             
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-3xl">{getChannelIcon(conversation.channel)}</span>
-                  <h1 className="text-3xl md:text-5xl uppercase text-white tracking-tighter font-space-grotesk font-light">
+                  <div className="text-purple-400">
+                    <ChannelIcon channel={conversation.channel} size={32} />
+                  </div>
+                  <h1 className="text-3xl md:text-5xl uppercase text-white tracking-tighter font-bold" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
                     {conversation.contactName || conversation.contactEmail || conversation.contactPhone || 'Unknown Contact'}
                   </h1>
                 </div>

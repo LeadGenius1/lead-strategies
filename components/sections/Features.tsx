@@ -1,6 +1,16 @@
 'use client';
 
 import { Section } from '@/lib/website-builder/types';
+import { Rocket, Shield, TrendingUp, Sparkles } from 'lucide-react';
+
+const getFeatureIcon = (iconName: string) => {
+  const icons: Record<string, React.ReactNode> = {
+    rocket: <Rocket className="w-10 h-10 text-purple-400" />,
+    shield: <Shield className="w-10 h-10 text-purple-400" />,
+    'trending-up': <TrendingUp className="w-10 h-10 text-purple-400" />,
+  };
+  return icons[iconName?.toLowerCase()] || <Sparkles className="w-10 h-10 text-purple-400" />;
+};
 
 interface FeaturesProps {
   section: Section;
@@ -44,11 +54,11 @@ export default function Features({ section, isEditing = false, onUpdate }: Featu
           </>
         ) : (
           <>
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-space-grotesk">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
               {content.title || 'Key Features'}
             </h2>
             {content.subtitle && (
-              <p className="text-center text-neutral-400 mb-12 font-geist">
+              <p className="text-center text-neutral-400 mb-12" style={{ fontFamily: 'Inter, sans-serif' }}>
                 {content.subtitle}
               </p>
             )}
@@ -71,8 +81,8 @@ export default function Features({ section, isEditing = false, onUpdate }: Featu
                       newFeatures[index] = { ...feature, icon: e.target.value };
                       onUpdate?.({ ...content, features: newFeatures });
                     }}
-                    className="w-full bg-transparent border border-purple-500/30 p-2 text-white outline-none focus:border-purple-500 font-geist"
-                    placeholder="Icon emoji"
+                    className="w-full bg-transparent border border-purple-500/30 p-2 text-white outline-none focus:border-purple-500" style={{ fontFamily: 'Inter, sans-serif' }}
+                    placeholder="Icon name (rocket, shield, trending-up)"
                   />
                   <input
                     type="text"
@@ -99,11 +109,13 @@ export default function Features({ section, isEditing = false, onUpdate }: Featu
                 </div>
               ) : (
                 <>
-                  <div className="text-4xl mb-4">{feature.icon || '✨'}</div>
-                  <h3 className="text-xl font-semibold mb-2 font-space-grotesk">
+                  <div className="mb-4 flex items-center justify-center">
+                    {getFeatureIcon(feature.icon || 'sparkles')}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {feature.title || 'Feature'}
                   </h3>
-                  <p className="text-neutral-400 font-geist">
+                  <p className="text-neutral-400 text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {feature.description || 'Feature description'}
                   </p>
                 </>

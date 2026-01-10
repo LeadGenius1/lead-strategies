@@ -3,12 +3,30 @@
 
 import { SectionTemplate } from './types';
 
+// Icon names for sections (using lucide-react icon names)
+const SECTION_ICONS: Record<string, string> = {
+  hero: 'target',
+  features: 'sparkles',
+  cta: 'megaphone',
+  testimonials: 'message-square',
+  contact: 'mail',
+  pricing: 'dollar-sign',
+  faq: 'help-circle',
+};
+
+const FEATURE_ICONS: Record<string, string> = {
+  'fast': 'rocket',
+  'reliable': 'rocket',
+  'secure': 'shield',
+  'scalable': 'trending-up',
+};
+
 export const SECTION_TEMPLATES: SectionTemplate[] = [
   {
     type: 'hero',
     name: 'Hero Section',
     description: 'Large banner with headline and CTA',
-    icon: '🎯',
+    icon: 'target',
     defaultContent: {
       title: 'Welcome to Our Platform',
       subtitle: 'Build amazing landing pages in minutes',
@@ -27,23 +45,23 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     type: 'features',
     name: 'Features Section',
     description: 'Showcase your key features',
-    icon: '✨',
+    icon: 'sparkles',
     defaultContent: {
       title: 'Key Features',
       subtitle: 'Everything you need to succeed',
       features: [
         {
-          icon: '🚀',
+          icon: 'rocket',
           title: 'Fast & Reliable',
           description: 'Lightning-fast performance',
         },
         {
-          icon: '🔒',
+          icon: 'shield',
           title: 'Secure',
           description: 'Enterprise-grade security',
         },
         {
-          icon: '📈',
+          icon: 'trending-up',
           title: 'Scalable',
           description: 'Grows with your business',
         },
@@ -60,7 +78,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     type: 'cta',
     name: 'Call to Action',
     description: 'Encourage visitors to take action',
-    icon: '📢',
+    icon: 'megaphone',
     defaultContent: {
       title: 'Ready to Get Started?',
       subtitle: 'Join thousands of satisfied customers',
@@ -78,7 +96,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     type: 'testimonials',
     name: 'Testimonials',
     description: 'Show customer reviews',
-    icon: '💬',
+    icon: 'message-square',
     defaultContent: {
       title: 'What Our Customers Say',
       testimonials: [
@@ -106,7 +124,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     type: 'contact',
     name: 'Contact Form',
     description: 'Collect visitor information',
-    icon: '📧',
+    icon: 'mail',
     defaultContent: {
       title: 'Get In Touch',
       subtitle: 'We\'d love to hear from you',
@@ -123,7 +141,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     type: 'pricing',
     name: 'Pricing',
     description: 'Display pricing tiers',
-    icon: '💰',
+    icon: 'dollar-sign',
     defaultContent: {
       title: 'Choose Your Plan',
       subtitle: 'Flexible pricing for every need',
@@ -155,7 +173,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     type: 'faq',
     name: 'FAQ',
     description: 'Answer common questions',
-    icon: '❓',
+    icon: 'help-circle',
     defaultContent: {
       title: 'Frequently Asked Questions',
       questions: [

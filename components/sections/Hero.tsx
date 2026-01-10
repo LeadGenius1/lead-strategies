@@ -38,14 +38,14 @@ export default function Hero({ section, isEditing = false, onUpdate }: HeroProps
                 type="text"
                 value={content.title || ''}
                 onChange={(e) => onUpdate?.({ ...content, title: e.target.value })}
-                className="w-full bg-transparent border border-purple-500/30 p-4 text-4xl md:text-6xl font-bold text-white outline-none focus:border-purple-500 font-space-grotesk mb-4"
+                className="w-full bg-transparent border border-purple-500/30 p-4 text-4xl md:text-6xl font-bold text-white outline-none focus:border-purple-500 mb-4" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}
                 placeholder="Enter title"
               />
               <input
                 type="text"
                 value={content.subtitle || ''}
                 onChange={(e) => onUpdate?.({ ...content, subtitle: e.target.value })}
-                className="w-full bg-transparent border border-purple-500/30 p-3 text-lg md:text-xl text-neutral-300 outline-none focus:border-purple-500 font-geist mb-6"
+                className="w-full bg-transparent border border-purple-500/30 p-3 text-lg md:text-xl text-neutral-300 outline-none focus:border-purple-500 mb-6" style={{ fontFamily: 'Inter, sans-serif' }}
                 placeholder="Enter subtitle"
               />
               <div className="flex gap-4 justify-center">
@@ -67,16 +67,16 @@ export default function Hero({ section, isEditing = false, onUpdate }: HeroProps
             </>
           ) : (
             <>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 font-space-grotesk">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
                 {content.title || 'Welcome'}
               </h1>
-              <p className="text-lg md:text-xl text-neutral-300 mb-8 font-geist">
+              <p className="text-lg md:text-xl text-neutral-300 mb-8" style={{ fontFamily: 'Inter, sans-serif' }}>
                 {content.subtitle || 'Get started today'}
               </p>
               {content.ctaText && (
                 <a
                   href={content.ctaLink || '#'}
-                  className="inline-block bg-white text-black px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist"
+                  className="inline-block bg-white text-black px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}
                 >
                   {content.ctaText}
                 </a>

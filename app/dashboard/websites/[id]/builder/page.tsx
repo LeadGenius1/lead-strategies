@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { WebsiteData, Page } from '@/lib/website-builder/types';
 import DragDropBuilder from '@/components/website-builder/DragDropBuilder';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 
 export default function WebsiteBuilderPage() {
   const { user, loading } = useAuth();
@@ -178,14 +179,15 @@ export default function WebsiteBuilderPage() {
           <div className="mb-8 text-center">
             <Link
               href="/dashboard/websites"
-              className="text-purple-400 hover:text-purple-300 font-geist text-sm uppercase tracking-widest mb-4 inline-block"
+              className="text-purple-400 hover:text-purple-300 text-sm uppercase tracking-widest mb-4 inline-flex items-center gap-2 transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}
             >
-              ← Back to Websites
+              <ArrowLeft size={16} />
+              Back to Websites
             </Link>
-            <h1 className="text-4xl md:text-6xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+            <h1 className="text-4xl md:text-6xl uppercase mb-4 text-white tracking-tighter font-bold" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.02em' }}>
               Build Your <span className="text-gradient">Landing Page</span>
             </h1>
-            <p className="text-neutral-400 font-geist">
+            <p className="text-neutral-400" style={{ fontFamily: 'Inter, sans-serif' }}>
               Describe what you want, and AI will create a complete landing page for you
             </p>
           </div>
@@ -214,7 +216,7 @@ export default function WebsiteBuilderPage() {
             <button
               onClick={handleGenerate}
               disabled={generating || !prompt.trim()}
-              className="w-full mt-6 bg-white text-black px-8 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full mt-6 bg-white text-black px-8 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" style={{ fontFamily: 'Inter, sans-serif' }}
             >
               {generating ? (
                 <>
@@ -225,7 +227,10 @@ export default function WebsiteBuilderPage() {
                   Generating your landing page...
                 </>
               ) : (
-                '✨ Generate Landing Page'
+                <>
+                  <Sparkles size={18} />
+                  Generate Landing Page
+                </>
               )}
             </button>
           </div>

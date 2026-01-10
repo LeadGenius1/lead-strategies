@@ -62,6 +62,11 @@ export default function DashboardPage() {
             <Link href="/dashboard/campaigns" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               Campaigns
             </Link>
+            {user.tier >= 3 && (
+              <Link href="/dashboard/inbox" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+                Inbox
+              </Link>
+            )}
             <Link href="/dashboard/settings" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               Settings
             </Link>
@@ -208,6 +213,20 @@ export default function DashboardPage() {
                   <div>
                     <h3 className="text-lg font-space-grotesk text-white group-hover:text-purple-400 transition-colors">Build Website</h3>
                     <p className="text-sm text-neutral-400 font-geist">AI site generator</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link href="/dashboard/inbox" className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all group">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-space-grotesk text-white group-hover:text-purple-400 transition-colors">Unified Inbox</h3>
+                    <p className="text-sm text-neutral-400 font-geist">All conversations in one place</p>
                   </div>
                 </div>
               </Link>

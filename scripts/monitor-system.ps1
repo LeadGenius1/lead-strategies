@@ -95,22 +95,23 @@ if ($healthResult.Data) {
     }
 }
 
-# 2. Backend Services Check
+# 2. Backend Services Check (via /api/v1/health which includes Redis)
 Write-Host "`n[2/8] Testing Backend Services..." -ForegroundColor Yellow
-$servicesResult = Test-Endpoint -Name "Backend Services" -Url "$BackendUrl/api/v1/health/services"
+$detailedHealthResult = Test-Endpoint -Name "Backend Detailed Health" -Url "$BackendUrl/api/v1/health"
 $results += [PSCustomObject]@{
     Test = "Backend Services"
-    Status = $servicesResult.Status
-    Message = $servicesResult.Message
-    URL = "$BackendUrl/api/v1/health/services"
+    Status = $detailedHealthResult.Status
+    Message = $detailedHealthResult.Message
+    URL = "$BackendUrl/api/v1/health"
 }
-Write-Host "  $($servicesResult.Status) - $($servicesResult.Message)" -ForegroundColor $(if ($servicesResult.Status -eq "✅ PASS") { "Green" } else { "Red" })
+Write-Host "  $($detailedHealthResult.Status) - $($detailedHealthResult.Message)" -ForegroundColor $(if ($detailedHealthResult.Status -eq "✅ PASS") { "Green" } else { "Red" })
 
-if ($servicesResult.Data) {
-    $servicesResult.Data.PSObject.Properties | ForEach-Object {
-        $serviceStatus = $_.Value.status
-        $color = if ($serviceStatus -eq "healthy") { "Green" } else { "Red" }
-        Write-Host "    $($_.Name): $serviceStatus" -ForegroundColor $color
+if ($detailedHealthResult.Data -and $detailedHealthResult.Data.redis) {
+    $redisStatus = $detailedHealthResult.Data.redis.status
+    $color = if ($redisStatus -eq "healthy") { "Green" } elseif ($redisStatus -eq "unavailable") { "Yellow" } else { "Red" }
+    Write-Host "    Redis: $redisStatus" -ForegroundColor $color
+    if ($detailedHealthResult.Data.redis.latency) {
+        Write-Host "      Latency: $($detailedHealthResult.Data.redis.latency)" -ForegroundColor Gray
     }
 }
 

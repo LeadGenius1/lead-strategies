@@ -188,7 +188,7 @@ export default function BillingPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div>
                 <h2 className="text-2xl font-space-grotesk text-white mb-2">
-                  {user.tier.replace('-', ' ').toUpperCase()}
+                  {(user.tier || 'Free').replace('-', ' ').toUpperCase()}
                 </h2>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -215,7 +215,7 @@ export default function BillingPage() {
                 <div
                   key={tier.id}
                   className={`bg-[#050505] border p-6 transition-all ${
-                    user.tier === tier.id
+                    (user.tier || 'free') === tier.id
                       ? 'border-purple-500/50 bg-purple-500/5'
                       : 'border-subtle hover:border-purple-500/30'
                   } ${tier.enterprise ? 'bg-gradient-to-br from-purple-950/20 to-[#050505]' : ''}`}
@@ -242,7 +242,7 @@ export default function BillingPage() {
                     ))}
                   </ul>
 
-                  {user.tier === tier.id ? (
+                  {(user.tier || 'free') === tier.id ? (
                     <div className="w-full bg-purple-500/20 border border-purple-500/30 text-purple-300 px-6 py-3 text-xs font-bold tracking-widest uppercase text-center font-geist">
                       Current Plan
                     </div>

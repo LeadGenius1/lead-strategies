@@ -31,19 +31,18 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const data = await response.json();
+    const backendData = await response.json();
 
     if (!response.ok) {
       return NextResponse.json(
-        { success: false, error: data.message || data.error || 'Failed to fetch user' },
+        { success: false, error: backendData.message || backendData.error || 'Failed to fetch user' },
         { status: response.status }
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      data,
-    });
+    // Backend returns { success: true, data: { user, tierLimits, tierFeatures } }
+    // Pass through directly without double-wrapping
+    return NextResponse.json(backendData);
   } catch (error) {
     console.error('Get user error:', error);
     return NextResponse.json(

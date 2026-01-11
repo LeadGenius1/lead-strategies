@@ -53,7 +53,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.data) {
-          setUser(normalizeUser(result.data));
+          // Backend returns { success, data: { user, tierLimits, tierFeatures } }
+          const userData = result.data.user || result.data;
+          setUser(normalizeUser(userData));
         }
       }
     } catch (error) {

@@ -19,6 +19,12 @@ const cannedResponseRoutes = require('./routes/cannedResponses');
 const autoResponseRoutes = require('./routes/autoResponses');
 const conversationNoteRoutes = require('./routes/conversationNotes');
 
+// Tackle.IO Routes (Tier 5 - Enterprise CRM)
+const tackleRoutes = require('./routes/tackle');
+
+// Admin Routes (Internal only)
+const adminRoutes = require('./routes/adminRoutes');
+
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
 const { initializeRedis, getRedisStore, checkRedisHealth } = require('./config/redis');
@@ -125,6 +131,12 @@ app.use('/api/v1/conversations', conversationRoutes);
 app.use('/api/v1/canned-responses', cannedResponseRoutes);
 app.use('/api/v1/auto-responses', autoResponseRoutes);
 app.use('/api/v1/conversation-notes', conversationNoteRoutes);
+
+// Tackle.IO Routes (Tier 5 Enterprise CRM)
+app.use('/api/v1/tackle', tackleRoutes);
+
+// Admin Routes (Internal AI Lead Strategies staff only)
+app.use('/admin', adminRoutes);
 
 // Also support /api/ routes for backward compatibility
 app.use('/api/auth', authRoutes);

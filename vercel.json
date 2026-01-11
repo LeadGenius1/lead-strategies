@@ -6,7 +6,7 @@
   "outputDirectory": ".next",
   "regions": ["iad1"],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://aileadstrategies.com"
+    "NEXT_PUBLIC_API_URL": "https://backend-production-2987.up.railway.app"
   },
   "headers": [
     {

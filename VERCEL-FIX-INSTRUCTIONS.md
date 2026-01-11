@@ -16,8 +16,8 @@ Add these variables:
 
 | Variable | Value |
 |----------|-------|
-| `NEXT_PUBLIC_API_URL` | `https://leadstrategies-backend-production.up.railway.app` |
-| `RAILWAY_API_URL` | `https://leadstrategies-backend-production.up.railway.app` |
+| `NEXT_PUBLIC_API_URL` | `https://backend-production-2987.up.railway.app` |
+| `RAILWAY_API_URL` | `https://backend-production-2987.up.railway.app` |
 | `NODE_ENV` | `production` |
 
 ---

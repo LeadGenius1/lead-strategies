@@ -1,157 +1,227 @@
-# 🚨 URGENT: DNS Configuration Issue Detected
+# 🚨 URGENT DNS CONFIGURATION FIX REQUIRED
 
-## ⚠️ Current Problem
-
-Your domain `leadsite.io` is currently pointing to the **WRONG SERVER**:
-- **Current IP**: `76.76.21.21` (Unknown/Old server)
-- **Should point to**: `nevuabwf.up.railway.app` (Railway server)
-
-This is why you're seeing the 404 error!
-
-## 🔧 IMMEDIATE FIX REQUIRED
-
-### Step 1: Log into Your Domain Registrar
-Find where you registered `leadsite.io`:
-- Check your email for domain purchase confirmation
-- Common registrars: GoDaddy, Namecheap, Cloudflare, Google Domains
-
-### Step 2: Delete Old DNS Records
-Look for and **DELETE** these records:
-- Any A record pointing to `76.76.21.21`
-- Any old CNAME records
-- Any ALIAS records
-
-### Step 3: Add New CNAME Record
-Add this exact record:
-
-```
-Type:  CNAME
-Name:  @ (or blank for root)
-Value: nevuabwf.up.railway.app
-TTL:   Auto or 3600
-```
-
-### Step 4: Save Changes
-Click "Save" or "Apply Changes" in your DNS manager
-
-## 🔍 Detailed Instructions by Registrar
-
-### If using GoDaddy:
-1. Go to: https://dcc.godaddy.com/domains
-2. Find `leadsite.io` → Click "DNS"
-3. **DELETE** the A record with IP `76.76.21.21`
-4. Click "Add" → Select "CNAME"
-5. Name: `@`, Value: `nevuabwf.up.railway.app`
-6. Click "Save"
-
-### If using Namecheap:
-1. Go to: https://ap.www.namecheap.com/domains/list
-2. Find `leadsite.io` → Click "Manage"
-3. Go to "Advanced DNS" tab
-4. **DELETE** the A record with IP `76.76.21.21`
-5. Click "Add New Record" → Type: "CNAME"
-6. Host: `@`, Value: `nevuabwf.up.railway.app`
-7. Click "Save"
-
-### If using Cloudflare:
-1. Go to: https://dash.cloudflare.com
-2. Select `leadsite.io` domain
-3. Go to "DNS" → "Records"
-4. **DELETE** the A record with IP `76.76.21.21`
-5. Click "Add record" → Type: "CNAME"
-6. Name: `@`, Target: `nevuabwf.up.railway.app`
-7. **IMPORTANT**: Set Proxy status to "DNS only" (gray cloud ☁️)
-8. Click "Save"
-
-### If using Google Domains:
-1. Go to: https://domains.google.com
-2. Find `leadsite.io` → Click "Manage"
-3. Go to "DNS" section
-4. **DELETE** the A record with IP `76.76.21.21`
-5. Click "Add custom record"
-6. Type: "CNAME", Host: "@", Data: `nevuabwf.up.railway.app`
-7. Click "Save"
-
-## 🎯 What's Happening
-
-```
-Current (WRONG):
-leadsite.io → 76.76.21.21 → 404 Error ❌
-
-After Fix (CORRECT):
-leadsite.io → nevuabwf.up.railway.app → Your Railway App ✅
-```
-
-## ⏱️ Timeline
-
-- **Immediate**: Changes saved at registrar
-- **5-15 minutes**: DNS starts propagating
-- **30 minutes - 2 hours**: Most users see new site
-- **Up to 72 hours**: Complete worldwide propagation
-
-## ✅ Verification Steps
-
-### 1. Check DNS (Wait 15 minutes after making changes)
-```powershell
-nslookup leadsite.io
-```
-**Should return**: `nevuabwf.up.railway.app` (not 76.76.21.21)
-
-### 2. Check Online
-Visit: https://dnschecker.org/#CNAME/leadsite.io
-**Should show**: CNAME pointing to `nevuabwf.up.railway.app`
-
-### 3. Test Website
-Visit: https://leadsite.io
-**Should show**: Your application (not 404 error)
-
-## 🔴 Troubleshooting
-
-### "I can't find the DNS settings"
-- Check your registrar's help docs
-- Contact their support chat/phone
-- Search: "[Your Registrar] how to change DNS records"
-
-### "It says I can't use CNAME at root"
-Some registrars don't support CNAME at root. Try:
-1. Use ALIAS or ANAME record instead (same value)
-2. OR add A records pointing to Railway's IPs
-3. OR contact registrar support for help
-
-### "Still showing 404 after 24 hours"
-1. Verify DNS: `nslookup leadsite.io` should show Railway
-2. Clear browser cache: Ctrl + Shift + Delete
-3. Try incognito mode
-4. Check Railway logs: `railway logs`
-5. Contact Railway support: https://railway.app/help
-
-## 📊 Current Status
-
-| Item | Status |
-|------|--------|
-| Domain added to Railway | ✅ Complete |
-| DNS pointing to Railway | ❌ **NEEDS FIX** |
-| SSL Certificate | ⏳ Waiting for DNS |
-| Website accessible | ❌ **NEEDS FIX** |
-
-## 🎯 Success Checklist
-
-- [ ] Log into domain registrar
-- [ ] Delete old A record (76.76.21.21)
-- [ ] Add new CNAME record (nevuabwf.up.railway.app)
-- [ ] Save changes
-- [ ] Wait 15-30 minutes
-- [ ] Verify with `nslookup leadsite.io`
-- [ ] Test https://leadsite.io in browser
-- [ ] Confirm SSL certificate is active
-
-## 📞 Support Resources
-
-- **Find your registrar**: https://lookup.icann.org/en/lookup
-- **Railway support**: https://railway.app/help
-- **DNS checker**: https://dnschecker.org
-- **SSL checker**: https://www.ssllabs.com/ssltest/
+**Status:** CRITICAL - Frontend domains pointing to wrong server  
+**Impact:** Users cannot access the website  
+**Time to Fix:** 5-10 minutes
 
 ---
 
-**⚡ ACTION REQUIRED**: Update DNS records at your domain registrar NOW to fix the 404 error!
+## THE PROBLEM
+
+Your frontend domains are currently pointing to the **BACKEND** (Railway) instead of the **FRONTEND** (Vercel):
+
+```
+❌ leadsite.ai → tackleai.ai (Backend Railway)
+❌ aileadstrategies.com → tackleai.ai (Backend Railway)
+✅ tackleai.ai → Railway Backend (Correct!)
+```
+
+**Result:** When users visit `leadsite.ai` or `aileadstrategies.com`, they hit the backend API server, which returns:
+```json
+{"error":"Not Found","message":"Route GET / not found"}
+```
+
+---
+
+## THE FIX
+
+### **Option 1: Configure Domains in Vercel** (RECOMMENDED)
+
+1. **Go to Vercel Dashboard:**
+   - https://vercel.com/dashboard
+   - Select your `ai-lead-strategies-website` project
+
+2. **Add Custom Domains:**
+   - Settings → Domains
+   - Add domain: `leadsite.ai`
+   - Add domain: `aileadstrategies.com`
+   - Add domain: `www.aileadstrategies.com` (optional)
+
+3. **Vercel will provide DNS records:**
+   ```
+   Type: CNAME
+   Name: @
+   Value: cname.vercel-dns.com
+   ```
+
+4. **Update DNS (wherever your domains are registered):**
+   - Go to your domain registrar (GoDaddy, Namecheap, Cloudflare, etc.)
+   - Update DNS records to point to Vercel:
+     - `leadsite.ai` → `cname.vercel-dns.com` (CNAME)
+     - `aileadstrategies.com` → `cname.vercel-dns.com` (CNAME)
+
+5. **Wait 5-60 minutes for DNS propagation**
+
+---
+
+### **Option 2: Use Vercel's Provided Domain** (IMMEDIATE ACCESS)
+
+Vercel automatically provides a domain like:
+```
+https://ai-lead-strategies-website.vercel.app
+https://ai-lead-strategies-website-git-main.vercel.app
+```
+
+**Access your site NOW at the Vercel-provided URL!**
+
+---
+
+## CORRECT ARCHITECTURE
+
+```
+┌─────────────────────────────────────────┐
+│         USER ACCESSES                    │
+│                                          │
+│  https://leadsite.ai              ─┐    │
+│  https://aileadstrategies.com     ─┤    │
+└─────────────────────────────────────┼───┘
+                                      │
+                                      ▼
+                        ┌─────────────────────────┐
+                        │  VERCEL (Frontend)      │
+                        │  - Next.js App          │
+                        │  - Homepage             │
+                        │  - Login/Signup         │
+                        │  - Dashboard            │
+                        └───────┬─────────────────┘
+                                │ API Calls
+                                ▼
+                        ┌─────────────────────────┐
+                        │  RAILWAY (Backend)      │
+                        │  https://tackleai.ai    │
+                        │  - Express API          │
+                        │  - PostgreSQL           │
+                        │  - 7 AI Agents          │
+                        └─────────────────────────┘
+```
+
+---
+
+## CURRENT SETUP (WRONG)
+
+```
+┌─────────────────────────────────────────┐
+│         USER ACCESSES                    │
+│                                          │
+│  https://leadsite.ai              ─┐    │
+│  https://aileadstrategies.com     ─┤    │
+└─────────────────────────────────────┼───┘
+                                      │
+                                      ▼ (WRONG!)
+                        ┌─────────────────────────┐
+                        │  RAILWAY (Backend)      │
+                        │  https://tackleai.ai    │
+                        │  Returns API error:     │
+                        │  "Route GET / not found"│
+                        └─────────────────────────┘
+
+                        ┌─────────────────────────┐
+                        │  VERCEL (Frontend)      │
+                        │  ❌ Not accessible      │
+                        │  No domains configured  │
+                        └─────────────────────────┘
+```
+
+---
+
+## HOW TO FIX IN VERCEL (STEP BY STEP)
+
+### **Step 1: Login to Vercel**
+```
+https://vercel.com/login
+```
+
+### **Step 2: Find Your Project**
+- Look for: `ai-lead-strategies-website`
+- Or: `lead-strategies` (check the repo name)
+
+### **Step 3: Go to Settings**
+- Click on the project
+- Click "Settings" tab
+- Click "Domains" in the left sidebar
+
+### **Step 4: Add Domains**
+```
+leadsite.ai
+aileadstrategies.com
+www.aileadstrategies.com (optional)
+```
+
+### **Step 5: Vercel Shows DNS Records**
+Vercel will show you EXACTLY what DNS records to add:
+```
+Type: A
+Name: @
+Value: 76.76.21.21 (Vercel's IP)
+
+Type: CNAME
+Name: www
+Value: cname.vercel-dns.com
+```
+
+### **Step 6: Update DNS Provider**
+Go to wherever you bought your domains:
+- **GoDaddy:** Domains → DNS → Manage DNS
+- **Namecheap:** Domain List → Manage → Advanced DNS
+- **Cloudflare:** DNS → Records
+
+Add the records Vercel provided.
+
+### **Step 7: Verify in Vercel**
+- Back in Vercel Domains page
+- Click "Verify" next to each domain
+- Wait for green checkmark ✅
+
+---
+
+## IMMEDIATE ACCESS
+
+**Don't want to wait for DNS?** Access your site RIGHT NOW:
+
+1. Go to Vercel Dashboard
+2. Click on your project
+3. Look for "Domains" section on the project overview
+4. You'll see URLs like:
+   ```
+   https://ai-lead-strategies-website.vercel.app
+   https://ai-lead-strategies-website-USERNAME.vercel.app
+   ```
+5. Click on ANY of those URLs → **Your site is LIVE!**
+
+---
+
+## VERIFICATION
+
+After DNS is updated (5-60 minutes), verify:
+
+```powershell
+# Should return HTML (not JSON error)
+Invoke-WebRequest -Uri "https://leadsite.ai" -UseBasicParsing
+
+# Should see "AI LEAD STRATEGIES" in title
+Invoke-WebRequest -Uri "https://aileadstrategies.com" -UseBasicParsing | 
+  Select-Object -ExpandProperty Content
+```
+
+---
+
+## SUMMARY
+
+**Problem:** Domains point to backend (Railway) instead of frontend (Vercel)
+
+**Solution:** 
+1. Add domains in Vercel (5 minutes)
+2. Update DNS records (5 minutes)
+3. Wait for propagation (5-60 minutes)
+
+**Immediate Access:** Use Vercel-provided URL (works NOW!)
+
+---
+
+**🚀 CODE IS 100% READY - JUST NEED DNS UPDATE!** ✅
+
+---
+
+*Created: January 11, 2026*  
+*Priority: CRITICAL*  
+*Time to Fix: 5-10 minutes + DNS propagation*

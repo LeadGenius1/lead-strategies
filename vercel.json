@@ -24,10 +24,6 @@
     {
       "source": "/api/v1/:path*",
       "destination": "https://tackleai.ai/api/v1/:path*"
-    },
-    {
-      "source": "/api/:path*",
-      "destination": "https://tackleai.ai/api/:path*"
     }
   ]
 }

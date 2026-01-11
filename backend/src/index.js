@@ -15,6 +15,9 @@ const stripeRoutes = require('./routes/stripe');
 const webhookRoutes = require('./routes/webhooks');
 const websiteRoutes = require('./routes/websites');
 const conversationRoutes = require('./routes/conversations');
+const cannedResponseRoutes = require('./routes/cannedResponses');
+const autoResponseRoutes = require('./routes/autoResponses');
+const conversationNoteRoutes = require('./routes/conversationNotes');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
@@ -119,6 +122,9 @@ app.use('/api/v1/stripe', stripeRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
 app.use('/api/v1/websites', websiteRoutes);
 app.use('/api/v1/conversations', conversationRoutes);
+app.use('/api/v1/canned-responses', cannedResponseRoutes);
+app.use('/api/v1/auto-responses', autoResponseRoutes);
+app.use('/api/v1/conversation-notes', conversationNoteRoutes);
 
 // Also support /api/ routes for backward compatibility
 app.use('/api/auth', authRoutes);
@@ -130,6 +136,9 @@ app.use('/api/stripe', stripeRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/websites', websiteRoutes);
 app.use('/api/conversations', conversationRoutes);
+app.use('/api/canned-responses', cannedResponseRoutes);
+app.use('/api/auto-responses', autoResponseRoutes);
+app.use('/api/conversation-notes', conversationNoteRoutes);
 
 // 404 handler
 app.use((req, res) => {

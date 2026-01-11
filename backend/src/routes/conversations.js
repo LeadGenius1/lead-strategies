@@ -107,6 +107,18 @@ router.get('/:id', async (req, res) => {
         messages: {
           orderBy: { createdAt: 'asc' },
         },
+        notes: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
 

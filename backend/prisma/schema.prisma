@@ -39,14 +39,17 @@ model User {
   lastLoginAt DateTime? @map("last_login_at")
 
   // Relations
-  leads          Lead[]
-  campaigns      Campaign[]
-  emailTemplates EmailTemplate[]
-  websites       Website[]
-  videos         Video[]
-  apiKeys        ApiKey[]
-  conversations  Conversation[]
-  messages       Message[]
+  leads             Lead[]
+  campaigns         Campaign[]
+  emailTemplates    EmailTemplate[]
+  websites          Website[]
+  videos            Video[]
+  apiKeys           ApiKey[]
+  conversations     Conversation[]
+  messages          Message[]
+  cannedResponses   CannedResponse[]
+  autoResponses     AutoResponse[]
+  conversationNotes ConversationNote[]
 
   @@map("users")
 }
@@ -322,8 +325,9 @@ model Conversation {
   closedAt      DateTime? @map("closed_at")
 
   // Relations
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages Message[]
+  notes    ConversationNote[]
 
   @@index([userId, status])
   @@index([userId, channel])
@@ -369,4 +373,349 @@ model Message {
   @@index([conversationId, createdAt])
   @@index([userId, createdAt])
   @@map("messages")
+}
+
+// ==================== CLIENTCONTACT.IO FEATURES ====================
+
+// Canned Responses / Templates
+model CannedResponse {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Template Info
+  name        String
+  content     String // Text content
+  htmlContent String? @map("html_content") // HTML content if available
+  subject     String? // Subject line (for email templates)
+
+  // Category/Tags
+  category String? // e.g., "greeting", "follow-up", "closing", "support"
+  tags     String[] @default([])
+
+  // Channel Support
+  channels String[] @default([]) // email, sms, whatsapp, etc. - empty means all channels
+
+  // Variables/Placeholders
+  variables String[] @default([]) // ["{{firstName}}", "{{company}}", etc.]
+
+  // Usage Stats
+  useCount Int @default(0) @map("use_count")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AutoResponse AutoResponse[]
+
+  @@index([userId, category])
+  @@index([userId, createdAt])
+  @@map("canned_responses")
+}
+
+// Auto-Response Rules
+model AutoResponse {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Rule Info
+  name        String
+  description String?
+  enabled     Boolean @default(true)
+
+  // Conditions (when to trigger)
+  triggerType String // "keyword", "channel", "time", "tag", "all"
+  conditions  Json // Flexible conditions object
+
+  // Response
+  cannedResponseId String? @map("canned_response_id") // Use existing canned response
+  responseContent  String? @map("response_content") // Or custom response content
+  responseSubject  String? @map("response_subject") // Subject for email
+
+  // Channel Filter
+  channels String[] @default([]) // Apply to specific channels only
+
+  // Priority/Order
+  priority Int @default(0) // Higher priority runs first
+
+  // Delay (seconds before sending)
+  delaySeconds Int @default(0) @map("delay_seconds")
+
+  // Limits
+  maxPerDay     Int? @map("max_per_day") // Max responses per day
+  maxPerContact Int? @map("max_per_contact") // Max responses per contact
+
+  // Stats
+  triggerCount    Int       @default(0) @map("trigger_count")
+  lastTriggeredAt DateTime? @map("last_triggered_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cannedResponse CannedResponse? @relation(fields: [cannedResponseId], references: [id], onDelete: SetNull)
+
+  @@index([userId, enabled])
+  @@index([userId, priority])
+  @@map("auto_responses")
+}
+
+// Internal Notes (for conversations)
+model ConversationNote {
+  id             String @id @default(uuid())
+  conversationId String @map("conversation_id")
+  userId         String @map("user_id")
+
+  // Note Content
+  content String
+
+  // Visibility
+  isInternal Boolean @default(true) @map("is_internal") // Always true for notes
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([userId, createdAt])
+  @@map("conversation_notes")
+}
+
+// ==================== SELF-HEALING SYSTEM ====================
+
+// System Health Metrics - Stores all monitored metrics
+model SystemHealthMetric {
+  id          String   @id @default(uuid())
+  metricName  String   @map("metric_name")
+  metricValue Decimal  @map("metric_value") @db.Decimal(15, 4)
+  metricUnit  String?  @map("metric_unit")
+  component   String // api, database, redis, frontend, system
+  severity    String   @default("normal") // normal, warning, critical
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([metricName, createdAt])
+  @@index([severity])
+  @@index([component, createdAt])
+  @@map("system_health_metrics")
+}
+
+// Diagnostic Reports - AI-powered analysis results
+model DiagnosticReport {
+  id              String   @id @default(uuid())
+  alertId         String?  @map("alert_id")
+  issueType       String   @map("issue_type")
+  rootCause       String?  @map("root_cause")
+  evidence        Json? // logs, metrics, traces
+  aiAnalysis      String?  @map("ai_analysis")
+  aiModel         String?  @map("ai_model")
+  confidenceScore Decimal? @map("confidence_score") @db.Decimal(3, 2)
+  suggestedFix    String?  @map("suggested_fix")
+  severity        String?
+  affectedUsers   Int?     @default(0) @map("affected_users")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  repairs RepairHistory[]
+
+  @@index([issueType])
+  @@index([severity])
+  @@index([createdAt])
+  @@map("diagnostic_reports")
+}
+
+// Repair History - Track all automated fixes
+model RepairHistory {
+  id                 String   @id @default(uuid())
+  diagnosticId       String?  @map("diagnostic_id")
+  repairType         String   @map("repair_type")
+  fixApplied         String?  @map("fix_applied")
+  fixCode            String?  @map("fix_code")
+  success            Boolean
+  timeToFixSeconds   Int?     @map("time_to_fix_seconds")
+  verificationResult Json?    @map("verification_result")
+  rollbackPlan       String?  @map("rollback_plan")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  // Relations
+  diagnostic DiagnosticReport? @relation(fields: [diagnosticId], references: [id])
+
+  @@index([success])
+  @@index([repairType])
+  @@index([createdAt])
+  @@map("repair_history")
+}
+
+// Learning Patterns - Patterns learned from successful repairs
+model LearningPattern {
+  id                String    @id @default(uuid())
+  patternHash       String    @unique @map("pattern_hash")
+  symptoms          Json // symptoms that identify this pattern
+  rootCause         String?   @map("root_cause")
+  solution          String?
+  successCount      Int       @default(0) @map("success_count")
+  failureCount      Int       @default(0) @map("failure_count")
+  avgFixTimeSeconds Int?      @map("avg_fix_time_seconds")
+  autoFixEnabled    Boolean   @default(false) @map("auto_fix_enabled")
+  lastAppliedAt     DateTime? @map("last_applied_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@index([patternHash])
+  @@index([autoFixEnabled])
+  @@map("learning_patterns")
+}
+
+// Predictions - Forecasted issues
+model Prediction {
+  id              String    @id @default(uuid())
+  predictionType  String    @map("prediction_type") // disk_full, traffic_spike, cost_overrun
+  predictedIssue  String?   @map("predicted_issue")
+  predictedTime   DateTime? @map("predicted_time")
+  confidence      Decimal?  @db.Decimal(3, 2)
+  dataPoints      Json?     @map("data_points")
+  proactiveAction String?   @map("proactive_action")
+  actionTaken     Boolean   @default(false) @map("action_taken")
+  outcome         String? // prevented, occurred, false_positive
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@index([predictionType])
+  @@index([predictedTime])
+  @@map("predictions")
+}
+
+// Security Incidents - Tracked threats and mitigations
+model SecurityIncident {
+  id               String   @id @default(uuid())
+  threatType       String   @map("threat_type")
+  severity         String?
+  sourceIp         String?  @map("source_ip")
+  targetEndpoint   String?  @map("target_endpoint")
+  payload          String?
+  userId           String?  @map("user_id")
+  mitigationAction String?  @map("mitigation_action")
+  blocked          Boolean  @default(false)
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([threatType])
+  @@index([sourceIp])
+  @@index([severity])
+  @@index([createdAt])
+  @@map("security_incidents")
+}
+
+// Performance Metrics - Query and cache optimization tracking
+model PerformanceMetric {
+  id                  String   @id @default(uuid())
+  metricType          String   @map("metric_type") // query_time, cache_hit, api_latency
+  endpoint            String?
+  queryHash           String?  @map("query_hash")
+  valueMs             Decimal? @map("value_ms") @db.Decimal(10, 2)
+  percentile95        Decimal? @map("percentile_95") @db.Decimal(10, 2)
+  percentile99        Decimal? @map("percentile_99") @db.Decimal(10, 2)
+  sampleCount         Int?     @map("sample_count")
+  optimizationApplied String?  @map("optimization_applied")
+  improvementPercent  Decimal? @map("improvement_percent") @db.Decimal(5, 2)
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  @@index([metricType])
+  @@index([endpoint])
+  @@map("performance_metrics")
+}
+
+// System Alerts - Active and historical alerts
+model SystemAlert {
+  id             String    @id @default(uuid())
+  alertType      String    @map("alert_type")
+  component      String?
+  message        String?
+  severity       String?
+  thresholdValue Decimal?  @map("threshold_value") @db.Decimal(15, 4)
+  actualValue    Decimal?  @map("actual_value") @db.Decimal(15, 4)
+  acknowledged   Boolean   @default(false)
+  acknowledgedBy String?   @map("acknowledged_by")
+  resolved       Boolean   @default(false)
+  resolvedAt     DateTime? @map("resolved_at")
+  autoResolved   Boolean   @default(false) @map("auto_resolved")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@index([resolved])
+  @@index([severity])
+  @@index([alertType])
+  @@index([createdAt])
+  @@map("system_alerts")
+}
+
+// ==================== ADMIN SYSTEM ====================
+
+// Admin Users - AI Lead Strategies LLC internal staff only
+model AdminUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         String   @default("admin") // super_admin, admin, viewer
+  permissions  String[] @default([]) // granular permissions
+
+  // Security
+  mfaEnabled   Boolean   @default(false) @map("mfa_enabled")
+  mfaSecret    String?   @map("mfa_secret")
+  lastLoginAt  DateTime? @map("last_login_at")
+  lastLoginIp  String?   @map("last_login_ip")
+  failedLogins Int       @default(0) @map("failed_logins")
+  lockedUntil  DateTime? @map("locked_until")
+
+  // Audit
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  auditLogs AdminAuditLog[]
+
+  @@map("admin_users")
+}
+
+// Admin Audit Log - Track all admin actions
+model AdminAuditLog {
+  id          String   @id @default(uuid())
+  adminUserId String   @map("admin_user_id")
+  action      String // login, view_dashboard, restart_agent, acknowledge_alert, etc.
+  resource    String? // What was accessed/modified
+  resourceId  String?  @map("resource_id")
+  details     Json? // Additional context
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id])
+
+  @@index([adminUserId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("admin_audit_logs")
+}
+
+// Admin Sessions - Separate from user sessions
+model AdminSession {
+  id           String   @id @default(uuid())
+  adminUserId  String   @map("admin_user_id")
+  token        String   @unique
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  expiresAt    DateTime @map("expires_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  lastActiveAt DateTime @default(now()) @map("last_active_at")
+
+  @@index([token])
+  @@index([adminUserId])
+  @@index([expiresAt])
+  @@map("admin_sessions")
 }

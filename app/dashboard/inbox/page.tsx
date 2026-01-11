@@ -148,20 +148,14 @@ export default function InboxPage() {
             <Link href="/dashboard" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               Dashboard
             </Link>
-            <Link href="/dashboard/leads" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Leads
-            </Link>
-            <Link href="/dashboard/campaigns" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Campaigns
-            </Link>
-            <Link href="/dashboard/websites" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Websites
-            </Link>
             <Link href="/dashboard/inbox" className="bg-white/5 px-4 py-2 text-xs tracking-widest uppercase text-white font-geist">
               Inbox
             </Link>
-            <Link href="/dashboard/settings" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Settings
+            <Link href="/dashboard/inbox/templates" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              Templates
+            </Link>
+            <Link href="/dashboard/inbox/automation" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              Automation
             </Link>
           </div>
 

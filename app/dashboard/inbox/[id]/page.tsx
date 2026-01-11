@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import ChannelIcon from '@/components/icons/ChannelIcon';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, StickyNote, X, Trash2 } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -17,6 +17,19 @@ interface Message {
   isRead: boolean;
   createdAt: string;
   readAt?: string;
+}
+
+interface Note {
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 }
 
 interface Conversation {
@@ -31,6 +44,7 @@ interface Conversation {
   tags: string[];
   labels: string[];
   messages: Message[];
+  notes?: Note[];
   createdAt: string;
   updatedAt: string;
 }
@@ -46,6 +60,9 @@ export default function ConversationPage() {
   const [sending, setSending] = useState(false);
   const [messageContent, setMessageContent] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [showNotes, setShowNotes] = useState(false);
+  const [noteContent, setNoteContent] = useState('');
+  const [addingNote, setAddingNote] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -130,6 +147,64 @@ export default function ConversationPage() {
     }
   };
 
+  const handleAddNote = async () => {
+    if (!noteContent.trim()) {
+      setError('Note cannot be empty');
+      return;
+    }
+
+    setAddingNote(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/v1/conversation-notes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          conversationId,
+          content: noteContent.trim(),
+        }),
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setNoteContent('');
+        fetchConversation(); // Refresh to get updated notes
+      } else {
+        setError(result.error || 'Failed to add note');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setAddingNote(false);
+    }
+  };
+
+  const handleDeleteNote = async (noteId: string) => {
+    if (!confirm('Are you sure you want to delete this note?')) return;
+
+    try {
+      const response = await fetch(`/api/v1/conversation-notes/${noteId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        fetchConversation();
+      } else {
+        setError(result.error || 'Failed to delete note');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  };
+
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -189,7 +264,9 @@ export default function ConversationPage() {
 
       {/* Conversation Content */}
       <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 z-10">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="flex gap-6">
+            <div className={`flex-1 transition-all ${showNotes ? 'max-w-4xl' : 'max-w-4xl mx-auto'}`}>
           {/* Header */}
           <div className="mb-6">
             <Link
@@ -227,6 +304,13 @@ export default function ConversationPage() {
                 </div>
               </div>
               <div className="flex gap-2">
+                <button
+                  onClick={() => setShowNotes(!showNotes)}
+                  className="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-400 px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors font-geist flex items-center gap-2"
+                >
+                  <StickyNote size={14} />
+                  Notes ({conversation.notes?.length || 0})
+                </button>
                 {conversation.status === 'open' ? (
                   <button
                     onClick={() => handleUpdateStatus('closed')}
@@ -341,6 +425,87 @@ export default function ConversationPage() {
               </div>
             </div>
           )}
+            </div>
+
+            {/* Notes Sidebar */}
+            {showNotes && (
+              <div className="w-full md:w-96 bg-[#050505] border border-subtle p-6 h-fit sticky top-40">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-white font-space-grotesk flex items-center gap-2">
+                    <StickyNote size={20} className="text-purple-400" />
+                    Internal Notes
+                  </h3>
+                  <button
+                    onClick={() => setShowNotes(false)}
+                    className="text-neutral-500 hover:text-white transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Add Note Form */}
+                <div className="mb-6">
+                  <textarea
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)}
+                    placeholder="Add a private note..."
+                    className="w-full bg-[#030303] border border-subtle p-3 text-white outline-none focus:border-purple-500 transition-colors font-geist text-sm min-h-[100px] resize-none mb-3"
+                    disabled={addingNote}
+                  />
+                  <button
+                    onClick={handleAddNote}
+                    disabled={addingNote || !noteContent.trim()}
+                    className="w-full bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-400 px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors font-geist disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {addingNote ? 'Adding...' : 'Add Note'}
+                  </button>
+                </div>
+
+                {/* Notes List */}
+                <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                  {conversation.notes && conversation.notes.length > 0 ? (
+                    conversation.notes.map((note) => (
+                      <div
+                        key={note.id}
+                        className="bg-[#030303] border border-subtle p-4"
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="text-xs text-neutral-500 font-geist">
+                            {note.createdBy && (
+                              <span className="text-purple-400">
+                                {note.createdBy.firstName} {note.createdBy.lastName}
+                              </span>
+                            )}
+                            {' · '}
+                            {formatTime(note.createdAt)}
+                          </div>
+                          <button
+                            onClick={() => handleDeleteNote(note.id)}
+                            className="text-red-400 hover:text-red-300 transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                        <p className="text-sm text-neutral-300 font-geist whitespace-pre-wrap">
+                          {note.content}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-neutral-600 font-geist text-sm py-8">
+                      No notes yet. Add a note to keep track of important information.
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 p-3 bg-purple-500/10 border border-purple-500/30">
+                  <p className="text-xs text-purple-400 font-geist">
+                    <strong>Private:</strong> Notes are only visible to your team, not to customers.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

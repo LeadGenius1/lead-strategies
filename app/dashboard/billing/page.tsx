@@ -99,13 +99,13 @@ export default function BillingPage() {
       id: 'leadsite-ai',
       name: 'LeadSite.AI',
       price: 49,
-      features: ['500 Prospects/Month', '3 Email Campaigns', 'AI-Generated Content', '1 Website Analysis'],
+      features: ['1,000 Leads/Month', 'Email Campaigns', 'AI-Generated Content', 'Lead Scoring & Analytics'],
     },
     {
       id: 'leadsite-io',
       name: 'LeadSite.IO',
-      price: 29,
-      features: ['3 Websites', 'AI Site Generator', 'Lead Forms + Analytics', 'Mobile-Optimized'],
+      price: 49,
+      features: ['1,000 Leads/Month', '1 Free Website Built by AI', 'AI Site Generator', 'Lead Forms + Analytics'],
     },
     {
       id: 'clientcontact-io',
@@ -116,8 +116,8 @@ export default function BillingPage() {
     {
       id: 'tackle-io',
       name: 'Tackle.IO',
-      price: 499,
-      features: ['Voice Calling (Twilio)', 'Full CRM + Pipeline', '7 AI Agents', 'Unlimited Team'],
+      price: 249,
+      features: ['2,000 Leads/Month', 'Full CRM + Pipeline', '7 AI Agents', 'Unlimited Team'],
       enterprise: true,
     },
   ];

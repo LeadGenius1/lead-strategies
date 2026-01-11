@@ -132,7 +132,7 @@ export default function SignupPage() {
                     <p className="text-3xl font-space-grotesk font-light text-white mb-2">
                       $49<span className="text-sm text-neutral-500">/mo</span>
                     </p>
-                    <p className="text-sm text-neutral-400 font-geist">Email lead generation</p>
+                    <p className="text-sm text-neutral-400 font-geist">1,000 Leads/Month</p>
                   </button>
 
                   {/* LeadSite.IO */}
@@ -146,9 +146,9 @@ export default function SignupPage() {
                   >
                     <h3 className="text-xl font-space-grotesk text-white mb-2">LeadSite.IO</h3>
                     <p className="text-3xl font-space-grotesk font-light text-white mb-2">
-                      $29<span className="text-sm text-neutral-500">/mo</span>
+                      $49<span className="text-sm text-neutral-500">/mo</span>
                     </p>
-                    <p className="text-sm text-neutral-400 font-geist">AI website builder</p>
+                    <p className="text-sm text-neutral-400 font-geist">1,000 Leads + 1 Free Website</p>
                   </button>
 
                   {/* ClientContact.IO */}
@@ -183,9 +183,9 @@ export default function SignupPage() {
                       </span>
                     </div>
                     <p className="text-3xl font-space-grotesk font-light text-white mb-2">
-                      $499<span className="text-sm text-neutral-500">/mo</span>
+                      $249<span className="text-sm text-neutral-500">/mo</span>
                     </p>
-                    <p className="text-sm text-neutral-400 font-geist">Full CRM + Voice + AI</p>
+                    <p className="text-sm text-neutral-400 font-geist">2,000 Leads + Full CRM</p>
                   </button>
                 </div>
 
@@ -400,9 +400,9 @@ export default function SignupPage() {
                   </h3>
                   <p className="text-2xl font-space-grotesk text-white">
                     {tier === 'leadsite-ai' && 'LeadSite.AI - $49/mo'}
-                    {tier === 'leadsite-io' && 'LeadSite.IO - $29/mo'}
+                    {tier === 'leadsite-io' && 'LeadSite.IO - $49/mo'}
                     {tier === 'clientcontact-io' && 'ClientContact.IO - $149/mo'}
-                    {tier === 'tackle-io' && 'Tackle.IO - $499/mo'}
+                    {tier === 'tackle-io' && 'Tackle.IO - $249/mo'}
                   </p>
                   <p className="text-sm text-neutral-400 font-geist mt-2">
                     Trial ends in 14 days. Add payment anytime to continue.

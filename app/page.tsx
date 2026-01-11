@@ -241,19 +241,19 @@ export default function HomePage() {
               <ul className="space-y-3 font-geist text-sm text-neutral-300">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  1 Website Analysis
+                  1,000 Leads/Month
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  500 Prospects/Month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  3 Email Campaigns
+                  Email Campaigns
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
                   AI-Generated Content
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Lead Scoring & Analytics
                 </li>
               </ul>
             </Link>
@@ -263,7 +263,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $29<span className="text-sm text-neutral-500">/mo</span>
+                  $49<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -272,7 +272,11 @@ export default function HomePage() {
               <ul className="space-y-3 font-geist text-sm text-neutral-300">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  3 Websites
+                  1,000 Leads/Month
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  1 Free Website Built by AI
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
@@ -281,10 +285,6 @@ export default function HomePage() {
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
                   Lead Forms + Analytics
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Mobile-Optimized
                 </li>
               </ul>
             </Link>
@@ -328,7 +328,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">Tackle.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $499<span className="text-sm text-neutral-500">/mo</span>
+                  $249<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -337,7 +337,7 @@ export default function HomePage() {
               <ul className="space-y-3 font-geist text-sm text-neutral-300">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Voice Calling (Twilio)
+                  2,000 Leads/Month
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>

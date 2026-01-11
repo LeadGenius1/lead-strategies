@@ -26,21 +26,21 @@ export const STRIPE_PLANS = {
     price: 49,
     priceId: process.env.STRIPE_PRICE_LEADSITE_AI || '',
     features: [
-      '500 Prospects/Month',
-      '3 Email Campaigns',
+      '1,000 Leads/Month',
+      'Email Campaigns',
       'AI-Generated Content',
-      '1 Website Analysis',
+      'Lead Scoring & Analytics',
     ],
   },
   'leadsite-io': {
     name: 'LeadSite.IO',
-    price: 29,
+    price: 49,
     priceId: process.env.STRIPE_PRICE_LEADSITE_IO || '',
     features: [
-      '3 Websites',
+      '1,000 Leads/Month',
+      '1 Free Website Built by AI',
       'AI Site Generator',
       'Lead Forms + Analytics',
-      'Mobile-Optimized',
     ],
   },
   'clientcontact-io': {
@@ -56,10 +56,10 @@ export const STRIPE_PLANS = {
   },
   'tackle-io': {
     name: 'Tackle.IO',
-    price: 499,
+    price: 249,
     priceId: process.env.STRIPE_PRICE_TACKLE_IO || '',
     features: [
-      'Voice Calling (Twilio)',
+      '2,000 Leads/Month',
       'Full CRM + Pipeline',
       '7 AI Agents',
       'Unlimited Team',

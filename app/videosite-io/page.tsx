@@ -362,30 +362,33 @@ export default function VideoSiteIOPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* Starter */}
             <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Starter</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $49<span className="text-sm text-neutral-500">/mo</span>
+              <h3 className="text-2xl font-space-grotesk text-white mb-2">Content Creator</h3>
+              <div className="text-4xl font-space-grotesk font-light text-white mb-2">
+                $1.00<span className="text-sm text-neutral-500">/view</span>
+              </div>
+              <div className="text-lg font-space-grotesk font-light text-neutral-400 mb-6">
+                + $0.25<span className="text-sm text-neutral-500"> platform maintenance</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  10 videos/month
+                  $1.00 payout per video view
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  AI generator
+                  $0.25 platform maintenance fee
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  720p resolution
+                  Unlimited video uploads
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  10GB storage
+                  Video hosting & streaming
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Basic templates
+                  Analytics dashboard
                 </li>
               </ul>
               <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">

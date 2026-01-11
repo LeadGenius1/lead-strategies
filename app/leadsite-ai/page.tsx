@@ -281,24 +281,24 @@ export default function LeadSiteAIPage() {
             <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">Starter</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $79<span className="text-sm text-neutral-500">/mo</span>
+                $49<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  10,000 leads/month
+                  1,000 Leads/Month
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Basic scoring model
+                  Email Campaigns
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  2 team seats
+                  AI-Generated Content
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Email support
+                  Lead Scoring & Analytics
                 </li>
               </ul>
               <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">

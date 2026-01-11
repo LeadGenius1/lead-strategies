@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
-import { isAuthenticated, getCurrentUser } from '../../../lib/auth'
-import { analyticsAPI } from '../../../lib/api'
+import { useAuth } from '@/contexts/AuthContext'
+import { analyticsAPI } from '@/lib/api'
 
 export default function AnalyticsPage() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
+  const { user, loading: authLoading } = useAuth()
   const [salesData, setSalesData] = useState(null)
   const [pipelineData, setPipelineData] = useState(null)
   const [activityData, setActivityData] = useState(null)
@@ -23,14 +23,20 @@ export default function AnalyticsPage() {
       window.lucide.createIcons()
     }
 
-    if (!isAuthenticated()) {
-      router.push('/login')
+    if (authLoading) return
+
+    if (!user) {
+      router.push('/login?redirect=/dashboard/tackle/analytics')
       return
     }
 
-    setUser(getCurrentUser())
+    if (user.tier < 5) {
+      router.push('/dashboard')
+      return
+    }
+
     fetchAnalytics()
-  }, [router, dateRange])
+  }, [router, user, authLoading, dateRange])
 
   const fetchAnalytics = async () => {
     try {

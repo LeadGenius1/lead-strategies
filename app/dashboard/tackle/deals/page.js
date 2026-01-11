@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
-import { isAuthenticated, getCurrentUser } from '../../../lib/auth'
-import { dealsAPI, pipelinesAPI } from '../../../lib/api'
+import { useAuth } from '@/contexts/AuthContext'
+import { dealsAPI, pipelinesAPI } from '@/lib/api'
 
 export default function DealsPage() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
+  const { user, loading: authLoading } = useAuth()
   const [deals, setDeals] = useState([])
   const [pipelines, setPipelines] = useState([])
   const [selectedPipeline, setSelectedPipeline] = useState(null)
@@ -22,14 +22,20 @@ export default function DealsPage() {
       window.lucide.createIcons()
     }
 
-    if (!isAuthenticated()) {
-      router.push('/login')
+    if (authLoading) return
+
+    if (!user) {
+      router.push('/login?redirect=/dashboard/tackle/deals')
       return
     }
 
-    setUser(getCurrentUser())
+    if (user.tier < 5) {
+      router.push('/dashboard')
+      return
+    }
+
     fetchData()
-  }, [router])
+  }, [router, user, authLoading])
 
   const fetchData = async () => {
     try {

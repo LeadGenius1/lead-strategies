@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
-import { isAuthenticated, logout, getCurrentUser } from '../../lib/auth'
-import { tackleAPI, dealsAPI, activitiesAPI, analyticsAPI } from '../../lib/api'
+import { useAuth } from '@/contexts/AuthContext'
+import { tackleAPI, dealsAPI, activitiesAPI, analyticsAPI } from '@/lib/api'
 
 export default function TackleDashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
+  const { user, loading: authLoading, logout } = useAuth()
   const [stats, setStats] = useState({
     totalDeals: 0,
     pipelineValue: 0,
@@ -25,13 +25,20 @@ export default function TackleDashboardPage() {
       window.lucide.createIcons()
     }
 
-    if (!isAuthenticated()) {
-      router.push('/login')
+    // Wait for auth to finish loading
+    if (authLoading) return
+
+    // Redirect if not authenticated
+    if (!user) {
+      router.push('/login?redirect=/dashboard/tackle')
       return
     }
 
-    const currentUser = getCurrentUser()
-    setUser(currentUser)
+    // Check if user has Tackle.IO access (tier 5)
+    if (user.tier < 5) {
+      router.push('/dashboard')
+      return
+    }
 
     const fetchDashboardData = async () => {
       try {
@@ -60,12 +67,7 @@ export default function TackleDashboardPage() {
     }
 
     fetchDashboardData()
-  }, [router])
-
-  const handleLogout = async () => {
-    await logout()
-    router.push('/login')
-  }
+  }, [router, user, authLoading])
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
@@ -117,10 +119,10 @@ export default function TackleDashboardPage() {
 
             <div className="flex items-center gap-4">
               {user && (
-                <span className="text-xs text-zinc-400 hidden md:block">{user.name || user.email}</span>
+                <span className="text-xs text-zinc-400 hidden md:block">{user.firstName || user.email}</span>
               )}
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="text-xs font-medium bg-white/10 hover:bg-white/20 border border-white/10 px-4 py-2 rounded-lg transition-all text-white"
               >
                 Logout
@@ -133,7 +135,7 @@ export default function TackleDashboardPage() {
         <main className="pt-24 pb-20 px-6 max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Sales Dashboard</h1>
-            <p className="text-zinc-400 text-sm">Welcome back, {user?.name || 'User'}. Here's your sales overview.</p>
+            <p className="text-zinc-400 text-sm">Welcome back, {user?.firstName || 'User'}. Here's your sales overview.</p>
           </div>
 
           {/* Stats Grid */}

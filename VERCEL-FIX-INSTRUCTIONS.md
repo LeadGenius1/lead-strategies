@@ -90,6 +90,23 @@ https://aileadstrategies.com/api/v1/health  → Should return backend health JSO
 - Added CORS headers
 - Enabled www → non-www redirect
 
+### 3. Fixed Authentication & Tier System
+- Updated `User` type to use numeric tiers (1-5) instead of strings
+- Added `getTierNumber()` and `getTierName()` helper functions
+- Updated `AuthContext` to normalize user data with proper tier numbers
+- Fixed all Tackle.IO dashboard pages to use `useAuth()` context
+- Added tier-based access control (tier 5 required for Tackle.IO)
+
+### 4. Dashboard Access by Tier
+
+| Tier | Platform | Dashboards Accessible |
+|------|----------|----------------------|
+| 1 | LeadSite.AI | /dashboard, /dashboard/leads, /dashboard/campaigns |
+| 2 | LeadSite.IO | All Tier 1 + /dashboard/websites |
+| 3 | ClientContact.IO | All Tier 2 + /dashboard/inbox |
+| 4 | VideoSite.IO | All Tier 3 + video features |
+| 5 | Tackle.IO | ALL dashboards including /dashboard/tackle/* |
+
 ---
 
 ## If Still Getting 404s

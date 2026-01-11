@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
-import { isAuthenticated, getCurrentUser } from '../../../lib/auth'
-import { companiesAPI } from '../../../lib/api'
+import { useAuth } from '@/contexts/AuthContext'
+import { companiesAPI } from '@/lib/api'
 
 export default function CompaniesPage() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
+  const { user, loading: authLoading } = useAuth()
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -20,14 +20,20 @@ export default function CompaniesPage() {
       window.lucide.createIcons()
     }
 
-    if (!isAuthenticated()) {
-      router.push('/login')
+    if (authLoading) return
+
+    if (!user) {
+      router.push('/login?redirect=/dashboard/tackle/companies')
       return
     }
 
-    setUser(getCurrentUser())
+    if (user.tier < 5) {
+      router.push('/dashboard')
+      return
+    }
+
     fetchCompanies()
-  }, [router])
+  }, [router, user, authLoading])
 
   const fetchCompanies = async (page = 1) => {
     try {

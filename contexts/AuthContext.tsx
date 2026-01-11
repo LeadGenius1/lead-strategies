@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '@/lib/auth';
+import { User, getTierNumber, getTierName } from '@/lib/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -12,6 +12,19 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Helper to normalize user data from backend
+function normalizeUser(userData: any): User {
+  const tier = typeof userData.tier === 'number'
+    ? userData.tier
+    : getTierNumber(userData.tier || 'leadsite-ai');
+
+  return {
+    ...userData,
+    tier,
+    tierName: getTierName(tier),
+  };
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -31,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.data) {
-          setUser(result.data);
+          setUser(normalizeUser(result.data));
         }
       }
     } catch (error) {
@@ -55,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await response.json();
 
       if (result.success && result.data) {
-        setUser(result.data.user);
+        setUser(normalizeUser(result.data.user));
         return { success: true };
       }
 

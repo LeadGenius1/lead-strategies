@@ -100,7 +100,7 @@ export default function DashboardPage() {
               Welcome Back, <span className="text-gradient">{user.firstName}</span>
             </h1>
             <p className="text-neutral-400 font-geist">
-              {user.companyName} • {(user.tier || 'Free').replace('-', ' ').toUpperCase()}
+              {user.companyName} • {user.tierName || 'Free Trial'}
             </p>
           </div>
 
@@ -257,7 +257,7 @@ export default function DashboardPage() {
                 <div>
                   <div className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-1">Current Tier</div>
                   <div className="text-2xl font-space-grotesk text-white">
-                    {(user.tier || 'Free').replace('-', ' ').toUpperCase()}
+                    {user.tierName || 'Free Trial'}
                   </div>
                 </div>
                 <div>

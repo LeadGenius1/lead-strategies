@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
-import { isAuthenticated, getCurrentUser } from '../../../lib/auth'
-import { activitiesAPI } from '../../../lib/api'
+import { useAuth } from '@/contexts/AuthContext'
+import { activitiesAPI } from '@/lib/api'
 
 export default function ActivitiesPage() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
+  const { user, loading: authLoading } = useAuth()
   const [activities, setActivities] = useState([])
   const [overdue, setOverdue] = useState([])
   const [upcoming, setUpcoming] = useState([])
@@ -21,14 +21,20 @@ export default function ActivitiesPage() {
       window.lucide.createIcons()
     }
 
-    if (!isAuthenticated()) {
-      router.push('/login')
+    if (authLoading) return
+
+    if (!user) {
+      router.push('/login?redirect=/dashboard/tackle/activities')
       return
     }
 
-    setUser(getCurrentUser())
+    if (user.tier < 5) {
+      router.push('/dashboard')
+      return
+    }
+
     fetchActivities()
-  }, [router])
+  }, [router, user, authLoading])
 
   const fetchActivities = async () => {
     try {

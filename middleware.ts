@@ -2,18 +2,26 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Domain to landing page mapping
+// Each domain shows its specific landing page when visiting the root URL
 const domainRoutes: Record<string, string> = {
+  // LeadSite.AI - Tier 1 ($79/mo)
   'leadsite.ai': '/leadsite-ai',
   'www.leadsite.ai': '/leadsite-ai',
+  
+  // LeadSite.IO - Tier 2 ($149/mo)
   'leadsite.io': '/leadsite-io',
   'www.leadsite.io': '/leadsite-io',
+  
+  // ClientContact.IO - Tier 3 ($249/mo)
   'clientcontact.io': '/clientcontact-io',
   'www.clientcontact.io': '/clientcontact-io',
-  'tackleai.ai': '/tackle-io',
-  'www.tackleai.ai': '/tackle-io',
+  
+  // VideoSite.IO - Tier 4 ($99/mo)
   'videosite.ai': '/videosite-io',
   'www.videosite.ai': '/videosite-io',
-  // aileadstrategies.com shows main homepage (no rewrite needed)
+  
+  // aileadstrategies.com shows the main homepage with all tiers (no rewrite)
+  // tackleai.ai is the BACKEND API - not handled here
 };
 
 // Protected routes that require authentication

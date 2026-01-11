@@ -8,12 +8,12 @@ const nextConfig = {
 
   // Environment variables
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://leadstrategies-backend-production.up.railway.app',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app',
   },
 
   // API rewrites to Railway backend
   async rewrites() {
-    const backendUrl = process.env.RAILWAY_API_URL || 'https://leadstrategies-backend-production.up.railway.app';
+    const backendUrl = process.env.RAILWAY_API_URL || 'https://backend-production-2987.up.railway.app';
 
     return [
       // Proxy all /api/v1/* requests to Railway backend

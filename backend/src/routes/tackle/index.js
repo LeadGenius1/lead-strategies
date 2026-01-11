@@ -8,6 +8,7 @@
 
 const express = require('express');
 const router = express.Router();
+const { authenticate } = require('../middleware/auth');
 
 // Import sub-routes
 const companiesRoutes = require('./companies');
@@ -20,6 +21,9 @@ const pipelinesRoutes = require('./pipelines');
 const sequencesRoutes = require('./sequences');
 const teamsRoutes = require('./teams');
 const analyticsRoutes = require('./analytics');
+
+// Apply authentication first
+router.use(authenticate);
 
 // Middleware to check Tier 5 access
 const requireTier5 = (req, res, next) => {

@@ -24,6 +24,10 @@ import { Section } from '@/lib/website-builder/types';
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
 import CTA from '@/components/sections/CTA';
+import Testimonials from '@/components/sections/Testimonials';
+import Contact from '@/components/sections/Contact';
+import Pricing from '@/components/sections/Pricing';
+import FAQ from '@/components/sections/FAQ';
 
 interface DragDropBuilderProps {
   sections: Section[];
@@ -68,6 +72,14 @@ function SortableSection({ section, isEditing, onUpdate, onDelete }: SortableSec
         return <Features {...commonProps} />;
       case 'cta':
         return <CTA {...commonProps} />;
+      case 'testimonials':
+        return <Testimonials {...commonProps} />;
+      case 'contact':
+        return <Contact {...commonProps} />;
+      case 'pricing':
+        return <Pricing {...commonProps} />;
+      case 'faq':
+        return <FAQ {...commonProps} />;
       default:
         return (
           <div className="p-8 text-center text-neutral-500">

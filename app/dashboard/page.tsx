@@ -24,13 +24,27 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#030303] flex items-center justify-center">
-        <div className="text-white font-geist">Loading...</div>
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-white font-geist">Loading your dashboard...</div>
+        </div>
       </div>
     );
   }
 
   if (!user) {
-    return null;
+    // Force redirect if somehow we got here without a user
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login?redirect=/dashboard';
+    }
+    return (
+      <div className="min-h-screen bg-[#030303] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-white font-geist mb-4">Redirecting to login...</div>
+          <a href="/login" className="text-purple-400 hover:text-purple-300 underline">Click here if not redirected</a>
+        </div>
+      </div>
+    );
   }
 
   return (

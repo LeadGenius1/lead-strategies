@@ -19,8 +19,17 @@ function normalizeUser(userData: any): User {
     ? userData.tier
     : getTierNumber(userData.tier || 'leadsite-ai');
 
+  // Backend returns 'name' and 'company', frontend expects 'firstName', 'lastName', 'companyName'
+  const nameParts = (userData.name || '').split(' ');
+  const firstName = userData.firstName || nameParts[0] || '';
+  const lastName = userData.lastName || nameParts.slice(1).join(' ') || '';
+  const companyName = userData.companyName || userData.company || '';
+
   return {
     ...userData,
+    firstName,
+    lastName,
+    companyName,
     tier,
     tierName: getTierName(tier),
   };

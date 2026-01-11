@@ -1,4 +1,5 @@
 // LeadSite.AI Backend - Main Entry Point
+// Unified API for all 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO, Tackle.IO
 require('dotenv').config();
 
 const express = require('express');
@@ -28,6 +29,9 @@ const adminRoutes = require('./routes/adminRoutes');
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
 const { initializeRedis, getRedisStore, checkRedisHealth } = require('./config/redis');
+
+// Self-Healing System (Monitors all 5 platforms)
+const { startAgents, getSystem } = require('./system-agents');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -100,21 +104,38 @@ app.use('/api/', limiter);
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  // Get self-healing system status if available
+  const selfHealingSystem = getSystem();
+  const systemHealth = selfHealingSystem?.running
+    ? selfHealingSystem.getHealthSummary()
+    : { status: 'disabled' };
+
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    service: 'leadsite-backend'
+    service: 'leadsite-backend',
+    platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.io', 'tackle.io'],
+    selfHealing: {
+      enabled: selfHealingSystem?.running || false,
+      agents: selfHealingSystem?.running ? Object.keys(selfHealingSystem.getAgentStatus()).length : 0
+    }
   });
 });
 
 app.get('/api/v1/health', async (req, res) => {
   const redisHealth = await checkRedisHealth();
-  res.json({ 
-    status: 'ok', 
+  const selfHealingSystem = getSystem();
+  const systemHealth = selfHealingSystem?.running
+    ? selfHealingSystem.getHealthSummary()
+    : null;
+
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    redis: redisHealth
+    redis: redisHealth,
+    selfHealing: systemHealth
   });
 });
 
@@ -182,20 +203,54 @@ initializeRedis().then((redisConfig) => {
 });
 
 // Start server immediately (routes are already registered)
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║
-║   🚀 LeadSite.AI Backend API                      ║
+║   🚀 AI Lead Strategies Unified Backend           ║
 ║                                                   ║
 ║   Server running on port ${PORT}                    ║
 ║   Environment: ${process.env.NODE_ENV || 'development'}               ║
 ║                                                   ║
+║   Platforms Served:                               ║
+║   • LeadSite.AI (Tier 1)                          ║
+║   • LeadSite.IO (Tier 2)                          ║
+║   • ClientContact.IO (Tier 3)                     ║
+║   • VideoSite.IO (Tier 4)                         ║
+║   • Tackle.IO (Tier 5)                            ║
+║                                                   ║
 ║   Health: http://localhost:${PORT}/health            ║
 ║   API:    http://localhost:${PORT}/api/v1            ║
+║   Admin:  http://localhost:${PORT}/admin             ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
   `);
+
+  // ===========================================
+  // SELF-HEALING SYSTEM STARTUP
+  // ===========================================
+  // Monitors all 5 platforms from single system
+  if (process.env.ENABLE_SELF_HEALING === 'true') {
+    try {
+      console.log('\n🔧 Starting Self-Healing System...');
+      console.log('   Monitoring all 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO, Tackle.IO\n');
+
+      // Start all 7 agents
+      await startAgents({
+        db: null,    // Will use Prisma from agents if needed
+        redis: null  // Will initialize Redis if REDIS_URL is set
+      });
+
+      console.log('\n✅ Self-Healing System active - 7 agents monitoring all platforms');
+      console.log('   Access monitoring dashboard at: /admin/system/dashboard\n');
+    } catch (error) {
+      console.error('⚠️  Self-Healing System failed to start:', error.message);
+      console.log('   Server continues without self-healing monitoring\n');
+    }
+  } else {
+    console.log('\n💡 Self-Healing System disabled');
+    console.log('   Enable with ENABLE_SELF_HEALING=true environment variable\n');
+  }
 });
 
 module.exports = app;

@@ -6,8 +6,44 @@ export interface User {
   firstName: string;
   lastName: string;
   companyName: string;
-  tier: string;
+  tier: number; // 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact.IO, 4=VideoSite.IO, 5=Tackle.IO
+  tierName?: string; // Human-readable tier name
   createdAt: string;
+}
+
+// Helper to convert tier string to number
+export function getTierNumber(tier: string | number): number {
+  if (typeof tier === 'number') return tier;
+
+  const tierMap: Record<string, number> = {
+    'leadsite-ai': 1,
+    'leadsite.ai': 1,
+    'leadsite-io': 2,
+    'leadsite.io': 2,
+    'clientcontact-io': 3,
+    'clientcontact.io': 3,
+    'videosite-io': 4,
+    'videosite.io': 4,
+    'tackle-io': 5,
+    'tackle.io': 5,
+  };
+
+  return tierMap[tier.toLowerCase()] || 1;
+}
+
+// Helper to get tier name from number
+export function getTierName(tier: number | string): string {
+  if (typeof tier === 'string') return tier;
+
+  const tierNames: Record<number, string> = {
+    1: 'LeadSite.AI',
+    2: 'LeadSite.IO',
+    3: 'ClientContact.IO',
+    4: 'VideoSite.IO',
+    5: 'Tackle.IO',
+  };
+
+  return tierNames[tier] || 'Free';
 }
 
 export interface AuthResponse {

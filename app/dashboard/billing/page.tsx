@@ -188,7 +188,7 @@ export default function BillingPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div>
                 <h2 className="text-2xl font-space-grotesk text-white mb-2">
-                  {(user.tier || 'Free').replace('-', ' ').toUpperCase()}
+                  {user.tierName || 'Free Trial'}
                 </h2>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

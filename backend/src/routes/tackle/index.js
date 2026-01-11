@@ -8,7 +8,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const { authenticate } = require('../../middleware/auth');
 
 // Import sub-routes
 const companiesRoutes = require('./companies');

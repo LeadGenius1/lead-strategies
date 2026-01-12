@@ -1,128 +1,111 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, getTierNumber, getTierName } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, name: string) => Promise<void>;
+  logout: () => void;
+  checkAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper to normalize user data from backend
-function normalizeUser(userData: any): User {
-  const tier = typeof userData.tier === 'number'
-    ? userData.tier
-    : getTierNumber(userData.tier || 'leadsite-ai');
-
-  // Backend returns 'name' and 'company', frontend expects 'firstName', 'lastName', 'companyName'
-  const nameParts = (userData.name || '').split(' ');
-  const firstName = userData.firstName || nameParts[0] || '';
-  const lastName = userData.lastName || nameParts.slice(1).join(' ') || '';
-  const companyName = userData.companyName || userData.company || '';
-
-  return {
-    ...userData,
-    firstName,
-    lastName,
-    companyName,
-    tier,
-    tierName: getTierName(tier),
-  };
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-wheat-beta-15.vercel.app';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  // Fetch current user on mount
   useEffect(() => {
-    fetchUser();
+    checkAuth();
   }, []);
 
-  const fetchUser = async () => {
+  const checkAuth = async () => {
     try {
-      const response = await fetch('/api/auth/me', {
-        credentials: 'include',
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/api/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data) {
-          // Backend returns { success, data: { user, tierLimits, tierFeatures } }
-          const userData = result.data.user || result.data;
-          setUser(normalizeUser(userData));
-        }
-      } else if (response.status === 401) {
-        // 401 is expected when user is not authenticated - silently handle it
-        setUser(null);
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        localStorage.removeItem('token');
       }
     } catch (error) {
-      // Only log unexpected errors, not network errors for unauthenticated users
-      if (error instanceof Error && !error.message.includes('Failed to fetch')) {
-        console.error('Fetch user error:', error);
-      }
+      console.error('Auth check failed:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const login = async (email: string, password: string) => {
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
-      });
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const result = await response.json();
-
-      if (result.success && result.data) {
-        // Handle both { data: { user } } and { data: user } formats
-        const userData = result.data.user || result.data;
-        if (userData && userData.email) {
-          setUser(normalizeUser(userData));
-          return { success: true };
-        }
-      }
-
-      return { success: false, error: result.error || 'Login failed' };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Login failed');
     }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
+    router.push('/dashboard');
   };
 
-  const logout = async () => {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      setUser(null);
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Logout error:', error);
-      setUser(null);
-      window.location.href = '/';
+  const signup = async (email: string, password: string, name: string) => {
+    const response = await fetch(`${API_URL}/api/auth/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password, name }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Signup failed');
     }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
+    router.push('/dashboard');
   };
 
-  const refreshUser = async () => {
-    await fetchUser();
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    router.push('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );

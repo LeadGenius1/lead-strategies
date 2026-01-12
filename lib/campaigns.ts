@@ -1,130 +1,139 @@
-// Email campaign types and utilities
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend-wheat-beta-15.vercel.app';
 
-export interface EmailCampaign {
+export interface Campaign {
   id: string;
   name: string;
   subject: string;
-  template: string;
-  status: 'draft' | 'scheduled' | 'sending' | 'sent' | 'paused';
-  recipientCount: number;
-  sentCount: number;
-  openedCount: number;
-  clickedCount: number;
-  scheduledAt?: string;
-  sentAt?: string;
+  content: string;
+  status: 'draft' | 'scheduled' | 'sent' | 'active';
   createdAt: string;
   updatedAt: string;
-  userId: string;
-  leadIds?: string[];
-  tags?: string[];
+  recipientCount?: number;
+  openRate?: number;
+  clickRate?: number;
 }
 
-export interface CampaignTemplate {
-  id: string;
+export async function createCampaign(data: {
   name: string;
   subject: string;
-  body: string;
-  variables: string[];
-}
-
-export interface CampaignAnalytics {
-  campaignId: string;
-  sent: number;
-  delivered: number;
-  opened: number;
-  clicked: number;
-  bounced: number;
-  unsubscribed: number;
-  openRate: number;
-  clickRate: number;
-  bounceRate: number;
-}
-
-// Default email templates
-export const DEFAULT_TEMPLATES: CampaignTemplate[] = [
-  {
-    id: 'intro',
-    name: 'Introduction Email',
-    subject: 'Quick introduction from {{company}}',
-    body: `Hi {{firstName}},
-
-I hope this email finds you well. I'm reaching out from {{company}} to introduce ourselves.
-
-We specialize in {{industry}} solutions and thought you might be interested in learning more.
-
-Would you be open to a brief conversation this week?
-
-Best regards,
-{{senderName}}`,
-    variables: ['firstName', 'company', 'industry', 'senderName'],
-  },
-  {
-    id: 'follow-up',
-    name: 'Follow-up Email',
-    subject: 'Following up on our conversation',
-    body: `Hi {{firstName}},
-
-I wanted to follow up on our previous conversation about {{topic}}.
-
-I've attached some information that might be helpful. Let me know if you have any questions.
-
-Best regards,
-{{senderName}}`,
-    variables: ['firstName', 'topic', 'senderName'],
-  },
-  {
-    id: 'value-proposition',
-    name: 'Value Proposition',
-    subject: 'How {{company}} can help {{leadCompany}}',
-    body: `Hi {{firstName}},
-
-I noticed that {{leadCompany}} is in the {{industry}} space. We've helped similar companies achieve {{benefit}}.
-
-Here's how we can help:
-- {{benefit1}}
-- {{benefit2}}
-- {{benefit3}}
-
-Would you like to schedule a quick call to discuss?
-
-Best regards,
-{{senderName}}`,
-    variables: ['firstName', 'leadCompany', 'industry', 'benefit', 'benefit1', 'benefit2', 'benefit3', 'senderName'],
-  },
-];
-
-// Replace template variables
-export function replaceTemplateVariables(template: string, variables: Record<string, string>): string {
-  let result = template;
-  Object.keys(variables).forEach(key => {
-    const regex = new RegExp(`{{${key}}}`, 'g');
-    result = result.replace(regex, variables[key] || '');
+  content: string;
+  recipientIds: string[];
+}) {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
   });
-  return result;
+
+  if (!response.ok) {
+    throw new Error('Failed to create campaign');
+  }
+
+  return response.json();
 }
 
-// Validate campaign
-export function validateCampaign(campaign: Partial<EmailCampaign>): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
+export async function getCampaigns(): Promise<Campaign[]> {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  if (!campaign.name || campaign.name.trim().length === 0) {
-    errors.push('Campaign name is required');
+  if (!response.ok) {
+    throw new Error('Failed to fetch campaigns');
   }
 
-  if (!campaign.subject || campaign.subject.trim().length === 0) {
-    errors.push('Email subject is required');
+  return response.json();
+}
+
+export async function getCampaign(id: string): Promise<Campaign> {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch campaign');
   }
 
-  if (!campaign.template || campaign.template.trim().length === 0) {
-    errors.push('Email template is required');
+  return response.json();
+}
+
+export async function updateCampaign(id: string, data: Partial<Campaign>) {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update campaign');
   }
 
-  if (!campaign.leadIds || campaign.leadIds.length === 0) {
-    errors.push('At least one recipient is required');
+  return response.json();
+}
+
+export async function deleteCampaign(id: string) {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete campaign');
   }
 
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
+  return response.json();
+}
+
+export async function sendCampaign(id: string) {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns/${id}/send`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to send campaign');
+  }
+
+  return response.json();
+}
+
+export async function getCampaignAnalytics(id: string) {
+  const token = localStorage.getItem('token');
+  
+  const response = await fetch(`${API_URL}/api/campaigns/${id}/analytics`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch campaign analytics');
+  }
+
+  return response.json();
 }

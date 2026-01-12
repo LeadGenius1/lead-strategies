@@ -68,6 +68,7 @@ export interface CampaignTemplate {
   name: string;
   description: string;
   subject: string;
+  body: string;
   content: string;
   type: 'email' | 'sms' | 'multi-channel';
 }
@@ -254,6 +255,7 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+
 
 
 

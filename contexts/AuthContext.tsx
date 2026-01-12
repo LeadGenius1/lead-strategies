@@ -21,6 +21,7 @@ export interface User {
 }
 
 interface AuthContextType {
+  loading: boolean;
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
@@ -166,3 +167,4 @@ export function useAuth() {
 }
 
 export default AuthContext;
+

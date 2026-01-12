@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -171,5 +171,43 @@ export default function VerifyEmailPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function VerifyEmailLoading() {
+  return (
+    <div className="relative min-h-screen overflow-x-hidden bg-[#030303]">
+      <div className="grid-overlay">
+        <div className="grid-inner">
+          <div className="grid-line-v"></div>
+          <div className="grid-line-v hidden md:block"></div>
+          <div className="grid-line-v hidden lg:block"></div>
+          <div className="grid-line-v"></div>
+        </div>
+      </div>
+      <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 z-10">
+        <div className="container mx-auto px-4 max-w-2xl">
+          <div className="bg-[#050505] border border-subtle p-8 md:p-12 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 bg-purple-500/10 border border-purple-500/30 rounded-full flex items-center justify-center">
+              <svg className="w-10 h-10 text-purple-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-space-grotesk text-white mb-4">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<VerifyEmailLoading />}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

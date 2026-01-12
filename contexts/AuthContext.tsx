@@ -2,88 +2,69 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
-
 export interface User {
   id: string;
   email: string;
+  name: string;
   firstName: string;
   lastName: string;
-  name: string;
   company?: string;
   role?: string;
-  plan?: string;
   avatar?: string;
-  createdAt?: string;
+  tierName?: string;
+  tier?: string;
+  subscription?: {
+    status: string;
+    plan: string;
+    currentPeriodEnd?: string;
+  };
 }
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
-  error: string | null;
+  token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (data: SignupData) => Promise<void>;
+  register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
-  updateProfile: (data: Partial<User>) => Promise<void>;
+  isLoading: boolean;
   isAuthenticated: boolean;
-}
-
-interface SignupData {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  company?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      const response = await fetch(`${API_URL}/api/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser({
-          ...userData,
-          firstName: userData.firstName || userData.name?.split(' ')[0] || '',
-          lastName: userData.lastName || userData.name?.split(' ').slice(1).join(' ') || '',
-          name: userData.name || `${userData.firstName || ''} ${userData.lastName || ''}`.trim(),
-        });
-      } else {
+    const savedToken = localStorage.getItem('token');
+    const savedUser = localStorage.getItem('user');
+    
+    if (savedToken && savedUser) {
+      setToken(savedToken);
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        // Ensure firstName and lastName exist
+        if (!parsedUser.firstName && parsedUser.name) {
+          const nameParts = parsedUser.name.split(' ');
+          parsedUser.firstName = nameParts[0] || '';
+          parsedUser.lastName = nameParts.slice(1).join(' ') || '';
+        }
+        setUser(parsedUser);
+      } catch (e) {
+        console.error('Failed to parse saved user:', e);
+        localStorage.removeItem('user');
         localStorage.removeItem('token');
       }
-    } catch (err) {
-      console.error('Auth check failed:', err);
-      localStorage.removeItem('token');
-    } finally {
-      setLoading(false);
     }
-  };
+    setIsLoading(false);
+  }, []);
 
   const login = async (email: string, password: string) => {
-    setError(null);
-    setLoading(true);
-
+    setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
@@ -93,107 +74,82 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        const error = await response.json();
+        throw new Error(error.message || 'Login failed');
       }
 
+      const data = await response.json();
+      
+      // Ensure firstName and lastName exist
+      const userData = data.user;
+      if (!userData.firstName && userData.name) {
+        const nameParts = userData.name.split(' ');
+        userData.firstName = nameParts[0] || '';
+        userData.lastName = nameParts.slice(1).join(' ') || '';
+      }
+      
+      setToken(data.token);
+      setUser(userData);
       localStorage.setItem('token', data.token);
-      setUser({
-        ...data.user,
-        firstName: data.user.firstName || data.user.name?.split(' ')[0] || '',
-        lastName: data.user.lastName || data.user.name?.split(' ').slice(1).join(' ') || '',
-        name: data.user.name || `${data.user.firstName || ''} ${data.user.lastName || ''}`.trim(),
-      });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed';
-      setError(message);
-      throw err;
+      localStorage.setItem('user', JSON.stringify(userData));
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const signup = async (signupData: SignupData) => {
-    setError(null);
-    setLoading(true);
-
+  const register = async (email: string, password: string, name: string) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(signupData),
+        body: JSON.stringify({ email, password, name }),
       });
-
-      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Signup failed');
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
       }
 
+      const data = await response.json();
+      
+      // Parse name into firstName/lastName
+      const userData = data.user;
+      if (!userData.firstName && userData.name) {
+        const nameParts = userData.name.split(' ');
+        userData.firstName = nameParts[0] || '';
+        userData.lastName = nameParts.slice(1).join(' ') || '';
+      }
+      
+      setToken(data.token);
+      setUser(userData);
       localStorage.setItem('token', data.token);
-      setUser({
-        ...data.user,
-        firstName: data.user.firstName || signupData.firstName,
-        lastName: data.user.lastName || signupData.lastName,
-        name: data.user.name || `${signupData.firstName} ${signupData.lastName}`.trim(),
-      });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Signup failed';
-      setError(message);
-      throw err;
+      localStorage.setItem('user', JSON.stringify(userData));
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
     setUser(null);
-    window.location.href = '/';
-  };
-
-  const updateProfile = async (data: Partial<User>) => {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('Not authenticated');
-
-    const response = await fetch(`${API_URL}/api/auth/profile`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to update profile');
-    }
-
-    const updatedUser = await response.json();
-    setUser({
-      ...updatedUser,
-      firstName: updatedUser.firstName || updatedUser.name?.split(' ')[0] || '',
-      lastName: updatedUser.lastName || updatedUser.name?.split(' ').slice(1).join(' ') || '',
-      name: updatedUser.name || `${updatedUser.firstName || ''} ${updatedUser.lastName || ''}`.trim(),
-    });
+    setToken(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        loading,
-        error,
+        token,
         login,
-        signup,
+        register,
         logout,
-        updateProfile,
-        isAuthenticated: !!user,
+        isLoading,
+        isAuthenticated: !!user && !!token,
       }}
     >
       {children}

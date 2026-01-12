@@ -121,7 +121,7 @@ export default function NewCampaignPage() {
       leadIds: selectedLeads,
     });
 
-    if (!validation.valid) {
+    if (!validation.isValid) {
       setError(validation.errors.join(', '));
       return;
     }
@@ -401,3 +401,4 @@ export default function NewCampaignPage() {
     </div>
   );
 }
+

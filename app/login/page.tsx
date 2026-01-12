@@ -3,12 +3,14 @@
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/dashboard';
-  
+  const { login, refreshUser } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,16 +29,8 @@ function LoginForm() {
         return;
       }
 
-      // Submit to API
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const result = await response.json();
+      // Use AuthContext login which handles credentials and state
+      const result = await login(email, password);
 
       if (!result.success) {
         setError(result.error || 'Login failed. Please check your credentials.');
@@ -44,9 +38,12 @@ function LoginForm() {
         return;
       }
 
-      // Success - redirect to dashboard
-      router.push(redirect);
-      router.refresh();
+      // Refresh user data to ensure it's loaded
+      await refreshUser();
+
+      // Success - redirect to dashboard using window.location for full page reload
+      // This ensures the auth state is properly synchronized
+      window.location.href = redirect;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
       setLoading(false);

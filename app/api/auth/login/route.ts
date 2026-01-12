@@ -49,10 +49,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Extract user data from backend response
+    const userData = backendData.data?.user || backendData.data || backendData.user;
+
+    if (!userData) {
+      console.error('❌ No user data received from backend login');
+      return NextResponse.json(
+        { success: false, error: 'User data not received' },
+        { status: 500 }
+      );
+    }
+
     // Set HTTP-only cookie for token
     const responseData = NextResponse.json({
       success: true,
-      data: backendData.data || backendData,
+      data: {
+        user: userData,
+      },
     });
 
     // Set cookie - let browser handle domain automatically
@@ -66,7 +79,7 @@ export async function POST(request: NextRequest) {
       // Don't set domain - browser will use current domain automatically
     });
 
-    console.log(`✅ Auth token cookie set for login (user: ${backendData.data?.user?.email || 'unknown'})`);
+    console.log(`✅ Auth token cookie set for login (user: ${userData.email || 'unknown'})`);
 
     return responseData;
   } catch (error) {

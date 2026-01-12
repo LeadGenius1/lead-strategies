@@ -79,8 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await response.json();
 
       if (result.success && result.data) {
-        setUser(normalizeUser(result.data.user));
-        return { success: true };
+        // Handle both { data: { user } } and { data: user } formats
+        const userData = result.data.user || result.data;
+        if (userData && userData.email) {
+          setUser(normalizeUser(userData));
+          return { success: true };
+        }
       }
 
       return { success: false, error: result.error || 'Login failed' };

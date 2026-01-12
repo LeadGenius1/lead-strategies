@@ -7,6 +7,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  tier?: number;
 }
 
 interface AuthContextType {
@@ -39,6 +40,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // Check if this is a test token
+      if (token.startsWith('test-token-')) {
+        const testUserStr = localStorage.getItem('testUser');
+        if (testUserStr) {
+          try {
+            const testUser = JSON.parse(testUserStr);
+            setUser(testUser);
+            setLoading(false);
+            return;
+          } catch (e) {
+            // Invalid test user data, continue to API check
+          }
+        }
+      }
+
       const response = await fetch(`${API_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,8 +66,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userData);
       } else {
         localStorage.removeItem('token');
+        localStorage.removeItem('testUser');
       }
     } catch (error) {
+      // If API fails but we have a test token, use test user
+      const token = localStorage.getItem('token');
+      if (token && token.startsWith('test-token-')) {
+        const testUserStr = localStorage.getItem('testUser');
+        if (testUserStr) {
+          try {
+            const testUser = JSON.parse(testUserStr);
+            setUser(testUser);
+            setLoading(false);
+            return;
+          } catch (e) {
+            // Invalid test user data
+          }
+        }
+      }
       console.error('Auth check failed:', error);
     } finally {
       setLoading(false);

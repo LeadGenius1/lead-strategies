@@ -60,15 +60,23 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
 
-  // Redirect to login if accessing protected route without token
-  if (isProtectedRoute && !token) {
+  // Allow test-login page without authentication
+  if (pathname === '/test-login') {
+    return NextResponse.next();
+  }
+
+  // Allow test tokens (for testing purposes)
+  const isTestToken = token && token.startsWith('test-token-');
+
+  // Redirect to login if accessing protected route without token (or test token)
+  if (isProtectedRoute && !token && !isTestToken) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Redirect to dashboard if accessing auth routes with valid token
-  if (isAuthRoute && token) {
+  // Redirect to dashboard if accessing auth routes with valid token (including test tokens)
+  if (isAuthRoute && (token || isTestToken)) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

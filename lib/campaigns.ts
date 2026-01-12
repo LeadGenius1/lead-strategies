@@ -15,6 +15,7 @@ export interface CampaignAnalytics {
   clicked: number;
   bounced: number;
   unsubscribed: number;
+  bounceRate: number;
 }
 // lib/campaigns.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
@@ -244,6 +245,7 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+
 
 
 

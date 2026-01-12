@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
+  const [hasRedirected, setHasRedirected] = useState(false);
   const [stats, setStats] = useState({
     leads: 0,
     campaigns: 0,
@@ -16,10 +17,12 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
-    if (!loading && !user) {
+    // Only redirect once, after loading is complete and no user found
+    if (!loading && !user && !hasRedirected) {
+      setHasRedirected(true);
       router.push('/login?redirect=/dashboard');
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, hasRedirected]);
 
   if (loading) {
     return (
@@ -33,13 +36,12 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    // Force redirect if somehow we got here without a user
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login?redirect=/dashboard';
-    }
+    // Show redirecting message - useEffect handles the actual redirect
+    // Do NOT use window.location.href here as it causes redirect loops
     return (
       <div className="min-h-screen bg-[#030303] flex items-center justify-center">
         <div className="text-center">
+          <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <div className="text-white font-geist mb-4">Redirecting to login...</div>
           <a href="/login" className="text-purple-400 hover:text-purple-300 underline">Click here if not redirected</a>
         </div>

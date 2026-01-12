@@ -8,18 +8,23 @@ const nextConfig = {
 
   // Environment variables
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://tackleai.ai',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://backend-wheat-beta-15.vercel.app',
   },
 
-  // API rewrites to Railway backend
+  // API rewrites to backend
   async rewrites() {
-    const backendUrl = process.env.RAILWAY_API_URL || 'https://tackleai.ai';
+    const backendUrl = process.env.RAILWAY_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://backend-wheat-beta-15.vercel.app';
 
     return [
-      // Proxy all /api/v1/* requests to Railway backend
+      // Proxy all /api/v1/* requests to backend
       {
         source: '/api/v1/:path*',
         destination: `${backendUrl}/api/v1/:path*`,
+      },
+      // Proxy auth endpoints to backend
+      {
+        source: '/api/auth/:path*',
+        destination: `${backendUrl}/api/auth/:path*`,
       },
       // Health check
       {

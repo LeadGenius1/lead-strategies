@@ -6,8 +6,8 @@
   "outputDirectory": ".next",
   "regions": ["iad1"],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://tackleai.ai",
-    "RAILWAY_API_URL": "https://tackleai.ai"
+    "NEXT_PUBLIC_API_URL": "https://backend-wheat-beta-15.vercel.app",
+    "RAILWAY_API_URL": "https://backend-wheat-beta-15.vercel.app"
   },
   "headers": [
     {
@@ -23,7 +23,15 @@
   "rewrites": [
     {
       "source": "/api/v1/:path*",
-      "destination": "https://tackleai.ai/api/v1/:path*"
+      "destination": "https://backend-wheat-beta-15.vercel.app/api/v1/:path*"
+    },
+    {
+      "source": "/api/auth/:path*",
+      "destination": "https://backend-wheat-beta-15.vercel.app/api/auth/:path*"
+    },
+    {
+      "source": "/api/health",
+      "destination": "https://backend-wheat-beta-15.vercel.app/health"
     }
   ]
 }

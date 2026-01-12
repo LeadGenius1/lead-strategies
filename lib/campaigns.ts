@@ -5,6 +5,7 @@ export interface EmailCampaign {
   status: 'draft' | 'scheduled' | 'sending' | 'sent' | 'active' | 'paused' | 'completed';
   createdAt: string;
   updatedAt: string;
+  template?: string;
 }
 
 export interface CampaignAnalytics {
@@ -33,6 +34,7 @@ export interface Campaign {
   replied: number;
   createdAt: string;
   updatedAt: string;
+  template?: string;
 }
 
 export interface CampaignAnalytics {
@@ -242,5 +244,6 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+
 
 

@@ -1,3 +1,20 @@
+export interface EmailCampaign {
+  id: string;
+  name: string;
+  subject: string;
+  status: 'draft' | 'active' | 'paused' | 'completed';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CampaignAnalytics {
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  bounced: number;
+  unsubscribed: number;
+}
 // lib/campaigns.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
 
@@ -225,3 +242,4 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+

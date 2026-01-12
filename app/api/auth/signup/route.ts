@@ -8,10 +8,19 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     const { firstName, lastName, email, password, tier, companyName } = body;
-    
-    if (!firstName || !lastName || !email || !password || !tier || !companyName) {
+
+    const missingFields = [];
+    if (!firstName) missingFields.push('firstName');
+    if (!lastName) missingFields.push('lastName');
+    if (!email) missingFields.push('email');
+    if (!password) missingFields.push('password');
+    if (!tier) missingFields.push('tier');
+    if (!companyName) missingFields.push('companyName');
+
+    if (missingFields.length > 0) {
+      console.error('Missing fields:', missingFields);
       return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
+        { success: false, error: `Missing required fields: ${missingFields.join(', ')}` },
         { status: 400 }
       );
     }
@@ -52,6 +61,7 @@ export async function POST(request: NextRequest) {
     const backendData = await response.json();
 
     if (!response.ok) {
+      console.error('❌ Backend signup failed:', response.status, backendData);
       return NextResponse.json(
         { success: false, error: backendData.message || backendData.error || 'Signup failed' },
         { status: response.status }

@@ -2,7 +2,7 @@ export interface EmailCampaign {
   id: string;
   name: string;
   subject: string;
-  status: 'draft' | 'active' | 'paused' | 'completed';
+  status: 'draft' | 'scheduled' | 'sending' | 'sent' | 'active' | 'paused' | 'completed';
   createdAt: string;
   updatedAt: string;
 }
@@ -21,7 +21,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies
 export interface Campaign {
   id: string;
   name: string;
-  status: 'draft' | 'active' | 'paused' | 'completed';
+  status: 'draft' | 'scheduled' | 'sending' | 'sent' | 'active' | 'paused' | 'completed';
   type: 'email' | 'sms' | 'multi-channel';
   subject?: string;
   content?: string;
@@ -242,4 +242,5 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+
 

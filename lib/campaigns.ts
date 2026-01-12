@@ -8,6 +8,7 @@ export interface EmailCampaign {
   template?: string;
   recipientCount?: number;
   sentAt?: string;
+  leadIds?: string[];
 }
 
 export interface CampaignAnalytics {
@@ -32,6 +33,7 @@ export interface Campaign {
   template?: string;
   recipientCount?: number;
   sentAt?: string;
+  leadIds?: string[];
   leads: number;
   sent: number;
   opened: number;
@@ -42,6 +44,7 @@ export interface Campaign {
   template?: string;
   recipientCount?: number;
   sentAt?: string;
+  leadIds?: string[];
 }
 
 export interface CampaignAnalytics {
@@ -251,6 +254,7 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+
 
 
 

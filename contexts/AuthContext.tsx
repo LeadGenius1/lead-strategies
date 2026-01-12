@@ -57,9 +57,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userData = result.data.user || result.data;
           setUser(normalizeUser(userData));
         }
+      } else if (response.status === 401) {
+        // 401 is expected when user is not authenticated - silently handle it
+        setUser(null);
       }
     } catch (error) {
-      console.error('Fetch user error:', error);
+      // Only log unexpected errors, not network errors for unauthenticated users
+      if (error instanceof Error && !error.message.includes('Failed to fetch')) {
+        console.error('Fetch user error:', error);
+      }
     } finally {
       setLoading(false);
     }

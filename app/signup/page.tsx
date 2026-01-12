@@ -33,12 +33,38 @@ export default function SignupPage() {
     setError(null);
 
     try {
-      // Validate required fields
-      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.companyName) {
+      // Validate required fields - trim whitespace and check for empty strings
+      const trimmedData = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        companyName: formData.companyName.trim(),
+      };
+
+      if (!trimmedData.firstName || !trimmedData.lastName || !trimmedData.email || !trimmedData.password || !trimmedData.companyName) {
         setError('Please fill in all required fields');
         setLoading(false);
         return;
       }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmedData.email)) {
+        setError('Please enter a valid email address');
+        setLoading(false);
+        return;
+      }
+
+      // Validate password length
+      if (trimmedData.password.length < 8) {
+        setError('Password must be at least 8 characters long');
+        setLoading(false);
+        return;
+      }
+
+      // Ensure tier is set (default to leadsite-ai if not set)
+      const selectedTier = tier || 'leadsite-ai';
 
       // Submit to API with credentials for cookie handling
       const response = await fetch('/api/auth/signup', {
@@ -48,15 +74,24 @@ export default function SignupPage() {
         },
         credentials: 'include',
         body: JSON.stringify({
-          ...formData,
-          tier,
+          firstName: trimmedData.firstName,
+          lastName: trimmedData.lastName,
+          email: trimmedData.email,
+          password: trimmedData.password,
+          companyName: trimmedData.companyName,
+          tier: selectedTier,
+          industry: formData.industry?.trim() || undefined,
+          companySize: formData.companySize?.trim() || undefined,
+          currentTools: formData.currentTools?.trim() || undefined,
         }),
       });
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        setError(result.error || result.message || 'Signup failed. Please try again.');
+        const errorMessage = result.error || result.message || 'Signup failed. Please try again.';
+        console.error('Signup error:', errorMessage, result);
+        setError(errorMessage);
         setLoading(false);
         return;
       }
@@ -66,6 +101,7 @@ export default function SignupPage() {
       console.log('✅ Signup successful, redirecting to dashboard...');
       window.location.href = '/dashboard';
     } catch (err) {
+      console.error('Signup error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
       setLoading(false);
     }

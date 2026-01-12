@@ -54,6 +54,7 @@ export interface CampaignAnalytics {
   totalReplied: number;
   openRate: number;
   clickRate: number;
+  openedCount?: number;
   replyRate: number;
   dailyStats: {
     date: string;
@@ -255,6 +256,7 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
+
 
 
 

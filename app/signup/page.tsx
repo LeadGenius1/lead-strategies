@@ -40,12 +40,13 @@ export default function SignupPage() {
         return;
       }
 
-      // Submit to API
+      // Submit to API with credentials for cookie handling
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           ...formData,
           tier,
@@ -61,12 +62,9 @@ export default function SignupPage() {
       }
 
       // Success - user is now automatically logged in (auth-token cookie set by API)
-      // Wait briefly for cookie to be set, then redirect
+      // Redirect to dashboard directly (email verification is optional)
       console.log('✅ Signup successful, redirecting to dashboard...');
-      setTimeout(() => {
-        router.push('/dashboard');
-        router.refresh();
-      }, 300);
+      window.location.href = '/dashboard';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
       setLoading(false);

@@ -116,7 +116,7 @@ export default function DashboardPage() {
               Welcome Back, <span className="text-gradient">{user.firstName}</span>
             </h1>
             <p className="text-neutral-400 font-geist">
-              {user.companyName || user.email?.split('@')[1] || 'Your Company'} • {user.tierName || 'Free Trial'}
+              {user.company || user.email?.split('@')[1] || 'Your Company'} • {user.tierName || 'Free Trial'}
             </p>
           </div>
 
@@ -335,6 +335,7 @@ export default function DashboardPage() {
     </div>
   );
 }
+
 
 
 

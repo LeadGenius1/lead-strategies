@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
@@ -44,12 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
+
     if (savedToken && savedUser) {
       setToken(savedToken);
       try {
         const parsedUser = JSON.parse(savedUser);
-        // Ensure firstName and lastName exist
         if (!parsedUser.firstName && parsedUser.name) {
           const nameParts = parsedUser.name.split(' ');
           parsedUser.firstName = nameParts[0] || '';
@@ -70,9 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
@@ -82,15 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const data = await response.json();
-      
-      // Ensure firstName and lastName exist
       const userData = data.user;
       if (!userData.firstName && userData.name) {
         const nameParts = userData.name.split(' ');
         userData.firstName = nameParts[0] || '';
         userData.lastName = nameParts.slice(1).join(' ') || '';
       }
-      
+
       setToken(data.token);
       setUser(userData);
       localStorage.setItem('token', data.token);
@@ -105,9 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),
       });
 
@@ -117,15 +110,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const data = await response.json();
-      
-      // Parse name into firstName/lastName
       const userData = data.user;
       if (!userData.firstName && userData.name) {
         const nameParts = userData.name.split(' ');
         userData.firstName = nameParts[0] || '';
         userData.lastName = nameParts.slice(1).join(' ') || '';
       }
-      
+
       setToken(data.token);
       setUser(userData);
       localStorage.setItem('token', data.token);
@@ -138,10 +129,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = async () => {
     const savedToken = localStorage.getItem('token');
     if (!savedToken) return;
-    
+
     try {
-      const response = await fetch(${API_URL}/api/auth/me, {
-        headers: { 'Authorization': Bearer ${savedToken} }
+      const response = await fetch(`${API_URL}/api/auth/me`, {
+        headers: { 'Authorization': `Bearer ${savedToken}` }
       });
       if (response.ok) {
         const data = await response.json();
@@ -174,9 +165,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         register,
         logout,
-        isLoading,
-        loading: isLoading,
         refreshUser,
+        loading: isLoading,
+        isLoading,
         isAuthenticated: !!user && !!token,
       }}
     >
@@ -194,5 +185,3 @@ export function useAuth() {
 }
 
 export default AuthContext;
-
-

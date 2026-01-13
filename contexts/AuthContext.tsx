@@ -27,6 +27,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   isLoading: boolean;
   isAuthenticated: boolean;
 }
@@ -134,6 +135,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshUser = async () => {
+    const savedToken = localStorage.getItem('token');
+    if (!savedToken) return;
+    
+    try {
+      const response = await fetch(${API_URL}/api/auth/me, {
+        headers: { 'Authorization': Bearer ${savedToken} }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const userData = data.user || data;
+        if (!userData.firstName && userData.name) {
+          const nameParts = userData.name.split(' ');
+          userData.firstName = nameParts[0] || '';
+          userData.lastName = nameParts.slice(1).join(' ') || '';
+        }
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
+    } catch (e) {
+      console.error('Failed to refresh user:', e);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -150,6 +175,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         isLoading,
+        loading: isLoading,
+        refreshUser,
         isAuthenticated: !!user && !!token,
       }}
     >
@@ -167,4 +194,5 @@ export function useAuth() {
 }
 
 export default AuthContext;
+
 

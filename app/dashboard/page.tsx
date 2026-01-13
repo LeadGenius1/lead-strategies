@@ -83,7 +83,7 @@ export default function DashboardPage() {
                 Inbox
               </Link>
             )}
-            {user.tier >= 5 && (
+            {(Number(user.tier) || 0) >= 5 && (
               <Link href="/dashboard/tackle" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-gradient font-geist font-bold">
                 Tackle CRM
               </Link>
@@ -335,6 +335,7 @@ export default function DashboardPage() {
     </div>
   );
 }
+
 
 
 

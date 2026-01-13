@@ -78,7 +78,7 @@ export default function DashboardPage() {
             <Link href="/dashboard/campaigns" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               Campaigns
             </Link>
-            {user.tier >= 3 && (
+            {(user.tier ?? 0) >= 3 && (
               <Link href="/dashboard/inbox" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
                 Inbox
               </Link>
@@ -335,3 +335,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+

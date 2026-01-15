@@ -1,33 +1,86 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import api from '@/lib/api'
+import toast from 'react-hot-toast'
+import CreateDealModal from '@/components/CreateDealModal'
+import EditDealModal from '@/components/EditDealModal'
 
 const PIPELINE_STAGES = [
-  { id: 'lead', name: 'Lead', deals: [
-    { id: 1, company: 'TechCorp', value: 25000, contact: 'John Smith' },
-    { id: 2, company: 'Startup.io', value: 15000, contact: 'Sarah Johnson' },
-  ]},
-  { id: 'qualified', name: 'Qualified', deals: [
-    { id: 3, company: 'Enterprise Inc', value: 50000, contact: 'Mike Chen' },
-  ]},
-  { id: 'proposal', name: 'Proposal', deals: [
-    { id: 4, company: 'Growth Co', value: 35000, contact: 'Lisa Wang' },
-    { id: 5, company: 'Scale LLC', value: 28000, contact: 'David Park' },
-  ]},
-  { id: 'negotiation', name: 'Negotiation', deals: [
-    { id: 6, company: 'Big Corp', value: 75000, contact: 'Alex Turner' },
-  ]},
-  { id: 'closed', name: 'Closed Won', deals: [
-    { id: 7, company: 'Success Inc', value: 45000, contact: 'Emma Wilson' },
-  ]},
+  { id: 'lead', name: 'Lead' },
+  { id: 'qualified', name: 'Qualified' },
+  { id: 'proposal', name: 'Proposal' },
+  { id: 'negotiation', name: 'Negotiation' },
+  { id: 'closed_won', name: 'Closed Won' },
 ]
 
 export default function CRMPage() {
   const [view, setView] = useState('pipeline')
+  const [deals, setDeals] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({})
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedDealId, setSelectedDealId] = useState(null)
+  const [selectedStage, setSelectedStage] = useState(null)
 
-  const totalValue = PIPELINE_STAGES.reduce((sum, stage) => 
-    sum + stage.deals.reduce((s, d) => s + d.value, 0), 0
-  )
+  useEffect(() => {
+    loadDeals()
+  }, [view])
+
+  async function loadDeals() {
+    try {
+      const params = view === 'pipeline' ? '?view=pipeline' : '?view=list'
+      const response = await api.get(`/api/crm/deals${params}`)
+      const data = response.data
+      setDeals(data.deals || [])
+      setStats(data.stats || {})
+    } catch (error) {
+      console.error('Error loading deals:', error)
+      setDeals([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function handleDealCreated() {
+    loadDeals()
+  }
+
+  function handleDealUpdated() {
+    loadDeals()
+  }
+
+  function handleEditDeal(dealId) {
+    setSelectedDealId(dealId)
+    setShowEditModal(true)
+  }
+
+  function handleCreateDealInStage(stageId) {
+    setSelectedStage(stageId)
+    setShowCreateModal(true)
+  }
+
+  async function handleDeleteDeal(dealId) {
+    if (!confirm('Are you sure you want to delete this deal?')) {
+      return
+    }
+
+    try {
+      await api.delete(`/api/crm/deals/${dealId}`)
+      toast.success('Deal deleted successfully')
+      loadDeals()
+    } catch (error) {
+      toast.error('Failed to delete deal')
+    }
+  }
+
+  function getDealsByStage(stageId) {
+    return deals.filter(deal => deal.stage === stageId)
+  }
+
+  const totalValue = deals.reduce((sum, deal) => sum + (parseFloat(deal.value) || 0), 0)
+  const openDeals = deals.filter(d => !d.stage.includes('closed')).length
 
   return (
     <div className="space-y-8">
@@ -84,33 +137,45 @@ export default function CRMPage() {
       {/* Pipeline View */}
       {view === 'pipeline' ? (
         <div className="flex gap-4 overflow-x-auto pb-4">
-          {PIPELINE_STAGES.map((stage) => (
-            <div key={stage.id} className="flex-shrink-0 w-72">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-dark-text">{stage.name}</h3>
-                <span className="text-sm text-dark-textMuted">
-                  ${stage.deals.reduce((s, d) => s + d.value, 0).toLocaleString()}
-                </span>
-              </div>
-              <div className="space-y-3">
-                {stage.deals.map((deal) => (
-                  <div
-                    key={deal.id}
-                    className="bg-dark-surface border border-dark-border rounded-lg p-4 hover:border-dark-primary transition cursor-pointer"
-                  >
-                    <h4 className="font-medium text-dark-text">{deal.company}</h4>
-                    <p className="text-sm text-dark-textMuted mt-1">{deal.contact}</p>
-                    <p className="text-dark-primary font-semibold mt-2">
-                      ${deal.value.toLocaleString()}
-                    </p>
+          {loading ? (
+            <div className="w-full text-center py-8 text-dark-textMuted">Loading deals...</div>
+          ) : (
+            PIPELINE_STAGES.map((stage) => {
+              const stageDeals = getDealsByStage(stage.id)
+              const stageValue = stageDeals.reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0)
+              return (
+                <div key={stage.id} className="flex-shrink-0 w-72">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-dark-text">{stage.name}</h3>
+                    <span className="text-sm text-dark-textMuted">
+                      ${stageValue.toLocaleString()}
+                    </span>
                   </div>
-                ))}
-                <button className="w-full py-3 border border-dashed border-dark-border rounded-lg text-dark-textMuted hover:border-dark-primary hover:text-dark-text transition">
-                  + Add Deal
-                </button>
-              </div>
-            </div>
-          ))}
+                  <div className="space-y-3">
+                    {stageDeals.map((deal) => (
+                      <div
+                        key={deal.id}
+                        onClick={() => handleEditDeal(deal.id)}
+                        className="bg-dark-surface border border-dark-border rounded-lg p-4 hover:border-dark-primary transition cursor-pointer"
+                      >
+                        <h4 className="font-medium text-dark-text">{deal.company}</h4>
+                        <p className="text-sm text-dark-textMuted mt-1">{deal.contact}</p>
+                        <p className="text-dark-primary font-semibold mt-2">
+                          ${parseFloat(deal.value || 0).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => handleCreateDealInStage(stage.id)}
+                      className="w-full py-3 border border-dashed border-dark-border rounded-lg text-dark-textMuted hover:border-dark-primary hover:text-dark-text transition"
+                    >
+                      + Add Deal
+                    </button>
+                  </div>
+                </div>
+              )
+            })
+          )}
         </div>
       ) : (
         <div className="bg-dark-surface border border-dark-border rounded-xl overflow-hidden">
@@ -148,6 +213,26 @@ export default function CRMPage() {
           </table>
         </div>
       )}
+
+      <CreateDealModal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false)
+          setSelectedStage(null)
+        }}
+        onSuccess={handleDealCreated}
+        initialStage={selectedStage}
+      />
+
+      <EditDealModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setSelectedDealId(null)
+        }}
+        onSuccess={handleDealUpdated}
+        dealId={selectedDealId}
+      />
     </div>
   )
 }

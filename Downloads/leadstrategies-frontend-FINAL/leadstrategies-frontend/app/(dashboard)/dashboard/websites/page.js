@@ -1,14 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import CreateCampaignModal from '@/components/CreateCampaignModal'
 
 export default function WebsitesPage() {
+  const router = useRouter()
   const [websites, setWebsites] = useState([])
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [url, setUrl] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [websiteProspects, setWebsiteProspects] = useState([])
 
   useEffect(() => {
     loadWebsites()
@@ -129,10 +134,16 @@ export default function WebsitesPage() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <button className="px-4 py-2 bg-dark-primary hover:bg-dark-primaryHover text-white text-sm rounded-lg transition">
+                  <button
+                    onClick={() => handleViewProspects(website.id)}
+                    className="px-4 py-2 bg-dark-primary hover:bg-dark-primaryHover text-white text-sm rounded-lg transition"
+                  >
                     View Prospects
                   </button>
-                  <button className="px-4 py-2 bg-dark-surfaceHover hover:bg-dark-border text-dark-text text-sm rounded-lg transition">
+                  <button
+                    onClick={() => handleCreateCampaign(website.id)}
+                    className="px-4 py-2 bg-dark-surfaceHover hover:bg-dark-border text-dark-text text-sm rounded-lg transition"
+                  >
                     Create Campaign
                   </button>
                 </div>
@@ -141,6 +152,16 @@ export default function WebsitesPage() {
           </div>
         )}
       </div>
+
+      <CreateCampaignModal
+        isOpen={showCreateModal}
+        onClose={() => {
+          setShowCreateModal(false)
+          setWebsiteProspects([])
+        }}
+        onSuccess={handleCampaignCreated}
+        websiteProspects={websiteProspects}
+      />
     </div>
   )
 }

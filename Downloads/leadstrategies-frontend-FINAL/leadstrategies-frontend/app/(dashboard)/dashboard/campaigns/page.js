@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
+import CreateCampaignModal from '@/components/CreateCampaignModal'
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
     loadCampaigns()
@@ -21,6 +23,10 @@ export default function CampaignsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleCampaignCreated() {
+    loadCampaigns()
   }
 
   const getStatusColor = (status) => {
@@ -40,7 +46,10 @@ export default function CampaignsPage() {
           <h1 className="text-3xl font-bold text-dark-text">Campaigns</h1>
           <p className="text-dark-textMuted mt-1">Manage your email outreach campaigns</p>
         </div>
-        <button className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition">
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition"
+        >
           + New Campaign
         </button>
       </div>
@@ -104,7 +113,14 @@ export default function CampaignsPage() {
                   <td className="px-6 py-4 text-dark-text">{campaign.open_count || 0}</td>
                   <td className="px-6 py-4 text-dark-text">{campaign.reply_count || 0}</td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-dark-primary hover:text-dark-primaryHover text-sm">
+                    <button
+                      onClick={() => {
+                        // Navigate to campaign details or show modal
+                        // For now, we'll show an alert with campaign details
+                        alert(`Campaign: ${campaign.name}\nStatus: ${campaign.status}\nSent: ${campaign.sent_count || 0}\nOpens: ${campaign.open_count || 0}\nReplies: ${campaign.reply_count || 0}`)
+                      }}
+                      className="text-dark-primary hover:text-dark-primaryHover text-sm"
+                    >
                       View
                     </button>
                   </td>
@@ -114,6 +130,12 @@ export default function CampaignsPage() {
           </table>
         </div>
       )}
+
+      <CreateCampaignModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={handleCampaignCreated}
+      />
     </div>
   )
 }

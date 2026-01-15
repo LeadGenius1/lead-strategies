@@ -2,20 +2,129 @@
 
 import { useState, useEffect } from 'react'
 import { getCurrentUser } from '@/lib/auth'
+import api from '@/lib/api'
 import toast from 'react-hot-toast'
 
 export default function SettingsPage() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [profileData, setProfileData] = useState({
+    name: '',
+    company: '',
+  })
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  })
 
   useEffect(() => {
     async function loadUser() {
       const data = await getCurrentUser()
-      setUser(data?.user || data)
+      const userData = data?.user || data
+      setUser(userData)
+      setProfileData({
+        name: userData?.name || '',
+        company: userData?.company || '',
+      })
       setLoading(false)
     }
     loadUser()
   }, [])
+
+  async function handleSaveProfile(e) {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      await api.put('/api/users/profile', profileData)
+      toast.success('Profile updated successfully!')
+      // Reload user data
+      const data = await getCurrentUser()
+      setUser(data?.user || data)
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update profile')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleChangePassword(e) {
+    e.preventDefault()
+    
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('New passwords do not match')
+      return
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      toast.error('Password must be at least 8 characters')
+      return
+    }
+
+    setSaving(true)
+    try {
+      await api.put('/api/users/password', {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      })
+      toast.success('Password changed successfully!')
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      })
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to change password')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleConnectIntegration(service) {
+    try {
+      // In a real app, this would redirect to OAuth flow
+      // For now, we'll simulate it
+      const authUrl = `/api/integrations/${service}/connect`
+      window.location.href = authUrl
+    } catch (error) {
+      toast.error(`Failed to connect ${service}`)
+    }
+  }
+
+  async function handleDisconnectIntegration(service) {
+    try {
+      await api.delete(`/api/integrations/${service}/disconnect`)
+      toast.success(`${service} disconnected successfully`)
+      // Reload user to update integration status
+      const data = await getCurrentUser()
+      setUser(data?.user || data)
+    } catch (error) {
+      toast.error(`Failed to disconnect ${service}`)
+    }
+  }
+
+  async function handleDeleteAccount() {
+    if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      return
+    }
+
+    const password = prompt('Please enter your password to confirm:')
+    if (!password) {
+      return
+    }
+
+    try {
+      await api.delete('/api/users/account', {
+        data: { password },
+      })
+      toast.success('Account deleted successfully')
+      // Redirect to login
+      window.location.href = '/login'
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete account')
+    }
+  }
 
   if (loading) {
     return (
@@ -129,12 +238,19 @@ export default function SettingsPage() {
                 <span className="text-2xl">{integration.icon}</span>
                 <span className="font-medium text-dark-text">{integration.name}</span>
               </div>
-              <button className={`px-4 py-2 rounded-lg transition ${
-                integration.connected
-                  ? 'bg-green-500/20 text-green-400'
-                  : 'bg-dark-surfaceHover text-dark-textMuted hover:text-dark-text'
-              }`}>
-                {integration.connected ? 'Connected' : 'Connect'}
+              <button
+                type="button"
+                onClick={() => integration.connected 
+                  ? handleDisconnectIntegration(integration.name.toLowerCase())
+                  : handleConnectIntegration(integration.name.toLowerCase())
+                }
+                className={`px-4 py-2 rounded-lg transition ${
+                  integration.connected
+                    ? 'bg-green-500/20 text-green-400'
+                    : 'bg-dark-surfaceHover text-dark-textMuted hover:text-dark-text'
+                }`}
+              >
+                {integration.connected ? 'Disconnect' : 'Connect'}
               </button>
             </div>
           ))}
@@ -149,7 +265,11 @@ export default function SettingsPage() {
             <p className="text-dark-text">Delete Account</p>
             <p className="text-sm text-dark-textMuted">Permanently delete your account and all data</p>
           </div>
-          <button className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition">
+          <button
+            type="button"
+            onClick={handleDeleteAccount}
+            className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition"
+          >
             Delete Account
           </button>
         </div>

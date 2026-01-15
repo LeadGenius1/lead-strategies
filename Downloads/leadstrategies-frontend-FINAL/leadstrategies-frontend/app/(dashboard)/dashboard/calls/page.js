@@ -1,15 +1,92 @@
 'use client'
 
-import { useState } from 'react'
-
-const MOCK_CALLS = [
-  { id: 1, contact: 'John Smith', company: 'TechCorp', duration: '12:34', outcome: 'Meeting Booked', time: 'Today, 2:30 PM' },
-  { id: 2, contact: 'Sarah Johnson', company: 'Startup.io', duration: '8:22', outcome: 'Follow Up', time: 'Today, 11:00 AM' },
-  { id: 3, contact: 'Mike Chen', company: 'Enterprise Inc', duration: '15:47', outcome: 'Not Interested', time: 'Yesterday, 4:15 PM' },
-]
+import { useState, useEffect } from 'react'
+import api from '@/lib/api'
+import toast from 'react-hot-toast'
 
 export default function CallsPage() {
   const [dialNumber, setDialNumber] = useState('')
+  const [calls, setCalls] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({})
+  const [calling, setCalling] = useState(false)
+  const [selectedCall, setSelectedCall] = useState(null)
+
+  useEffect(() => {
+    loadCalls()
+  }, [])
+
+  async function loadCalls() {
+    try {
+      const response = await api.get('/api/calls')
+      const data = response.data
+      setCalls(data.calls || [])
+      setStats(data.stats || {})
+    } catch (error) {
+      console.error('Error loading calls:', error)
+      setCalls([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleMakeCall() {
+    if (!dialNumber.trim()) {
+      toast.error('Please enter a phone number')
+      return
+    }
+
+    setCalling(true)
+    try {
+      const response = await api.post('/api/calls/make', {
+        phoneNumber: dialNumber,
+      })
+      toast.success('Call initiated!')
+      setDialNumber('')
+      loadCalls()
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to make call')
+    } finally {
+      setCalling(false)
+    }
+  }
+
+  async function handleViewRecording(callId) {
+    try {
+      const response = await api.get(`/api/calls/${callId}/recording`)
+      if (response.data.recordingUrl) {
+        window.open(response.data.recordingUrl, '_blank')
+      } else {
+        toast.error('Recording not available')
+      }
+    } catch (error) {
+      toast.error('Failed to load recording')
+    }
+  }
+
+  function formatDuration(seconds) {
+    if (!seconds) return '0:00'
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  function formatTime(timestamp) {
+    if (!timestamp) return ''
+    const date = new Date(timestamp)
+    const now = new Date()
+    const diffMs = now - date
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffHours < 24) {
+      return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    } else if (diffDays === 1) {
+      return `Yesterday, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    } else {
+      return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -21,10 +98,10 @@ export default function CallsPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: 'Calls Today', value: '12', icon: '📞' },
-          { label: 'Avg Duration', value: '8:45', icon: '⏱️' },
-          { label: 'Meetings Booked', value: '4', icon: '📅' },
-          { label: 'Talk Time', value: '2.5hrs', icon: '🎙️' },
+          { label: 'Calls Today', value: stats.callsToday || '0', icon: '📞' },
+          { label: 'Avg Duration', value: stats.avgDuration || '0:00', icon: '⏱️' },
+          { label: 'Meetings Booked', value: stats.meetingsBooked || '0', icon: '📅' },
+          { label: 'Talk Time', value: stats.talkTime || '0hrs', icon: '🎙️' },
         ].map((stat) => (
           <div key={stat.label} className="bg-dark-surface border border-dark-border rounded-xl p-4">
             <div className="flex items-center gap-3">
@@ -60,43 +137,63 @@ export default function CallsPage() {
               </button>
             ))}
           </div>
-          <button className="w-full mt-4 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-lg font-medium transition">
-            📞 Call
+          <button
+            onClick={handleMakeCall}
+            disabled={calling || !dialNumber.trim()}
+            className="w-full mt-4 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-lg font-medium transition disabled:opacity-50"
+          >
+            {calling ? 'Calling...' : '📞 Call'}
           </button>
         </div>
 
         {/* Recent Calls */}
         <div className="lg:col-span-2 bg-dark-surface border border-dark-border rounded-xl p-6">
           <h2 className="text-lg font-semibold text-dark-text mb-4">Recent Calls</h2>
-          <div className="space-y-4">
-            {MOCK_CALLS.map((call) => (
-              <div key={call.id} className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-dark-surfaceHover rounded-full flex items-center justify-center">
-                    📞
+          {loading ? (
+            <div className="text-center py-8 text-dark-textMuted">Loading calls...</div>
+          ) : calls.length === 0 ? (
+            <div className="text-center py-8 text-dark-textMuted">No calls yet. Make your first call!</div>
+          ) : (
+            <div className="space-y-4">
+              {calls.map((call) => (
+                <div key={call.id} className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-dark-surfaceHover rounded-full flex items-center justify-center">
+                      📞
+                    </div>
+                    <div>
+                      <p className="font-medium text-dark-text">
+                        {call.prospect?.name || call.contact || call.phone_number}
+                      </p>
+                      <p className="text-sm text-dark-textMuted">
+                        {call.prospect?.company || call.company || call.phone_number}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-dark-text">{call.contact}</p>
-                    <p className="text-sm text-dark-textMuted">{call.company}</p>
+                  <div className="text-right">
+                    <p className="text-dark-text">{formatDuration(call.duration)}</p>
+                    <p className="text-sm text-dark-textMuted">{formatTime(call.started_at || call.created_at)}</p>
                   </div>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    call.outcome === 'meeting_booked' ? 'bg-green-500/20 text-green-400' :
+                    call.outcome === 'follow_up' ? 'bg-yellow-500/20 text-yellow-400' :
+                    call.outcome === 'not_interested' ? 'bg-red-500/20 text-red-400' :
+                    'bg-gray-500/20 text-gray-400'
+                  }`}>
+                    {call.outcome ? call.outcome.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Pending'}
+                  </span>
+                  {call.recording_url && (
+                    <button
+                      onClick={() => handleViewRecording(call.id)}
+                      className="text-dark-primary hover:text-dark-primaryHover text-sm"
+                    >
+                      View Recording
+                    </button>
+                  )}
                 </div>
-                <div className="text-right">
-                  <p className="text-dark-text">{call.duration}</p>
-                  <p className="text-sm text-dark-textMuted">{call.time}</p>
-                </div>
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  call.outcome === 'Meeting Booked' ? 'bg-green-500/20 text-green-400' :
-                  call.outcome === 'Follow Up' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
-                  {call.outcome}
-                </span>
-                <button className="text-dark-primary hover:text-dark-primaryHover text-sm">
-                  View Recording
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

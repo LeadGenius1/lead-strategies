@@ -1,26 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import api from '@/lib/api'
+import toast from 'react-hot-toast'
 
 const CHANNELS = [
-  { id: 'all', name: 'All Channels', icon: '📥', count: 24 },
-  { id: 'email', name: 'Email', icon: '📧', count: 12 },
-  { id: 'linkedin', name: 'LinkedIn', icon: '💼', count: 5 },
-  { id: 'twitter', name: 'Twitter/X', icon: '🐦', count: 3 },
-  { id: 'instagram', name: 'Instagram', icon: '📸', count: 2 },
-  { id: 'sms', name: 'SMS', icon: '💬', count: 2 },
-]
-
-const MOCK_MESSAGES = [
-  { id: 1, from: 'John Smith', email: 'john@techcorp.com', channel: 'email', subject: 'Re: Partnership Inquiry', preview: 'Thanks for reaching out! I would love to discuss...', time: '2 min ago', unread: true },
-  { id: 2, from: 'Sarah Johnson', email: 'sarah@startup.io', channel: 'linkedin', subject: 'LinkedIn Message', preview: 'Hi! I saw your post about AI lead generation...', time: '15 min ago', unread: true },
-  { id: 3, from: 'Mike Chen', email: 'mike@enterprise.com', channel: 'email', subject: 'Interested in Tackle.IO', preview: 'We are currently evaluating platforms for our sales team...', time: '1 hour ago', unread: false },
-  { id: 4, from: 'Lisa Wang', email: 'lisa@agency.co', channel: 'twitter', subject: 'Twitter DM', preview: 'Love what you are building! Quick question...', time: '3 hours ago', unread: false },
+  { id: 'all', name: 'All Channels', icon: '📥' },
+  { id: 'email', name: 'Email', icon: '📧' },
+  { id: 'linkedin', name: 'LinkedIn', icon: '💼' },
+  { id: 'twitter', name: 'Twitter/X', icon: '🐦' },
+  { id: 'instagram', name: 'Instagram', icon: '📸' },
+  { id: 'sms', name: 'SMS', icon: '💬' },
 ]
 
 export default function InboxPage() {
   const [selectedChannel, setSelectedChannel] = useState('all')
   const [selectedMessage, setSelectedMessage] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [replyText, setReplyText] = useState('')
+  const [sendingReply, setSendingReply] = useState(false)
+  const [aiSuggesting, setAiSuggesting] = useState(false)
+  const [channelCounts, setChannelCounts] = useState({})
 
   const filteredMessages = selectedChannel === 'all' 
     ? MOCK_MESSAGES 
@@ -47,7 +49,7 @@ export default function InboxPage() {
                 <span>{channel.name}</span>
               </span>
               <span className="text-xs bg-dark-surfaceHover px-2 py-0.5 rounded-full">
-                {channel.count}
+                {channelCounts[channel.id] || 0}
               </span>
             </button>
           ))}
@@ -72,29 +74,44 @@ export default function InboxPage() {
           />
         </div>
         <div className="divide-y divide-dark-border">
-          {filteredMessages.map((message) => (
-            <button
-              key={message.id}
-              onClick={() => setSelectedMessage(message)}
-              className={`w-full p-4 text-left hover:bg-dark-surfaceHover transition ${
-                selectedMessage?.id === message.id ? 'bg-dark-surfaceHover' : ''
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  {message.unread && (
-                    <span className="w-2 h-2 bg-dark-primary rounded-full"></span>
-                  )}
-                  <span className={`font-medium ${message.unread ? 'text-dark-text' : 'text-dark-textMuted'}`}>
-                    {message.from}
+          {loading ? (
+            <div className="p-4 text-center text-dark-textMuted">Loading messages...</div>
+          ) : filteredMessages.length === 0 ? (
+            <div className="p-4 text-center text-dark-textMuted">No messages found</div>
+          ) : (
+            filteredMessages.map((message) => (
+              <button
+                key={message.id}
+                onClick={() => {
+                  setSelectedMessage(message)
+                  if (!message.is_read) {
+                    handleMarkRead(message.id, true)
+                  }
+                }}
+                className={`w-full p-4 text-left hover:bg-dark-surfaceHover transition ${
+                  selectedMessage?.id === message.id ? 'bg-dark-surfaceHover' : ''
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2">
+                    {!message.is_read && (
+                      <span className="w-2 h-2 bg-dark-primary rounded-full"></span>
+                    )}
+                    <span className={`font-medium ${!message.is_read ? 'text-dark-text' : 'text-dark-textMuted'}`}>
+                      {message.from_name || message.from}
+                    </span>
+                  </div>
+                  <span className="text-xs text-dark-textMuted">
+                    {formatTime(message.received_at || message.created_at)}
                   </span>
                 </div>
-                <span className="text-xs text-dark-textMuted">{message.time}</span>
-              </div>
-              <p className="text-sm text-dark-text mt-1 truncate">{message.subject}</p>
-              <p className="text-sm text-dark-textMuted mt-1 truncate">{message.preview}</p>
-            </button>
-          ))}
+                <p className="text-sm text-dark-text mt-1 truncate">{message.subject}</p>
+                <p className="text-sm text-dark-textMuted mt-1 truncate">
+                  {message.body?.substring(0, 100) || message.preview}
+                </p>
+              </button>
+            ))
+          )}
         </div>
       </div>
 
@@ -105,25 +122,49 @@ export default function InboxPage() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h2 className="text-xl font-semibold text-dark-text">{selectedMessage.subject}</h2>
-                <p className="text-dark-textMuted mt-1">From: {selectedMessage.from} &lt;{selectedMessage.email}&gt;</p>
+                <p className="text-dark-textMuted mt-1">
+                  From: {selectedMessage.from_name || selectedMessage.from} &lt;{selectedMessage.from_email || selectedMessage.email}&gt;
+                </p>
               </div>
-              <span className="text-sm text-dark-textMuted">{selectedMessage.time}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-dark-textMuted">
+                  {formatTime(selectedMessage.received_at || selectedMessage.created_at)}
+                </span>
+                <button
+                  onClick={() => handleDeleteMessage(selectedMessage.id)}
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
             <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
-              <p className="text-dark-text">{selectedMessage.preview}</p>
+              <p className="text-dark-text whitespace-pre-wrap">
+                {selectedMessage.body || selectedMessage.preview}
+              </p>
             </div>
             <div className="mt-6">
               <textarea
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Type your reply..."
                 rows={4}
                 className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary resize-none"
               ></textarea>
               <div className="flex justify-between mt-4">
-                <button className="px-4 py-2 bg-dark-surfaceHover text-dark-text rounded-lg text-sm">
-                  🤖 AI Suggest Reply
+                <button
+                  onClick={handleAISuggest}
+                  disabled={aiSuggesting}
+                  className="px-4 py-2 bg-dark-surfaceHover text-dark-text rounded-lg text-sm hover:bg-dark-border transition disabled:opacity-50"
+                >
+                  {aiSuggesting ? 'Generating...' : '🤖 AI Suggest Reply'}
                 </button>
-                <button className="px-6 py-2 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg">
-                  Send Reply
+                <button
+                  onClick={handleReply}
+                  disabled={sendingReply || !replyText.trim()}
+                  className="px-6 py-2 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition disabled:opacity-50"
+                >
+                  {sendingReply ? 'Sending...' : 'Send Reply'}
                 </button>
               </div>
             </div>

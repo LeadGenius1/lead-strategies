@@ -2,11 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import api from '@/lib/api'
+import AddProspectModal from '@/components/AddProspectModal'
+import ProspectProfileModal from '@/components/ProspectProfileModal'
+import SendEmailModal from '@/components/SendEmailModal'
 
 export default function ProspectsPage() {
   const [prospects, setProspects] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [selectedProspect, setSelectedProspect] = useState(null)
 
   useEffect(() => {
     loadProspects()
@@ -41,7 +48,10 @@ export default function ProspectsPage() {
           <h1 className="text-3xl font-bold text-dark-text">Prospects</h1>
           <p className="text-dark-textMuted mt-1">Manage and track your prospects</p>
         </div>
-        <button className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition"
+        >
           + Add Prospect
         </button>
       </div>
@@ -115,6 +125,31 @@ export default function ProspectsPage() {
           ))}
         </div>
       )}
+
+      <AddProspectModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={handleProspectAdded}
+      />
+
+      <ProspectProfileModal
+        isOpen={showProfileModal}
+        onClose={() => {
+          setShowProfileModal(false)
+          setSelectedProspect(null)
+        }}
+        prospectId={selectedProspect?.id}
+      />
+
+      <SendEmailModal
+        isOpen={showEmailModal}
+        onClose={() => {
+          setShowEmailModal(false)
+          setSelectedProspect(null)
+        }}
+        onSuccess={handleEmailSent}
+        prospect={selectedProspect}
+      />
     </div>
   )
 }

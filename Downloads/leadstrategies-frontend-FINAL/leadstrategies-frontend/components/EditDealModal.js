@@ -59,10 +59,13 @@ export default function EditDealModal({ isOpen, onClose, onSuccess, dealId }) {
 
     setLoading(true)
     try {
-      await api.put(`/api/crm/deals/${dealId}`, {
-        ...formData,
+      // Backend expects: name, value, stage, description, expectedClose
+      await api.put(`/api/tackle/deals/${dealId}`, {
+        name: `${formData.company} - ${formData.contact}`,
         value: value,
-        expectedCloseDate: formData.expectedCloseDate || null,
+        stage: formData.stage,
+        description: formData.notes,
+        expectedClose: formData.expectedCloseDate || null,
       })
       toast.success('Deal updated successfully!')
       onSuccess?.()

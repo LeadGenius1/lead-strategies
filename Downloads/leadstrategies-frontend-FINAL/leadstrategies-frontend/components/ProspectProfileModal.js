@@ -20,9 +20,10 @@ export default function ProspectProfileModal({ isOpen, onClose, prospectId }) {
     
     setLoading(true)
     try {
-      const response = await api.get(`/api/prospects/${prospectId}`)
+      const response = await api.get(`/api/leads/${prospectId}`)
       const data = response.data
-      setProspect(data.prospect || data)
+      // Backend returns lead data directly or in data.lead
+      setProspect(data.lead || data.prospect || data)
       setEmails(data.emails || [])
       setNotes(data.notes || [])
     } catch (error) {

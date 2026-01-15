@@ -3,18 +3,30 @@ import Cookies from 'js-cookie'
 
 export async function login(email, password) {
   const response = await api.post('/api/auth/login', { email, password })
-  const { token, user, subscription } = response.data
+  // Backend returns: { success: true, token, data: { user, subscription } }
+  const data = response.data
+  const token = data.token || data.data?.token
+  const user = data.user || data.data?.user
+  const subscription = data.subscription || data.data?.subscription
   
-  Cookies.set('token', token, { expires: 7 })
+  if (token) {
+    Cookies.set('token', token, { expires: 7 })
+  }
   
   return { user, subscription, token }
 }
 
 export async function signup(userData) {
   const response = await api.post('/api/auth/signup', userData)
-  const { token, user, subscription } = response.data
+  // Backend returns: { success: true, token, data: { user, subscription } }
+  const data = response.data
+  const token = data.token || data.data?.token
+  const user = data.user || data.data?.user
+  const subscription = data.subscription || data.data?.subscription
   
-  Cookies.set('token', token, { expires: 7 })
+  if (token) {
+    Cookies.set('token', token, { expires: 7 })
+  }
   
   return { user, subscription, token }
 }
@@ -33,7 +45,9 @@ export function getToken() {
 export async function getCurrentUser() {
   try {
     const response = await api.get('/api/auth/me')
-    return response.data
+    // Backend returns: { success: true, data: { user, tierLimits, tierFeatures } }
+    const data = response.data
+    return data.user || data.data?.user || data
   } catch (error) {
     return null
   }

@@ -38,9 +38,21 @@ export default function SendEmailModal({ isOpen, onClose, onSuccess, prospect })
 
     setLoading(true)
     try {
-      await api.post(`/api/prospects/${prospect.id}/send-email`, {
+      // Note: Backend doesn't have this endpoint yet, using campaigns as workaround
+      // TODO: Implement /api/leads/:id/send-email in backend
+      // For now, create a single-recipient campaign and send it
+      await api.post('/api/campaigns', {
+        name: `Email to ${prospect.name || prospect.email}`,
         subject: formData.subject,
-        body: formData.body,
+        htmlContent: formData.body,
+        leadIds: [prospect.id],
+        status: 'draft'
+      }).then(async (campaignRes) => {
+        // Send the campaign immediately
+        const campaignId = campaignRes.data?.campaign?.id || campaignRes.data?.id
+        if (campaignId) {
+          await api.post(`/api/campaigns/${campaignId}/send`)
+        }
       })
       toast.success('Email sent successfully!')
       onSuccess?.()

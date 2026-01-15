@@ -32,7 +32,7 @@ export default function AddProspectModal({ isOpen, onClose, onSuccess }) {
 
     setLoading(true)
     try {
-      await api.post('/api/prospects', formData)
+      await api.post('/api/leads', formData)
       toast.success('Prospect added successfully!')
       onSuccess?.()
       onClose()

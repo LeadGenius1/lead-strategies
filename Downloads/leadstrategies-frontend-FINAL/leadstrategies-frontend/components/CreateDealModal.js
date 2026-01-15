@@ -32,11 +32,19 @@ export default function CreateDealModal({ isOpen, onClose, onSuccess, initialSta
 
     setLoading(true)
     try {
-      await api.post('/api/crm/deals', {
-        ...formData,
+      // Backend expects: name, value, stage, companyId (optional), contactIds (optional)
+      // Map frontend fields to backend format
+      const dealData = {
+        name: `${formData.company} - ${formData.contact}`,
         value: value,
-        expectedCloseDate: formData.expectedCloseDate || null,
-      })
+        stage: initialStage || formData.stage || 'lead',
+        currency: 'USD',
+        description: formData.notes,
+        expectedClose: formData.expectedCloseDate ? new Date(formData.expectedCloseDate).toISOString() : null,
+        // Note: Backend may require companyId/contactIds - for now pass as strings
+        // Backend should handle creating company/contact if they don't exist
+      }
+      await api.post('/api/tackle/deals', dealData)
       toast.success('Deal created successfully!')
       onSuccess?.()
       onClose()

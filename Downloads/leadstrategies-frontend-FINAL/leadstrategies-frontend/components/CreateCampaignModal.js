@@ -27,8 +27,9 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess, websit
 
   async function loadProspects() {
     try {
-      const response = await api.get('/api/prospects')
-      const prospectsList = response.data?.prospects || response.data || []
+      const response = await api.get('/api/leads')
+      // Backend returns { success: true, data: { leads: [...] } }
+      const prospectsList = response.data?.leads || response.data?.prospects || response.data || []
       setProspects(prospectsList)
     } catch (error) {
       console.error('Error loading prospects:', error)
@@ -61,9 +62,9 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess, websit
       const campaignData = {
         name: formData.name,
         subject: formData.subject,
-        body: formData.body,
-        prospectIds: selectedProspects,
-        scheduledFor: formData.scheduledFor || null,
+        htmlContent: formData.body, // Backend expects htmlContent
+        leadIds: selectedProspects, // Backend uses leadIds, not prospectIds
+        scheduledAt: formData.scheduledFor || null, // Backend expects scheduledAt
       }
 
       await api.post('/api/campaigns', campaignData)

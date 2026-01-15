@@ -22,8 +22,9 @@ export default function ProspectsPage() {
   async function loadProspects() {
     try {
       const params = filter !== 'all' ? `?status=${filter}` : ''
-      const response = await api.get(`/api/prospects${params}`)
-      setProspects(response.data?.prospects || response.data || [])
+      const response = await api.get(`/api/leads${params}`)
+      // Backend returns { success: true, data: { leads: [...] } }
+      setProspects(response.data?.leads || response.data?.prospects || response.data || [])
     } catch (error) {
       console.error('Error loading prospects:', error)
     } finally {
@@ -152,4 +153,12 @@ export default function ProspectsPage() {
       />
     </div>
   )
+
+  function handleProspectAdded() {
+    loadProspects()
+  }
+
+  function handleEmailSent() {
+    loadProspects()
+  }
 }

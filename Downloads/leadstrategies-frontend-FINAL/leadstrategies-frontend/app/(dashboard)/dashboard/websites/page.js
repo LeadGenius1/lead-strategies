@@ -22,7 +22,9 @@ export default function WebsitesPage() {
   async function loadWebsites() {
     try {
       const response = await api.get('/api/websites')
-      setWebsites(response.data || [])
+      // Backend returns { success: true, data: { websites: [...] } }
+      const websitesList = response.data?.websites || response.data || []
+      setWebsites(websitesList)
     } catch (error) {
       console.error('Error loading websites:', error)
     } finally {
@@ -37,8 +39,10 @@ export default function WebsitesPage() {
     setAnalyzing(true)
     try {
       const response = await api.post('/api/websites/analyze', { url })
+      // Backend returns { success: true, data: { website: {...} } }
+      const website = response.data.website || response.data?.website || response.data
       toast.success('Website analyzed successfully!')
-      setWebsites([response.data, ...websites])
+      await loadWebsites() // Reload to get updated list
       setUrl('')
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to analyze website')

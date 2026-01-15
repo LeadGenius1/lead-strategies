@@ -30,11 +30,27 @@ export default function CRMPage() {
 
   async function loadDeals() {
     try {
-      const params = view === 'pipeline' ? '?view=pipeline' : '?view=list'
-      const response = await api.get(`/api/crm/deals${params}`)
+      // Backend uses /api/tackle/deals with pipeline endpoint
+      const endpoint = view === 'pipeline' ? '/api/tackle/deals/pipeline' : '/api/tackle/deals'
+      const response = await api.get(endpoint)
       const data = response.data
-      setDeals(data.deals || [])
-      setStats(data.stats || {})
+      
+      if (view === 'pipeline') {
+        // Pipeline view returns stages object
+        const pipeline = data.pipeline || data
+        const allDeals = Object.values(pipeline).flatMap(stage => stage.deals || [])
+        setDeals(allDeals)
+        // Calculate stats from pipeline
+        const stats = {
+          totalValue: Object.values(pipeline).reduce((sum, stage) => sum + (stage.totalValue || 0), 0),
+          totalDeals: Object.values(pipeline).reduce((sum, stage) => sum + (stage.count || 0), 0)
+        }
+        setStats(stats)
+      } else {
+        // List view returns deals array
+        setDeals(data.deals || [])
+        setStats(data.stats || {})
+      }
     } catch (error) {
       console.error('Error loading deals:', error)
       setDeals([])
@@ -108,7 +124,10 @@ export default function CRMPage() {
               List
             </button>
           </div>
-          <button className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition">
+          <button 
+            onClick={() => setShowCreateModal(true)}
+            className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition"
+          >
             + New Deal
           </button>
         </div>
@@ -158,8 +177,10 @@ export default function CRMPage() {
                         onClick={() => handleEditDeal(deal.id)}
                         className="bg-dark-surface border border-dark-border rounded-lg p-4 hover:border-dark-primary transition cursor-pointer"
                       >
-                        <h4 className="font-medium text-dark-text">{deal.company}</h4>
-                        <p className="text-sm text-dark-textMuted mt-1">{deal.contact}</p>
+                        <h4 className="font-medium text-dark-text">{deal.name || deal.company?.name || deal.company || 'Unnamed Deal'}</h4>
+                        <p className="text-sm text-dark-textMuted mt-1">
+                          {deal.contacts?.[0] ? `${deal.contacts[0].firstName} ${deal.contacts[0].lastName}` : deal.contact || 'No contact'}
+                        </p>
                         <p className="text-dark-primary font-semibold mt-2">
                           ${parseFloat(deal.value || 0).toLocaleString()}
                         </p>

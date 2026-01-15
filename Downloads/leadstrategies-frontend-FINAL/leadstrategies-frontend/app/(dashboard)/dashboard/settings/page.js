@@ -149,7 +149,8 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-dark-textMuted mb-2">Full Name</label>
             <input
               type="text"
-              defaultValue={user?.name || ''}
+              value={profileData.name}
+              onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text focus:outline-none focus:border-dark-primary"
             />
           </div>
@@ -157,7 +158,7 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-dark-textMuted mb-2">Email</label>
             <input
               type="email"
-              defaultValue={user?.email || ''}
+              value={user?.email || ''}
               disabled
               className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-textMuted cursor-not-allowed"
             />
@@ -166,7 +167,8 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-dark-textMuted mb-2">Company</label>
             <input
               type="text"
-              defaultValue={user?.company || ''}
+              value={profileData.company}
+              onChange={(e) => setProfileData({ ...profileData, company: e.target.value })}
               className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text focus:outline-none focus:border-dark-primary"
             />
           </div>
@@ -174,15 +176,17 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-dark-textMuted mb-2">Role</label>
             <input
               type="text"
-              defaultValue={user?.role || 'User'}
+              value={user?.role || 'User'}
               disabled
               className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-textMuted cursor-not-allowed"
             />
           </div>
         </div>
-        <button className="mt-6 px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition">
-          Save Changes
-        </button>
+        <form onSubmit={handleSaveProfile}>
+          <button type="submit" disabled={saving} className="mt-6 px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition disabled:opacity-50">
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </form>
       </div>
 
       {/* Subscription Section */}
@@ -221,6 +225,58 @@ export default function SettingsPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Password Section */}
+      <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
+        <h2 className="text-lg font-semibold text-dark-text mb-4">Change Password</h2>
+        <form onSubmit={handleChangePassword} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-dark-textMuted mb-2">
+              Current Password
+            </label>
+            <input
+              type="password"
+              value={passwordData.currentPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text focus:outline-none focus:border-dark-primary"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-dark-textMuted mb-2">
+              New Password
+            </label>
+            <input
+              type="password"
+              value={passwordData.newPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text focus:outline-none focus:border-dark-primary"
+              required
+              minLength={8}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-dark-textMuted mb-2">
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              value={passwordData.confirmPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text focus:outline-none focus:border-dark-primary"
+              required
+              minLength={8}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={saving}
+            className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition disabled:opacity-50"
+          >
+            {saving ? 'Changing...' : 'Change Password'}
+          </button>
+        </form>
       </div>
 
       {/* Integrations Section */}

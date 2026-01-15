@@ -18,10 +18,25 @@ export default function CallsPage() {
 
   async function loadCalls() {
     try {
-      const response = await api.get('/api/calls')
+      const response = await api.get('/api/tackle/calls')
       const data = response.data
+      // Backend returns { success: true, data: { calls: [...], pagination: {...} } }
       setCalls(data.calls || [])
-      setStats(data.stats || {})
+      
+      // Load stats separately
+      try {
+        const statsResponse = await api.get('/api/tackle/calls/stats/summary')
+        const statsData = statsResponse.data
+        setStats({
+          callsToday: statsData.totalCalls || 0,
+          avgDuration: formatDuration(statsData.avgDuration || 0),
+          meetingsBooked: statsData.byOutcome?.meeting_booked || 0,
+          talkTime: `${Math.floor((statsData.totalDuration || 0) / 3600)}hrs`,
+        })
+      } catch (err) {
+        console.error('Error loading call stats:', err)
+        setStats({})
+      }
     } catch (error) {
       console.error('Error loading calls:', error)
       setCalls([])
@@ -38,8 +53,9 @@ export default function CallsPage() {
 
     setCalling(true)
     try {
-      const response = await api.post('/api/calls/make', {
-        phoneNumber: dialNumber,
+      // Backend expects: toNumber, contactId (optional), fromNumber (optional)
+      const response = await api.post('/api/tackle/calls/initiate', {
+        toNumber: dialNumber,
       })
       toast.success('Call initiated!')
       setDialNumber('')
@@ -53,9 +69,10 @@ export default function CallsPage() {
 
   async function handleViewRecording(callId) {
     try {
-      const response = await api.get(`/api/calls/${callId}/recording`)
-      if (response.data.recordingUrl) {
-        window.open(response.data.recordingUrl, '_blank')
+      const response = await api.get(`/api/tackle/calls/${callId}/recording`)
+      const data = response.data
+      if (data.recordingUrl || data.data?.recordingUrl) {
+        window.open(data.recordingUrl || data.data.recordingUrl, '_blank')
       } else {
         toast.error('Recording not available')
       }
@@ -163,16 +180,18 @@ export default function CallsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-dark-text">
-                        {call.prospect?.name || call.contact || call.phone_number}
+                        {call.contact?.firstName && call.contact?.lastName 
+                          ? `${call.contact.firstName} ${call.contact.lastName}`
+                          : call.contact?.email || call.toNumber || 'Unknown'}
                       </p>
                       <p className="text-sm text-dark-textMuted">
-                        {call.prospect?.company || call.company || call.phone_number}
+                        {call.toNumber || call.contact?.email || 'No number'}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-dark-text">{formatDuration(call.duration)}</p>
-                    <p className="text-sm text-dark-textMuted">{formatTime(call.started_at || call.created_at)}</p>
+                    <p className="text-sm text-dark-textMuted">{formatTime(call.startedAt || call.createdAt)}</p>
                   </div>
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     call.outcome === 'meeting_booked' ? 'bg-green-500/20 text-green-400' :
@@ -180,9 +199,9 @@ export default function CallsPage() {
                     call.outcome === 'not_interested' ? 'bg-red-500/20 text-red-400' :
                     'bg-gray-500/20 text-gray-400'
                   }`}>
-                    {call.outcome ? call.outcome.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Pending'}
+                    {call.outcome ? call.outcome.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : call.status || 'Pending'}
                   </span>
-                  {call.recording_url && (
+                  {call.recordingUrl && (
                     <button
                       onClick={() => handleViewRecording(call.id)}
                       className="text-dark-primary hover:text-dark-primaryHover text-sm"

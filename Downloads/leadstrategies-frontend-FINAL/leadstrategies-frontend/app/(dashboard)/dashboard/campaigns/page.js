@@ -109,15 +109,15 @@ export default function CampaignsPage() {
                       {campaign.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-dark-text">{campaign.sent_count || 0}</td>
-                  <td className="px-6 py-4 text-dark-text">{campaign.open_count || 0}</td>
-                  <td className="px-6 py-4 text-dark-text">{campaign.reply_count || 0}</td>
+                  <td className="px-6 py-4 text-dark-text">{campaign.sentCount || campaign.sent_count || 0}</td>
+                  <td className="px-6 py-4 text-dark-text">{campaign.openedCount || campaign.open_count || 0}</td>
+                  <td className="px-6 py-4 text-dark-text">{campaign.replyCount || campaign.reply_count || 0}</td>
                   <td className="px-6 py-4 text-right">
                     <button
                       onClick={() => {
                         // Navigate to campaign details or show modal
                         // For now, we'll show an alert with campaign details
-                        alert(`Campaign: ${campaign.name}\nStatus: ${campaign.status}\nSent: ${campaign.sent_count || 0}\nOpens: ${campaign.open_count || 0}\nReplies: ${campaign.reply_count || 0}`)
+                        alert(`Campaign: ${campaign.name}\nStatus: ${campaign.status}\nSent: ${campaign.sentCount || campaign.sent_count || 0}\nOpens: ${campaign.openedCount || campaign.open_count || 0}\nReplies: ${campaign.replyCount || campaign.reply_count || 0}`)
                       }}
                       className="text-dark-primary hover:text-dark-primaryHover text-sm"
                     >

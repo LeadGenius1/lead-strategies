@@ -162,17 +162,16 @@ async function searchProspects(criteria) {
   // Call backend API or external service to search prospects
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   try {
-    const response = await fetch(`${apiUrl}/api/prospects/search`, {
-      method: 'POST',
+    const response = await fetch(`${apiUrl}/api/leads?${searchParams.toString()}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.INTERNAL_API_KEY}`,
       },
-      body: JSON.stringify(criteria),
     })
     if (response.ok) {
       const data = await response.json()
-      return data.prospects || []
+      // Backend returns { success: true, data: { leads: [...] } }
+      return data.leads || data.data?.leads || []
     }
   } catch (error) {
     console.error('Error searching prospects:', error)

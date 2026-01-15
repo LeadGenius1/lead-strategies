@@ -15,8 +15,8 @@ const CHANNELS = [
 
 export default function InboxPage() {
   const [selectedChannel, setSelectedChannel] = useState('all')
-  const [selectedMessage, setSelectedMessage] = useState(null)
-  const [messages, setMessages] = useState([])
+  const [selectedConversation, setSelectedConversation] = useState(null)
+  const [conversations, setConversations] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [replyText, setReplyText] = useState('')
@@ -24,9 +24,136 @@ export default function InboxPage() {
   const [aiSuggesting, setAiSuggesting] = useState(false)
   const [channelCounts, setChannelCounts] = useState({})
 
-  const filteredMessages = selectedChannel === 'all' 
-    ? MOCK_MESSAGES 
-    : MOCK_MESSAGES.filter(m => m.channel === selectedChannel)
+  useEffect(() => {
+    loadConversations()
+    // Poll for updates every 30 seconds
+    const interval = setInterval(loadConversations, 30000)
+    return () => clearInterval(interval)
+  }, [selectedChannel, searchQuery])
+
+  async function loadConversations() {
+    try {
+      const params = new URLSearchParams()
+      if (selectedChannel !== 'all') params.append('channel', selectedChannel)
+      if (searchQuery) params.append('search', searchQuery)
+      
+      const response = await api.get(`/api/conversations?${params.toString()}`)
+      const data = response.data
+      // Backend returns { success: true, data: { conversations: [...] } }
+      const convs = data.conversations || data || []
+      setConversations(convs)
+      
+      // Calculate channel counts
+      const counts = {}
+      convs.forEach(conv => {
+        const channel = conv.channel || 'email'
+        counts[channel] = (counts[channel] || 0) + (conv.unreadCount || 0)
+      })
+      setChannelCounts(counts)
+    } catch (error) {
+      console.error('Error loading conversations:', error)
+      toast.error('Failed to load conversations')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function loadConversationDetails(conversationId) {
+    try {
+      const response = await api.get(`/api/conversations/${conversationId}`)
+      const data = response.data
+      setSelectedConversation(data.conversation || data)
+    } catch (error) {
+      console.error('Error loading conversation:', error)
+      toast.error('Failed to load conversation')
+    }
+  }
+
+  async function handleReply() {
+    if (!replyText.trim() || !selectedConversation) return
+
+    setSendingReply(true)
+    try {
+      await api.post(`/api/conversations/${selectedConversation.id}/messages`, {
+        content: replyText,
+        subject: selectedConversation.subject ? `Re: ${selectedConversation.subject}` : undefined,
+      })
+      toast.success('Reply sent!')
+      setReplyText('')
+      // Reload conversation to get updated messages
+      await loadConversationDetails(selectedConversation.id)
+      await loadConversations()
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send reply')
+    } finally {
+      setSendingReply(false)
+    }
+  }
+
+  async function handleAISuggest() {
+    if (!selectedConversation) return
+
+    setAiSuggesting(true)
+    try {
+      // Backend doesn't have AI suggest endpoint yet, using mock for now
+      // TODO: Implement /api/inbox/ai-suggest or /api/conversations/:id/ai-suggest
+      toast.error('AI suggest not yet implemented in backend')
+      // const response = await api.post(`/api/inbox/ai-suggest`, {
+      //   conversationId: selectedConversation.id,
+      //   messageId: selectedConversation.messages?.[0]?.id
+      // })
+      // setReplyText(response.data.suggestion || '')
+    } catch (error) {
+      toast.error('Failed to generate AI suggestion')
+    } finally {
+      setAiSuggesting(false)
+    }
+  }
+
+  async function handleMarkRead(conversationId, isRead) {
+    try {
+      await api.put(`/api/conversations/${conversationId}`, {
+        status: isRead ? 'open' : 'open', // Conversations API handles read status via messages
+      })
+      await loadConversations()
+    } catch (error) {
+      console.error('Error marking as read:', error)
+    }
+  }
+
+  async function handleDeleteMessage(conversationId) {
+    if (!confirm('Are you sure you want to delete this conversation?')) return
+
+    try {
+      await api.put(`/api/conversations/${conversationId}`, {
+        status: 'closed'
+      })
+      toast.success('Conversation deleted')
+      setSelectedConversation(null)
+      await loadConversations()
+    } catch (error) {
+      toast.error('Failed to delete conversation')
+    }
+  }
+
+  function formatTime(timestamp) {
+    if (!timestamp) return ''
+    const date = new Date(timestamp)
+    const now = new Date()
+    const diffMs = now - date
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+
+    if (diffHours < 24) {
+      return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    } else if (diffDays === 1) {
+      return `Yesterday, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    } else {
+      return date.toLocaleDateString() + ', ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  }
+
+  const filteredConversations = conversations
 
   return (
     <div className="h-[calc(100vh-4rem)] flex">
@@ -115,33 +242,60 @@ export default function InboxPage() {
         </div>
       </div>
 
-      {/* Message View */}
-      <div className="flex-1 p-6">
-        {selectedMessage ? (
+      {/* Conversation View */}
+      <div className="flex-1 p-6 overflow-y-auto">
+        {selectedConversation ? (
           <div>
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-dark-text">{selectedMessage.subject}</h2>
+                <h2 className="text-xl font-semibold text-dark-text">{selectedConversation.subject || 'No subject'}</h2>
                 <p className="text-dark-textMuted mt-1">
-                  From: {selectedMessage.from_name || selectedMessage.from} &lt;{selectedMessage.from_email || selectedMessage.email}&gt;
+                  From: {selectedConversation.contactName || 'Unknown'} &lt;{selectedConversation.contactEmail || 'No email'}&gt;
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-dark-textMuted">
-                  {formatTime(selectedMessage.received_at || selectedMessage.created_at)}
+                  {formatTime(selectedConversation.lastMessageAt || selectedConversation.createdAt)}
                 </span>
                 <button
-                  onClick={() => handleDeleteMessage(selectedMessage.id)}
+                  onClick={() => handleDeleteMessage(selectedConversation.id)}
                   className="text-red-400 hover:text-red-300 text-sm"
                 >
                   Delete
                 </button>
               </div>
             </div>
-            <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
-              <p className="text-dark-text whitespace-pre-wrap">
-                {selectedMessage.body || selectedMessage.preview}
-              </p>
+            
+            {/* Messages Thread */}
+            <div className="space-y-4 mb-6">
+              {selectedConversation.messages && selectedConversation.messages.length > 0 ? (
+                selectedConversation.messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`p-4 rounded-lg ${
+                      message.direction === 'outbound'
+                        ? 'bg-dark-primary/10 ml-auto max-w-[80%]'
+                        : 'bg-dark-surface border border-dark-border'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-medium text-dark-text">
+                        {message.direction === 'outbound' ? 'You' : selectedConversation.contactName}
+                      </span>
+                      <span className="text-xs text-dark-textMuted">
+                        {formatTime(message.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-dark-text whitespace-pre-wrap">
+                      {message.content || message.htmlContent || ''}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-dark-surface border border-dark-border rounded-xl p-6">
+                  <p className="text-dark-textMuted">No messages in this conversation</p>
+                </div>
+              )}
             </div>
             <div className="mt-6">
               <textarea

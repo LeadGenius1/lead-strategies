@@ -123,7 +123,7 @@ async function processDailyEmailCampaign(userId) {
 
 async function getAllActiveUsers() {
   // Call backend API to get all active users
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   try {
     const response = await fetch(`${apiUrl}/api/users/active`, {
       headers: {
@@ -142,7 +142,7 @@ async function getAllActiveUsers() {
 
 async function getUserWithBusinessInfo(userId) {
   // Call backend API to get user with business info
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   try {
     const response = await fetch(`${apiUrl}/api/users/${userId}`, {
       headers: {
@@ -160,7 +160,7 @@ async function getUserWithBusinessInfo(userId) {
 
 async function searchProspects(criteria) {
   // Call backend API or external service to search prospects
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   try {
     const response = await fetch(`${apiUrl}/api/prospects/search`, {
       method: 'POST',
@@ -212,7 +212,7 @@ function calculateProspectScore(prospect, businessInfo) {
 
 async function generatePersonalizedEmail(prospect, businessInfo) {
   // Call AI service to generate personalized email
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   try {
     const response = await fetch(`${apiUrl}/api/ai/generate-email`, {
       method: 'POST',
@@ -260,7 +260,7 @@ AI Lead Strategies`
 
 async function scheduleEmailsFor8AM(emailCampaigns, userId) {
   // Schedule emails to be sent at 8am
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   const scheduledEmails = []
 
   for (const email of emailCampaigns) {
@@ -300,7 +300,7 @@ async function scheduleEmailsFor8AM(emailCampaigns, userId) {
 
 async function storeCampaignStatus(statusData) {
   // Store campaign status for dashboard display
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend-production-2987.up.railway.app'
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
   try {
     await fetch(`${apiUrl}/api/campaigns/status`, {
       method: 'POST',

@@ -196,45 +196,44 @@ export default function InboxPage() {
         <div className="p-4 border-b border-dark-border">
           <input
             type="text"
-            placeholder="Search messages..."
+            placeholder="Search conversations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary"
           />
         </div>
         <div className="divide-y divide-dark-border">
           {loading ? (
-            <div className="p-4 text-center text-dark-textMuted">Loading messages...</div>
-          ) : filteredMessages.length === 0 ? (
-            <div className="p-4 text-center text-dark-textMuted">No messages found</div>
+            <div className="p-4 text-center text-dark-textMuted">Loading conversations...</div>
+          ) : filteredConversations.length === 0 ? (
+            <div className="p-4 text-center text-dark-textMuted">No conversations found</div>
           ) : (
-            filteredMessages.map((message) => (
+            filteredConversations.map((conversation) => (
               <button
-                key={message.id}
+                key={conversation.id}
                 onClick={() => {
-                  setSelectedMessage(message)
-                  if (!message.is_read) {
-                    handleMarkRead(message.id, true)
-                  }
+                  loadConversationDetails(conversation.id)
                 }}
                 className={`w-full p-4 text-left hover:bg-dark-surfaceHover transition ${
-                  selectedMessage?.id === message.id ? 'bg-dark-surfaceHover' : ''
+                  selectedConversation?.id === conversation.id ? 'bg-dark-surfaceHover' : ''
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    {!message.is_read && (
+                    {(conversation.unreadCount > 0 || !conversation.lastMessageRead) && (
                       <span className="w-2 h-2 bg-dark-primary rounded-full"></span>
                     )}
-                    <span className={`font-medium ${!message.is_read ? 'text-dark-text' : 'text-dark-textMuted'}`}>
-                      {message.from_name || message.from}
+                    <span className={`font-medium ${(conversation.unreadCount > 0 || !conversation.lastMessageRead) ? 'text-dark-text' : 'text-dark-textMuted'}`}>
+                      {conversation.contactName || conversation.contactEmail || 'Unknown'}
                     </span>
                   </div>
                   <span className="text-xs text-dark-textMuted">
-                    {formatTime(message.received_at || message.created_at)}
+                    {formatTime(conversation.lastMessageAt || conversation.createdAt)}
                   </span>
                 </div>
-                <p className="text-sm text-dark-text mt-1 truncate">{message.subject}</p>
+                <p className="text-sm text-dark-text mt-1 truncate">{conversation.subject || 'No subject'}</p>
                 <p className="text-sm text-dark-textMuted mt-1 truncate">
-                  {message.body?.substring(0, 100) || message.preview}
+                  {conversation.messages?.[0]?.content?.substring(0, 100) || conversation.preview || 'No preview'}
                 </p>
               </button>
             ))

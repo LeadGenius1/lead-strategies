@@ -168,4 +168,39 @@ export default function WebsitesPage() {
       />
     </div>
   )
+
+  async function handleViewProspects(websiteId) {
+    try {
+      // Navigate to prospects page with website filter
+      router.push(`/dashboard/prospects?websiteId=${websiteId}`)
+    } catch (error) {
+      console.error('Error navigating to prospects:', error)
+      toast.error('Failed to load prospects')
+    }
+  }
+
+  async function handleCreateCampaign(websiteId) {
+    try {
+      // Fetch prospects for this website
+      // Note: Backend endpoint /api/websites/:id/prospects may not exist yet
+      // Using workaround: fetch all leads and filter client-side
+      const response = await api.get('/api/leads')
+      const allLeads = response.data?.leads || response.data || []
+      
+      // Filter leads by website (if websiteId is stored in lead data)
+      // For now, just use all leads as website prospects
+      setWebsiteProspects(allLeads)
+      setShowCreateModal(true)
+    } catch (error) {
+      console.error('Error loading website prospects:', error)
+      toast.error('Failed to load prospects for campaign')
+      // Still open modal with empty prospects list
+      setWebsiteProspects([])
+      setShowCreateModal(true)
+    }
+  }
+
+  function handleCampaignCreated() {
+    loadWebsites()
+  }
 }

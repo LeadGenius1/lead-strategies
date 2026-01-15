@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
 import DailyEmailStatus from '@/components/DailyEmailStatus'
 
@@ -109,13 +110,22 @@ export default function DashboardPage() {
       <div>
         <h2 className="text-xl font-semibold text-dark-text mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-4">
-          <button className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition">
+          <button 
+            onClick={() => router.push('/dashboard/websites')}
+            className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition"
+          >
             + New Website
           </button>
-          <button className="px-6 py-3 bg-dark-surface border border-dark-border hover:border-dark-primary text-dark-text rounded-lg transition">
+          <button 
+            onClick={() => router.push('/dashboard/campaigns')}
+            className="px-6 py-3 bg-dark-surface border border-dark-border hover:border-dark-primary text-dark-text rounded-lg transition"
+          >
             + Create Campaign
           </button>
-          <button className="px-6 py-3 bg-dark-surface border border-dark-border hover:border-dark-primary text-dark-text rounded-lg transition">
+          <button 
+            onClick={() => router.push('/dashboard/prospects')}
+            className="px-6 py-3 bg-dark-surface border border-dark-border hover:border-dark-primary text-dark-text rounded-lg transition"
+          >
             + Add Prospect
           </button>
         </div>

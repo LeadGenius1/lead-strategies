@@ -115,10 +115,22 @@ export default function ProspectsPage() {
               </div>
               
               <div className="flex gap-2 mt-4">
-                <button className="px-4 py-2 bg-dark-primary hover:bg-dark-primaryHover text-white text-sm rounded-lg transition">
+                <button 
+                  onClick={() => {
+                    setSelectedProspect(prospect)
+                    setShowEmailModal(true)
+                  }}
+                  className="px-4 py-2 bg-dark-primary hover:bg-dark-primaryHover text-white text-sm rounded-lg transition"
+                >
                   Send Email
                 </button>
-                <button className="px-4 py-2 bg-dark-surfaceHover hover:bg-dark-border text-dark-text text-sm rounded-lg transition">
+                <button 
+                  onClick={() => {
+                    setSelectedProspect(prospect)
+                    setShowProfileModal(true)
+                  }}
+                  className="px-4 py-2 bg-dark-surfaceHover hover:bg-dark-border text-dark-text text-sm rounded-lg transition"
+                >
                   View Profile
                 </button>
               </div>

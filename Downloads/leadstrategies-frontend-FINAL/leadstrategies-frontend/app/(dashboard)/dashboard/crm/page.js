@@ -83,7 +83,7 @@ export default function CRMPage() {
     }
 
     try {
-      await api.delete(`/api/crm/deals/${dealId}`)
+      await api.delete(`/api/tackle/deals/${dealId}`)
       toast.success('Deal deleted successfully')
       loadDeals()
     } catch (error) {
@@ -137,9 +137,9 @@ export default function CRMPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
           { label: 'Pipeline Value', value: `$${(totalValue / 1000).toFixed(0)}k`, icon: '💰' },
-          { label: 'Open Deals', value: PIPELINE_STAGES.slice(0, 4).reduce((s, stage) => s + stage.deals.length, 0), icon: '📊' },
-          { label: 'Won This Month', value: '$45,000', icon: '🎉' },
-          { label: 'Avg Deal Size', value: '$32,500', icon: '📈' },
+          { label: 'Open Deals', value: openDeals, icon: '📊' },
+          { label: 'Won This Month', value: `$${deals.filter(d => d.stage === 'closed_won').reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0).toLocaleString()}`, icon: '🎉' },
+          { label: 'Avg Deal Size', value: deals.length > 0 ? `$${Math.round(totalValue / deals.length).toLocaleString()}` : '$0', icon: '📈' },
         ].map((stat) => (
           <div key={stat.label} className="bg-dark-surface border border-dark-border rounded-xl p-4">
             <div className="flex items-center gap-3">

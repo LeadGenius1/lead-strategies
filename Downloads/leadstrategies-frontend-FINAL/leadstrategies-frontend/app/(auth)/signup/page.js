@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signup } from '@/lib/auth'
 import toast from 'react-hot-toast'
@@ -13,10 +13,19 @@ const TIERS = [
   { id: 'tackle', name: 'Tackle.IO', price: '$499/mo', description: 'Full suite + Voice + CRM' },
 ]
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [selectedTier, setSelectedTier] = useState('leadsite-ai')
+
+  useEffect(() => {
+    // Read tier from URL query params
+    const tierFromUrl = searchParams.get('tier')
+    if (tierFromUrl && TIERS.some(t => t.id === tierFromUrl)) {
+      setSelectedTier(tierFromUrl)
+    }
+  }, [searchParams])
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -180,5 +189,17 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
+        <div className="text-dark-textMuted">Loading...</div>
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   )
 }

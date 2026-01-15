@@ -272,7 +272,10 @@ export default function HomePage() {
               </div>
               <p className="text-neutral-400 text-sm leading-relaxed">
                 600 Eagleview Blvd Suite 317<br />
-                Exton, PA 19341
+                Exton, PA 19341<br />
+                <span className="text-neutral-500">ph</span> 610.757.1587<br />
+                <span className="text-neutral-500">email</span> <a href="mailto:info@aileadstrategies.com" className="hover:text-white transition">info@aileadstrategies.com</a><br />
+                <a href="mailto:aileadstrategies@gmail.com" className="hover:text-white transition">aileadstrategies@gmail.com</a>
               </p>
             </div>
 

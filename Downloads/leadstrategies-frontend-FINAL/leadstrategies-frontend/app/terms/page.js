@@ -138,6 +138,70 @@ export default function TermsPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-12 px-6 bg-[#050505]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Company Info */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                <span className="font-bold text-white">AI LEAD STRATEGIES LLC</span>
+              </div>
+              <p className="text-neutral-400 text-sm leading-relaxed">
+                600 Eagleview Blvd Suite 317<br />
+                Exton, PA 19341<br />
+                <span className="text-neutral-500">ph</span> 610.757.1587<br />
+                <span className="text-neutral-500">email</span> <a href="mailto:info@aileadstrategies.com" className="hover:text-white transition">info@aileadstrategies.com</a><br />
+                <a href="mailto:aileadstrategies@gmail.com" className="hover:text-white transition">aileadstrategies@gmail.com</a>
+              </p>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Contact</h3>
+              <div className="space-y-2 text-neutral-400 text-sm">
+                <p>
+                  <span className="text-neutral-500">Phone:</span>{' '}
+                  <a href="tel:6107571587" className="hover:text-white transition">610.757.1587</a>
+                </p>
+                <p>
+                  <span className="text-neutral-500">Email:</span>{' '}
+                  <a href="mailto:info@aileadstrategies.com" className="hover:text-white transition">info@aileadstrategies.com</a>
+                </p>
+                <p>
+                  <a href="mailto:aileadstrategies@gmail.com" className="hover:text-white transition">aileadstrategies@gmail.com</a>
+                </p>
+              </div>
+            </div>
+
+            {/* Legal Links */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Legal</h3>
+              <div className="space-y-2">
+                <Link href="/privacy" className="block text-neutral-400 hover:text-white transition text-sm">Privacy Policy</Link>
+                <Link href="/terms" className="block text-neutral-400 hover:text-white transition text-sm">Terms of Service</Link>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Quick Links</h3>
+              <div className="space-y-2">
+                <Link href="/#platforms" className="block text-neutral-400 hover:text-white transition text-sm">Platforms</Link>
+                <Link href="/login" className="block text-neutral-400 hover:text-white transition text-sm">Login</Link>
+                <Link href="/signup" className="block text-neutral-400 hover:text-white transition text-sm">Sign Up</Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="border-t border-white/5 pt-8 text-center">
+            <p className="text-neutral-600 text-sm">© 2026 AI Lead Strategies LLC. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -267,6 +267,33 @@ function SignupForm() {
             </p>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-12 pt-8 border-t border-dark-border">
+          <div className="text-center space-y-4">
+            <div className="text-dark-textMuted text-xs space-y-1">
+              <p className="font-semibold text-dark-text">AI Lead Strategies LLC</p>
+              <p>600 Eagleview Blvd Suite 317, Exton, PA 19341</p>
+              <p>
+                Phone: <a href="tel:6107571587" className="text-dark-primary hover:text-dark-primaryHover">610.757.1587</a>
+              </p>
+              <p>
+                Email: <a href="mailto:info@aileadstrategies.com" className="text-dark-primary hover:text-dark-primaryHover">info@aileadstrategies.com</a>
+              </p>
+              <p>
+                <a href="mailto:aileadstrategies@gmail.com" className="text-dark-primary hover:text-dark-primaryHover">aileadstrategies@gmail.com</a>
+              </p>
+            </div>
+            <div className="flex justify-center gap-4 text-xs text-dark-textMuted pt-4">
+              <Link href="/privacy" className="hover:text-dark-text transition">Privacy Policy</Link>
+              <span>•</span>
+              <Link href="/terms" className="hover:text-dark-text transition">Terms of Service</Link>
+            </div>
+            <p className="text-dark-textMuted text-xs pt-2">
+              © 2026 AI Lead Strategies LLC. All rights reserved.
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   )

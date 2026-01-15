@@ -45,10 +45,11 @@ The AI Agent runs every night on schedule, fetches 50 prospects, sorts them by a
 - Returns today's campaign status for the logged-in user
 - Falls back to mock data if backend is unavailable
 
-### 5. Vercel Cron Configuration (`vercel.json`)
-- Configures cron job to run daily at 2:00 AM UTC (which is 8:00 PM EST previous day)
+### 5. Railway Cron Configuration (`scripts/cron-daily-email.js`)
+- Script for Railway Cron service to run daily at 2:00 AM UTC
 - Calls `/api/ai-agent/daily-email` endpoint
-- Note: Adjust timezone as needed
+- Can also be used with external cron services
+- See `RAILWAY-DEPLOYMENT.md` for setup instructions
 
 ## Backend API Requirements
 

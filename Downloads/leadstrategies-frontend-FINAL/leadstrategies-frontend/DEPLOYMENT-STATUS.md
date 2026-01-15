@@ -38,9 +38,9 @@
 
 ## 📋 Next Steps for Deployment
 
-### 1. Vercel Auto-Deployment
-Vercel will automatically deploy when it detects the push to GitHub. Check:
-- https://vercel.com/dashboard
+### 1. Railway Auto-Deployment
+Railway will automatically deploy when it detects the push to GitHub. Check:
+- Railway Dashboard
 - Deployment should appear in your project
 
 ### 2. Environment Variables (Required)
@@ -52,16 +52,24 @@ INTERNAL_API_KEY=your-internal-api-key-here
 CRON_SECRET=your-cron-secret-here
 ```
 
-### 3. Verify Deployment
-- **Production URL:** https://leadstrategies-frontend.vercel.app
+### 3. Set Up Cron Job
+See `RAILWAY-DEPLOYMENT.md` for detailed instructions:
+- **Option 1:** Railway Cron Service (recommended)
+- **Option 2:** External cron service (cron-job.org)
+- **Option 3:** Backend cron service
+
+### 4. Verify Deployment
+- Check your Railway frontend URL
 - Check dashboard for daily status component
 - Test signup form with business info fields
 
-### 4. Test Cron Job
+### 5. Test Cron Job
 After deployment, you can manually trigger the cron job:
 ```bash
-curl -X POST https://leadstrategies-frontend.vercel.app/api/ai-agent/daily-email \
-  -H "x-cron-secret: your-cron-secret"
+curl -X POST https://your-railway-app.up.railway.app/api/ai-agent/daily-email \
+  -H "x-cron-secret: your-cron-secret" \
+  -H "Content-Type: application/json" \
+  -d '{"cronSecret": "your-cron-secret"}'
 ```
 
 ---
@@ -94,7 +102,8 @@ curl -X POST https://leadstrategies-frontend.vercel.app/api/ai-agent/daily-email
 
 ## 📝 Notes
 
-- The cron job will run automatically once Vercel detects the deployment
+- Railway will auto-deploy on git push
+- Set up cron job using Railway Cron service or external service (see RAILWAY-DEPLOYMENT.md)
 - Make sure to set environment variables before the first cron run
 - The daily status component will show mock data until backend is connected
 - All API routes have proper error handling and fallbacks
@@ -102,4 +111,5 @@ curl -X POST https://leadstrategies-frontend.vercel.app/api/ai-agent/daily-email
 ---
 
 **Status:** ✅ **Ready for Deployment**
-**Deployment:** ⏳ **Pending Vercel Auto-Deploy**
+**Deployment Platform:** 🚂 **Railway** (Frontend + Backend)
+**Cron Setup:** ⏳ **Pending Railway Cron Configuration**

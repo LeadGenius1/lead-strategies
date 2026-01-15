@@ -32,6 +32,11 @@ function SignupForm() {
     company: '',
     password: '',
     confirmPassword: '',
+    // Business info for AI agent context
+    industry: '',
+    services: '',
+    location: '',
+    targetMarket: '',
   })
 
   const handleSubmit = async (e) => {
@@ -51,6 +56,13 @@ function SignupForm() {
         company: formData.company,
         password: formData.password,
         tier: selectedTier,
+        // Business info for AI agent
+        businessInfo: {
+          industry: formData.industry,
+          services: formData.services,
+          location: formData.location,
+          targetMarket: formData.targetMarket,
+        },
       })
       toast.success('Account created! Welcome to AI Lead Strategies.')
       router.push('/dashboard')
@@ -165,6 +177,74 @@ function SignupForm() {
                   className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
                   placeholder="••••••••"
                 />
+              </div>
+            </div>
+
+            {/* Business Info Section for AI Agent */}
+            <div className="border-t border-dark-border pt-6 mt-6">
+              <h3 className="text-lg font-semibold text-dark-text mb-4">Business Information (for AI Agent)</h3>
+              <p className="text-sm text-dark-textMuted mb-4">
+                Help our AI agent find the best prospects for your business
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-dark-text mb-2">
+                    Industry *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.industry}
+                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                    placeholder="e.g., Commercial Cleaning, SaaS, Real Estate"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-dark-text mb-2">
+                    Services/Products *
+                  </label>
+                  <textarea
+                    required
+                    value={formData.services}
+                    onChange={(e) => setFormData({ ...formData, services: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                    placeholder="Describe your main services or products (e.g., Office cleaning, carpet cleaning, post-construction cleanup)"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-text mb-2">
+                      Location/Service Area *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                      placeholder="e.g., Berks County, PA or Nationwide"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-dark-text mb-2">
+                      Target Market *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.targetMarket}
+                      onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
+                      className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                      placeholder="e.g., Offices, Medical Facilities, Property Managers"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

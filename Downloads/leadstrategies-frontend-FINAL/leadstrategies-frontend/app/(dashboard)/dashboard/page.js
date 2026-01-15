@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
+import DailyEmailStatus from '@/components/DailyEmailStatus'
 
 const STATS = [
   { label: 'Total Websites', key: 'websites', icon: '🌐', color: 'text-blue-400' },
@@ -56,6 +57,9 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold text-dark-text">Dashboard</h1>
         <p className="text-dark-textMuted mt-1">Welcome to AI Lead Strategies</p>
       </div>
+
+      {/* Daily AI Agent Status */}
+      <DailyEmailStatus />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

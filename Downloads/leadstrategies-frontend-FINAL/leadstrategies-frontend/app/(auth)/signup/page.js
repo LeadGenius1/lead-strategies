@@ -89,6 +89,17 @@ function SignupForm() {
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-dark-text">Create your account</h1>
             <p className="text-dark-textMuted mt-2">Choose your plan and get started</p>
+            <div className="mt-4">
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm text-dark-textMuted hover:text-dark-text transition border border-dark-border rounded-lg hover:border-dark-primary"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Already have an account? Sign In
+              </Link>
+            </div>
           </div>
 
           {/* Social Auth Buttons */}

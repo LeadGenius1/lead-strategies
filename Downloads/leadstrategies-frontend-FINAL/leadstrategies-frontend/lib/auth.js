@@ -53,4 +53,14 @@ export async function getCurrentUser() {
   }
 }
 
+export async function forgotPassword(email) {
+  const response = await api.post('/api/auth/forgot-password', { email })
+  return response.data
+}
+
+export async function resetPassword(token, newPassword) {
+  const response = await api.post('/api/auth/reset-password', { token, password: newPassword })
+  return response.data
+}
+
 

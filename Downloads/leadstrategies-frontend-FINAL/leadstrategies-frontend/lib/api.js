@@ -10,7 +10,10 @@ const api = axios.create({
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
-  const token = Cookies.get('token')
+  // Check if this is an admin route
+  const isAdminRoute = config.url?.startsWith('/api/admin')
+  const token = isAdminRoute ? Cookies.get('admin_token') : Cookies.get('token')
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

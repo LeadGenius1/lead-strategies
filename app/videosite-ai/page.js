@@ -63,16 +63,30 @@ export default function VideoSiteAIPage() {
     };
   }, []);
 
-  const videoTemplates = [
-    { name: 'Product Demo', icon: '🎬' },
-    { name: 'Customer Testimonial', icon: '💬' },
-    { name: 'Company Culture', icon: '🏢' },
-    { name: 'Event Recap', icon: '🎉' },
-    { name: 'Tutorial / How-To', icon: '📚' },
-    { name: 'Case Study', icon: '📊' },
-    { name: 'Brand Story', icon: '✨' },
-    { name: 'Promotional Offer', icon: '🎁' }
+  const testimonials = [
+    {
+      quote: "VIDEOSITE® has transformed how I monetize my content. The revenue split is fair and payouts are reliable.",
+      name: "Sarah Johnson",
+      role: "Content Creator"
+    },
+    {
+      quote: "Best advertising platform I've used. The targeting options and analytics are outstanding.",
+      name: "Michael Chen",
+      role: "Digital Marketer"
+    },
+    {
+      quote: "Finally, a platform that puts creators first. The interface is intuitive and support is excellent.",
+      name: "Emma Davis",
+      role: "YouTuber"
+    },
+    {
+      quote: "Our campaigns on VideoSite.io consistently outperform other platforms. Highly recommend!",
+      name: "James Wilson",
+      role: "Brand Manager"
+    }
   ];
+
+  const trustedBrands = ['TechFlow', 'Nexus Labs', 'DataSync', 'VisionCorp', 'CloudBase', 'Innovate'];
 
   return (
     <div className="relative overflow-x-hidden">
@@ -116,8 +130,8 @@ export default function VideoSiteAIPage() {
             </Link>
           </div>
 
-          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free</span>
+          <Link href="/signup?tier=videosite" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
+            <span className="relative z-10 font-geist">Get Started</span>
             <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
           </Link>
         </div>
@@ -127,164 +141,178 @@ export default function VideoSiteAIPage() {
       <section className="relative pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36 overflow-hidden z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
           <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
-            {/* FREE Badge */}
-            <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6 flex flex-col sm:flex-row items-center gap-3">
-              <span className="px-4 py-2 bg-green-500/10 border border-green-500/30 text-green-400 text-lg font-space-grotesk font-bold">
-                FREE SIGNUP
-              </span>
-              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
-                Earn $1.00 per video view!
+            {/* Brand Tag */}
+            <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6">
+              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs sm:text-sm font-space-grotesk uppercase tracking-widest">
+                VIDEOSITE® — Next-Gen Video Monetization
               </span>
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
               <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                  AI-POWERED VIDEO
+                  Monetize Your Videos
                 </span>
                 <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
-                  MARKETING PLATFORM
+                  Like Never Before
                 </span>
               </h1>
             </div>
 
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-6 max-w-4xl px-4">
-              Generate cinematic videos with AI. 4K quality. 10x engagement. Zero editing skills.
+            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-8 max-w-4xl px-4">
+              The premier platform connecting content creators with advertisers. Earn $1.00 per view while advertisers reach their perfect audience.
             </h2>
 
-            <p className="[animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll text-sm sm:text-base md:text-xl text-green-400 tracking-tight font-space-grotesk mb-8 px-4">
-              Content Video Creators: Sign up FREE and get paid $1.00 for every video view!
-            </p>
-
-            {/* Animated Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-6 px-4 sm:px-0">
-              <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                <div className="text-2xl sm:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="87" data-suffix="%">87%</span>
-                </div>
-                <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Higher Engagement</h3>
-              </div>
-              <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                <div className="text-2xl sm:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="4" data-suffix="K">4K</span>
-                </div>
-                <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Quality</h3>
-              </div>
-              <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                <div className="text-2xl sm:text-3xl text-green-400 mb-1 tracking-tighter font-space-grotesk font-light">
-                  $1.00
-                </div>
-                <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Per Video View</h3>
-              </div>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+              <Link href="/signup?tier=videosite" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+                Get Started
+              </Link>
+              <Link href="#features" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
+                Browse Videos
+              </Link>
             </div>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
-              <Link href="/signup?tier=videosite" className="bg-green-500 text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-green-400 transition-colors font-geist text-center">
-                Sign Up FREE
-              </Link>
-              <Link href="#templates" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
-                Browse Examples
-              </Link>
+            {/* Trusted By */}
+            <div className="mt-16 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
+              <p className="text-xs uppercase tracking-widest text-neutral-600 font-geist mb-6">Trusted by creators worldwide</p>
+              <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+                {trustedBrands.map((brand, index) => (
+                  <span key={index} className="text-neutral-500 font-space-grotesk text-sm sm:text-base">{brand}</span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Key Features Grid */}
-      <section className="py-24 relative z-10 border-t border-subtle">
+      {/* Features Section */}
+      <section id="features" className="py-24 relative z-10 border-t border-subtle">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <span className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-4 block">Features</span>
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Everything You <span className="text-gradient">Need</span>
+            </h2>
+            <p className="text-neutral-400 font-geist max-w-2xl mx-auto">
+              Powerful features designed to help you monetize content and run successful ad campaigns
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Content Creators */}
+            <div className="bg-[#050505] border border-subtle p-8 hover:border-green-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <div className="w-12 h-12 bg-green-500/10 border border-green-500/30 flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-space-grotesk text-white mb-3">Content Creators</h3>
+              <p className="text-neutral-400 font-geist text-sm mb-6">
+                Upload unlimited videos and earn $1.00 per view with automated payouts via Stripe
+              </p>
+              <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Real-time analytics
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Transparent revenue tracking
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Automated payouts
+                </li>
+              </ul>
+            </div>
+
+            {/* Advertisers */}
+            <div className="bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-space-grotesk text-white mb-3">Advertisers</h3>
+              <p className="text-neutral-400 font-geist text-sm mb-6">
+                Create targeted campaigns with flexible pricing tiers from $20-75 CPM
+              </p>
+              <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Advanced targeting
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Real-time campaign analytics
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Flexible budget management
+                </li>
+              </ul>
+            </div>
+
+            {/* Secure & Trusted */}
+            <div className="bg-[#050505] border border-subtle p-8 hover:border-blue-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+              <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-space-grotesk text-white mb-3">Secure & Trusted</h3>
+              <p className="text-neutral-400 font-geist text-sm mb-6">
+                Enterprise-grade security with Stripe integration for payments and payouts
+              </p>
+              <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                  Encrypted transactions
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                  Fraud protection
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                  24/7 support
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              AI-Powered <span className="text-gradient">Features</span>
+              Loved by Creators <span className="text-gradient">& Advertisers</span>
             </h2>
+            <p className="text-neutral-400 font-geist">See what our community has to say about VIDEOSITE®</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: 'AI Video Generator',
-                desc: 'Text prompt → 4K video with voiceover, music, captions',
-                icon: '🎬'
-              },
-              {
-                title: 'Template Library',
-                desc: '100+ templates for product demos, testimonials, explainers',
-                icon: '📚'
-              },
-              {
-                title: 'Custom Branding',
-                desc: 'Logo watermarks, brand colors, custom intros/outros',
-                icon: '🎨'
-              },
-              {
-                title: 'Multi-Platform Export',
-                desc: 'YouTube, Instagram, TikTok, LinkedIn - optimized per platform',
-                icon: '📱'
-              },
-              {
-                title: 'Video Analytics',
-                desc: 'View duration, drop-off points, engagement heatmaps',
-                icon: '📊'
-              },
-              {
-                title: 'Interactive CTAs',
-                desc: 'Clickable buttons overlaid on video, tracked conversions',
-                icon: '🎯'
-              },
-              {
-                title: 'Hosting & CDN',
-                desc: 'Unlimited bandwidth, global delivery, 99.99% uptime',
-                icon: '☁️'
-              },
-              {
-                title: 'A/B Testing',
-                desc: 'Test thumbnails, titles, CTAs automatically',
-                icon: '🧪'
-              }
-            ].map((feature, index) => (
+            {testimonials.map((testimonial, index) => (
               <div
                 key={index}
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.05 * index}s` }}
-              >
-                <div className="text-3xl mb-4">{feature.icon}</div>
-                <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              How It <span className="text-gradient">Works</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {[
-              { step: '01', title: 'Describe Your Video', desc: 'AI generates script, selects footage, adds voiceover' },
-              { step: '02', title: 'Customize & Edit', desc: 'Drag-and-drop editor, adjust timing, swap clips' },
-              { step: '03', title: 'Add CTAs', desc: 'Clickable buttons, lead forms, calendar booking' },
-              { step: '04', title: 'Publish Everywhere', desc: 'One-click export to all platforms, embed codes' }
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="relative [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.1 * index}s` }}
               >
-                {index < 3 && (
-                  <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent z-0" style={{ width: 'calc(100% - 2rem)' }}></div>
-                )}
-                <div className="relative z-10 bg-[#050505] border border-purple-500/20 p-8">
-                  <div className="text-purple-400 text-sm font-geist mb-4">{item.step}</div>
-                  <h3 className="text-xl font-space-grotesk text-white mb-3">{item.title}</h3>
-                  <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
+                <div className="mb-4">
+                  <svg className="w-8 h-8 text-purple-500/30" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                  </svg>
+                </div>
+                <p className="text-neutral-300 font-geist text-sm mb-6 leading-relaxed">
+                  {testimonial.quote}
+                </p>
+                <div>
+                  <p className="text-white font-space-grotesk">{testimonial.name}</p>
+                  <p className="text-neutral-500 font-geist text-xs">{testimonial.role}</p>
                 </div>
               </div>
             ))}
@@ -292,219 +320,57 @@ export default function VideoSiteAIPage() {
         </div>
       </section>
 
-      {/* Video Template Showcase */}
-      <section id="templates" className="py-24 relative z-10 border-t border-subtle">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Video <span className="text-gradient">Templates</span>
-            </h2>
-            <p className="text-neutral-400 font-geist">100+ professional templates ready to use</p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {videoTemplates.map((template, index) => (
-              <div
-                key={index}
-                className="bg-[#050505] border border-subtle overflow-hidden hover:border-purple-500/30 transition-all group relative [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.05 * index}s` }}
-              >
-                <div className="aspect-video bg-gradient-to-br from-purple-950/20 to-neutral-900 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-                  <div className="relative z-10 text-4xl">{template.icon}</div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                    <div className="w-16 h-16 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center">
-                      <svg className="w-8 h-8 text-purple-400 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-sm font-space-grotesk text-white mb-2">{template.name}</h3>
-                  <Link href="#" className="text-purple-400 hover:text-purple-300 font-geist text-xs uppercase tracking-widest">
-                    Use This Template →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Engagement Comparison Chart */}
-      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Engagement <span className="text-gradient">Comparison</span>
-            </h2>
-          </div>
-
-          <div className="bg-[#050505] border border-subtle p-8 md:p-12 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            <div className="space-y-6">
-              {[
-                { label: 'Static landing page', value: 23, color: 'bg-neutral-600' },
-                { label: 'Landing page + images', value: 41, color: 'bg-neutral-500' },
-                { label: 'Landing page + video', value: 86, color: 'bg-purple-500/50' },
-                { label: 'Landing page + AI video', value: 91, color: 'bg-purple-500' }
-              ].map((item, index) => (
-                <div key={index}>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-neutral-400 font-geist">{item.label}</span>
-                    <span className="text-white font-space-grotesk text-xl">{item.value}%</span>
-                  </div>
-                  <div className="h-8 bg-neutral-900 border border-subtle relative overflow-hidden">
-                    <div className={`absolute inset-0 ${item.color} border-r border-purple-500/30`} style={{ width: `${item.value}%` }}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Tiers */}
+      {/* Stats Section */}
       <section className="py-24 relative z-10 border-t border-subtle">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Creator <span className="text-gradient">Program</span>
-            </h2>
-            <p className="text-neutral-400 font-geist">Free signup for content creators - earn $1.00 per video view</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* FREE Creator */}
-            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-green-500/20 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-geist">
-                Creator
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 counter-trigger">
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 text-center [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+              <div className="text-3xl sm:text-4xl text-green-400 mb-2 tracking-tighter font-space-grotesk font-light">
+                $1.00
               </div>
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Video Creator</h3>
-              <div className="text-4xl font-space-grotesk font-light text-green-400 mb-2">
-                FREE
-              </div>
-              <p className="text-sm text-green-400 font-geist mb-6">Earn $1.00 per video view!</p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  Unlimited AI-generated videos
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  4K resolution
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  All templates included
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  Revenue share: $1.00/view
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  Weekly payouts
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  Creator analytics dashboard
-                </li>
-              </ul>
-              <Link href="/signup?tier=videosite" className="block w-full bg-green-500 text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-green-400 transition-colors font-geist text-center">
-                Sign Up FREE
-              </Link>
+              <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Per View Payout</h3>
             </div>
-
-            {/* Business */}
-            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Business</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                Custom<span className="text-sm text-neutral-500"> pricing</span>
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 text-center [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <div className="text-3xl sm:text-4xl text-white mb-2 tracking-tighter font-space-grotesk font-light">
+                <span data-target="20" data-prefix="$" data-suffix="-75">$20-75</span>
               </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  White-label video platform
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Custom branding
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  API access
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Priority support
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Dedicated CSM
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Enterprise SLA
-                </li>
-              </ul>
-              <Link href="/signup" className="block w-full bg-transparent border border-purple-500/30 text-white px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
-                Contact Sales
-              </Link>
+              <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">CPM Range</h3>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Related Platforms */}
-      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Complete <span className="text-gradient">Ecosystem</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { name: 'LeadSite.AI', desc: 'AI lead scoring and enrichment', href: '/leadsite-ai' },
-              { name: 'LeadSite.IO', desc: 'AI website builder', href: '/leadsite-io' },
-              { name: 'ClientContact.IO', desc: 'Unified inbox for follow-up', href: '/clientcontact-io' }
-            ].map((platform, index) => (
-              <Link
-                key={index}
-                href={platform.href}
-                className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                <h3 className="text-lg font-space-grotesk text-white mb-2">{platform.name}</h3>
-                <p className="text-sm text-neutral-400 font-geist mb-4">{platform.desc}</p>
-                <span className="text-purple-400 font-geist text-sm uppercase tracking-widest">Learn More →</span>
-              </Link>
-            ))}
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 text-center [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <div className="text-3xl sm:text-4xl text-white mb-2 tracking-tighter font-space-grotesk font-light">
+                <span data-target="10" data-suffix="K+">10K+</span>
+              </div>
+              <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Active Creators</h3>
+            </div>
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 text-center [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+              <div className="text-3xl sm:text-4xl text-white mb-2 tracking-tighter font-space-grotesk font-light">
+                24/7
+              </div>
+              <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Support</h3>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative">
+      <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative bg-gradient-to-b from-purple-950/10 to-black">
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mb-8 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            Create Cinematic Videos <span className="text-gradient">with AI</span>
+            Ready to Get <span className="text-gradient">Started?</span>
           </h2>
-          <p className="text-xl text-neutral-400 font-geist mb-10 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            Join 5,000+ creators using AI to produce 4K videos in minutes
+          <p className="text-xl text-neutral-400 font-geist mb-10 max-w-2xl mx-auto [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            Join thousands of creators and advertisers already using VideoSite.io to monetize content and reach their audience.
           </p>
           <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-            <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
-              Start Free 14-Day Trial
+            <Link href="/signup?tier=videosite" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+              Get Started Now
             </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <Footer brandName="VIDEOSITE.AI" />
+      <Footer brandName="VIDEOSITE®" />
     </div>
   );
 }

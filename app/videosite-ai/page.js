@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 export default function VideoSiteAIPage() {
   useEffect(() => {
@@ -86,37 +87,37 @@ export default function VideoSiteAIPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
-        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border pt-2 pr-2 pb-2 pl-2 shadow-2xl backdrop-blur-xl gap-x-1 gap-y-1 items-center justify-between">
-          <Link href="/" className="bg-white/5 hover:bg-white/10 px-5 py-2 text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
+      <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
+        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
+          <Link href="/" className="bg-white/5 hover:bg-white/10 px-3 sm:px-5 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
             AI LEAD
           </Link>
           
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/leadsite-ai" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/leadsite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.AI
             </Link>
-            <Link href="/leadsite-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+            <Link href="/leadsite-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.IO
             </Link>
           </div>
 
-          <div className="px-6 text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
+          <div className="px-2 sm:px-6 text-lg sm:text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
             <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-            AI LEAD
+            <span className="hidden sm:inline">VIDEO</span>SITE
           </div>
 
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/clientcontact-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/clientcontact-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               ClientContact
             </Link>
-            <Link href="/tackle-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+            <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               TackleAI
             </Link>
           </div>
 
-          <Link href="/signup" className="group relative bg-white text-black px-6 py-2 text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free Trial</span>
+          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
+            <span className="relative z-10 font-geist">Start Free</span>
             <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
           </Link>
         </div>
@@ -520,30 +521,7 @@ export default function VideoSiteAIPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-subtle bg-black pt-12 pb-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
-            <div className="text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
-              <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse"></div>
-              AI LEAD STRATEGIES
-            </div>
-            <div className="flex gap-8 text-xs font-geist text-neutral-500 uppercase tracking-widest">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="#" className="hover:text-white transition-colors">Security</Link>
-            </div>
-          </div>
-
-          <div className="border-t border-subtle pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-neutral-600">
-            <p className="font-geist">© 2025 AI Lead Strategies LLC. All Rights Reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="#" className="hover:text-white transition-colors font-geist">Twitter</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">LinkedIn</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">GitHub</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer brandName="VIDEOSITE.AI" />
     </div>
   );
 }

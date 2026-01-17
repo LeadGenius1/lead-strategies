@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 export default function TackleAIPage() {
   useEffect(() => {
@@ -64,109 +65,131 @@ export default function TackleAIPage() {
 
   return (
     <div className="relative overflow-x-hidden">
-      {/* Grid Background */}
-      <div className="grid-overlay">
-        <div className="grid-inner">
-          <div className="grid-line-v"></div>
-          <div className="grid-line-v hidden md:block"></div>
-          <div className="grid-line-v hidden lg:block"></div>
-          <div className="grid-line-v"></div>
-        </div>
-      </div>
-
       {/* Navigation */}
-      <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
-        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border pt-2 pr-2 pb-2 pl-2 shadow-2xl backdrop-blur-xl gap-x-1 gap-y-1 items-center justify-between">
-          <Link href="/" className="bg-white/5 hover:bg-white/10 px-5 py-2 text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
+      <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
+        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
+          <Link href="/" className="bg-white/5 hover:bg-white/10 px-3 sm:px-5 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
             AI LEAD
           </Link>
           
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/leadsite-ai" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/leadsite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.AI
             </Link>
-            <Link href="/leadsite-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+            <Link href="/leadsite-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.IO
             </Link>
           </div>
 
-          <div className="px-6 text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
+          <div className="px-2 sm:px-6 text-lg sm:text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
             <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-            AI LEAD
+            <span className="hidden sm:inline">TACKLE</span>AI
           </div>
 
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/clientcontact-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/clientcontact-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               ClientContact
             </Link>
-            <Link href="/tackle-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-white font-geist">
-              TackleAI
+            <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              VideoSite
             </Link>
           </div>
 
-          <Link href="/signup" className="group relative bg-white text-black px-6 py-2 text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free Trial</span>
+          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
+            <span className="relative z-10 font-geist">Start Free</span>
             <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
           </Link>
         </div>
       </nav>
 
-      {/* Hero Section with Gradient Background */}
-      <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 overflow-hidden z-10 bg-gradient-to-b from-purple-950/10 to-black">
-        <div className="container mx-auto px-4 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-24 relative space-y-0 items-center justify-center">
-            {/* Enterprise Badge */}
-            <div className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll mb-6">
-              <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs uppercase tracking-wider font-geist">
-                ENTERPRISE PLATFORM
-              </span>
-            </div>
+      {/* Hero Section with Full-Page Video Background */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute w-full h-full object-cover"
+          >
+            <source src="/office-bldg.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/70"></div>
+          {/* Gradient overlay for smooth transition */}
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-950/20 via-transparent to-black"></div>
+        </div>
 
-            <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[0.85] flex flex-wrap justify-center gap-x-4 md:text-9xl md:gap-x-8 text-6xl font-semibold text-white tracking-tighter mt-8 mb-0">
-                <span className="[animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
-                  REPLACE HUBSPOT
+        {/* Grid Background (over video) */}
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <div className="grid-overlay">
+            <div className="grid-inner">
+              <div className="grid-line-v"></div>
+              <div className="grid-line-v hidden md:block"></div>
+              <div className="grid-line-v hidden lg:block"></div>
+              <div className="grid-line-v"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 pt-28 pb-16 sm:pt-40 sm:pb-20 md:pt-52 md:pb-32">
+          <div className="container mx-auto px-4 sm:px-6 relative max-w-7xl">
+            <div className="flex flex-col text-center mb-12 sm:mb-24 relative space-y-0 items-center justify-center">
+              {/* Enterprise Badge */}
+              <div className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll mb-4 sm:mb-6">
+                <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
+                  ENTERPRISE PLATFORM
                 </span>
-                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk">
-                  + GONG + OUTREACH
-                </span>
-              </h1>
-            </div>
-
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-lg text-neutral-400 tracking-tight font-space-grotesk md:text-3xl mt-8 mb-6">
-              Full CRM, voice calling, 7 AI agents, 22-channel outreach. Save $44,812/year.
-            </h2>
-
-            {/* Animated Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll mt-12">
-              <div className="bg-[#050505] border border-purple-500/20 p-6">
-                <div className="text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="44" data-prefix="$" data-suffix="K+">$44K+</span>
-                </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Saved/Year</h3>
               </div>
-              <div className="bg-[#050505] border border-purple-500/20 p-6">
-                <div className="text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="7">7</span>
-                </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">AI Agents</h3>
-              </div>
-              <div className="bg-[#050505] border border-purple-500/20 p-6">
-                <div className="text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="99.9" data-suffix="%">99.9%</span>
-                </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Uptime</h3>
-              </div>
-            </div>
 
-            {/* CTAs */}
-            <div className="flex flex-col md:flex-row gap-4 mt-12 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll">
-              <Link href="/signup" className="bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
-                Schedule Enterprise Demo
-              </Link>
-              <Link href="#pricing" className="bg-transparent border border-purple-500/30 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist">
-                See Pricing Calculator
-              </Link>
+              <div className="flex flex-col z-10 w-full items-center justify-center">
+                <h1 className="uppercase leading-[0.9] sm:leading-[0.85] flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-8 text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 sm:mt-8 mb-0">
+                  <span className="[animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
+                    REPLACE HUBSPOT
+                  </span>
+                  <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk">
+                    + GONG + OUTREACH
+                  </span>
+                </h1>
+              </div>
+
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-300 tracking-tight font-space-grotesk mt-6 sm:mt-8 mb-4 sm:mb-6 max-w-4xl px-2">
+                Full CRM, voice calling, 7 AI agents, 22-channel outreach. Save $44,812/year.
+              </h2>
+
+              {/* Animated Metrics */}
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll mt-8 sm:mt-12">
+                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-3 sm:p-6">
+                  <div className="text-xl sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
+                    <span data-target="44" data-prefix="$" data-suffix="K+">$44K+</span>
+                  </div>
+                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Saved/Year</h3>
+                </div>
+                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-3 sm:p-6">
+                  <div className="text-xl sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
+                    <span data-target="7">7</span>
+                  </div>
+                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">AI Agents</h3>
+                </div>
+                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-3 sm:p-6">
+                  <div className="text-xl sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
+                    <span data-target="99.9" data-suffix="%">99.9%</span>
+                  </div>
+                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Uptime</h3>
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8 sm:mt-12 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll">
+                <Link href="/signup" className="bg-white text-black px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+                  Schedule Enterprise Demo
+                </Link>
+                <Link href="#pricing" className="bg-transparent border border-purple-500/30 text-white px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
+                  See Pricing Calculator
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -554,30 +577,7 @@ export default function TackleAIPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-subtle bg-black pt-12 pb-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
-            <div className="text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
-              <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse"></div>
-              AI LEAD STRATEGIES
-            </div>
-            <div className="flex gap-8 text-xs font-geist text-neutral-500 uppercase tracking-widest">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="#" className="hover:text-white transition-colors">Security</Link>
-            </div>
-          </div>
-
-          <div className="border-t border-subtle pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-neutral-600">
-            <p className="font-geist">© 2025 AI Lead Strategies LLC. All Rights Reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="#" className="hover:text-white transition-colors font-geist">Twitter</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">LinkedIn</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">GitHub</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer brandName="TACKLEAI" />
     </div>
   );
 }

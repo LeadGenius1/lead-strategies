@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 export default function HomePage() {
   useEffect(() => {
@@ -66,37 +67,37 @@ export default function HomePage() {
   return (
     <div className="relative overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
-        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border pt-2 pr-2 pb-2 pl-2 shadow-2xl backdrop-blur-xl gap-x-1 gap-y-1 items-center justify-between">
-          <Link href="/" className="bg-white/5 hover:bg-white/10 px-5 py-2 text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
+      <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
+        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
+          <Link href="/" className="bg-white/5 hover:bg-white/10 px-3 sm:px-5 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
             AI LEAD
           </Link>
           
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/leadsite-ai" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/leadsite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.AI
             </Link>
-            <Link href="/leadsite-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+            <Link href="/leadsite-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.IO
             </Link>
           </div>
 
-          <div className="px-6 text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
+          <div className="px-2 sm:px-6 text-lg sm:text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
             <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
             AI LEAD
           </div>
 
-          <div className="hidden md:flex items-center gap-1">
-            <Link href="/clientcontact-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/clientcontact-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               ClientContact
             </Link>
-            <Link href="/tackle-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Tackle.IO
+            <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              TackleAI
             </Link>
           </div>
 
-          <Link href="/signup" className="group relative bg-white text-black px-6 py-2 text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free Trial</span>
+          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
+            <span className="relative z-10 font-geist">Start Free</span>
             <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
           </Link>
         </div>
@@ -134,9 +135,9 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 pt-40 pb-20 md:pt-52 md:pb-32">
-        <div className="container mx-auto px-4 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-24 relative space-y-0 items-center justify-center">
+        <div className="relative z-10 pt-28 pb-16 sm:pt-40 sm:pb-20 md:pt-52 md:pb-32">
+        <div className="container mx-auto px-4 sm:px-6 relative max-w-7xl">
+          <div className="flex flex-col text-center mb-12 sm:mb-24 relative space-y-0 items-center justify-center">
             {/* Version Tag */}
             <div className="absolute -left-4 md:left-20 top-0 flex flex-col gap-2 opacity-30 hidden lg:flex [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
               <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-geist">Est. 2024</span>
@@ -144,7 +145,7 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[0.85] flex flex-wrap justify-center gap-x-4 md:text-9xl md:gap-x-8 text-6xl font-semibold text-white tracking-tighter mt-8 mb-0">
+              <h1 className="uppercase leading-[0.9] sm:leading-[0.85] flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-8 text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 sm:mt-8 mb-0">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
                   ONE PLATFORM
                 </span>
@@ -154,29 +155,29 @@ export default function HomePage() {
               </h1>
             </div>
 
-            <div className="flex flex-col md:flex-row md:mt-12 md:mb-12 z-10 w-full mt-10 mb-8 gap-x-6 gap-y-6 items-center justify-center">
+            <div className="flex flex-col md:flex-row md:mt-12 md:mb-12 z-10 w-full mt-6 sm:mt-10 mb-6 sm:mb-8 gap-x-6 gap-y-4 sm:gap-y-6 items-center justify-center">
               {/* Status Button with Border Beam */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll group my-8 relative">
+              <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll group my-4 sm:my-8 relative">
                 <div className="beam-border"></div>
-                <div className="border-subtle flex group-hover:bg-[#0a0a0a] transition-colors md:h-16 bg-[#080808] h-12 z-10 border rounded-full mt-[1px] mr-[1px] mb-[1px] ml-[1px] pr-6 pl-3 relative gap-x-4 gap-y-4 items-center">
+                <div className="border-subtle flex group-hover:bg-[#0a0a0a] transition-colors md:h-16 bg-[#080808] h-12 z-10 border rounded-full mt-[1px] mr-[1px] mb-[1px] ml-[1px] pr-4 sm:pr-6 pl-2 sm:pl-3 relative gap-x-3 sm:gap-x-4 items-center">
                   <div className="md:w-10 md:h-10 overflow-hidden flex border-subtle text-white bg-neutral-900 w-8 h-8 border rounded-full relative items-center justify-center">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
                     </svg>
                   </div>
                   <div className="flex flex-col text-left">
-                    <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-geist">AI_Status</span>
-                    <span className="text-xs md:text-sm leading-none text-white font-geist">7 Agents Active</span>
+                    <span className="text-[8px] sm:text-[10px] uppercase tracking-widest text-neutral-500 font-geist">AI_Status</span>
+                    <span className="text-[10px] sm:text-xs md:text-sm leading-none text-white font-geist">7 Agents Active</span>
                   </div>
                 </div>
               </div>
 
-              <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-lg text-neutral-400 tracking-tight font-space-grotesk md:text-3xl">
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk">
                 Automated B2B Marketing Ecosystem
               </h2>
             </div>
 
-            <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll md:text-2xl text-xs text-neutral-500 font-space-grotesk text-center max-w-lg">
+            <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-500 font-space-grotesk text-center max-w-lg px-2">
               Stop juggling 10 tools. One unified platform for lead generation, website building, omnichannel outreach, and enterprise sales automation.
             </div>
           </div>
@@ -403,30 +404,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-subtle bg-black pt-12 pb-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
-            <div className="text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
-              <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse"></div>
-              AI LEAD STRATEGIES
-            </div>
-            <div className="flex gap-8 text-xs font-geist text-neutral-500 uppercase tracking-widest">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="#" className="hover:text-white transition-colors">Security</Link>
-            </div>
-          </div>
-
-          <div className="border-t border-subtle pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-neutral-600">
-            <p className="font-geist">© 2025 AI Lead Strategies LLC. All Rights Reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="#" className="hover:text-white transition-colors font-geist">Twitter</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">LinkedIn</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">GitHub</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

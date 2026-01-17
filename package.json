@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/",
+    "build": "next build",
+    "postbuild": "node -e \"require('fs').cpSync('public', '.next/standalone/public', {recursive: true}); require('fs').cpSync('.next/static', '.next/standalone/.next/static', {recursive: true})\"",
     "start": "node .next/standalone/server.js",
     "start:next": "next start",
     "lint": "next lint",

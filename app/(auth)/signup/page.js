@@ -381,9 +381,9 @@ function SignupForm() {
             <div className="text-center space-y-4">
               <div className="text-neutral-500 text-xs space-y-1 font-geist">
                 <p className="font-semibold text-neutral-300">AI Lead Strategies LLC</p>
-                <p>8 The Green, Suite A, Dover, DE 19901</p>
+                <p>600 Eagleview Blvd, Suite 317, Exton, PA 19341</p>
                 <p>
-                  Phone: <a href="tel:8008833051" className="text-purple-400 hover:text-purple-300">(800) 883-3051</a>
+                  Phone: <a href="tel:6107571587" className="text-purple-400 hover:text-purple-300">610.757.1587</a>
                 </p>
                 <p>
                   Email: <a href="mailto:support@aileadstrategies.com" className="text-purple-400 hover:text-purple-300">support@aileadstrategies.com</a>

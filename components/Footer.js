@@ -18,16 +18,16 @@ export default function Footer({ brandName = 'AI LEAD STRATEGIES' }) {
             {/* Business Address */}
             <div className="space-y-2 text-sm text-neutral-400 font-geist mb-6">
               <p className="font-semibold text-neutral-300">AI Lead Strategies LLC</p>
-              <p>8 The Green, Suite A</p>
-              <p>Dover, DE 19901</p>
+              <p>600 Eagleview Blvd, Suite 317</p>
+              <p>Exton, PA 19341</p>
               <p>United States</p>
             </div>
             
             {/* Contact Info */}
             <div className="space-y-2 text-sm text-neutral-400 font-geist">
               <p>
-                <a href="tel:8008833051" className="hover:text-white transition-colors">
-                  Phone: (800) 883-3051
+                <a href="tel:6107571587" className="hover:text-white transition-colors">
+                  Phone: 610.757.1587
                 </a>
               </p>
               <p>

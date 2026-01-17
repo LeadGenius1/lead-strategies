@@ -1,0 +1,17 @@
+{
+  "name": "AI Lead Strategies",
+  "short_name": "AI Lead",
+  "description": "Unified platform for lead generation and customer engagement",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030303",
+  "theme_color": "#9333ea",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

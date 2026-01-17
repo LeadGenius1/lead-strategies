@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-import Navigation from '../components/Navigation'
+import PlatformHeader from '../components/PlatformHeader'
 import { ChevronRight, BrainCircuit, Zap, ShieldCheck, Check, Mail, Globe, MessageSquare, Video, Briefcase } from 'lucide-react'
 
 export default function HomePage() {
@@ -22,8 +22,8 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="min-h-screen w-full">
-      <Navigation />
+    <div className="min-h-screen w-full bg-black text-white">
+      <PlatformHeader activePlatform="ai-lead" />
 
       {/* Hero Section */}
       <section className="relative z-10 pt-32 pb-20 md:pt-48 md:pb-32 px-6 flex flex-col items-center justify-center text-center">

@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
 import DailyEmailStatus from '@/components/DailyEmailStatus'
+import toast from 'react-hot-toast'
 
 const STATS = [
   { label: 'Total Websites', key: 'websites', icon: '🌐', color: 'text-blue-400' },
@@ -21,46 +23,146 @@ const PLATFORMS = [
 ]
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [stats, setStats] = useState({
     websites: 0,
     campaigns: 0,
     prospects: 0,
     emailsSent: 0,
   })
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [aiAgentStarted, setAiAgentStarted] = useState(false)
+  const [startingAgent, setStartingAgent] = useState(false)
 
   useEffect(() => {
-    async function loadStats() {
+    async function loadDashboard() {
       try {
+        const currentUser = await getCurrentUser()
+        setUser(currentUser)
+        
+        // Check if AI agent has been started
+        const agentStatus = localStorage.getItem('aiAgentStarted')
+        setAiAgentStarted(agentStatus === 'true')
+        
         const response = await api.get('/api/analytics/dashboard')
         setStats(response.data)
       } catch (error) {
-        console.error('Error loading stats:', error)
+        console.error('Error loading dashboard:', error)
         // Use placeholder data
         setStats({
-          websites: 3,
-          campaigns: 12,
-          prospects: 847,
-          emailsSent: 2451,
+          websites: 0,
+          campaigns: 0,
+          prospects: 0,
+          emailsSent: 0,
         })
       } finally {
         setLoading(false)
       }
     }
 
-    loadStats()
+    loadDashboard()
   }, [])
+
+  const handleStartAIAgent = async () => {
+    setStartingAgent(true)
+    
+    try {
+      // Trigger AI agent to start fetching prospects
+      const response = await api.post('/api/ai-agent/start', {
+        userId: user?.id
+      })
+      
+      if (response.data?.success) {
+        setAiAgentStarted(true)
+        localStorage.setItem('aiAgentStarted', 'true')
+        toast.success('🤖 AI Agent activated! Finding your ideal prospects...')
+        
+        // Refresh stats after a moment
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      }
+    } catch (error) {
+      console.error('Error starting AI agent:', error)
+      toast.error('Failed to start AI agent. Please try again.')
+    } finally {
+      setStartingAgent(false)
+    }
+  }
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-dark-text">Dashboard</h1>
-        <p className="text-dark-textMuted mt-1">Welcome to AI Lead Strategies</p>
+      {/* Welcome Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-dark-text">
+            Welcome back, {user?.name?.split(' ')[0] || 'there'}! 👋
+          </h1>
+          <p className="text-dark-textMuted mt-1">Let's grow your business today</p>
+        </div>
+        
+        {/* AI Agent Start Button */}
+        {!aiAgentStarted && (
+          <button
+            onClick={handleStartAIAgent}
+            disabled={startingAgent}
+            className="relative px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition disabled:opacity-50 shadow-2xl"
+            style={{
+              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }}
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              <span className="text-2xl">🚀</span>
+              {startingAgent ? 'Starting...' : 'START AI AGENT'}
+            </span>
+            {/* Pulsating glow effect */}
+            <div className="absolute inset-0 rounded-xl bg-purple-500 opacity-75 blur-xl animate-pulse"></div>
+          </button>
+        )}
+        
+        {aiAgentStarted && (
+          <div className="px-6 py-3 bg-green-500/20 border border-green-500/30 text-green-400 rounded-xl flex items-center gap-2">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            <span className="font-semibold">AI Agent Active</span>
+          </div>
+        )}
       </div>
 
+      {/* AI Agent Welcome Message (First Time) */}
+      {!aiAgentStarted && (
+        <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-8">
+          <div className="flex items-start gap-6">
+            <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-4xl">🤖</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold text-white mb-3">Your AI Agent is Ready!</h3>
+              <p className="text-dark-textMuted text-lg mb-4">
+                Click the <strong className="text-white">START AI AGENT</strong> button to begin finding your ideal customers. 
+                Our AI will analyze your business profile and automatically discover the best prospects for your services.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🎯</span>
+                  <span className="text-sm text-dark-text">Finds ideal prospects</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">✍️</span>
+                  <span className="text-sm text-dark-text">Writes personalized emails</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📤</span>
+                  <span className="text-sm text-dark-text">Sends daily at 8 AM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Daily AI Agent Status */}
-      <DailyEmailStatus />
+      {aiAgentStarted && <DailyEmailStatus />}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

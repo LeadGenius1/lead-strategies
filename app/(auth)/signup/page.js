@@ -73,7 +73,7 @@ function SignupForm() {
         },
       })
       toast.success('Account created! Welcome to AI Lead Strategies.')
-      router.push('/dashboard')
+      router.push('/onboarding')
     } catch (error) {
       toast.error(error.message || 'Signup failed')
     } finally {

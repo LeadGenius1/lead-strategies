@@ -118,7 +118,7 @@ export default function VideoSiteAIPage() {
 
           <div className="px-2 sm:px-6 text-lg sm:text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
             <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-            <span className="hidden sm:inline">VIDEO</span>SITE
+            <span className="hidden sm:inline">VIDEO</span>SITE®
           </div>
 
           <div className="hidden lg:flex items-center gap-1">
@@ -332,7 +332,7 @@ export default function VideoSiteAIPage() {
             </div>
             <div className="bg-[#050505] border border-subtle p-6 sm:p-8 text-center [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
               <div className="text-3xl sm:text-4xl text-white mb-2 tracking-tighter font-space-grotesk font-light">
-                <span data-target="20" data-prefix="$" data-suffix="-75">$20-75</span>
+                $20-75
               </div>
               <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">CPM Range</h3>
             </div>

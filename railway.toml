@@ -1,0 +1,8 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "cd Downloads/leadstrategies-frontend-FINAL/leadstrategies-frontend && npm install && npm run build"
+
+[deploy]
+startCommand = "cd Downloads/leadstrategies-frontend-FINAL/leadstrategies-frontend && npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

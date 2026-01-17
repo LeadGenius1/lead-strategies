@@ -428,10 +428,23 @@ input, textarea, select {
 }
 
 /* Dark Theme Utility Classes for Dashboard */
-.bg-dark-bg { background-color: var(--dark-bg); }
-.bg-dark-card { background-color: var(--dark-card); }
-.border-dark-border { border-color: var(--dark-border); }
-.text-dark-text { color: var(--dark-text); }
-.text-dark-textMuted { color: var(--dark-textMuted); }
-.bg-dark-accent { background-color: var(--dark-accent); }
-.hover\:bg-dark-accentHover:hover { background-color: var(--dark-accentHover); }
+.bg-dark-bg { background-color: #0a0a0f; }
+.bg-dark-surface { background-color: #12121a; }
+.bg-dark-surfaceHover { background-color: #1a1a28; }
+.bg-dark-card { background-color: #12121a; }
+.border-dark-border { border-color: #1e1e2e; }
+.text-dark-text { color: #ffffff; }
+.text-dark-textMuted { color: #a0a0b0; }
+.bg-dark-primary { background-color: #8b5cf6; }
+.hover\:bg-dark-primaryHover:hover { background-color: #7c3aed; }
+.bg-dark-accent { background-color: #8b5cf6; }
+.hover\:bg-dark-accentHover:hover { background-color: #7c3aed; }
+.text-dark-primary { color: #8b5cf6; }
+.hover\:text-dark-primaryHover:hover { color: #7c3aed; }
+.border-dark-primary { border-color: #8b5cf6; }
+.hover\:border-dark-primary:hover { border-color: #8b5cf6; }
+.hover\:border-dark-textMuted:hover { border-color: #a0a0b0; }
+.hover\:text-dark-text:hover { color: #ffffff; }
+.hover\:bg-dark-surfaceHover:hover { background-color: #1a1a28; }
+.hover\:bg-dark-border:hover { background-color: #1e1e2e; }
+.focus\:border-dark-primary:focus { border-color: #8b5cf6; }

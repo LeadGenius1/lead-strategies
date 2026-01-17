@@ -34,7 +34,7 @@ export async function GET(request) {
     const redirectUri = `${frontendUrl}/api/auth/oauth/callback?provider=${provider}`
 
     // Exchange authorization code for user info via backend
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
     
     try {
       const response = await fetch(`${backendUrl}/api/auth/oauth/callback`, {

@@ -13,7 +13,7 @@ export async function GET(request) {
 
     // Try to get alerts from backend
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
       const response = await fetch(`${backendUrl}/api/admin/alerts`, {
         headers: {
           'Authorization': authHeader,

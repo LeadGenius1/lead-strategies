@@ -211,20 +211,39 @@ export default function CRMPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-dark-border">
-              {PIPELINE_STAGES.flatMap((stage) =>
-                stage.deals.map((deal) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-dark-textMuted">Loading deals...</td>
+                </tr>
+              ) : deals.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-dark-textMuted">No deals found. Create your first deal!</td>
+                </tr>
+              ) : (
+                deals.map((deal) => (
                   <tr key={deal.id} className="hover:bg-dark-surfaceHover transition">
-                    <td className="px-6 py-4 font-medium text-dark-text">{deal.company}</td>
-                    <td className="px-6 py-4 text-dark-textMuted">{deal.contact}</td>
+                    <td className="px-6 py-4 font-medium text-dark-text">{deal.name || deal.company?.name || deal.company || 'Unnamed Deal'}</td>
+                    <td className="px-6 py-4 text-dark-textMuted">
+                      {deal.contacts?.[0] ? `${deal.contacts[0].firstName} ${deal.contacts[0].lastName}` : deal.contact || 'No contact'}
+                    </td>
                     <td className="px-6 py-4">
                       <span className="text-xs px-2 py-1 rounded-full bg-dark-primary/20 text-dark-primary">
-                        {stage.name}
+                        {PIPELINE_STAGES.find(s => s.id === deal.stage)?.name || deal.stage}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-dark-text">${deal.value.toLocaleString()}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="text-dark-primary hover:text-dark-primaryHover text-sm">
+                    <td className="px-6 py-4 text-dark-text">${parseFloat(deal.value || 0).toLocaleString()}</td>
+                    <td className="px-6 py-4 text-right space-x-2">
+                      <button 
+                        onClick={() => handleEditDeal(deal.id)}
+                        className="text-dark-primary hover:text-dark-primaryHover text-sm"
+                      >
                         Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteDeal(deal.id)}
+                        className="text-red-400 hover:text-red-300 text-sm"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>

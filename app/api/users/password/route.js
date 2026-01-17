@@ -15,7 +15,7 @@ export async function PUT(request) {
     }
 
     const body = await request.json()
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
 
     try {
       // Try backend endpoint (if it exists)

@@ -15,7 +15,7 @@ export async function POST(request) {
 
     // Try to login via backend admin endpoint
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
       const response = await fetch(`${backendUrl}/api/admin/login`, {
         method: 'POST',
         headers: {

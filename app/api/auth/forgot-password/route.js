@@ -12,7 +12,7 @@ export async function POST(request) {
     }
 
     // Try backend endpoint
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
     
     try {
       const response = await fetch(`${backendUrl}/api/auth/forgot-password`, {

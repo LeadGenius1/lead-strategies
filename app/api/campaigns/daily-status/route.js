@@ -19,7 +19,7 @@ export async function GET(request) {
     }
 
     // Call backend API to get daily status
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
     const today = new Date().toISOString().split('T')[0]
 
     try {

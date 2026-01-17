@@ -13,7 +13,7 @@ export async function GET(request) {
 
     // Try to get audit logs from backend
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
       const { searchParams } = new URL(request.url)
       const action = searchParams.get('action')
       const url = action && action !== 'all'

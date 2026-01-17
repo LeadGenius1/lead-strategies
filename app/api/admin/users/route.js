@@ -13,7 +13,7 @@ export async function GET(request) {
 
     // Try to get users from backend
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.leadsite.ai'
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
       const { searchParams } = new URL(request.url)
       const tier = searchParams.get('tier')
       const url = tier && tier !== 'all' 

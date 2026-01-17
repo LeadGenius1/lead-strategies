@@ -134,26 +134,33 @@ export default function LeadSiteAIPage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 pt-32 pb-16 md:pt-52 md:pb-32">
-        <div className="container mx-auto px-4 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-24 relative space-y-0 items-center justify-center">
+        <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
+          <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
+            {/* Price Badge */}
+            <div className="[animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll mb-6">
+              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
+                $39/month
+              </span>
+            </div>
+
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[0.85] flex flex-wrap justify-center gap-x-4 md:text-9xl md:gap-x-8 text-6xl font-semibold text-white tracking-tighter mt-8 mb-0">
-                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
+              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
+                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                   TURN YOUR WEBSITE INTO A
                 </span>
-                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk">
+                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
                   LEAD GENERATING MACHINE
                 </span>
               </h1>
             </div>
 
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-lg text-neutral-400 tracking-tight font-space-grotesk md:text-3xl mt-8 mb-6">
+            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-8 max-w-4xl px-4">
               AI-powered prospect discovery and personalized outreach. Install once, generate qualified leads forever. No manual work required.
             </h2>
 
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] md:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -162,11 +169,11 @@ export default function LeadSiteAIPage() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col md:flex-row gap-4 mt-12 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
-              <Link href="/signup" className="bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
+              <Link href="/signup?tier=leadsite-ai" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
                 Start Free Trial
               </Link>
-              <Link href="#demo" className="bg-transparent border border-subtle text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist">
+              <Link href="#demo" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
                 Watch Demo
               </Link>
             </div>

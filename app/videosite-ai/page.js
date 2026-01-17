@@ -124,52 +124,66 @@ export default function VideoSiteAIPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-20 md:pt-52 md:pb-32 overflow-hidden z-10">
-        <div className="container mx-auto px-4 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-24 relative space-y-0 items-center justify-center">
+      <section className="relative pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36 overflow-hidden z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
+          <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
+            {/* FREE Badge */}
+            <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6 flex flex-col sm:flex-row items-center gap-3">
+              <span className="px-4 py-2 bg-green-500/10 border border-green-500/30 text-green-400 text-lg font-space-grotesk font-bold">
+                FREE SIGNUP
+              </span>
+              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
+                Earn $1.00 per video view!
+              </span>
+            </div>
+
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[0.85] flex flex-wrap justify-center gap-x-4 md:text-9xl md:gap-x-8 text-6xl font-semibold text-white tracking-tighter mt-8 mb-0">
-                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
+              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
+                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                   AI-POWERED VIDEO
                 </span>
-                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk">
+                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
                   MARKETING PLATFORM
                 </span>
               </h1>
             </div>
 
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-lg text-neutral-400 tracking-tight font-space-grotesk md:text-3xl mt-8 mb-6">
+            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-6 max-w-4xl px-4">
               Generate cinematic videos with AI. 4K quality. 10x engagement. Zero editing skills.
             </h2>
 
+            <p className="[animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll text-sm sm:text-base md:text-xl text-green-400 tracking-tight font-space-grotesk mb-8 px-4">
+              Content Video Creators: Sign up FREE and get paid $1.00 for every video view!
+            </p>
+
             {/* Animated Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-12">
-              <div className="bg-[#050505] border border-subtle p-6">
-                <div className="text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-6 px-4 sm:px-0">
+              <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
+                <div className="text-2xl sm:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
                   <span data-target="87" data-suffix="%">87%</span>
                 </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Higher Engagement</h3>
+                <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Higher Engagement</h3>
               </div>
-              <div className="bg-[#050505] border border-subtle p-6">
-                <div className="text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
+              <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
+                <div className="text-2xl sm:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
                   <span data-target="4" data-suffix="K">4K</span>
                 </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Quality</h3>
+                <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Quality</h3>
               </div>
-              <div className="bg-[#050505] border border-subtle p-6">
-                <div className="text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="5" data-prefix="< " data-suffix=" Min">5 Min</span>
+              <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
+                <div className="text-2xl sm:text-3xl text-green-400 mb-1 tracking-tighter font-space-grotesk font-light">
+                  $1.00
                 </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">To Create</h3>
+                <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Per Video View</h3>
               </div>
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col md:flex-row gap-4 mt-12 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
-              <Link href="/signup" className="bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
-                Create Your First Video
+            <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
+              <Link href="/signup?tier=videosite" className="bg-green-500 text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-green-400 transition-colors font-geist text-center">
+                Sign Up FREE
               </Link>
-              <Link href="#templates" className="bg-transparent border border-subtle text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist">
+              <Link href="#templates" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
                 Browse Examples
               </Link>
             </div>
@@ -355,106 +369,67 @@ export default function VideoSiteAIPage() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Simple <span className="text-gradient">Pricing</span>
+              Creator <span className="text-gradient">Program</span>
             </h2>
+            <p className="text-neutral-400 font-geist">Free signup for content creators - earn $1.00 per video view</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* Starter */}
-            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Starter</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $99<span className="text-sm text-neutral-500">/mo</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* FREE Creator */}
+            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-green-500/20 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-geist">
+                Creator
               </div>
+              <h3 className="text-2xl font-space-grotesk text-white mb-2">Video Creator</h3>
+              <div className="text-4xl font-space-grotesk font-light text-green-400 mb-2">
+                FREE
+              </div>
+              <p className="text-sm text-green-400 font-geist mb-6">Earn $1.00 per video view!</p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  20 AI-generated videos/month
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Unlimited AI-generated videos
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  1080p HD quality
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  50GB storage
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Basic templates
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Email support
-                </li>
-              </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Start Trial
-              </Link>
-            </div>
-
-            {/* Professional */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Popular
-              </div>
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Professional</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $399<span className="text-sm text-neutral-500">/mo</span>
-              </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  100 AI-generated videos/month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
                   4K resolution
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  500GB storage
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  All templates included
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  All templates
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Revenue share: $1.00/view
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Remove watermark
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Weekly payouts
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  A/B testing
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Creator analytics dashboard
                 </li>
               </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Start Trial
+              <Link href="/signup?tier=videosite" className="block w-full bg-green-500 text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-green-400 transition-colors font-geist text-center">
+                Sign Up FREE
               </Link>
             </div>
 
-            {/* Enterprise */}
-            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Enterprise</h3>
+            {/* Business */}
+            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-2xl font-space-grotesk text-white mb-2">Business</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $3,999<span className="text-sm text-neutral-500">/mo</span>
+                Custom<span className="text-sm text-neutral-500"> pricing</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited videos
+                  White-label video platform
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  White-label option
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited storage
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Custom templates
+                  Custom branding
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
@@ -462,7 +437,15 @@ export default function VideoSiteAIPage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Priority support
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
                   Dedicated CSM
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Enterprise SLA
                 </li>
               </ul>
               <Link href="/signup" className="block w-full bg-transparent border border-purple-500/30 text-white px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">

@@ -135,9 +135,9 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 pt-28 pb-16 sm:pt-40 sm:pb-20 md:pt-52 md:pb-32">
-        <div className="container mx-auto px-4 sm:px-6 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-12 sm:mb-24 relative space-y-0 items-center justify-center">
+        <div className="relative z-10 pt-32 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
+          <div className="flex flex-col text-center mb-16 sm:mb-28 relative items-center justify-center">
             {/* Version Tag */}
             <div className="absolute -left-4 md:left-20 top-0 flex flex-col gap-2 opacity-30 hidden lg:flex [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
               <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-geist">Est. 2024</span>
@@ -145,19 +145,19 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[0.9] sm:leading-[0.85] flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-8 text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 sm:mt-8 mb-0">
-                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
+              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-6 text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 sm:mt-8 mb-6 sm:mb-8">
+                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                   ONE PLATFORM
                 </span>
-                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk">
+                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
                   INFINITE REVENUE
                 </span>
               </h1>
             </div>
 
-            <div className="flex flex-col md:flex-row md:mt-12 md:mb-12 z-10 w-full mt-6 sm:mt-10 mb-6 sm:mb-8 gap-x-6 gap-y-4 sm:gap-y-6 items-center justify-center">
+            <div className="flex flex-col md:flex-row md:mt-8 md:mb-8 z-10 w-full mt-8 mb-8 gap-x-8 gap-y-6 items-center justify-center">
               {/* Status Button with Border Beam */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll group my-4 sm:my-8 relative">
+              <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll group my-4 sm:my-6 relative">
                 <div className="beam-border"></div>
                 <div className="border-subtle flex group-hover:bg-[#0a0a0a] transition-colors md:h-16 bg-[#080808] h-12 z-10 border rounded-full mt-[1px] mr-[1px] mb-[1px] ml-[1px] pr-4 sm:pr-6 pl-2 sm:pl-3 relative gap-x-3 sm:gap-x-4 items-center">
                   <div className="md:w-10 md:h-10 overflow-hidden flex border-subtle text-white bg-neutral-900 w-8 h-8 border rounded-full relative items-center justify-center">
@@ -177,7 +177,7 @@ export default function HomePage() {
               </h2>
             </div>
 
-            <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-500 font-space-grotesk text-center max-w-lg px-2">
+            <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-500 font-space-grotesk text-center max-w-2xl px-4 mt-4">
               Stop juggling 10 tools. One unified platform for lead generation, website building, omnichannel outreach, and enterprise sales automation.
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.AI</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $49<span className="text-sm text-neutral-500">/mo</span>
+                  $39<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -286,11 +286,11 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $49<span className="text-sm text-neutral-500">/mo</span>
+                  $39<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
-                AI website builder that generates lead-capture sites in 3 minutes.
+                AI website builder + lead generation. Includes 1 free AI-built website.
               </p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300">
                 <li className="flex items-center gap-2">
@@ -298,8 +298,8 @@ export default function HomePage() {
                   1,000 Leads/Month
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  1 Free Website Built by AI
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  <span className="text-green-400">1 Free Website Included</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
@@ -317,7 +317,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $149<span className="text-sm text-neutral-500">/mo</span>
+                  $99<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -343,15 +343,15 @@ export default function HomePage() {
               </ul>
             </Link>
 
-            {/* Tier 4: Tackle.IO */}
+            {/* Tier 4: TackleAI */}
             <Link href="/tackle-io" className="group bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 hover:border-purple-500/50 transition-all relative overflow-hidden">
               <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
                 Enterprise
               </div>
               <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-space-grotesk text-white">Tackle.IO</h3>
+                <h3 className="text-2xl font-space-grotesk text-white">TackleAI</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $249<span className="text-sm text-neutral-500">/mo</span>
+                  $149<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">

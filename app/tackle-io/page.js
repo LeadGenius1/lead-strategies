@@ -134,47 +134,54 @@ export default function TackleAIPage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 pt-28 pb-16 sm:pt-40 sm:pb-20 md:pt-52 md:pb-32">
-          <div className="container mx-auto px-4 sm:px-6 relative max-w-7xl">
-            <div className="flex flex-col text-center mb-12 sm:mb-24 relative space-y-0 items-center justify-center">
+        <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
+            <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
+              {/* Price Badge */}
+              <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6">
+                <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
+                  $149/month
+                </span>
+              </div>
+
               {/* Enterprise Badge */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll mb-4 sm:mb-6">
-                <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
+              <div className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll mb-8">
+                <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
                   ENTERPRISE PLATFORM
                 </span>
               </div>
 
               <div className="flex flex-col z-10 w-full items-center justify-center">
-                <h1 className="uppercase leading-[0.9] sm:leading-[0.85] flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-8 text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 sm:mt-8 mb-0">
-                  <span className="[animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light">
+                <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
+                  <span className="[animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                     REPLACE HUBSPOT
                   </span>
-                  <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk">
+                  <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
                     + GONG + OUTREACH
                   </span>
                 </h1>
               </div>
 
-              <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-300 tracking-tight font-space-grotesk mt-6 sm:mt-8 mb-4 sm:mb-6 max-w-4xl px-2">
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-sm sm:text-lg md:text-2xl lg:text-3xl text-neutral-300 tracking-tight font-space-grotesk mt-4 mb-8 max-w-4xl px-4">
                 Full CRM, voice calling, 7 AI agents, 22-channel outreach. Save $44,812/year.
               </h2>
 
               {/* Animated Metrics */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll mt-8 sm:mt-12">
-                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-3 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll mt-6 px-4 sm:px-0">
+                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-4 sm:p-6">
+                  <div className="text-lg sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
                     <span data-target="44" data-prefix="$" data-suffix="K+">$44K+</span>
                   </div>
                   <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Saved/Year</h3>
                 </div>
-                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-3 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
+                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-4 sm:p-6">
+                  <div className="text-lg sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
                     <span data-target="7">7</span>
                   </div>
                   <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">AI Agents</h3>
                 </div>
-                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-3 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
+                <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-4 sm:p-6">
+                  <div className="text-lg sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
                     <span data-target="99.9" data-suffix="%">99.9%</span>
                   </div>
                   <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Uptime</h3>
@@ -182,11 +189,11 @@ export default function TackleAIPage() {
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8 sm:mt-12 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll">
-                <Link href="/signup" className="bg-white text-black px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+              <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll">
+                <Link href="/signup?tier=tackle" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
                   Schedule Enterprise Demo
                 </Link>
-                <Link href="#pricing" className="bg-transparent border border-purple-500/30 text-white px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
+                <Link href="#pricing" className="bg-transparent border border-purple-500/30 text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
                   See Pricing Calculator
                 </Link>
               </div>
@@ -290,15 +297,15 @@ export default function TackleAIPage() {
               <div className="pt-4 border-t border-purple-500/20">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-neutral-400 font-geist">Monthly</span>
-                  <span className="text-purple-400 font-space-grotesk text-xl">$499</span>
+                  <span className="text-purple-400 font-space-grotesk text-xl">$149</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-neutral-400 font-geist">Yearly</span>
-                  <span className="text-purple-400 font-space-grotesk text-xl">$5,988</span>
+                  <span className="text-purple-400 font-space-grotesk text-xl">$1,788</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-purple-500/20">
                   <div className="text-3xl text-green-400 font-space-grotesk font-light">
-                    SAVINGS: $44,700/year
+                    SAVINGS: $48,900/year
                   </div>
                 </div>
               </div>
@@ -419,7 +426,7 @@ export default function TackleAIPage() {
             <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">Professional</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $249<span className="text-sm text-neutral-500">/mo</span>
+                $149<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">

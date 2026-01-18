@@ -191,27 +191,13 @@ export default function TackleAIPage() {
         <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
             <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
-              {/* Price Badge */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6">
-                <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
-                  $149/month
-                </span>
-              </div>
-
-              {/* Enterprise Badge */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll mb-8">
-                <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
-                  THE FUTURE OF OUTREACH MARKETING
-                </span>
-              </div>
-
               <div className="flex flex-col z-10 w-full items-center justify-center">
                 <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-4 mb-6">
-                  <span className="[animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                    INBOX FULL OF
+                  <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
+                    THE FUTURE OF
                   </span>
-                  <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
-                    BUYERS
+                  <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
+                    OUTREACH MARKETING
                   </span>
                 </h1>
               </div>

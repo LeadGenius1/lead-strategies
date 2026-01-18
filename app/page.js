@@ -229,22 +229,15 @@ export default function HomePage() {
               </h1>
             </div>
 
-            <div className="flex flex-col md:flex-row md:mt-8 md:mb-8 z-10 w-full mt-8 mb-8 gap-x-8 gap-y-6 items-center justify-center">
-              {/* Status Button with Border Beam */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll group my-4 sm:my-6 relative">
-                <div className="beam-border"></div>
-                <div className="border-subtle flex group-hover:bg-[#0a0a0a] transition-colors md:h-16 bg-[#080808] h-12 z-10 border rounded-full mt-[1px] mr-[1px] mb-[1px] ml-[1px] pr-4 sm:pr-6 pl-2 sm:pl-3 relative gap-x-3 sm:gap-x-4 items-center">
-                  <div className="md:w-10 md:h-10 overflow-hidden flex border-subtle text-white bg-neutral-900 w-8 h-8 border rounded-full relative items-center justify-center">
-                    <Icons.Shield className="w-4 sm:w-5 h-4 sm:h-5" />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-[8px] sm:text-[10px] uppercase tracking-widest text-neutral-500 font-geist">AI_Status</span>
-                    <span className="text-[10px] sm:text-xs md:text-sm leading-none text-white font-geist">7 Agents Active</span>
-                  </div>
-                </div>
+            <div className="flex flex-col z-10 w-full mt-8 mb-8 gap-y-4 items-center justify-center">
+              {/* Future of Outreach Marketing Badge */}
+              <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+                <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
+                  THE FUTURE OF OUTREACH MARKETING
+                </span>
               </div>
 
-              <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk">
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk">
                 Automated B2B Marketing Ecosystem
               </h2>
             </div>

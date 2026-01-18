@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
+import ShinyButton from '@/components/ShinyButton';
 
 // SEO Component for LeadSite.AI
 function LeadSiteAISEO() {
@@ -162,12 +163,10 @@ export default function LeadSiteAIPage() {
             <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               TackleAI
             </Link>
+            <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              VideoSite
+            </Link>
           </div>
-
-          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free</span>
-            <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
-          </Link>
         </div>
       </nav>
 
@@ -233,13 +232,10 @@ export default function LeadSiteAIPage() {
             </h2>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <Link href="/signup?tier=leadsite-ai" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll items-center justify-center">
+              <ShinyButton href="/signup?tier=leadsite-ai">
                 Start Free Trial
-              </Link>
-              <Link href="#demo" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
-                Watch Demo
-              </Link>
+              </ShinyButton>
             </div>
           </div>
         </div>
@@ -392,9 +388,11 @@ export default function LeadSiteAIPage() {
                   Real-time analytics dashboard
                 </li>
               </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Get Started
-              </Link>
+              <div className="text-center mt-4">
+                <ShinyButton href="/signup">
+                  Get Started
+                </ShinyButton>
+              </div>
             </div>
           </div>
         </div>
@@ -490,9 +488,9 @@ export default function LeadSiteAIPage() {
             No credit card required • Cancel anytime
           </p>
           <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-            <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+            <ShinyButton href="/signup">
               Start Free Trial
-            </Link>
+            </ShinyButton>
           </div>
         </div>
       </section>

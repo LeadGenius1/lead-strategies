@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
+import ShinyButton from '@/components/ShinyButton';
 
 // SEO Component for VideoSite.AI
 function VideoSiteAISEO() {
@@ -179,12 +180,10 @@ export default function VideoSiteAIPage() {
             <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               TackleAI
             </Link>
+            <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-white font-geist">
+              VideoSite
+            </Link>
           </div>
-
-          <Link href="/signup?tier=videosite" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Get Started</span>
-            <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
-          </Link>
         </div>
       </nav>
 
@@ -240,13 +239,10 @@ export default function VideoSiteAIPage() {
               </h2>
 
               {/* CTAs - slightly reduced padding */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-5 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-                <Link href="/signup?tier=videosite" className="bg-white text-black px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+              <div className="flex flex-col sm:flex-row gap-3 mt-5 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll items-center justify-center">
+                <ShinyButton href="/signup?tier=videosite">
                   Get Started Free
-                </Link>
-                <Link href="#features" className="bg-transparent border border-purple-500/30 text-white px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
-                  Browse Videos
-                </Link>
+                </ShinyButton>
               </div>
 
               {/* Trusted By - reduced spacing */}

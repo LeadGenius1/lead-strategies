@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
+import ShinyButton from '@/components/ShinyButton';
 
 // SEO Component for TackleAI
 function TackleAISEO() {
@@ -148,11 +149,6 @@ export default function TackleAIPage() {
               VideoSite
             </Link>
           </div>
-
-          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free</span>
-            <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
-          </Link>
         </div>
       </nav>
 
@@ -229,13 +225,10 @@ export default function TackleAIPage() {
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll">
-                <Link href="/signup?tier=tackle" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+              <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll items-center justify-center">
+                <ShinyButton href="/signup?tier=tackle">
                   Start Free Trial
-                </Link>
-                <Link href="#features" className="bg-transparent border border-purple-500/30 text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
-                  See How It Works
-                </Link>
+                </ShinyButton>
               </div>
             </div>
           </div>
@@ -496,9 +489,11 @@ export default function TackleAIPage() {
                   Meeting Scheduler Built-in
                 </li>
               </ul>
-              <Link href="/signup?tier=tackle" className="block w-full bg-white text-black px-6 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Start Free Trial
-              </Link>
+              <div className="text-center">
+                <ShinyButton href="/signup?tier=tackle">
+                  Start Free Trial
+                </ShinyButton>
+              </div>
               <p className="text-center text-neutral-500 text-xs font-geist mt-4">No credit card required • Cancel anytime</p>
             </div>
           </div>
@@ -550,9 +545,9 @@ export default function TackleAIPage() {
             Wake up every morning with an inbox full of warmed-up, perfectly targeted leads.
           </p>
           <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-            <Link href="/signup?tier=tackle" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+            <ShinyButton href="/signup?tier=tackle">
               Start Free Trial — $149/mo
-            </Link>
+            </ShinyButton>
           </div>
         </div>
       </section>

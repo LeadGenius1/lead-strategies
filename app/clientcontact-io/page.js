@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
+import ShinyButton from '@/components/ShinyButton';
 
 // SEO Component for ClientContact.IO
 function ClientContactIOSEO() {
@@ -243,12 +244,10 @@ export default function ClientContactIOPage() {
             <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               TackleAI
             </Link>
+            <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              VideoSite
+            </Link>
           </div>
-
-          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free</span>
-            <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
-          </Link>
         </div>
       </nav>
 
@@ -305,13 +304,10 @@ export default function ClientContactIOPage() {
                 Search, enrich, and verify leads from 8+ premium data sources. Save hours of research with AI-powered contact discovery and intelligent lead scoring.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
-                <Link href="/signup?tier=clientcontact" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+              <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll items-center justify-center">
+                <ShinyButton href="/signup?tier=clientcontact">
                   Start Free Trial
-                </Link>
-                <Link href="#features" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
-                  Explore Features
-                </Link>
+                </ShinyButton>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-12 px-4 sm:px-0">
@@ -457,9 +453,11 @@ export default function ClientContactIOPage() {
                 <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI lead scoring + advanced filtering</li>
                 <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Export to CRM (CSV, Excel, JSON)</li>
               </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Start Free Trial
-              </Link>
+              <div className="text-center">
+                <ShinyButton href="/signup">
+                  Start Free Trial
+                </ShinyButton>
+              </div>
               <p className="mt-6 text-xs text-neutral-600 font-geist text-center">No credit card required • Cancel anytime</p>
             </div>
           </div>

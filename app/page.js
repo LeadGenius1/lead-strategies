@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
+import ShinyButton from '@/components/ShinyButton';
 
 // SEO Component for Homepage
 function HomeSEO() {
@@ -168,12 +169,10 @@ export default function HomePage() {
             <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               TackleAI
             </Link>
+            <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              VideoSite
+            </Link>
           </div>
-
-          <Link href="/signup" className="group relative bg-white text-black px-3 sm:px-6 py-2 text-[10px] sm:text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
-            <span className="relative z-10 font-geist">Start Free</span>
-            <div className="absolute inset-0 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left bg-neutral-200"></div>
-          </Link>
         </div>
       </nav>
 
@@ -438,9 +437,9 @@ export default function HomePage() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+            <ShinyButton href="/signup">
               Start Free 14-Day Trial
-            </Link>
+            </ShinyButton>
           </div>
         </div>
       </section>
@@ -455,9 +454,9 @@ export default function HomePage() {
             Join the AI-powered marketing revolution. 14-day free trial. No credit card required.
           </p>
           <div>
-            <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+            <ShinyButton href="/signup">
               Start Free Trial
-            </Link>
+            </ShinyButton>
           </div>
         </div>
       </section>

@@ -187,6 +187,15 @@ export default function TackleAIPage() {
         <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
             <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                </span>
+                AI-POWERED SALES CRM
+              </div>
+
               <div className="flex flex-col z-10 w-full items-center justify-center">
                 <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-4 mb-6">
                   <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
@@ -222,13 +231,6 @@ export default function TackleAIPage() {
                   </div>
                   <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Platform</h3>
                 </div>
-              </div>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll items-center justify-center">
-                <ShinyButton href="/signup?tier=tackle">
-                  Start Free Trial
-                </ShinyButton>
               </div>
             </div>
           </div>
@@ -311,14 +313,8 @@ export default function TackleAIPage() {
                 </div>
               </div>
               <div className="pt-4 border-t border-purple-500/20">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-neutral-400 font-geist">Simple Pricing</span>
-                  <span className="text-purple-400 font-space-grotesk text-xl">$149/mo</span>
-                </div>
-                <div className="mt-4 pt-4 border-t border-purple-500/20">
-                  <div className="text-2xl text-green-400 font-space-grotesk font-light">
-                    Warmed-up leads delivered daily
-                  </div>
+                <div className="text-xl text-green-400 font-space-grotesk font-light">
+                  Warmed-up leads delivered daily
                 </div>
               </div>
             </div>
@@ -532,23 +528,15 @@ export default function TackleAIPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative bg-gradient-to-b from-purple-950/10 to-black">
+      {/* Final Section */}
+      <section className="border-subtle bg-center z-10 border-t pt-24 pb-24 relative bg-gradient-to-b from-purple-950/10 to-black">
         <div className="container mx-auto px-4 text-center max-w-4xl">
-          <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mb-8 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+          <h2 className="md:text-6xl uppercase text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             Ready to Scale Beyond <span className="text-gradient">Manual Hustle?</span>
           </h2>
-          <p className="text-xl text-neutral-400 font-geist mb-4 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            Put your sales floor on intelligent autopilot. This is where you start.
+          <p className="text-lg text-neutral-400 font-geist [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            See pricing above to get started with your 14-day free trial.
           </p>
-          <p className="text-sm text-neutral-500 font-geist mb-10 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-            Wake up every morning with an inbox full of warmed-up, perfectly targeted leads.
-          </p>
-          <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-            <ShinyButton href="/signup?tier=tackle">
-              Start Free Trial — $149/mo
-            </ShinyButton>
-          </div>
         </div>
       </section>
 

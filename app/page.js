@@ -436,28 +436,18 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="text-center mt-12">
-            <ShinyButton href="/signup">
-              Start Free 14-Day Trial
-            </ShinyButton>
-          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative">
+      {/* Final Section */}
+      <section className="border-subtle bg-center z-10 border-t pt-24 pb-24 relative">
         <div className="container mx-auto px-4 text-center max-w-4xl">
-          <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mix-blend-plus-lighter mb-8">
+          <h2 className="md:text-6xl uppercase text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6">
             Ready to <span className="text-neutral-600">Scale?</span>
           </h2>
-          <p className="text-xl text-neutral-400 font-geist mix-blend-plus-lighter max-w-xl mx-auto mb-10">
-            Join the AI-powered marketing revolution. 14-day free trial. No credit card required.
+          <p className="text-lg text-neutral-400 font-geist max-w-xl mx-auto">
+            Choose your platform above to get started with your 14-day free trial. No credit card required.
           </p>
-          <div>
-            <ShinyButton href="/signup">
-              Start Free Trial
-            </ShinyButton>
-          </div>
         </div>
       </section>
 

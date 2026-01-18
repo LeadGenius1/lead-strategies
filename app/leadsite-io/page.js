@@ -233,14 +233,13 @@ export default function LeadSiteIOPage() {
         <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
           <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
-            {/* Price Badge */}
-            <div className="[animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll mb-6 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
-                $39/month
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
               </span>
-              <span className="px-4 py-2 bg-green-500/10 border border-green-500/30 text-green-400 text-sm font-space-grotesk">
-                + 1 FREE AI Website
-              </span>
+              AI-POWERED WEBSITE BUILDER
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
@@ -255,28 +254,8 @@ export default function LeadSiteIOPage() {
             </div>
 
             <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-6 max-w-3xl px-4">
-              AI-powered prospect discovery and personalized outreach. Install once, generate qualified leads forever.
+              AI-powered website builder with automated lead generation. Create stunning websites that convert visitors into customers.
             </h2>
-
-            <p className="[animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll text-sm sm:text-base md:text-xl text-green-400 tracking-tight font-space-grotesk mb-8 px-4">
-              Includes an AI website builder — launch your first lead-generating website FREE.
-            </p>
-
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-              </span>
-              AI-POWERED LEAD GENERATION LIVE
-            </div>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll items-center justify-center">
-              <ShinyButton href="/signup?tier=leadsite-io">
-                Start Free Trial
-              </ShinyButton>
-            </div>
           </div>
         </div>
         </div>
@@ -532,24 +511,21 @@ export default function LeadSiteIOPage() {
           </div>
 
           <div className="flex justify-center max-w-6xl mx-auto">
-            {/* Single Plan - $49/mo */}
+            {/* Single Plan - $39/mo */}
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">LeadSite.IO</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $49<span className="text-sm text-neutral-500">/mo</span>
+                $39<span className="text-sm text-neutral-500">/mo</span>
               </div>
+              <p className="text-green-400 text-sm font-geist mb-4">+ 1 Free AI Website Included</p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  1 AI-generated website included (free)
+                  AI website builder
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  2,000 qualified leads/month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited AI personalized emails
+                  Lead capture forms
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
@@ -560,9 +536,11 @@ export default function LeadSiteIOPage() {
                   Real-time analytics dashboard
                 </li>
               </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Get Started
-              </Link>
+              <div className="text-center">
+                <ShinyButton href="/signup?tier=leadsite-io">
+                  Get Started
+                </ShinyButton>
+              </div>
             </div>
           </div>
         </div>
@@ -639,23 +617,15 @@ export default function LeadSiteIOPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative">
+      {/* Final Section */}
+      <section className="border-subtle bg-center z-10 border-t pt-24 pb-24 relative">
         <div className="container mx-auto px-4 text-center max-w-4xl">
-          <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mb-8 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+          <h2 className="md:text-6xl uppercase text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             Ready to scale your <span className="text-gradient">outreach?</span>
           </h2>
-          <p className="text-xl text-neutral-400 font-geist mb-4 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            Start free — build your first website and activate AI lead generation in minutes.
+          <p className="text-lg text-neutral-400 font-geist [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            See pricing above to get started with your 14-day free trial.
           </p>
-          <p className="text-sm text-neutral-500 font-geist mb-10 [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
-            No credit card required • Cancel anytime
-          </p>
-          <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-            <ShinyButton href="/signup">
-              Start Free Trial
-            </ShinyButton>
-          </div>
         </div>
       </section>
 

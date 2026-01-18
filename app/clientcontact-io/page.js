@@ -278,13 +278,6 @@ export default function ClientContactIOPage() {
         <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
             <div className="flex flex-col text-center mb-16 relative items-center justify-center">
-              {/* Price Badge */}
-              <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6">
-                <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
-                  $99/month
-                </span>
-              </div>
-
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -303,12 +296,6 @@ export default function ClientContactIOPage() {
               <p className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-300 tracking-tight font-geist mt-4 mb-6 max-w-3xl px-4">
                 Search, enrich, and verify leads from 8+ premium data sources. Save hours of research with AI-powered contact discovery and intelligent lead scoring.
               </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll items-center justify-center">
-                <ShinyButton href="/signup?tier=clientcontact">
-                  Start Free Trial
-                </ShinyButton>
-              </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-12 px-4 sm:px-0">
                 <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
@@ -445,16 +432,16 @@ export default function ClientContactIOPage() {
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">ClientContact.IO</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $49<span className="text-sm text-neutral-500">/mo</span>
+                $99<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI-powered lead search across 8+ data sources</li>
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Email discovery & verification</li>
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI lead scoring + advanced filtering</li>
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Export to CRM (CSV, Excel, JSON)</li>
+                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>22+ channel unified inbox</li>
+                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI auto-responder</li>
+                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Unlimited campaigns</li>
+                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>3 team seats included</li>
               </ul>
               <div className="text-center">
-                <ShinyButton href="/signup">
+                <ShinyButton href="/signup?tier=clientcontact">
                   Start Free Trial
                 </ShinyButton>
               </div>

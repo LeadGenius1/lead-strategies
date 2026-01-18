@@ -238,13 +238,6 @@ export default function VideoSiteAIPage() {
                 The premier platform connecting content creators with advertisers. Earn $1.00 per view while advertisers reach their perfect audience.
               </h2>
 
-              {/* CTAs - slightly reduced padding */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-5 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll items-center justify-center">
-                <ShinyButton href="/signup?tier=videosite">
-                  Get Started Free
-                </ShinyButton>
-              </div>
-
               {/* Trusted By - reduced spacing */}
               <div className="mt-12 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
                 <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-geist mb-4">Trusted by creators worldwide</p>
@@ -384,6 +377,55 @@ export default function VideoSiteAIPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 relative z-10 border-t border-subtle">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Simple <span className="text-gradient">Pricing</span>
+            </h2>
+            <p className="text-neutral-400 font-geist">Free for content creators. Earn $1 per view.</p>
+          </div>
+
+          <div className="flex justify-center max-w-6xl mx-auto">
+            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-green-500/20 border border-green-500/30 text-green-300 text-[10px] uppercase tracking-wider font-geist">
+                Free Forever
+              </div>
+              <h3 className="text-2xl font-space-grotesk text-white mb-2">VideoSite.AI</h3>
+              <div className="text-4xl font-space-grotesk font-light text-green-400 mb-6">
+                FREE
+              </div>
+              <p className="text-neutral-400 font-geist mb-6">Create videos, earn $1/view</p>
+              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  HD video hosting
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Earn $1.00 per video view
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Analytics dashboard
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Instant payouts
+                </li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?tier=videosite">
+                  Get Started Free
+                </ShinyButton>
+              </div>
+              <p className="mt-6 text-xs text-neutral-600 font-geist text-center">No credit card required</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
       <section className="py-24 relative z-10 border-t border-subtle">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -416,20 +458,15 @@ export default function VideoSiteAIPage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative bg-gradient-to-b from-purple-950/10 to-black">
+      {/* Final Section */}
+      <section className="border-subtle bg-center z-10 border-t pt-24 pb-24 relative bg-gradient-to-b from-purple-950/10 to-black">
         <div className="container mx-auto px-4 text-center max-w-4xl">
-          <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mb-8 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+          <h2 className="md:text-6xl uppercase text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             Ready to Get <span className="text-gradient">Started?</span>
           </h2>
-          <p className="text-xl text-neutral-400 font-geist mb-10 max-w-2xl mx-auto [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            Join thousands of creators and advertisers already using VideoSite.io to monetize content and reach their audience.
+          <p className="text-lg text-neutral-400 font-geist [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            Join thousands of creators and advertisers already using VideoSite.AI to monetize content.
           </p>
-          <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-            <Link href="/signup?tier=videosite" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
-              Get Started Now
-            </Link>
-          </div>
         </div>
       </section>
 

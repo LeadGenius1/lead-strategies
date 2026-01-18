@@ -5,6 +5,57 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 
+// SEO Component for TackleAI
+function TackleAISEO() {
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'TackleAI',
+    description: 'AI-powered sales CRM with 7 self-healing AI agents and 22-channel omnichannel outreach',
+    brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
+    offers: {
+      '@type': 'Offer',
+      url: 'https://aileadstrategies.com/tackle-io',
+      price: '149',
+      priceCurrency: 'USD',
+      priceValidUntil: '2026-12-31',
+      availability: 'https://schema.org/InStock'
+    },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '458' }
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'What is TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI is a comprehensive AI sales CRM that combines full pipeline management, 7 self-healing AI agents, and 22-channel outreach in one platform for $149/month.' } },
+      { '@type': 'Question', name: 'What are the 7 AI agents in TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI includes Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, and CleanOS AI - all self-healing agents that learn and adapt automatically.' } },
+      { '@type': 'Question', name: 'What channels does TackleAI support?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI supports 22 outreach channels including Email, LinkedIn, SMS, WhatsApp, Facebook, Instagram, Twitter, TikTok, YouTube, phone calls, and more.' } }
+    ]
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <div className="sr-only" aria-hidden="true">
+        <h1>TackleAI - AI Sales CRM with 22-Channel Outreach</h1>
+        <p>TackleAI is the future of outreach marketing by AI Lead Strategies LLC, priced at $149/month (no tiers). Features: Full CRM with pipeline management, 7 self-healing AI agents (Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, CleanOS AI), 22-channel omnichannel outreach (LinkedIn, Email, SMS, WhatsApp, social media), AI prospect scraping, automated personalized email writing, follow-up tracking, voice calling with transcription, meeting scheduler, team collaboration, revenue forecasting. Wake up every morning with an inbox full of warmed-up, perfectly targeted leads. Stop the manual hustle and put your sales floor on intelligent autopilot. Best for B2B sales teams wanting to scale beyond manual outreach. Alternatives: HubSpot, Salesforce, Outreach.io, Salesloft. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <h2>TackleAI Features</h2>
+        <ul>
+          <li>Full CRM with pipeline management</li>
+          <li>7 self-healing AI agents</li>
+          <li>22-channel omnichannel outreach</li>
+          <li>AI prospect discovery</li>
+          <li>Automated personalized emails</li>
+          <li>Voice calling with transcription</li>
+          <li>Team collaboration tools</li>
+        </ul>
+      </div>
+    </>
+  );
+}
+
 export default function TackleAIPage() {
   useEffect(() => {
     // Animation on scroll
@@ -65,7 +116,9 @@ export default function TackleAIPage() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden">
+    <>
+      <TackleAISEO />
+      <div className="relative overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
         <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
@@ -521,5 +574,6 @@ export default function TackleAIPage() {
       {/* Footer */}
       <Footer brandName="TACKLEAI" />
     </div>
+    </>
   );
 }

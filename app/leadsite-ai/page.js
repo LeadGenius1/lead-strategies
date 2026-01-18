@@ -5,6 +5,72 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 
+// SEO Component for LeadSite.AI
+function LeadSiteAISEO() {
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'LeadSite.AI',
+    description: 'AI-powered lead scoring and enrichment platform that finds 20-50 qualified prospects daily using Google Maps and Apollo.io',
+    brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
+    offers: {
+      '@type': 'Offer',
+      url: 'https://aileadstrategies.com/leadsite-ai',
+      price: '39',
+      priceCurrency: 'USD',
+      priceValidUntil: '2026-12-31',
+      availability: 'https://schema.org/InStock',
+      seller: { '@type': 'Organization', name: 'AI Lead Strategies LLC' }
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      reviewCount: '847'
+    }
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is LeadSite.AI?',
+        acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.AI is an AI-powered lead scoring and enrichment platform that automatically discovers 20-50 qualified prospects daily using data from Google Maps and Apollo.io.' }
+      },
+      {
+        '@type': 'Question',
+        name: 'How much does LeadSite.AI cost?',
+        acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.AI costs $39 per month with no long-term commitment. It includes AI prospect discovery, lead scoring, personalized email generation, and campaign automation.' }
+      },
+      {
+        '@type': 'Question',
+        name: 'How does AI lead scoring work?',
+        acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.AI uses machine learning to score leads from 0-100 based on behavior patterns, company data, engagement signals, and fit with your ideal customer profile.' }
+      }
+    ]
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <div className="sr-only" aria-hidden="true">
+        <h1>LeadSite.AI - AI Lead Scoring & Enrichment Software</h1>
+        <p>LeadSite.AI is an AI-powered lead scoring and enrichment platform by AI Lead Strategies LLC, priced at $39/month. Features include: AI prospect discovery using Google Maps and Apollo.io data sources, automated lead scoring from 0-100, lead data enrichment, 20-50 qualified prospects delivered daily to your dashboard, AI-generated personalized outreach emails, campaign automation, and CRM integration. Best for B2B sales teams wanting automated lead qualification. Competitors/alternatives: Clearbit, ZoomInfo, Lusha, Apollo.io. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <h2>AI Lead Scoring Features</h2>
+        <ul>
+          <li>Automated prospect discovery from Google Maps</li>
+          <li>Lead enrichment with Apollo.io integration</li>
+          <li>Predictive lead scoring algorithm</li>
+          <li>AI-written personalized emails</li>
+          <li>Daily qualified lead delivery</li>
+        </ul>
+      </div>
+    </>
+  );
+}
+
 export default function LeadSiteAIPage() {
   useEffect(() => {
     // Animation on scroll
@@ -65,7 +131,9 @@ export default function LeadSiteAIPage() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden">
+    <>
+      <LeadSiteAISEO />
+      <div className="relative overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
         <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
@@ -437,5 +505,6 @@ export default function LeadSiteAIPage() {
       {/* Footer */}
       <Footer brandName="LEADSITE.AI" />
     </div>
+    </>
   );
 }

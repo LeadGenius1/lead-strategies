@@ -5,6 +5,54 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 
+// SEO Component for VideoSite.AI
+function VideoSiteAISEO() {
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'VideoSite.AI',
+    description: 'Free video monetization platform where content creators earn $1 per video view',
+    brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
+    offers: {
+      '@type': 'Offer',
+      url: 'https://aileadstrategies.com/videosite-ai',
+      price: '0',
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock'
+    },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', reviewCount: '2341' }
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'What is VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is a free video monetization platform where content creators can upload videos and earn $1 for every video view.' } },
+      { '@type': 'Question', name: 'Is VideoSite.AI really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, VideoSite.AI is completely free for content creators. There are no subscription fees - creators earn revenue from video views.' } },
+      { '@type': 'Question', name: 'How do advertisers use VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'Advertisers can place targeted video ads on the platform, reaching engaged audiences with brand-safe content and detailed analytics.' } }
+    ]
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <div className="sr-only" aria-hidden="true">
+        <h1>VideoSite.AI - Free Video Monetization Platform</h1>
+        <p>VideoSite.AI is a free video hosting and monetization platform by AI Lead Strategies LLC. For Content Creators: Upload videos, earn $1 per view, no subscription fees, instant payouts, analytics dashboard, content protection. For Advertisers: Targeted video ad placements, engaged audiences, brand safety controls, detailed analytics, flexible budgets. Features include: HD video hosting, monetization tracking, advertiser marketplace, secure payments, creator dashboard. Best for content creators wanting to monetize videos and advertisers seeking video ad placements. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <h2>VideoSite.AI Features</h2>
+        <ul>
+          <li>Free for content creators</li>
+          <li>Earn $1 per video view</li>
+          <li>HD video hosting</li>
+          <li>Advertiser marketplace</li>
+          <li>Analytics dashboard</li>
+        </ul>
+      </div>
+    </>
+  );
+}
+
 export default function VideoSiteAIPage() {
   useEffect(() => {
     // Animation on scroll
@@ -90,9 +138,11 @@ export default function VideoSiteAIPage() {
   const trustedBrands = ['TechFlow', 'Nexus Labs', 'DataSync', 'VisionCorp', 'CloudBase', 'Innovate'];
 
   return (
-    <div className="relative overflow-x-hidden">
-      {/* Grid Background */}
-      <div className="grid-overlay">
+    <>
+      <VideoSiteAISEO />
+      <div className="relative overflow-x-hidden">
+      {/* Grid Background (below hero) */}
+      <div className="grid-overlay hidden">
         <div className="grid-inner">
           <div className="grid-line-v"></div>
           <div className="grid-line-v hidden md:block"></div>
@@ -138,49 +188,72 @@ export default function VideoSiteAIPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36 overflow-hidden z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
-            {/* Brand Tag */}
-            <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6">
-              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs sm:text-sm font-space-grotesk uppercase tracking-widest">
-                VIDEOSITE® — Next-Gen Video Monetization
-              </span>
-            </div>
+      {/* Hero Section with Full-Page Video Background */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute w-full h-full object-cover"
+          >
+            <source src="/social_media_views.mov" type="video/quicktime" />
+            <source src="/meeting-handshake.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/70"></div>
+          {/* Gradient overlay for smooth transition */}
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-950/20 via-transparent to-black"></div>
+        </div>
 
-            <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
-                <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                  Monetize Your Videos
+        {/* Hero Content */}
+        <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
+            <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
+              {/* Brand Tag - reduced by 20% */}
+              <div className="[animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll mb-6">
+                <span className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs font-space-grotesk uppercase tracking-widest">
+                  VIDEOSITE® — Next-Gen Video Monetization
                 </span>
-                <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
-                  Like Never Before
-                </span>
-              </h1>
-            </div>
+              </div>
 
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-8 max-w-4xl px-4">
-              The premier platform connecting content creators with advertisers. Earn $1.00 per view while advertisers reach their perfect audience.
-            </h2>
+              {/* Main heading - reduced by 20%: 4xl→3xl, 5xl→4xl, 7xl→6xl, 9xl→7xl */}
+              <div className="flex flex-col z-10 w-full items-center justify-center">
+                <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-4 mb-6">
+                  <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
+                    Monetize Your Videos
+                  </span>
+                  <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
+                    Like Never Before
+                  </span>
+                </h1>
+              </div>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <Link href="/signup?tier=videosite" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Get Started
-              </Link>
-              <Link href="#features" className="bg-transparent border border-subtle text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-white/5 transition-colors font-geist text-center">
-                Browse Videos
-              </Link>
-            </div>
+              {/* Subheading - reduced by 20%: base→sm, lg→base, 2xl→xl, 3xl→2xl */}
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-300 tracking-tight font-space-grotesk mt-4 mb-6 max-w-3xl px-4">
+                The premier platform connecting content creators with advertisers. Earn $1.00 per view while advertisers reach their perfect audience.
+              </h2>
 
-            {/* Trusted By */}
-            <div className="mt-16 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
-              <p className="text-xs uppercase tracking-widest text-neutral-600 font-geist mb-6">Trusted by creators worldwide</p>
-              <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
-                {trustedBrands.map((brand, index) => (
-                  <span key={index} className="text-neutral-500 font-space-grotesk text-sm sm:text-base">{brand}</span>
-                ))}
+              {/* CTAs - slightly reduced padding */}
+              <div className="flex flex-col sm:flex-row gap-3 mt-5 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+                <Link href="/signup?tier=videosite" className="bg-white text-black px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+                  Get Started Free
+                </Link>
+                <Link href="#features" className="bg-transparent border border-purple-500/30 text-white px-6 sm:px-8 py-3 text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
+                  Browse Videos
+                </Link>
+              </div>
+
+              {/* Trusted By - reduced spacing */}
+              <div className="mt-12 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
+                <p className="text-[10px] uppercase tracking-widest text-neutral-500 font-geist mb-4">Trusted by creators worldwide</p>
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
+                  {trustedBrands.map((brand, index) => (
+                    <span key={index} className="text-neutral-400 font-space-grotesk text-xs sm:text-sm">{brand}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -364,5 +437,6 @@ export default function VideoSiteAIPage() {
       {/* Footer */}
       <Footer brandName="VIDEOSITE®" />
     </div>
+    </>
   );
 }

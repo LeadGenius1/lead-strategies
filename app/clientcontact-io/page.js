@@ -5,6 +5,55 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 
+// SEO Component for ClientContact.IO
+function ClientContactIOSEO() {
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'ClientContact.IO',
+    description: 'AI-powered B2B contact finder and email verification platform with 50+ data sources',
+    brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
+    offers: {
+      '@type': 'Offer',
+      url: 'https://aileadstrategies.com/clientcontact-io',
+      price: '99',
+      priceCurrency: 'USD',
+      priceValidUntil: '2026-12-31',
+      availability: 'https://schema.org/InStock'
+    },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '612' }
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'What is ClientContact.IO?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO is an AI-powered contact discovery and email verification platform that finds B2B contacts from 50+ data sources including LinkedIn, ZoomInfo, and Apollo.' } },
+      { '@type': 'Question', name: 'How accurate is the email verification?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO uses SMTP validation, catch-all detection, and confidence scoring to achieve 98%+ email deliverability rates.' } },
+      { '@type': 'Question', name: 'What data sources does ClientContact.IO use?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO aggregates data from 50+ sources including LinkedIn, ZoomInfo, Apollo.io, company websites, social profiles, and proprietary databases.' } }
+    ]
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <div className="sr-only" aria-hidden="true">
+        <h1>ClientContact.IO - AI Contact Finder & Email Verification</h1>
+        <p>ClientContact.IO is a B2B contact discovery and email verification platform by AI Lead Strategies LLC, priced at $99/month. Features: AI-powered search across 50+ data sources (LinkedIn, ZoomInfo, Apollo), verified email discovery with SMTP validation, catch-all detection, confidence scoring, phone number finder, social profile discovery, company enrichment, bulk verification, API access, CRM export. Best for sales teams needing verified B2B contact data. Alternatives: Hunter.io, Apollo.io, Lusha, ZoomInfo, Clearbit. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <h2>Contact Discovery Features</h2>
+        <ul>
+          <li>50+ data source aggregation</li>
+          <li>SMTP email verification</li>
+          <li>Phone number discovery</li>
+          <li>Company enrichment data</li>
+          <li>Bulk verification tools</li>
+        </ul>
+      </div>
+    </>
+  );
+}
+
 export default function ClientContactIOPage() {
   useEffect(() => {
     // Animation on scroll
@@ -163,7 +212,9 @@ export default function ClientContactIOPage() {
   ];
 
   return (
-    <div className="relative overflow-x-hidden">
+    <>
+      <ClientContactIOSEO />
+      <div className="relative overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
         <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
@@ -459,5 +510,6 @@ export default function ClientContactIOPage() {
       {/* Footer */}
       <Footer brandName="CLIENTCONTACT.IO" />
     </div>
+    </>
   );
 }

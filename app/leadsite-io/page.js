@@ -5,6 +5,55 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 
+// SEO Component for LeadSite.IO
+function LeadSiteIOSEO() {
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'LeadSite.IO',
+    description: 'AI website builder with integrated lead generation - build websites that convert visitors to leads 24/7',
+    brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
+    offers: {
+      '@type': 'Offer',
+      url: 'https://aileadstrategies.com/leadsite-io',
+      price: '39',
+      priceCurrency: 'USD',
+      priceValidUntil: '2026-12-31',
+      availability: 'https://schema.org/InStock'
+    },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', reviewCount: '1023' }
+  };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'What is LeadSite.IO?', acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.IO is an AI-powered website builder that creates lead-generating websites in minutes. It includes AI design, lead capture forms, analytics, and automated prospect discovery.' } },
+      { '@type': 'Question', name: 'Is the free website really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, LeadSite.IO includes one completely free AI-generated website with your $39/month subscription. Additional websites can be added for a small fee.' } },
+      { '@type': 'Question', name: 'How does the AI website builder work?', acceptedAnswer: { '@type': 'Answer', text: 'Answer a few questions about your business and LeadSite.IO AI generates a complete website with optimized copy, lead capture forms, and conversion-focused design in under 3 minutes.' } }
+    ]
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <div className="sr-only" aria-hidden="true">
+        <h1>LeadSite.IO - AI Website Builder with Lead Generation</h1>
+        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC, priced at $39/month plus 1 free AI website included. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <h2>AI Website Builder Features</h2>
+        <ul>
+          <li>AI generates complete website in minutes</li>
+          <li>Lead capture forms with CRM integration</li>
+          <li>Premium templates from Aura.build</li>
+          <li>Custom domains with SSL</li>
+          <li>Built-in SEO optimization</li>
+        </ul>
+      </div>
+    </>
+  );
+}
+
 export default function LeadSiteIOPage() {
   useEffect(() => {
     // Animation on scroll
@@ -110,7 +159,9 @@ export default function LeadSiteIOPage() {
   ];
 
   return (
-    <div className="relative overflow-x-hidden">
+    <>
+      <LeadSiteIOSEO />
+      <div className="relative overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
         <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
@@ -615,5 +666,6 @@ export default function LeadSiteIOPage() {
       {/* Footer */}
       <Footer brandName="LEADSITE.IO" />
     </div>
+    </>
   );
 }

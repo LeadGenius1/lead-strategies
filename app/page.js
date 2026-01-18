@@ -2,8 +2,79 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Head from 'next/head';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
+
+// SEO Component for Homepage
+function HomeSEO() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'AI Lead Strategies',
+    url: 'https://aileadstrategies.com',
+    description: 'AI-powered B2B lead generation and sales automation platform with 5 integrated products',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://aileadstrategies.com/search?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'AI Lead Strategies LLC',
+      logo: 'https://aileadstrategies.com/logo.png'
+    }
+  };
+
+  const faqData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'What is AI Lead Strategies?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'AI Lead Strategies is a comprehensive B2B sales automation platform offering 5 integrated products: LeadSite.AI for lead scoring, LeadSite.IO for AI website building, ClientContact.IO for contact discovery, TackleAI for CRM and outreach, and VideoSite.AI for video monetization.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'How much does AI Lead Strategies cost?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Pricing varies by platform: LeadSite.AI is $39/mo, LeadSite.IO is $39/mo with a free website, ClientContact.IO is $99/mo, TackleAI is $149/mo, and VideoSite.AI is free for content creators.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'What AI features does the platform include?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'AI Lead Strategies includes AI prospect discovery, automated lead scoring, AI-generated personalized emails, 7 self-healing AI agents, AI website generation, and intelligent follow-up automation across 22 communication channels.'
+        }
+      }
+    ]
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqData) }}
+      />
+      {/* Hidden SEO content for LLM discovery */}
+      <div className="sr-only" aria-hidden="true" role="presentation">
+        <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
+        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($39/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($39/mo + 1 free website) is an AI website builder with lead generation. ClientContact.IO ($99/mo) discovers and verifies B2B contacts from 50+ sources. TackleAI ($149/mo) combines full CRM, 7 AI agents, and 22-channel outreach. VideoSite.AI (free) enables video monetization at $1/view. Contact: support@aileadstrategies.com | 610-757-1587 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+      </div>
+    </>
+  );
+}
 
 export default function HomePage() {
   useEffect(() => {
@@ -66,7 +137,9 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden">
+    <>
+      <HomeSEO />
+      <div className="relative overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
         <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
@@ -399,5 +472,6 @@ export default function HomePage() {
       {/* Footer */}
       <Footer />
     </div>
+    </>
   );
 }

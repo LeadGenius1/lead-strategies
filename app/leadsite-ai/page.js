@@ -211,7 +211,7 @@ export default function LeadSiteAIPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
               </span>
-              AI-POWERED LEAD GENERATION
+              NO MORE SLEEPING WEBSITES
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">

@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+export const dynamic = 'force-dynamic';
+
 interface AnalyticsData {
   leads: {
     total: number;

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 import { Play, Plus, Film, BarChart3 } from 'lucide-react';
 
 interface Video {

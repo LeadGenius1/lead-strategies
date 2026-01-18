@@ -148,32 +148,32 @@ export default function TackleAIPage() {
               {/* Enterprise Badge */}
               <div className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll mb-8">
                 <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
-                  ENTERPRISE PLATFORM
+                  THE FUTURE OF OUTREACH MARKETING
                 </span>
               </div>
 
               <div className="flex flex-col z-10 w-full items-center justify-center">
                 <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
                   <span className="[animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                    REPLACE HUBSPOT
+                    INBOX FULL OF
                   </span>
                   <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
-                    + GONG + OUTREACH
+                    BUYERS
                   </span>
                 </h1>
               </div>
 
               <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-sm sm:text-lg md:text-2xl lg:text-3xl text-neutral-300 tracking-tight font-space-grotesk mt-4 mb-8 max-w-4xl px-4">
-                Full CRM, voice calling, 7 AI agents, 22-channel outreach. Save $44,812/year.
+                The future of lead generation isn't about sending more messages—it's about orchestrating smarter conversations across every channel your buyers use.
               </h2>
 
               {/* Animated Metrics */}
               <div className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-4xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll mt-6 px-4 sm:px-0">
                 <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-4 sm:p-6">
                   <div className="text-lg sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
-                    <span data-target="44" data-prefix="$" data-suffix="K+">$44K+</span>
+                    <span data-target="22">22</span>
                   </div>
-                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Saved/Year</h3>
+                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Channels</h3>
                 </div>
                 <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-4 sm:p-6">
                   <div className="text-lg sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
@@ -183,19 +183,19 @@ export default function TackleAIPage() {
                 </div>
                 <div className="bg-[#050505]/80 backdrop-blur-sm border border-purple-500/20 p-4 sm:p-6">
                   <div className="text-lg sm:text-2xl md:text-3xl text-purple-400 mb-1 tracking-tighter font-space-grotesk font-light">
-                    <span data-target="99.9" data-suffix="%">99.9%</span>
+                    <span data-target="1">1</span>
                   </div>
-                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Uptime</h3>
+                  <h3 className="text-[8px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Platform</h3>
                 </div>
               </div>
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll">
                 <Link href="/signup?tier=tackle" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                  Schedule Enterprise Demo
+                  Start Free Trial
                 </Link>
-                <Link href="#pricing" className="bg-transparent border border-purple-500/30 text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
-                  See Pricing Calculator
+                <Link href="#features" className="bg-transparent border border-purple-500/30 text-white px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
+                  See How It Works
                 </Link>
               </div>
             </div>
@@ -203,98 +203,89 @@ export default function TackleAIPage() {
         </div>
       </section>
 
-      {/* Cost Comparison Table */}
-      <section className="py-24 relative z-10 border-t border-subtle">
+      {/* The Problem Section */}
+      <section id="features" className="py-24 relative z-10 border-t border-subtle">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Save <span className="text-gradient">$44,700</span> Per Year
+              Stop The <span className="text-gradient">Manual Hustle</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Replace 5 tools with one unified platform</p>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Your CRM, sequences, pipeline, and team are all in different tools—and your revenue shows it.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {/* Traditional Stack */}
+            {/* The Problem */}
             <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-6">Traditional Stack</h3>
+              <h3 className="text-2xl font-space-grotesk text-white mb-6">Without TackleAI</h3>
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">HubSpot Sales Pro</span>
-                  <span className="text-white font-space-grotesk">$1,200/mo</span>
+                  <span className="text-neutral-400 font-geist">Manual list-building</span>
+                  <span className="text-red-400 font-space-grotesk">Hours wasted</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Gong</span>
-                  <span className="text-white font-space-grotesk">$1,200/mo</span>
+                  <span className="text-neutral-400 font-geist">Copywriting stress</span>
+                  <span className="text-red-400 font-space-grotesk">Low engagement</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Outreach</span>
-                  <span className="text-white font-space-grotesk">$1,800/mo</span>
+                  <span className="text-neutral-400 font-geist">Fragmented tools</span>
+                  <span className="text-red-400 font-space-grotesk">Data silos</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Calendly</span>
-                  <span className="text-white font-space-grotesk">$16/mo</span>
+                  <span className="text-neutral-400 font-geist">Cold outreach</span>
+                  <span className="text-red-400 font-space-grotesk">Low conversion</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Slack</span>
-                  <span className="text-white font-space-grotesk">$8/mo</span>
+                  <span className="text-neutral-400 font-geist">Manual follow-ups</span>
+                  <span className="text-red-400 font-space-grotesk">Lost deals</span>
                 </div>
               </div>
               <div className="pt-4 border-t border-subtle">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-neutral-400 font-geist">Total Monthly</span>
-                  <span className="text-white font-space-grotesk text-xl">$4,224</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-400 font-geist">Total Yearly</span>
-                  <span className="text-white font-space-grotesk text-xl">$50,688</span>
+                <div className="text-xl text-red-400 font-space-grotesk">
+                  = Money left on the table
                 </div>
               </div>
             </div>
 
-            {/* TackleAI */}
+            {/* TackleAI Solution */}
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
               <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Everything Included
+                Intelligent Autopilot
               </div>
-              <h3 className="text-2xl font-space-grotesk text-white mb-6">TackleAI</h3>
+              <h3 className="text-2xl font-space-grotesk text-white mb-6">With TackleAI</h3>
               <div className="space-y-4 mb-6">
                 <div className="flex items-center gap-2">
                   <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Full CRM + Pipeline</span>
+                  <span className="text-neutral-300 font-geist">AI scrapes your ideal prospects</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Voice Calling (Twilio)</span>
+                  <span className="text-neutral-300 font-geist">Writes personalized emails automatically</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">22-Channel Outreach</span>
+                  <span className="text-neutral-300 font-geist">Sends follow-ups & tracks responses</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">7 Self-Healing AI Agents</span>
+                  <span className="text-neutral-300 font-geist">Full CRM + Pipeline in one place</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Meeting Scheduler</span>
+                  <span className="text-neutral-300 font-geist">Omnichannel outreach (22 channels)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Document Management</span>
+                  <span className="text-neutral-300 font-geist">Team collaboration built-in</span>
                 </div>
               </div>
               <div className="pt-4 border-t border-purple-500/20">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-neutral-400 font-geist">Monthly</span>
-                  <span className="text-purple-400 font-space-grotesk text-xl">$149</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-400 font-geist">Yearly</span>
-                  <span className="text-purple-400 font-space-grotesk text-xl">$1,788</span>
+                  <span className="text-neutral-400 font-geist">Simple Pricing</span>
+                  <span className="text-purple-400 font-space-grotesk text-xl">$149/mo</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-purple-500/20">
-                  <div className="text-3xl text-green-400 font-space-grotesk font-light">
-                    SAVINGS: $48,900/year
+                  <div className="text-2xl text-green-400 font-space-grotesk font-light">
+                    Warmed-up leads delivered daily
                   </div>
                 </div>
               </div>
@@ -308,9 +299,9 @@ export default function TackleAIPage() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              7 Self-Healing <span className="text-gradient">AI Agents</span>
+              One Intelligent <span className="text-gradient">Control Center</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Autonomous agents that learn, adapt, and self-correct</p>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">TackleAI synchronizes outreach, content, and scheduling into one intelligent system with 7 self-healing AI agents</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -377,25 +368,26 @@ export default function TackleAIPage() {
         </div>
       </section>
 
-      {/* Key Features Grid */}
+      {/* Connected Growth Engine Section */}
       <section className="py-24 relative z-10 border-t border-subtle">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Enterprise <span className="text-gradient">Features</span>
+              Your Connected <span className="text-gradient">Growth Engine</span>
             </h2>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Move past fragmented tools into a truly connected system. If you sell B2B, your funnel should run on autopilot.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: 'Full CRM + Pipeline', desc: 'Deals, contacts, activities, custom fields, reporting' },
-              { title: 'Voice Calling', desc: 'Twilio integration, call recording, transcription, sentiment' },
-              { title: '22-Channel Outreach', desc: 'LinkedIn, FB, IG, Twitter, TikTok, YouTube, Email, SMS, WhatsApp' },
-              { title: 'Meeting Scheduler', desc: 'Calendly-like booking, timezone detection, automated reminders' },
-              { title: 'Document Management', desc: 'Proposals, contracts, e-signatures via DocuSign' },
-              { title: 'Revenue Forecasting', desc: 'AI predicts close dates, deal probability, quarterly targets' },
-              { title: 'Team Performance', desc: 'Leaderboards, activity tracking, coaching insights' },
-              { title: 'White-Label Option', desc: 'Custom domain, logo, branding for agencies' }
+              { title: 'Full CRM + Pipeline', desc: 'Deals, contacts, activities, custom fields—all synced in real-time' },
+              { title: 'AI Prospect Discovery', desc: 'Scrapes ideal prospects, writes emails, sends follow-ups automatically' },
+              { title: '22-Channel Outreach', desc: 'LinkedIn, Email, SMS, WhatsApp, and 18 more—all from one dashboard' },
+              { title: 'Voice Intelligence', desc: 'Call recording, transcription, sentiment analysis built-in' },
+              { title: 'Automated Follow-ups', desc: 'Never miss a lead. AI tracks responses and re-engages automatically' },
+              { title: 'Team Collaboration', desc: 'Your sales floor on intelligent autopilot with shared pipelines' },
+              { title: 'Revenue Forecasting', desc: 'AI predicts close dates and deal probability in real-time' },
+              { title: 'Meeting Scheduler', desc: 'Calendly-like booking with timezone detection and reminders' }
             ].map((feature, index) => (
               <div
                 key={index}
@@ -410,120 +402,65 @@ export default function TackleAIPage() {
         </div>
       </section>
 
-      {/* Pricing Tiers */}
+      {/* Simple Pricing */}
       <section id="pricing" className="py-24 relative z-10 border-t border-subtle">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Enterprise <span className="text-gradient">Pricing</span>
+              Simple <span className="text-gradient">Pricing</span>
             </h2>
+            <p className="text-neutral-400 font-geist">One price. Everything included. No tiers. No surprises.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* Professional */}
-            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Professional</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $149<span className="text-sm text-neutral-500">/mo</span>
-              </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  2,000 Leads/Month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Full CRM + Pipeline
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  All 22 channels
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  7 AI Agents
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited Team
-                </li>
-              </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Start Trial
-              </Link>
-            </div>
-
-            {/* Enterprise */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+          <div className="max-w-lg mx-auto">
+            {/* Single Plan */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-10 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
               <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Popular
+                Everything Included
               </div>
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Enterprise</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $2,999<span className="text-sm text-neutral-500">/mo</span>
+              <h3 className="text-3xl font-space-grotesk text-white mb-2">TackleAI</h3>
+              <div className="text-6xl font-space-grotesk font-light text-white mb-2">
+                $149<span className="text-xl text-neutral-500">/mo</span>
               </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited team seats
+              <p className="text-neutral-400 font-geist mb-8">Your complete AI-driven sales control center</p>
+              <ul className="space-y-4 font-geist text-sm text-neutral-300 mb-10">
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  Full CRM + Pipeline Management
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited contacts
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  7 Self-Healing AI Agents
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  All 7 AI agents
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  22-Channel Omnichannel Outreach
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  White-label option
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  AI Prospect Discovery & Personalized Emails
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Custom integrations
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  Automated Follow-ups & Response Tracking
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Dedicated CSM
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  Voice Calling with Transcription
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  Team Collaboration & Shared Pipelines
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
+                  Meeting Scheduler Built-in
                 </li>
               </ul>
-              <Link href="/signup" className="block w-full bg-white text-black px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
-                Start Trial
+              <Link href="/signup?tier=tackle" className="block w-full bg-white text-black px-6 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
+                Start Free Trial
               </Link>
-            </div>
-
-            {/* Custom */}
-            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">Custom</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                Custom<span className="text-sm text-neutral-500"> pricing</span>
-              </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Multi-tenant
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  On-premise deployment
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  SOC 2 Type II
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  HIPAA compliance
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Annual contracts
-                </li>
-              </ul>
-              <Link href="/signup" className="block w-full bg-transparent border border-purple-500/30 text-white px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/10 transition-colors font-geist text-center">
-                Contact Sales
-              </Link>
+              <p className="text-center text-neutral-500 text-xs font-geist mt-4">No credit card required • Cancel anytime</p>
             </div>
           </div>
         </div>
@@ -561,21 +498,21 @@ export default function TackleAIPage() {
         </div>
       </section>
 
-      {/* Enterprise CTA Section */}
+      {/* Final CTA Section */}
       <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative bg-gradient-to-b from-purple-950/10 to-black">
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mb-8 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            Ready to Transform <span className="text-gradient">Your Sales Ops?</span>
+            Ready to Scale Beyond <span className="text-gradient">Manual Hustle?</span>
           </h2>
           <p className="text-xl text-neutral-400 font-geist mb-4 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            Schedule a personalized demo with our enterprise team
+            Put your sales floor on intelligent autopilot. This is where you start.
           </p>
           <p className="text-sm text-neutral-500 font-geist mb-10 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-            30-day pilot program • Dedicated onboarding • Migration support included
+            Wake up every morning with an inbox full of warmed-up, perfectly targeted leads.
           </p>
           <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-            <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
-              Book Enterprise Demo
+            <Link href="/signup?tier=tackle" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+              Start Free Trial — $149/mo
             </Link>
           </div>
         </div>

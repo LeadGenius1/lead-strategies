@@ -206,10 +206,14 @@ export default function LeadSiteAIPage() {
         <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
           <div className="flex flex-col text-center mb-16 sm:mb-24 relative items-center justify-center">
-            {/* Price Badge */}
+            {/* No More Sleeping Websites Badge - Slow Pulsate */}
             <div className="[animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll mb-6">
-              <span className="px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk">
-                $39/month
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 text-purple-300 text-sm font-space-grotesk animate-[pulse_3s_ease-in-out_infinite]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                </span>
+                NO MORE SLEEPING WEBSITES
               </span>
             </div>
 
@@ -228,17 +232,8 @@ export default function LeadSiteAIPage() {
               AI-powered prospect discovery and personalized outreach. Install once, generate qualified leads forever. No manual work required.
             </h2>
 
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-              </span>
-              NO MORE SLEEPING WEBSITES
-            </div>
-
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll">
+            <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full sm:w-auto px-4 sm:px-0 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
               <Link href="/signup?tier=leadsite-ai" className="bg-white text-black px-8 sm:px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist text-center">
                 Start Free Trial
               </Link>

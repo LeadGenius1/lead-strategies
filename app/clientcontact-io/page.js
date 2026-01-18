@@ -295,13 +295,13 @@ export default function ClientContactIOPage() {
               </div>
 
               <div className="flex flex-col z-10 w-full items-center justify-center">
-                <h1 className="leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-2 mb-8 font-space-grotesk px-4">
+                <h1 className="leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-2 mb-6 font-space-grotesk px-4">
                   <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll block">Find Your Perfect Clients with</span>
                   <span className="text-gradient font-light [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll block">AI Intelligence</span>
                 </h1>
               </div>
 
-              <p className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-lg lg:text-xl text-neutral-300 tracking-tight font-geist mt-4 mb-8 max-w-3xl px-4">
+              <p className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-300 tracking-tight font-geist mt-4 mb-6 max-w-3xl px-4">
                 Search, enrich, and verify leads from 8+ premium data sources. Save hours of research with AI-powered contact discovery and intelligent lead scoring.
               </p>
 

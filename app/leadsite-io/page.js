@@ -245,7 +245,7 @@ export default function LeadSiteIOPage() {
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-3 sm:gap-y-5 md:gap-y-6 text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 mb-8">
+              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-4 mb-6">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                   BUILD AI WEBSITES THAT
                 </span>
@@ -255,7 +255,7 @@ export default function LeadSiteIOPage() {
               </h1>
             </div>
 
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-6 max-w-4xl px-4">
+            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-6 max-w-3xl px-4">
               AI-powered prospect discovery and personalized outreach. Install once, generate qualified leads forever.
             </h2>
 

@@ -198,8 +198,11 @@ export default function VideoSiteAIPage() {
             loop
             playsInline
             className="absolute w-full h-full object-cover"
+            poster="/social_media_views_poster.jpg"
           >
-            <source src="/social_media_views.mov" type="video/quicktime" />
+            {/* Primary: social_media_views converted to mp4 for browser compatibility */}
+            <source src="/social_media_views.mp4" type="video/mp4" />
+            {/* Fallback: meeting-handshake */}
             <source src="/meeting-handshake.mp4" type="video/mp4" />
           </video>
           {/* Dark overlay for text readability */}

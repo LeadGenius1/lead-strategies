@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Icons } from '@/components/Icons';
 
 export default function TackleAIPage() {
   useEffect(() => {
@@ -258,39 +259,27 @@ export default function TackleAIPage() {
               <h3 className="text-2xl font-space-grotesk text-white mb-6">TackleAI</h3>
               <div className="space-y-4 mb-6">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
                   <span className="text-neutral-300 font-geist">Full CRM + Pipeline</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
                   <span className="text-neutral-300 font-geist">Voice Calling (Twilio)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
                   <span className="text-neutral-300 font-geist">22-Channel Outreach</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
                   <span className="text-neutral-300 font-geist">7 Self-Healing AI Agents</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
                   <span className="text-neutral-300 font-geist">Meeting Scheduler</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <Icons.Check className="w-5 h-5 text-purple-500" />
                   <span className="text-neutral-300 font-geist">Document Management</span>
                 </div>
               </div>
@@ -329,37 +318,44 @@ export default function TackleAIPage() {
               {
                 name: 'Campaign AI',
                 description: 'Orchestrates multi-channel campaigns across 22 platforms. Generates personalized messages per platform. Self-healing: detects spam flags, rewrites with warmer tone.',
-                icon: '📧'
+                Icon: Icons.Mail,
+                color: 'text-sky-400'
               },
               {
                 name: 'Social Syncs AI',
                 description: 'Monitors 8 social platforms 24/7. Auto-generates contextual replies. Self-healing: missed reply? Responds within 5 minutes.',
-                icon: '📱'
+                Icon: Icons.Smartphone,
+                color: 'text-purple-400'
               },
               {
                 name: 'Voice AI',
                 description: 'Transcribes calls, extracts pain points, budget, timeline. Auto-updates CRM. Self-healing: transcription error? Reruns with higher accuracy.',
-                icon: '🎤'
+                Icon: Icons.Mic,
+                color: 'text-pink-400'
               },
               {
                 name: 'LeadGen AI',
                 description: 'Scores leads 0-100 based on behavior. Enriches profiles with external data. Self-healing: low conversion on high scores? Recalibrates model.',
-                icon: '🎯'
+                Icon: Icons.Target,
+                color: 'text-red-400'
               },
               {
                 name: 'Analytics AI',
                 description: 'Analyzes A/B tests, identifies conversion bottlenecks. Natural language insights. Self-healing: data anomalies? Flags for review.',
-                icon: '📊'
+                Icon: Icons.BarChart,
+                color: 'text-emerald-400'
               },
               {
                 name: 'Integration AI',
                 description: 'Syncs data between all platforms. Handles OAuth refresh automatically. Self-healing: sync failure? Retries with exponential backoff.',
-                icon: '🔗'
+                Icon: Icons.Link2,
+                color: 'text-blue-400'
               },
               {
                 name: 'CleanOS AI',
                 description: 'Monitors system health, database performance. Self-healing: slow queries? Adds indexes automatically. High errors? Restarts services.',
-                icon: '⚙️'
+                Icon: Icons.Settings,
+                color: 'text-amber-400'
               }
             ].map((agent, index) => (
               <div
@@ -369,7 +365,9 @@ export default function TackleAIPage() {
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors"></div>
                 <div className="relative z-10">
-                  <div className="text-4xl mb-4 animate-pulse">{agent.icon}</div>
+                  <div className={`w-14 h-14 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${agent.color}`}>
+                    <agent.Icon className="w-7 h-7" />
+                  </div>
                   <h3 className="text-xl font-space-grotesk text-white mb-3">{agent.name}</h3>
                   <p className="text-sm text-neutral-400 font-geist leading-relaxed">{agent.description}</p>
                 </div>

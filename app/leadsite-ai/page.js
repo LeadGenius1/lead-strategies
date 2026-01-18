@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Icons } from '@/components/Icons';
 
 export default function LeadSiteAIPage() {
   useEffect(() => {
@@ -197,42 +198,50 @@ export default function LeadSiteAIPage() {
               {
                 title: 'AI Prospect Discovery',
                 desc: 'Our AI finds 20-50 qualified prospects daily using Google Maps and Apollo.io, perfectly matched to your business.',
-                icon: '🎯'
+                Icon: Icons.Target,
+                color: 'text-purple-400'
               },
               {
                 title: 'Automated Outreach',
                 desc: 'Personalized emails written by AI and sent automatically. Replies go directly to your inbox.',
-                icon: '📧'
+                Icon: Icons.Mail,
+                color: 'text-sky-400'
               },
               {
                 title: 'Multi-Tenant Security',
                 desc: 'Enterprise-grade data isolation. Your prospects and campaigns remain completely private and secure.',
-                icon: '🔒'
+                Icon: Icons.ShieldCheck,
+                color: 'text-green-400'
               },
               {
                 title: 'CRM Integration',
                 desc: 'Syncs with Salesforce, HubSpot, Pipedrive automatically. Two-way data flow keeps everything in sync.',
-                icon: '🔗'
+                Icon: Icons.RefreshCw,
+                color: 'text-blue-400'
               },
               {
                 title: 'Custom Scoring Models',
                 desc: 'Train AI on your historical conversion data. Build models that match your unique sales process.',
-                icon: '🧠'
+                Icon: Icons.Brain,
+                color: 'text-pink-400'
               },
               {
                 title: 'Real-Time Alerts',
                 desc: 'Slack/Email notifications when high-value leads enter system. Never miss a hot prospect again.',
-                icon: '⚡'
+                Icon: Icons.Zap,
+                color: 'text-amber-400'
               },
               {
                 title: 'Lead Source Tracking',
                 desc: 'Multi-touch attribution across all channels. See exactly which campaigns drive the best leads.',
-                icon: '📍'
+                Icon: Icons.MapPin,
+                color: 'text-red-400'
               },
               {
                 title: 'Predictive Analytics',
                 desc: "Forecasts which leads will convert, when they'll buy, and how much revenue they'll generate.",
-                icon: '📈'
+                Icon: Icons.TrendingUp,
+                color: 'text-emerald-400'
               }
             ].map((feature, index) => (
               <div
@@ -240,7 +249,9 @@ export default function LeadSiteAIPage() {
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all group [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.05 * index}s` }}
               >
-                <div className="text-3xl mb-4">{feature.icon}</div>
+                <div className={`w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${feature.color}`}>
+                  <feature.Icon className="w-6 h-6" />
+                </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>
               </div>
@@ -362,9 +373,7 @@ export default function LeadSiteAIPage() {
           <div className="relative aspect-video bg-[#050505] border border-subtle [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-20 h-20 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center cursor-pointer hover:bg-purple-500/30 transition-colors">
-                <svg className="w-10 h-10 text-purple-400 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
+                <Icons.Play className="w-10 h-10 text-purple-400 ml-1" />
               </div>
             </div>
             <div className="absolute bottom-4 left-4 text-sm text-neutral-400 font-geist">

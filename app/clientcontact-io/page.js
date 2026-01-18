@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Icons } from '@/components/Icons';
 
 export default function ClientContactIOPage() {
   useEffect(() => {
@@ -67,32 +68,38 @@ export default function ClientContactIOPage() {
     {
       title: 'AI-Powered Search',
       desc: 'Use natural language to find leads across multiple data sources including LinkedIn, ZoomInfo, Apollo, and more.',
-      icon: '🔎',
+      Icon: Icons.Search,
+      color: 'text-purple-400',
     },
     {
       title: 'Email Discovery & Verification',
       desc: 'Find and verify email addresses with SMTP validation, catch-all detection, and confidence scoring.',
-      icon: '📧',
+      Icon: Icons.Mail,
+      color: 'text-sky-400',
     },
     {
       title: 'Multi-Source Aggregation',
       desc: 'Search and aggregate data from LinkedIn, Google Maps, Apollo, Hunter.io, Clearbit, Crunchbase, ZoomInfo, and Yelp.',
-      icon: '🧩',
+      Icon: Icons.Puzzle,
+      color: 'text-emerald-400',
     },
     {
       title: 'AI Lead Scoring',
       desc: 'Automatically score and grade leads based on ICP fit, data quality, intent signals, and engagement metrics.',
-      icon: '📈',
+      Icon: Icons.TrendingUp,
+      color: 'text-green-400',
     },
     {
       title: 'Advanced Filtering',
       desc: 'Filter by job title, seniority, industry, company size, location, tech stack, and funding status.',
-      icon: '🧰',
+      Icon: Icons.Settings,
+      color: 'text-amber-400',
     },
     {
       title: 'CRM Integration',
       desc: 'Export to Salesforce, HubSpot, Pipedrive, or download as JSON, CSV, and Excel formats.',
-      icon: '🔁',
+      Icon: Icons.RefreshCw,
+      color: 'text-blue-400',
     },
   ];
 
@@ -100,29 +107,32 @@ export default function ClientContactIOPage() {
     {
       title: 'Save 10+ hours per week on lead research',
       desc: 'Save 10+ hours per week on lead research',
-      icon: '⏱️',
+      Icon: Icons.Clock,
+      color: 'text-amber-400',
     },
     {
       title: 'Access 500M+ verified business contacts',
       desc: 'Access 500M+ verified business contacts',
-      icon: '🌍',
+      Icon: Icons.Globe,
+      color: 'text-blue-400',
     },
     {
       title: 'Reduce bounce rates with email verification',
       desc: 'Reduce bounce rates with email verification',
-      icon: '✅',
+      Icon: Icons.Check,
+      color: 'text-green-400',
     },
   ];
 
   const dataSources = [
-    { name: 'LinkedIn', desc: 'Profile & company data', icon: '🔗' },
-    { name: 'Google Maps', desc: 'Local business insights', icon: '📍' },
-    { name: 'Apollo.io', desc: 'B2B contact database', icon: '🛰️' },
-    { name: 'Hunter.io', desc: 'Email finder & verifier', icon: '📧' },
-    { name: 'Clearbit', desc: 'Company enrichment', icon: '🏢' },
-    { name: 'Crunchbase', desc: 'Funding & startup data', icon: '💰' },
-    { name: 'ZoomInfo', desc: 'Intent signals & contacts', icon: '🎯' },
-    { name: 'Yelp', desc: 'Business reviews & ratings', icon: '⭐' },
+    { name: 'LinkedIn', desc: 'Profile & company data', Icon: Icons.Link2, color: 'text-blue-400' },
+    { name: 'Google Maps', desc: 'Local business insights', Icon: Icons.MapPin, color: 'text-red-400' },
+    { name: 'Apollo.io', desc: 'B2B contact database', Icon: Icons.Rocket, color: 'text-purple-400' },
+    { name: 'Hunter.io', desc: 'Email finder & verifier', Icon: Icons.Mail, color: 'text-amber-400' },
+    { name: 'Clearbit', desc: 'Company enrichment', Icon: Icons.Building, color: 'text-cyan-400' },
+    { name: 'Crunchbase', desc: 'Funding & startup data', Icon: Icons.DollarSign, color: 'text-green-400' },
+    { name: 'ZoomInfo', desc: 'Intent signals & contacts', Icon: Icons.Target, color: 'text-pink-400' },
+    { name: 'Yelp', desc: 'Business reviews & ratings', Icon: Icons.Star, color: 'text-yellow-400' },
   ];
 
   const faqs = [
@@ -299,7 +309,9 @@ export default function ClientContactIOPage() {
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.05 * index}s` }}
               >
-                <div className="text-3xl mb-4">{feature.icon}</div>
+                <div className={`w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${feature.color}`}>
+                  <feature.Icon className="w-6 h-6" />
+                </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>
               </div>
@@ -326,7 +338,9 @@ export default function ClientContactIOPage() {
                 className="bg-[#050505] border border-purple-500/20 p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.08 * index}s` }}
               >
-                <div className="text-3xl mb-4">{b.icon}</div>
+                <div className={`w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${b.color}`}>
+                  <b.Icon className="w-6 h-6" />
+                </div>
                 <h3 className="text-xl font-space-grotesk text-white mb-3">{b.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist">{b.desc}</p>
               </div>
@@ -359,7 +373,9 @@ export default function ClientContactIOPage() {
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.04 * index}s` }}
               >
-                <div className="text-3xl mb-3">{s.icon}</div>
+                <div className={`w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center mb-3 ${s.color}`}>
+                  <s.Icon className="w-5 h-5" />
+                </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-1">{s.name}</h3>
                 <p className="text-sm text-neutral-400 font-geist">{s.desc}</p>
               </div>

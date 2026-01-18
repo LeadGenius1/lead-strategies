@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Icons } from '@/components/Icons';
 
 export default function VideoSiteAIPage() {
   useEffect(() => {
@@ -202,10 +203,8 @@ export default function VideoSiteAIPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Content Creators */}
             <div className="bg-[#050505] border border-subtle p-8 hover:border-green-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <div className="w-12 h-12 bg-green-500/10 border border-green-500/30 flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
+              <div className="w-12 h-12 bg-green-500/10 border border-green-500/30 flex items-center justify-center mb-6 text-green-400">
+                <Icons.Video className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-space-grotesk text-white mb-3">Content Creators</h3>
               <p className="text-neutral-400 font-geist text-sm mb-6">
@@ -229,11 +228,8 @@ export default function VideoSiteAIPage() {
 
             {/* Advertisers */}
             <div className="bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-              <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                </svg>
+              <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-6 text-purple-400">
+                <Icons.PieChart className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-space-grotesk text-white mb-3">Advertisers</h3>
               <p className="text-neutral-400 font-geist text-sm mb-6">
@@ -257,10 +253,8 @@ export default function VideoSiteAIPage() {
 
             {/* Secure & Trusted */}
             <div className="bg-[#050505] border border-subtle p-8 hover:border-blue-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-              <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+              <div className="w-12 h-12 bg-blue-500/10 border border-blue-500/30 flex items-center justify-center mb-6 text-blue-400">
+                <Icons.ShieldCheck className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-space-grotesk text-white mb-3">Secure & Trusted</h3>
               <p className="text-neutral-400 font-geist text-sm mb-6">
@@ -303,9 +297,7 @@ export default function VideoSiteAIPage() {
                 style={{ animationDelay: `${0.1 * index}s` }}
               >
                 <div className="mb-4">
-                  <svg className="w-8 h-8 text-purple-500/30" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-                  </svg>
+                  <Icons.Quote className="w-8 h-8 text-purple-500/30" />
                 </div>
                 <p className="text-neutral-300 font-geist text-sm mb-6 leading-relaxed">
                   {testimonial.quote}

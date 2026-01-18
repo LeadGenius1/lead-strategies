@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Icons } from '@/components/Icons';
 
 export default function LeadSiteIOPage() {
   useEffect(() => {
@@ -249,42 +250,50 @@ export default function LeadSiteIOPage() {
               {
                 title: 'AI Prospect Discovery',
                 desc: 'Our AI finds 20-50 qualified prospects daily using Google Maps and Apollo.io, perfectly matched to your business.',
-                icon: '🎯'
+                Icon: Icons.Target,
+                color: 'text-purple-400'
               },
               {
                 title: 'Automated Outreach',
                 desc: 'Personalized emails written by AI and sent automatically. Replies go directly to your inbox.',
-                icon: '📧'
+                Icon: Icons.Mail,
+                color: 'text-sky-400'
               },
               {
                 title: 'Multi-Tenant Security',
                 desc: 'Enterprise-grade data isolation. Your prospects and campaigns remain completely private and secure.',
-                icon: '🔒'
+                Icon: Icons.ShieldCheck,
+                color: 'text-green-400'
               },
               {
                 title: 'AI Website Builder',
                 desc: 'Generate a high-converting website in minutes. AI designs the layout, writes copy, and embeds lead capture automatically.',
-                icon: '🌐'
+                Icon: Icons.Globe,
+                color: 'text-blue-400'
               },
               {
                 title: 'Lead Form Builder',
                 desc: 'Unlimited forms with custom fields, auto-sync to CRM',
-                icon: '📝'
+                Icon: Icons.FileText,
+                color: 'text-amber-400'
               },
               {
                 title: 'Analytics Dashboard',
                 desc: 'Real-time visitor tracking, conversion funnels, heatmaps',
-                icon: '📊'
+                Icon: Icons.BarChart,
+                color: 'text-emerald-400'
               },
               {
                 title: 'Custom Domains',
                 desc: 'Connect your domain, auto-SSL, CDN hosting',
-                icon: '🔗'
+                Icon: Icons.Link2,
+                color: 'text-indigo-400'
               },
               {
                 title: 'SEO Optimization',
                 desc: 'Auto-generates meta tags, schema markup, sitemaps',
-                icon: '🔍'
+                Icon: Icons.Search,
+                color: 'text-pink-400'
               }
             ].map((feature, index) => (
               <div
@@ -292,7 +301,9 @@ export default function LeadSiteIOPage() {
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.05 * index}s` }}
               >
-                <div className="text-3xl mb-4">{feature.icon}</div>
+                <div className={`w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${feature.color}`}>
+                  <feature.Icon className="w-6 h-6" />
+                </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>
               </div>
@@ -416,21 +427,21 @@ export default function LeadSiteIOPage() {
               <h3 className="text-2xl font-space-grotesk text-white mb-6">Before LeadSite.IO</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                  </svg>
+                  <div className="w-6 h-6 flex items-center justify-center text-red-500">
+                    <Icons.X className="w-5 h-5" />
+                  </div>
                   <span className="text-neutral-300 font-geist">2 weeks with developer</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                  </svg>
+                  <div className="w-6 h-6 flex items-center justify-center text-red-500">
+                    <Icons.X className="w-5 h-5" />
+                  </div>
                   <span className="text-neutral-300 font-geist">$5K cost</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                  </svg>
+                  <div className="w-6 h-6 flex items-center justify-center text-red-500">
+                    <Icons.X className="w-5 h-5" />
+                  </div>
                   <span className="text-neutral-300 font-geist">Generic template</span>
                 </div>
               </div>
@@ -441,21 +452,21 @@ export default function LeadSiteIOPage() {
               <h3 className="text-2xl font-space-grotesk text-white mb-6">With LeadSite.IO</h3>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <div className="w-6 h-6 flex items-center justify-center text-green-500">
+                    <Icons.Check className="w-5 h-5" />
+                  </div>
                   <span className="text-neutral-300 font-geist">3 minutes with AI</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <div className="w-6 h-6 flex items-center justify-center text-green-500">
+                    <Icons.Check className="w-5 h-5" />
+                  </div>
                   <span className="text-neutral-300 font-geist">$29/month</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
+                  <div className="w-6 h-6 flex items-center justify-center text-green-500">
+                    <Icons.Check className="w-5 h-5" />
+                  </div>
                   <span className="text-neutral-300 font-geist">Custom design</span>
                 </div>
               </div>
@@ -522,9 +533,7 @@ export default function LeadSiteIOPage() {
           <div className="relative aspect-video bg-[#050505] border border-subtle [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-20 h-20 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center cursor-pointer hover:bg-purple-500/30 transition-colors">
-                <svg className="w-10 h-10 text-purple-400 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
+                <Icons.Play className="w-10 h-10 text-purple-400 ml-1" />
               </div>
             </div>
           </div>

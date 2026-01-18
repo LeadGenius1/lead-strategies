@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { Icons } from '@/components/Icons';
 
 export default function HomePage() {
   useEffect(() => {
@@ -161,9 +162,7 @@ export default function HomePage() {
                 <div className="beam-border"></div>
                 <div className="border-subtle flex group-hover:bg-[#0a0a0a] transition-colors md:h-16 bg-[#080808] h-12 z-10 border rounded-full mt-[1px] mr-[1px] mb-[1px] ml-[1px] pr-4 sm:pr-6 pl-2 sm:pl-3 relative gap-x-3 sm:gap-x-4 items-center">
                   <div className="md:w-10 md:h-10 overflow-hidden flex border-subtle text-white bg-neutral-900 w-8 h-8 border rounded-full relative items-center justify-center">
-                    <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-                    </svg>
+                    <Icons.Shield className="w-4 sm:w-5 h-4 sm:h-5" />
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="text-[8px] sm:text-[10px] uppercase tracking-widest text-neutral-500 font-geist">AI_Status</span>
@@ -188,9 +187,7 @@ export default function HomePage() {
             <div className="bg-[#050505] border border-subtle p-8 flex flex-col justify-between min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">01</div>
               <div className="flex justify-between items-start">
-                <svg className="w-6 h-6 text-neutral-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-                </svg>
+                <Icons.Grid className="w-6 h-6 text-neutral-300" />
                 <div className="px-2 py-0.5 border border-purple-900/30 bg-purple-900/10 text-purple-400 text-[10px] uppercase tracking-wider font-geist">
                   Live
                 </div>
@@ -207,9 +204,7 @@ export default function HomePage() {
             <div className="bg-[#050505] border border-subtle p-8 flex flex-col justify-between min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">02</div>
               <div className="flex justify-between items-start">
-                <svg className="w-6 h-6 text-neutral-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
+                <Icons.Users className="w-6 h-6 text-neutral-300" />
               </div>
               <div>
                 <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
@@ -223,9 +218,7 @@ export default function HomePage() {
             <div className="bg-[#050505] border border-subtle p-8 flex flex-col justify-between min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">03</div>
               <div className="flex justify-between items-start">
-                <svg className="w-6 h-6 text-neutral-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                </svg>
+                <Icons.TrendingUp className="w-6 h-6 text-neutral-300" />
               </div>
               <div>
                 <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">

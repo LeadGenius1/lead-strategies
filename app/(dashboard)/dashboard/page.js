@@ -17,11 +17,6 @@ export default function DashboardPage() {
     </div>
   )
 }
-
-// OLD DASHBOARD CODE - Replaced with copilot redirect
-// The copilot IS the dashboard now
-/*
-export default function DashboardPageOLD() {
   const router = useRouter()
   const [stats, setStats] = useState({
     websites: 0,

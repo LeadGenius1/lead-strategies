@@ -5,6 +5,9 @@
 
 import { NextResponse } from 'next/server'
 
+// Mark route as dynamic to prevent static rendering
+export const dynamic = 'force-dynamic'
+
 export async function GET(request) {
   try {
     // Get user from token in Authorization header

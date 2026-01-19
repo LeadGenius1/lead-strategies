@@ -8,6 +8,9 @@ import { getServerSession } from 'next-auth/next';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
+// Mark route as dynamic to prevent static rendering
+export const dynamic = 'force-dynamic';
+
 const BACKEND_TOKEN_SECRET = process.env.BACKEND_TOKEN_SECRET || process.env.NEXTAUTH_SECRET || 'change-me';
 const BACKEND_TOKEN_EXPIRES_IN = parseInt(process.env.BACKEND_TOKEN_EXPIRES_IN || '900', 10); // 15 minutes default
 

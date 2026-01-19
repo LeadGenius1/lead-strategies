@@ -1,13 +1,8 @@
 'use client'
 
-// Mark page as dynamic to prevent static rendering
-export const dynamic = 'force-dynamic'
-
-import { useAuth } from '@/contexts/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function AnalyticsPage() {
-  const { user } = useAuth();
   const [analytics, setAnalytics] = useState(null);
 
   return (

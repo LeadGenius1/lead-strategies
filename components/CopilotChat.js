@@ -2,6 +2,24 @@
 
 import { useState, useRef, useEffect } from 'react';
 import api from '@/lib/api';
+import { 
+  Send, 
+  ChevronRight, 
+  Sparkles, 
+  Target, 
+  Mail, 
+  BarChart3, 
+  Users, 
+  Zap, 
+  Search,
+  FileText,
+  TrendingUp,
+  Shield,
+  Flame,
+  MessageSquare,
+  Loader2,
+  BrainCircuit
+} from 'lucide-react';
 
 export default function CopilotChat() {
   const [messages, setMessages] = useState([
@@ -123,15 +141,22 @@ export default function CopilotChat() {
       <div className="relative z-10 px-6 py-4 border-b border-white/5 bg-black/50 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-5 h-5 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full"></div>
-            <h2 className="text-sm font-medium tracking-widest uppercase text-white">Lead Hunter</h2>
+            <div className="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+              <BrainCircuit className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-sm font-medium tracking-wide text-white">Lead Hunter</h2>
+              <p className="text-[10px] text-neutral-500">AI-Powered Lead Generation</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-            <span className="text-[10px] text-neutral-500 font-medium tracking-wide">ONLINE</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] text-emerald-400 font-medium tracking-wide">ONLINE</span>
+            </div>
           </div>
         </div>
       </div>
@@ -164,40 +189,73 @@ export default function CopilotChat() {
               <div className="relative z-10">
                 <p className="text-sm text-neutral-200 whitespace-pre-wrap leading-relaxed font-light">{message.content}</p>
 
-                {/* Actions */}
-                {message.actions && message.actions.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {message.actions.map((action, actionIndex) => (
+              {/* Actions */}
+              {message.actions && message.actions.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {message.actions.map((action, actionIndex) => {
+                    const getActionIcon = (type) => {
+                      const icons = {
+                        'find_leads': <Search className="w-3.5 h-3.5" />,
+                        'view_saved_leads': <Users className="w-3.5 h-3.5" />,
+                        'create_campaign': <Zap className="w-3.5 h-3.5" />,
+                        'show_leads': <Target className="w-3.5 h-3.5" />,
+                        'preview_sequence': <Mail className="w-3.5 h-3.5" />,
+                        'create_email': <FileText className="w-3.5 h-3.5" />,
+                        'view_templates': <FileText className="w-3.5 h-3.5" />,
+                        'view_campaigns': <BarChart3 className="w-3.5 h-3.5" />
+                      };
+                      return icons[type] || <Sparkles className="w-3.5 h-3.5" />;
+                    };
+                    
+                    return (
                       <button
                         key={actionIndex}
                         onClick={() => handleAction(action)}
                         className="group/btn relative px-4 py-2 text-xs font-medium bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 hover:border-indigo-500/50 rounded-full text-indigo-300 transition-all duration-300"
                       >
                         <span className="relative z-10 flex items-center gap-2">
+                          {getActionIcon(action.type)}
                           {action.label || action.type.replace(/_/g, ' ')}
-                          <svg className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
+                          <ChevronRight className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" />
                         </span>
                       </button>
-                    ))}
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
+              )}
 
-                {/* Suggestions */}
-                {message.suggestions && message.suggestions.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {message.suggestions.map((suggestion, suggestionIndex) => (
+              {/* Suggestions */}
+              {message.suggestions && message.suggestions.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {message.suggestions.map((suggestion, suggestionIndex) => {
+                    const getSuggestionIcon = (text) => {
+                      const lowerText = text.toLowerCase();
+                      if (lowerText.includes('find') || lowerText.includes('search')) return <Search className="w-3 h-3" />;
+                      if (lowerText.includes('email') || lowerText.includes('sequence')) return <Mail className="w-3 h-3" />;
+                      if (lowerText.includes('campaign')) return <Zap className="w-3 h-3" />;
+                      if (lowerText.includes('analytics') || lowerText.includes('report')) return <BarChart3 className="w-3 h-3" />;
+                      if (lowerText.includes('export') || lowerText.includes('csv')) return <TrendingUp className="w-3 h-3" />;
+                      if (lowerText.includes('save') || lowerText.includes('list')) return <Users className="w-3 h-3" />;
+                      if (lowerText.includes('warmup')) return <Flame className="w-3 h-3" />;
+                      if (lowerText.includes('compliance')) return <Shield className="w-3 h-3" />;
+                      return <MessageSquare className="w-3 h-3" />;
+                    };
+                    
+                    return (
                       <button
                         key={suggestionIndex}
                         onClick={() => handleSuggestion(suggestion)}
-                        className="px-4 py-2 text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-full text-neutral-400 hover:text-white transition-all duration-300"
+                        className="group/sug px-4 py-2 text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-full text-neutral-400 hover:text-white transition-all duration-300 flex items-center gap-2"
                       >
+                        <span className="text-neutral-500 group-hover/sug:text-indigo-400 transition-colors">
+                          {getSuggestionIcon(suggestion)}
+                        </span>
                         {suggestion}
                       </button>
-                    ))}
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
+              )}
               </div>
             </div>
           </div>
@@ -207,12 +265,13 @@ export default function CopilotChat() {
           <div className="flex justify-start">
             <div className="bg-neutral-900/50 border border-white/10 rounded-2xl p-5">
               <div className="flex items-center gap-3 text-neutral-400 text-sm">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+                  <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
                 </div>
-                <span className="font-light">Processing request...</span>
+                <div>
+                  <span className="font-medium text-white">Analyzing your request...</span>
+                  <p className="text-xs text-neutral-500 mt-0.5">Lead Hunter is working on it</p>
+                </div>
               </div>
             </div>
           </div>
@@ -244,18 +303,22 @@ export default function CopilotChat() {
           <button
             onClick={handleSend}
             disabled={!input.trim() || loading}
-            className="group relative px-6 py-3 bg-white text-black rounded-xl text-sm font-medium hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+            className="group relative px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium disabled:from-neutral-800 disabled:to-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.4)]"
           >
             <span className="flex items-center gap-2">
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              )}
               Send
-              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
             </span>
           </button>
         </div>
-        <p className="mt-3 text-[10px] text-neutral-600 text-center">
-          Powered by 47 intent signals • GDPR & CAN-SPAM compliant
+        <p className="mt-3 text-[10px] text-neutral-600 text-center flex items-center justify-center gap-2">
+          <Sparkles className="w-3 h-3 text-indigo-500/50" />
+          <span>Powered by 47 intent signals • GDPR & CAN-SPAM compliant</span>
+          <Shield className="w-3 h-3 text-emerald-500/50" />
         </p>
       </div>
     </div>

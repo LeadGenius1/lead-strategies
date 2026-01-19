@@ -79,7 +79,6 @@ export default function CopilotChat() {
   };
 
   const handleAction = async (action) => {
-    // Convert action to a chat message to continue the conversation
     const actionMessages = {
       'find_leads': 'Start a lead search for me',
       'view_saved_leads': 'Show my saved leads',
@@ -93,9 +92,7 @@ export default function CopilotChat() {
     
     const message = actionMessages[action.type] || action.label || action.type.replace(/_/g, ' ');
     setInput(message);
-    // Auto-send the message
     setTimeout(() => {
-      const fakeEvent = { preventDefault: () => {} };
       handleSend();
     }, 100);
   };
@@ -108,77 +105,114 @@ export default function CopilotChat() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black border border-subtle rounded-lg overflow-hidden">
+    <div className="relative flex flex-col h-full bg-black rounded-2xl overflow-hidden border border-white/10">
+      {/* Ambient Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[300px] h-[300px] bg-purple-900/10 rounded-full blur-[100px]"></div>
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundSize: '40px 40px',
+            backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+          }}
+        ></div>
+      </div>
+
       {/* Header */}
-      <div className="px-6 py-4 border-b border-subtle bg-[#050505]">
-        <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-          <h2 className="text-lg font-space-grotesk text-white">Lead Hunter</h2>
-          {messages[messages.length - 1]?.agent && (
-            <span className="text-xs text-neutral-400 font-geist">
-              ({messages[messages.length - 1].agent.replace(/_/g, ' ')})
+      <div className="relative z-10 px-6 py-4 border-b border-white/5 bg-black/50 backdrop-blur-md">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full"></div>
+            <h2 className="text-sm font-medium tracking-widest uppercase text-white">Lead Hunter</h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
             </span>
-          )}
+            <span className="text-[10px] text-neutral-500 font-medium tracking-wide">ONLINE</span>
+          </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="relative z-10 flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] rounded-lg p-4 ${
+              className={`group relative max-w-[85%] rounded-2xl p-5 transition-all duration-300 ${
                 message.role === 'user'
-                  ? 'bg-purple-500/20 text-white border border-purple-500/30'
+                  ? 'bg-indigo-500/10 border border-indigo-500/30 hover:border-indigo-500/50'
                   : message.error
-                  ? 'bg-red-500/10 text-red-400 border border-red-500/30'
-                  : 'bg-[#050505] text-neutral-200 border border-subtle'
+                  ? 'bg-red-500/10 border border-red-500/30'
+                  : 'bg-neutral-900/50 border border-white/10 hover:border-white/20'
               }`}
             >
-              <p className="font-geist text-sm whitespace-pre-wrap">{message.content}</p>
-
-              {/* Actions */}
-              {message.actions && message.actions.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {message.actions.map((action, actionIndex) => (
-                    <button
-                      key={actionIndex}
-                      onClick={() => handleAction(action)}
-                      className="px-3 py-1.5 text-xs bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 rounded text-purple-300 font-geist transition-colors"
-                    >
-                      {action.type.replace(/_/g, ' ')}
-                    </button>
-                  ))}
-                </div>
+              {/* Hover Gradient */}
+              {!message.error && (
+                <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                  message.role === 'user' 
+                    ? 'bg-gradient-to-br from-indigo-500/10 to-transparent' 
+                    : 'bg-gradient-to-br from-white/5 to-transparent'
+                }`}></div>
               )}
+              
+              <div className="relative z-10">
+                <p className="text-sm text-neutral-200 whitespace-pre-wrap leading-relaxed font-light">{message.content}</p>
 
-              {/* Suggestions */}
-              {message.suggestions && message.suggestions.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {message.suggestions.map((suggestion, suggestionIndex) => (
-                    <button
-                      key={suggestionIndex}
-                      onClick={() => handleSuggestion(suggestion)}
-                      className="px-3 py-1.5 text-xs bg-neutral-800 hover:bg-neutral-700 border border-subtle rounded text-neutral-300 font-geist transition-colors"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              )}
+                {/* Actions */}
+                {message.actions && message.actions.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {message.actions.map((action, actionIndex) => (
+                      <button
+                        key={actionIndex}
+                        onClick={() => handleAction(action)}
+                        className="group/btn relative px-4 py-2 text-xs font-medium bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 hover:border-indigo-500/50 rounded-full text-indigo-300 transition-all duration-300"
+                      >
+                        <span className="relative z-10 flex items-center gap-2">
+                          {action.label || action.type.replace(/_/g, ' ')}
+                          <svg className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Suggestions */}
+                {message.suggestions && message.suggestions.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {message.suggestions.map((suggestion, suggestionIndex) => (
+                      <button
+                        key={suggestionIndex}
+                        onClick={() => handleSuggestion(suggestion)}
+                        className="px-4 py-2 text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-full text-neutral-400 hover:text-white transition-all duration-300"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ))}
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-[#050505] border border-subtle rounded-lg p-4">
-              <div className="flex items-center gap-2 text-neutral-400 font-geist text-sm">
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-                Thinking...
+            <div className="bg-neutral-900/50 border border-white/10 rounded-2xl p-5">
+              <div className="flex items-center gap-3 text-neutral-400 text-sm">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                </div>
+                <span className="font-light">Processing request...</span>
               </div>
             </div>
           </div>
@@ -189,13 +223,13 @@ export default function CopilotChat() {
 
       {/* Error Message */}
       {error && (
-        <div className="px-6 py-2 bg-red-500/10 border-t border-red-500/30">
-          <p className="text-xs text-red-400 font-geist">{error}</p>
+        <div className="relative z-10 px-6 py-3 bg-red-500/10 border-t border-red-500/30">
+          <p className="text-xs text-red-400 font-light">{error}</p>
         </div>
       )}
 
       {/* Input */}
-      <div className="px-6 py-4 border-t border-subtle bg-[#050505]">
+      <div className="relative z-10 px-6 py-4 border-t border-white/5 bg-black/50 backdrop-blur-md">
         <div className="flex gap-3">
           <input
             ref={inputRef}
@@ -203,18 +237,26 @@ export default function CopilotChat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask me anything... (e.g., 'Find 100 CTOs at SaaS companies')"
-            className="flex-1 px-4 py-2.5 bg-black border border-subtle rounded-lg text-white placeholder-neutral-500 font-geist text-sm focus:outline-none focus:border-purple-500/50"
+            placeholder="Ask Lead Hunter anything..."
+            className="flex-1 px-5 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-neutral-600 text-sm font-light focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all"
             disabled={loading}
           />
           <button
             onClick={handleSend}
             disabled={!input.trim() || loading}
-            className="px-6 py-2.5 bg-purple-500 hover:bg-purple-600 disabled:bg-neutral-800 disabled:text-neutral-500 text-white rounded-lg font-geist text-sm font-medium transition-colors"
+            className="group relative px-6 py-3 bg-white text-black rounded-xl text-sm font-medium hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
           >
-            Send
+            <span className="flex items-center gap-2">
+              Send
+              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
           </button>
         </div>
+        <p className="mt-3 text-[10px] text-neutral-600 text-center">
+          Powered by 47 intent signals • GDPR & CAN-SPAM compliant
+        </p>
       </div>
     </div>
   );

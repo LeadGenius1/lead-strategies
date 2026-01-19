@@ -9,13 +9,18 @@ export async function GET(request) {
     const error = searchParams.get('error')
     const errorDescription = searchParams.get('error_description')
 
+    // Get base URL for absolute redirects
+    const host = request.headers.get('host') || 'aileadstrategies.com'
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+    const baseUrl = `${protocol}://${host}`
+
     if (error) {
       const errorMsg = errorDescription || error
-      return NextResponse.redirect(`/signup?error=${encodeURIComponent(`OAuth error: ${errorMsg}`)}`)
+      return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent(`OAuth error: ${errorMsg}`)}`)
     }
 
     if (!code) {
-      return NextResponse.redirect('/signup?error=' + encodeURIComponent('Authorization failed. Please try again.'))
+      return NextResponse.redirect(`${baseUrl}/signup?error=` + encodeURIComponent('Authorization failed. Please try again.'))
     }
 
     let stateData = {}
@@ -57,7 +62,7 @@ export async function GET(request) {
 
         if (token) {
           // Set token in cookie and redirect to dashboard
-          const redirectResponse = NextResponse.redirect('/dashboard')
+          const redirectResponse = NextResponse.redirect(`${baseUrl}/copilot`)
           redirectResponse.cookies.set('token', token, {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
             httpOnly: false, // Needs to be accessible by client-side JS
@@ -70,14 +75,14 @@ export async function GET(request) {
       } else {
         const errorData = await response.json().catch(() => ({}))
         const errorMsg = errorData.message || 'OAuth authentication failed'
-        return NextResponse.redirect(`/signup?error=${encodeURIComponent(errorMsg)}`)
+        return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent(errorMsg)}`)
       }
     } catch (backendError) {
       console.error('Backend OAuth callback error:', backendError)
-      return NextResponse.redirect(`/signup?error=${encodeURIComponent('Unable to connect to authentication server. Please try again later.')}`)
+      return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent('Unable to connect to authentication server. Please try again later.')}`)
     }
   } catch (error) {
     console.error('OAuth callback error:', error)
-    return NextResponse.redirect(`/signup?error=${encodeURIComponent('Authentication error occurred. Please try again.')}`)
+    return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent('Authentication error occurred. Please try again.')}`)
   }
 }

@@ -6,22 +6,13 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import AzureADProvider from 'next-auth/providers/azure-ad';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+// Removed PrismaAdapter import - using JWT sessions instead
 
-// Import Prisma client from backend (shared database)
-// Note: In production, this should use the same DATABASE_URL as backend
-let prisma: any;
-try {
-  // Try to use Prisma from backend if available
-  const { PrismaClient } = require('@prisma/client');
-  prisma = new PrismaClient();
-} catch (error) {
-  // Fallback: Prisma will be initialized via adapter
-  prisma = null;
-}
-
+// Use JWT sessions instead of database sessions to avoid Prisma build issues
+// Database sessions require Prisma schema in frontend, which causes build failures
+// JWT sessions are stateless and work without database adapter
 export const authOptions: NextAuthOptions = {
-  adapter: prisma ? PrismaAdapter(prisma) : undefined, // Will use database sessions if Prisma available
+  adapter: undefined, // Using JWT sessions (stateless) instead of database sessions
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -34,7 +25,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: 'database',
+    strategy: 'jwt', // Changed from 'database' to 'jwt' to avoid Prisma dependency
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   cookies: {
@@ -49,27 +40,23 @@ export const authOptions: NextAuthOptions = {
     },
   },
   callbacks: {
-    async session({ session, user }) {
-      // Add user ID and tier to session
-      if (session.user && user) {
-        (session.user as any).id = user.id;
-        // Fetch user tier from database if Prisma available
-        if (prisma) {
-          try {
-            const dbUser = await prisma.user.findUnique({
-              where: { id: user.id },
-              select: { tier: true, subscriptionStatus: true },
-            });
-            if (dbUser) {
-              (session.user as any).tier = dbUser.tier;
-              (session.user as any).subscriptionStatus = dbUser.subscriptionStatus;
-            }
-          } catch (error) {
-            console.error('Error fetching user tier:', error);
-          }
-        }
+    async session({ session, token }) {
+      // Add user ID and tier to session from JWT token
+      if (session.user && token) {
+        (session.user as any).id = token.sub;
+        (session.user as any).tier = token.tier;
+        (session.user as any).subscriptionStatus = token.subscriptionStatus;
       }
       return session;
+    },
+    async jwt({ token, user, account }) {
+      // Add user data to JWT token on sign in
+      if (user) {
+        token.id = user.id;
+        token.tier = (user as any).tier;
+        token.subscriptionStatus = (user as any).subscriptionStatus;
+      }
+      return token;
     },
     async signIn({ user, account, profile }) {
       // Allow sign in

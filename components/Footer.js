@@ -50,16 +50,29 @@ export default function Footer({ brandName = 'AI LEAD STRATEGIES' }) {
             </ul>
           </div>
 
-          {/* Legal Links */}
+          {/* Legal & Compliance Links */}
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-4">Legal</h4>
+            <h4 className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-4">Legal & Compliance</h4>
             <ul className="space-y-2 text-sm font-geist text-neutral-400">
               <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Security</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Compliance</Link></li>
+              <li><Link href="/security" className="hover:text-white transition-colors">Security</Link></li>
+              <li><Link href="/compliance" className="hover:text-white transition-colors">Compliance</Link></li>
+              <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR Compliance</Link></li>
+              <li><Link href="/ccpa" className="hover:text-white transition-colors">CCPA Compliance</Link></li>
+              <li><Link href="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link></li>
+              <li><Link href="/data-processing" className="hover:text-white transition-colors">Data Processing</Link></li>
             </ul>
           </div>
+        </div>
+
+        {/* Compliance Notice */}
+        <div className="border-t border-subtle pt-6 mb-6">
+          <p className="text-xs text-neutral-500 font-geist text-center max-w-4xl mx-auto">
+            AI Lead Strategies is committed to data privacy and compliance. We comply with GDPR, CCPA, CAN-SPAM, CASL, and other applicable data protection regulations. 
+            All email campaigns include unsubscribe links and comply with anti-spam laws. For questions about data processing or compliance, contact{' '}
+            <a href="mailto:compliance@aileadstrategies.com" className="hover:text-white transition-colors underline">compliance@aileadstrategies.com</a>.
+          </p>
         </div>
 
         {/* Bottom Bar */}

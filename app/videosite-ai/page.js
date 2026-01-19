@@ -17,7 +17,7 @@ function VideoSiteAISEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/videosite-ai',
-      price: '0',
+      price: '99',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock'
     },
@@ -29,7 +29,7 @@ function VideoSiteAISEO() {
     '@type': 'FAQPage',
     mainEntity: [
       { '@type': 'Question', name: 'What is VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is a free video monetization platform where content creators can upload videos and earn $1 for every video view.' } },
-      { '@type': 'Question', name: 'Is VideoSite.AI really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, VideoSite.AI is completely free for content creators. There are no subscription fees - creators earn revenue from video views.' } },
+      { '@type': 'Question', name: 'What does VideoSite.AI cost?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is $99/month for businesses using it for video marketing and lead generation. Content creators can earn $1 per video view through the platform.' } },
       { '@type': 'Question', name: 'How do advertisers use VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'Advertisers can place targeted video ads on the platform, reaching engaged audiences with brand-safe content and detailed analytics.' } }
     ]
   };
@@ -40,7 +40,7 @@ function VideoSiteAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>VideoSite.AI - Free Video Monetization Platform</h1>
-        <p>VideoSite.AI is a free video hosting and monetization platform by AI Lead Strategies LLC. For Content Creators: Upload videos, earn $1 per view, no subscription fees, instant payouts, analytics dashboard, content protection. For Advertisers: Targeted video ad placements, engaged audiences, brand safety controls, detailed analytics, flexible budgets. Features include: HD video hosting, monetization tracking, advertiser marketplace, secure payments, creator dashboard. Best for content creators wanting to monetize videos and advertisers seeking video ad placements. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>VideoSite.AI is a video marketing and lead generation platform by AI Lead Strategies LLC, priced at $99/month. Features: HD video hosting, video marketing campaigns, lead generation tools, analytics dashboard, content protection, secure payments. Best for businesses wanting to use video for marketing and lead generation. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | 610-757-1587</p>
         <h2>VideoSite.AI Features</h2>
         <ul>
           <li>Free for content creators</li>
@@ -384,43 +384,40 @@ export default function VideoSiteAIPage() {
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
               Simple <span className="text-gradient">Pricing</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Free for content creators. Earn $1 per view.</p>
+            <p className="text-neutral-400 font-geist">Video marketing platform with lead generation. $99/month.</p>
           </div>
 
           <div className="flex justify-center max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-green-500/20 border border-green-500/30 text-green-300 text-[10px] uppercase tracking-wider font-geist">
-                Free Forever
-              </div>
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">VideoSite.AI</h3>
-              <div className="text-4xl font-space-grotesk font-light text-green-400 mb-6">
-                FREE
+              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
+                $99<span className="text-sm text-neutral-500">/mo</span>
               </div>
-              <p className="text-neutral-400 font-geist mb-6">Create videos, earn $1/view</p>
+              <p className="text-neutral-400 font-geist mb-6">Video marketing + lead generation</p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
                   HD video hosting
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  Earn $1.00 per video view
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Video marketing campaigns
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  Lead generation tools
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
                   Analytics dashboard
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  Instant payouts
                 </li>
               </ul>
               <div className="text-center">
                 <ShinyButton href="/signup?tier=videosite">
-                  Get Started Free
+                  Start Free Trial
                 </ShinyButton>
               </div>
-              <p className="mt-6 text-xs text-neutral-600 font-geist text-center">No credit card required</p>
+              <p className="mt-6 text-xs text-neutral-600 font-geist text-center">No credit card required • Cancel anytime</p>
             </div>
           </div>
         </div>

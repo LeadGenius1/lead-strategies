@@ -17,7 +17,7 @@ function LeadSiteIOSEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/leadsite-io',
-      price: '39',
+      price: '114',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -30,7 +30,7 @@ function LeadSiteIOSEO() {
     '@type': 'FAQPage',
     mainEntity: [
       { '@type': 'Question', name: 'What is LeadSite.IO?', acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.IO is an AI-powered website builder that creates lead-generating websites in minutes. It includes AI design, lead capture forms, analytics, and automated prospect discovery.' } },
-      { '@type': 'Question', name: 'Is the free website really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, LeadSite.IO includes one completely free AI-generated website with your $39/month subscription. Additional websites can be added for a small fee.' } },
+      { '@type': 'Question', name: 'Is the free website really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, LeadSite.IO includes one completely free AI-generated website with your $114/month subscription. Additional websites can be added for a small fee.' } },
       { '@type': 'Question', name: 'How does the AI website builder work?', acceptedAnswer: { '@type': 'Answer', text: 'Answer a few questions about your business and LeadSite.IO AI generates a complete website with optimized copy, lead capture forms, and conversion-focused design in under 3 minutes.' } }
     ]
   };
@@ -41,7 +41,7 @@ function LeadSiteIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>LeadSite.IO - AI Website Builder with Lead Generation</h1>
-        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC, priced at $39/month plus 1 free AI website included. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC, priced at $114/month plus 1 free AI website included. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | 610-757-1587</p>
         <h2>AI Website Builder Features</h2>
         <ul>
           <li>AI generates complete website in minutes</li>
@@ -511,11 +511,11 @@ export default function LeadSiteIOPage() {
           </div>
 
           <div className="flex justify-center max-w-6xl mx-auto">
-            {/* Single Plan - $39/mo */}
+            {/* Single Plan - $114/mo */}
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">LeadSite.IO</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $39<span className="text-sm text-neutral-500">/mo</span>
+                $114<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <p className="text-green-400 text-sm font-geist mb-4">+ 1 Free AI Website Included</p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">

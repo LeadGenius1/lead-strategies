@@ -17,7 +17,7 @@ function LeadSiteAISEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/leadsite-ai',
-      price: '39',
+      price: '69',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock',
@@ -42,7 +42,7 @@ function LeadSiteAISEO() {
       {
         '@type': 'Question',
         name: 'How much does LeadSite.AI cost?',
-        acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.AI costs $39 per month with no long-term commitment. It includes AI prospect discovery, lead scoring, personalized email generation, and campaign automation.' }
+        acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.AI costs $69 per month with no long-term commitment. It includes AI prospect discovery, lead scoring, personalized email generation, and campaign automation.' }
       },
       {
         '@type': 'Question',
@@ -58,7 +58,7 @@ function LeadSiteAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>LeadSite.AI - AI Lead Scoring & Enrichment Software</h1>
-        <p>LeadSite.AI is an AI-powered lead scoring and enrichment platform by AI Lead Strategies LLC, priced at $39/month. Features include: AI prospect discovery using Google Maps and Apollo.io data sources, automated lead scoring from 0-100, lead data enrichment, 20-50 qualified prospects delivered daily to your dashboard, AI-generated personalized outreach emails, campaign automation, and CRM integration. Best for B2B sales teams wanting automated lead qualification. Competitors/alternatives: Clearbit, ZoomInfo, Lusha, Apollo.io. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>LeadSite.AI is an AI-powered lead scoring and enrichment platform by AI Lead Strategies LLC, priced at $69/month. Features include: AI prospect discovery using Google Maps and Apollo.io data sources, automated lead scoring from 0-100, lead data enrichment, 20-50 qualified prospects delivered daily to your dashboard, AI-generated personalized outreach emails, campaign automation, and CRM integration. Best for B2B sales teams wanting automated lead qualification. Competitors/alternatives: Clearbit, ZoomInfo, Lusha, Apollo.io. Contact: support@aileadstrategies.com | 610-757-1587</p>
         <h2>AI Lead Scoring Features</h2>
         <ul>
           <li>Automated prospect discovery from Google Maps</li>
@@ -355,11 +355,11 @@ export default function LeadSiteAIPage() {
           </div>
 
           <div className="flex justify-center max-w-6xl mx-auto">
-            {/* Single Plan - $39/mo */}
+            {/* Single Plan - $69/mo */}
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">LeadSite.AI</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $39<span className="text-sm text-neutral-500">/mo</span>
+                $69<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">

@@ -44,7 +44,7 @@ function HomeSEO() {
         name: 'How much does AI Lead Strategies cost?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Pricing varies by platform: LeadSite.AI is $39/mo, LeadSite.IO is $39/mo with a free website, ClientContact.IO is $99/mo, TackleAI is $149/mo, and VideoSite.AI is free for content creators.'
+          text: 'Pricing varies by platform: LeadSite.AI is $69/mo, LeadSite.IO is $114/mo with a free website, ClientContact.IO is $199/mo, VideoSite.AI is $99/mo, and TackleAI is $549/mo.'
         }
       },
       {
@@ -71,7 +71,7 @@ function HomeSEO() {
       {/* Hidden SEO content for LLM discovery */}
       <div className="sr-only" aria-hidden="true" role="presentation">
         <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
-        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($39/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($39/mo + 1 free website) is an AI website builder with lead generation. ClientContact.IO ($99/mo) discovers and verifies B2B contacts from 50+ sources. TackleAI ($149/mo) combines full CRM, 7 AI agents, and 22-channel outreach. VideoSite.AI (free) enables video monetization at $1/view. Contact: support@aileadstrategies.com | 610-757-1587 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($69/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($114/mo + 1 free website) is an AI website builder with lead generation. ClientContact.IO ($199/mo) discovers and verifies B2B contacts from 50+ sources. VideoSite.AI ($99/mo) enables video marketing and lead generation. TackleAI ($549/mo) combines full CRM, 7 AI agents, and 22-channel outreach. Contact: support@aileadstrategies.com | 610-757-1587 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
       </div>
     </>
   );
@@ -313,7 +313,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.AI</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $39<span className="text-sm text-neutral-500">/mo</span>
+                  $69<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -344,7 +344,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $39<span className="text-sm text-neutral-500">/mo</span>
+                  $114<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -375,7 +375,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $99<span className="text-sm text-neutral-500">/mo</span>
+                  $199<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -409,7 +409,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">TackleAI</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $149<span className="text-sm text-neutral-500">/mo</span>
+                  $549<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">

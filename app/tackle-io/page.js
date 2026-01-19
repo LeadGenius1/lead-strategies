@@ -17,7 +17,7 @@ function TackleAISEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/tackle-io',
-      price: '149',
+      price: '549',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -29,7 +29,7 @@ function TackleAISEO() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: 'What is TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI is a comprehensive AI sales CRM that combines full pipeline management, 7 self-healing AI agents, and 22-channel outreach in one platform for $149/month.' } },
+      { '@type': 'Question', name: 'What is TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI is a comprehensive AI sales CRM that combines full pipeline management, 7 self-healing AI agents, and 22-channel outreach in one platform for $549/month.' } },
       { '@type': 'Question', name: 'What are the 7 AI agents in TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI includes Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, and CleanOS AI - all self-healing agents that learn and adapt automatically.' } },
       { '@type': 'Question', name: 'What channels does TackleAI support?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI supports 22 outreach channels including Email, LinkedIn, SMS, WhatsApp, Facebook, Instagram, Twitter, TikTok, YouTube, phone calls, and more.' } }
     ]
@@ -41,7 +41,7 @@ function TackleAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>TackleAI - AI Sales CRM with 22-Channel Outreach</h1>
-        <p>TackleAI is the future of outreach marketing by AI Lead Strategies LLC, priced at $149/month (no tiers). Features: Full CRM with pipeline management, 7 self-healing AI agents (Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, CleanOS AI), 22-channel omnichannel outreach (LinkedIn, Email, SMS, WhatsApp, social media), AI prospect scraping, automated personalized email writing, follow-up tracking, voice calling with transcription, meeting scheduler, team collaboration, revenue forecasting. Wake up every morning with an inbox full of warmed-up, perfectly targeted leads. Stop the manual hustle and put your sales floor on intelligent autopilot. Best for B2B sales teams wanting to scale beyond manual outreach. Alternatives: HubSpot, Salesforce, Outreach.io, Salesloft. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>TackleAI is the future of outreach marketing by AI Lead Strategies LLC, priced at $549/month (no tiers). Features: Full CRM with pipeline management, 7 self-healing AI agents (Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, CleanOS AI), 22-channel omnichannel outreach (LinkedIn, Email, SMS, WhatsApp, social media), AI prospect scraping, automated personalized email writing, follow-up tracking, voice calling with transcription, meeting scheduler, team collaboration, revenue forecasting. Wake up every morning with an inbox full of warmed-up, perfectly targeted leads. Stop the manual hustle and put your sales floor on intelligent autopilot. Best for B2B sales teams wanting to scale beyond manual outreach. Alternatives: HubSpot, Salesforce, Outreach.io, Salesloft. Contact: support@aileadstrategies.com | 610-757-1587</p>
         <h2>TackleAI Features</h2>
         <ul>
           <li>Full CRM with pipeline management</li>
@@ -448,7 +448,7 @@ export default function TackleAIPage() {
               </div>
               <h3 className="text-3xl font-space-grotesk text-white mb-2">TackleAI</h3>
               <div className="text-6xl font-space-grotesk font-light text-white mb-2">
-                $149<span className="text-xl text-neutral-500">/mo</span>
+                $549<span className="text-xl text-neutral-500">/mo</span>
               </div>
               <p className="text-neutral-400 font-geist mb-8">Your complete AI-driven sales control center</p>
               <ul className="space-y-4 font-geist text-sm text-neutral-300 mb-10">

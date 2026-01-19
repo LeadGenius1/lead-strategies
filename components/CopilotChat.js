@@ -141,13 +141,11 @@ export default function CopilotChat() {
       <div className="relative z-10 px-6 py-4 border-b border-white/5 bg-black/50 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-              <BrainCircuit className="w-5 h-5 text-white" />
+            <div className="relative">
+              <span className="absolute inset-0 rounded-full bg-indigo-500 animate-ping opacity-20"></span>
+              <div className="relative w-3 h-3 bg-indigo-500 rounded-full"></div>
             </div>
-            <div>
-              <h2 className="text-sm font-medium tracking-wide text-white">Lead Hunter</h2>
-              <p className="text-[10px] text-neutral-500">AI-Powered Lead Generation</p>
-            </div>
+            <h2 className="text-sm font-medium tracking-widest uppercase text-white">Lead Hunter</h2>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">

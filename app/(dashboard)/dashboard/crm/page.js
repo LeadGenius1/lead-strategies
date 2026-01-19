@@ -1,278 +1,144 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import api from '@/lib/api'
-import toast from 'react-hot-toast'
-import CreateDealModal from '@/components/CreateDealModal'
-import EditDealModal from '@/components/EditDealModal'
-
-const PIPELINE_STAGES = [
-  { id: 'lead', name: 'Lead' },
-  { id: 'qualified', name: 'Qualified' },
-  { id: 'proposal', name: 'Proposal' },
-  { id: 'negotiation', name: 'Negotiation' },
-  { id: 'closed_won', name: 'Closed Won' },
-]
+import { useState } from 'react'
+import { Briefcase, DollarSign, Calendar, TrendingUp, Plus, GripVertical, MoreVertical, User } from 'lucide-react'
 
 export default function CRMPage() {
-  const [view, setView] = useState('pipeline')
-  const [deals, setDeals] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({})
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [selectedDealId, setSelectedDealId] = useState(null)
-  const [selectedStage, setSelectedStage] = useState(null)
+  const [deals, setDeals] = useState({
+    lead: [
+      { id: 1, name: 'CloudScale Enterprise', company: 'CloudScale Inc', value: 45000, contact: 'Sarah Chen' },
+      { id: 2, name: 'DataFlow Integration', company: 'DataFlow AI', value: 28000, contact: 'Michael Torres' },
+    ],
+    qualified: [
+      { id: 3, name: 'TechStartup Expansion', company: 'TechStartup Co', value: 65000, contact: 'Jennifer Park' },
+    ],
+    proposal: [
+      { id: 4, name: 'Enterprise Package', company: 'MegaCorp', value: 120000, contact: 'David Kim' },
+    ],
+    negotiation: [
+      { id: 5, name: 'Annual Contract', company: 'GlobalTech', value: 85000, contact: 'Emily Zhang' },
+    ],
+    closed: [
+      { id: 6, name: 'Q4 Deal', company: 'FastGrowth Inc', value: 52000, contact: 'James Wilson' },
+    ],
+  })
 
-  useEffect(() => {
-    loadDeals()
-  }, [view])
+  const stages = [
+    { id: 'lead', label: 'Lead', color: 'blue' },
+    { id: 'qualified', label: 'Qualified', color: 'indigo' },
+    { id: 'proposal', label: 'Proposal', color: 'purple' },
+    { id: 'negotiation', label: 'Negotiation', color: 'orange' },
+    { id: 'closed', label: 'Closed Won', color: 'emerald' },
+  ]
 
-  async function loadDeals() {
-    try {
-      // Backend uses /api/tackle/deals with pipeline endpoint
-      const endpoint = view === 'pipeline' ? '/api/tackle/deals/pipeline' : '/api/tackle/deals'
-      const response = await api.get(endpoint)
-      const data = response.data
-      
-      if (view === 'pipeline') {
-        // Pipeline view returns stages object
-        const pipeline = data.pipeline || data
-        const allDeals = Object.values(pipeline).flatMap(stage => stage.deals || [])
-        setDeals(allDeals)
-        // Calculate stats from pipeline
-        const stats = {
-          totalValue: Object.values(pipeline).reduce((sum, stage) => sum + (stage.totalValue || 0), 0),
-          totalDeals: Object.values(pipeline).reduce((sum, stage) => sum + (stage.count || 0), 0)
-        }
-        setStats(stats)
-      } else {
-        // List view returns deals array
-        setDeals(data.deals || [])
-        setStats(data.stats || {})
-      }
-    } catch (error) {
-      console.error('Error loading deals:', error)
-      setDeals([])
-    } finally {
-      setLoading(false)
-    }
+  const stats = [
+    { label: 'Total Pipeline', value: '$395K', icon: DollarSign, color: 'indigo' },
+    { label: 'Active Deals', value: '12', icon: Briefcase, color: 'purple' },
+    { label: 'Avg Deal Size', value: '$33K', icon: TrendingUp, color: 'cyan' },
+    { label: 'Expected Close', value: '8', icon: Calendar, color: 'emerald' },
+  ]
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
   }
-
-  function handleDealCreated() {
-    loadDeals()
-  }
-
-  function handleDealUpdated() {
-    loadDeals()
-  }
-
-  function handleEditDeal(dealId) {
-    setSelectedDealId(dealId)
-    setShowEditModal(true)
-  }
-
-  function handleCreateDealInStage(stageId) {
-    setSelectedStage(stageId)
-    setShowCreateModal(true)
-  }
-
-  async function handleDeleteDeal(dealId) {
-    if (!confirm('Are you sure you want to delete this deal?')) {
-      return
-    }
-
-    try {
-      await api.delete(`/api/tackle/deals/${dealId}`)
-      toast.success('Deal deleted successfully')
-      loadDeals()
-    } catch (error) {
-      toast.error('Failed to delete deal')
-    }
-  }
-
-  function getDealsByStage(stageId) {
-    return deals.filter(deal => deal.stage === stageId)
-  }
-
-  const totalValue = deals.reduce((sum, deal) => sum + (parseFloat(deal.value) || 0), 0)
-  const openDeals = deals.filter(d => !d.stage.includes('closed')).length
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-dark-text">CRM</h1>
-          <p className="text-dark-textMuted mt-1">Manage your deals and pipeline</p>
-        </div>
-        <div className="flex gap-4">
-          <div className="flex bg-dark-surface border border-dark-border rounded-lg p-1">
-            <button
-              onClick={() => setView('pipeline')}
-              className={`px-4 py-2 rounded-md text-sm transition ${
-                view === 'pipeline' ? 'bg-dark-primary text-white' : 'text-dark-textMuted'
-              }`}
-            >
-              Pipeline
-            </button>
-            <button
-              onClick={() => setView('list')}
-              className={`px-4 py-2 rounded-md text-sm transition ${
-                view === 'list' ? 'bg-dark-primary text-white' : 'text-dark-textMuted'
-              }`}
-            >
-              List
-            </button>
+    <div className="relative min-h-screen bg-black p-6">
+      {/* Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-emerald-900/10 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div className="relative z-10 max-w-full mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-medium tracking-tight text-white">CRM Pipeline</h1>
+            <p className="text-neutral-500 mt-1 text-sm">Track deals through your sales pipeline</p>
           </div>
-          <button 
-            onClick={() => setShowCreateModal(true)}
-            className="px-6 py-3 bg-dark-primary hover:bg-dark-primaryHover text-white rounded-lg transition"
-          >
-            + New Deal
+          <button className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Add Deal
           </button>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {[
-          { label: 'Pipeline Value', value: `$${(totalValue / 1000).toFixed(0)}k`, icon: '💰' },
-          { label: 'Open Deals', value: openDeals, icon: '📊' },
-          { label: 'Won This Month', value: `$${deals.filter(d => d.stage === 'closed_won').reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0).toLocaleString()}`, icon: '🎉' },
-          { label: 'Avg Deal Size', value: deals.length > 0 ? `$${Math.round(totalValue / deals.length).toLocaleString()}` : '$0', icon: '📈' },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-dark-surface border border-dark-border rounded-xl p-4">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{stat.icon}</span>
-              <div>
-                <p className="text-2xl font-bold text-dark-text">{stat.value}</p>
-                <p className="text-sm text-dark-textMuted">{stat.label}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pipeline View */}
-      {view === 'pipeline' ? (
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {loading ? (
-            <div className="w-full text-center py-8 text-dark-textMuted">Loading deals...</div>
-          ) : (
-            PIPELINE_STAGES.map((stage) => {
-              const stageDeals = getDealsByStage(stage.id)
-              const stageValue = stageDeals.reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0)
-              return (
-                <div key={stage.id} className="flex-shrink-0 w-72">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-dark-text">{stage.name}</h3>
-                    <span className="text-sm text-dark-textMuted">
-                      ${stageValue.toLocaleString()}
-                    </span>
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {stats.map((stat) => {
+            const Icon = stat.icon
+            return (
+              <div key={stat.label} className="p-5 rounded-2xl bg-neutral-900/50 border border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 border border-${stat.color}-500/20 flex items-center justify-center`}>
+                    <Icon className={`w-5 h-5 text-${stat.color}-400`} />
                   </div>
-                  <div className="space-y-3">
-                    {stageDeals.map((deal) => (
-                      <div
-                        key={deal.id}
-                        onClick={() => handleEditDeal(deal.id)}
-                        className="bg-dark-surface border border-dark-border rounded-lg p-4 hover:border-dark-primary transition cursor-pointer"
-                      >
-                        <h4 className="font-medium text-dark-text">{deal.name || deal.company?.name || deal.company || 'Unnamed Deal'}</h4>
-                        <p className="text-sm text-dark-textMuted mt-1">
-                          {deal.contacts?.[0] ? `${deal.contacts[0].firstName} ${deal.contacts[0].lastName}` : deal.contact || 'No contact'}
-                        </p>
-                        <p className="text-dark-primary font-semibold mt-2">
-                          ${parseFloat(deal.value || 0).toLocaleString()}
-                        </p>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => handleCreateDealInStage(stage.id)}
-                      className="w-full py-3 border border-dashed border-dark-border rounded-lg text-dark-textMuted hover:border-dark-primary hover:text-dark-text transition"
-                    >
-                      + Add Deal
-                    </button>
+                  <div>
+                    <p className="text-2xl font-medium text-white">{stat.value}</p>
+                    <p className="text-xs text-neutral-500">{stat.label}</p>
                   </div>
                 </div>
-              )
-            })
-          )}
+              </div>
+            )
+          })}
         </div>
-      ) : (
-        <div className="bg-dark-surface border border-dark-border rounded-xl overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-dark-surfaceHover">
-              <tr>
-                <th className="text-left px-6 py-4 text-sm font-medium text-dark-textMuted">Company</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-dark-textMuted">Contact</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-dark-textMuted">Stage</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-dark-textMuted">Value</th>
-                <th className="text-right px-6 py-4 text-sm font-medium text-dark-textMuted">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-dark-border">
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="text-center py-8 text-dark-textMuted">Loading deals...</td>
-                </tr>
-              ) : deals.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="text-center py-8 text-dark-textMuted">No deals found. Create your first deal!</td>
-                </tr>
-              ) : (
-                deals.map((deal) => (
-                  <tr key={deal.id} className="hover:bg-dark-surfaceHover transition">
-                    <td className="px-6 py-4 font-medium text-dark-text">{deal.name || deal.company?.name || deal.company || 'Unnamed Deal'}</td>
-                    <td className="px-6 py-4 text-dark-textMuted">
-                      {deal.contacts?.[0] ? `${deal.contacts[0].firstName} ${deal.contacts[0].lastName}` : deal.contact || 'No contact'}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs px-2 py-1 rounded-full bg-dark-primary/20 text-dark-primary">
-                        {PIPELINE_STAGES.find(s => s.id === deal.stage)?.name || deal.stage}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-dark-text">${parseFloat(deal.value || 0).toLocaleString()}</td>
-                    <td className="px-6 py-4 text-right space-x-2">
-                      <button 
-                        onClick={() => handleEditDeal(deal.id)}
-                        className="text-dark-primary hover:text-dark-primaryHover text-sm"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteDeal(deal.id)}
-                        className="text-red-400 hover:text-red-300 text-sm"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+
+        {/* Pipeline Board */}
+        <div className="flex gap-4 overflow-x-auto pb-4">
+          {stages.map((stage) => (
+            <div key={stage.id} className="flex-shrink-0 w-72">
+              <div className={`rounded-2xl bg-neutral-900/50 border border-white/10`}>
+                {/* Stage Header */}
+                <div className={`p-4 border-b border-white/10 flex items-center justify-between`}>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full bg-${stage.color}-500`}></div>
+                    <span className="font-medium text-white">{stage.label}</span>
+                    <span className="text-xs text-neutral-500 bg-white/5 px-2 py-0.5 rounded-full">
+                      {deals[stage.id]?.length || 0}
+                    </span>
+                  </div>
+                  <button className="p-1 rounded-lg hover:bg-white/10 text-neutral-500">
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Deals */}
+                <div className="p-3 space-y-3 min-h-[200px]">
+                  {deals[stage.id]?.map((deal) => (
+                    <div
+                      key={deal.id}
+                      className="group p-4 rounded-xl bg-black/50 border border-white/10 hover:border-indigo-500/30 cursor-pointer transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <GripVertical className="w-4 h-4 text-neutral-600 cursor-grab" />
+                        </div>
+                        <button className="p-1 rounded-lg hover:bg-white/10 text-neutral-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <h4 className="font-medium text-white text-sm">{deal.name}</h4>
+                      <p className="text-xs text-neutral-500 mt-1">{deal.company}</p>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+                        <span className="text-sm font-medium text-emerald-400">{formatCurrency(deal.value)}</span>
+                        <div className="flex items-center gap-1 text-xs text-neutral-500">
+                          <User className="w-3 h-3" />
+                          {deal.contact}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      )}
-
-      <CreateDealModal
-        isOpen={showCreateModal}
-        onClose={() => {
-          setShowCreateModal(false)
-          setSelectedStage(null)
-        }}
-        onSuccess={handleDealCreated}
-        initialStage={selectedStage}
-      />
-
-      <EditDealModal
-        isOpen={showEditModal}
-        onClose={() => {
-          setShowEditModal(false)
-          setSelectedDealId(null)
-        }}
-        onSuccess={handleDealUpdated}
-        dealId={selectedDealId}
-      />
+      </div>
     </div>
   )
 }

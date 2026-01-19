@@ -15,7 +15,6 @@ import {
   LogOut,
   BrainCircuit,
   Target,
-  Sparkles,
   BarChart3,
   Zap
 } from 'lucide-react'
@@ -45,11 +44,9 @@ export default function Sidebar({ features = {} }) {
     <div className="w-64 bg-black border-r border-white/5 h-screen flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-sm font-medium tracking-wide text-white">AI Lead Strategies</span>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+          <span className="text-sm font-medium tracking-widest uppercase text-white">AI Lead Strategies</span>
         </div>
       </div>
 

@@ -1,13 +1,19 @@
 # Railway Ignore File
 # Exclude these from deployment to reduce build size and avoid errors
 
+# CRITICAL: Exclude duplicate/nested directories
+Downloads/
+OneDrive/
+backend/
+
 # Dependencies
 node_modules/
 
-# Build outputs
+# Build outputs (Railway will generate these)
 .next/
 out/
 build/
+tsconfig.tsbuildinfo
 
 # Development files
 .env.local
@@ -39,7 +45,6 @@ yarn-error.log*
 *.md
 !README.md
 
-# Old/backup directories
-Downloads/
-OneDrive/
-backend/
+# Backup files
+backup-now.bat
+*.bak

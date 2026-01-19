@@ -7,7 +7,7 @@
 import { getServerSession } from 'next-auth/next';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
 
 const BACKEND_TOKEN_SECRET = process.env.BACKEND_TOKEN_SECRET || process.env.NEXTAUTH_SECRET || 'change-me';
 const BACKEND_TOKEN_EXPIRES_IN = parseInt(process.env.BACKEND_TOKEN_EXPIRES_IN || '900', 10); // 15 minutes default

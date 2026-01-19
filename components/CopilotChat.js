@@ -7,7 +7,7 @@ export default function CopilotChat() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm your AI Copilot. I can help you find leads, create campaigns, generate email copy, and more. What would you like to do?",
+      content: "Hi! I'm Lead Hunter, your AI-powered lead generation assistant. I can help you find qualified prospects, create campaigns, generate email copy, and more. What would you like to do?",
       suggestions: [
         'Find 100 CTOs at SaaS companies',
         'Create a warmup campaign',
@@ -104,7 +104,7 @@ export default function CopilotChat() {
       <div className="px-6 py-4 border-b border-subtle bg-[#050505]">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-          <h2 className="text-lg font-space-grotesk text-white">AI Copilot</h2>
+          <h2 className="text-lg font-space-grotesk text-white">Lead Hunter</h2>
           {messages[messages.length - 1]?.agent && (
             <span className="text-xs text-neutral-400 font-geist">
               ({messages[messages.length - 1].agent.replace(/_/g, ' ')})

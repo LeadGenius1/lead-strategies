@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { apiClient } from '@/lib/api-client';
+import api from '@/lib/api';
 
 export default function CopilotChat() {
   const [messages, setMessages] = useState([
@@ -43,18 +43,19 @@ export default function CopilotChat() {
     setError(null);
 
     try {
-      const response = await apiClient.post('/api/v1/copilot/chat', {
+      const response = await api.post('/api/v1/copilot', {
         message: userMessage.content,
         context: {},
       });
 
+      const responseData = response.data?.data || response.data || {};
       const assistantMessage = {
         role: 'assistant',
-        content: response.response || 'I processed your request.',
-        agent: response.agent,
-        actions: response.actions || [],
-        suggestions: response.suggestions || [],
-        data: response.data,
+        content: responseData.response || responseData.message || 'I processed your request.',
+        agent: responseData.agent,
+        actions: responseData.actions || [],
+        suggestions: responseData.suggestions || [],
+        data: responseData,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);

@@ -1,28 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import api from '@/lib/api'
-import { getCurrentUser } from '@/lib/auth'
-import DailyEmailStatus from '@/components/DailyEmailStatus'
-import toast from 'react-hot-toast'
-
-const STATS = [
-  { label: 'Total Websites', key: 'websites', icon: '🌐', color: 'text-blue-400' },
-  { label: 'Active Campaigns', key: 'campaigns', icon: '📧', color: 'text-green-400' },
-  { label: 'Total Prospects', key: 'prospects', icon: '👥', color: 'text-purple-400' },
-  { label: 'Emails Sent', key: 'emailsSent', icon: '✉️', color: 'text-yellow-400' },
-]
-
-const PLATFORMS = [
-  { name: 'LeadSite.AI', description: 'AI-powered lead generation', icon: '🎯', status: 'active' },
-  { name: 'LeadSite.IO', description: 'Website builder platform', icon: '🏗️', status: 'active' },
-  { name: 'ClientContact.IO', description: '22+ channel outreach', icon: '💬', status: 'active' },
-  { name: 'Tackle.IO', description: 'Enterprise AI SDR', icon: '🚀', status: 'active' },
-  { name: 'VideoSite.IO', description: 'Video marketing platform', icon: '🎬', status: 'coming' },
-]
 
 export default function DashboardPage() {
+  const router = useRouter()
+  
+  useEffect(() => {
+    // Redirect to copilot - the main interface
+    router.push('/copilot')
+  }, [router])
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="text-neutral-400">Redirecting to Copilot...</div>
+    </div>
+  )
+}
+
+// OLD DASHBOARD CODE - Replaced with copilot redirect
+// The copilot IS the dashboard now
+/*
+export default function DashboardPageOLD() {
   const router = useRouter()
   const [stats, setStats] = useState({
     websites: 0,

@@ -21,7 +21,7 @@ export default function LoginPage() {
     try {
       await login(formData.email, formData.password)
       toast.success('Welcome back!')
-      router.push('/dashboard')
+      router.push('/copilot')
     } catch (error) {
       toast.error(error.message || 'Login failed')
     } finally {

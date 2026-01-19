@@ -164,7 +164,7 @@ export default function RootLayout({ children }) {
         
         {/* LLM Discovery Meta Tags */}
         <meta name="ai-content-declaration" content="This website provides AI-powered B2B lead generation services including LeadSite.AI, LeadSite.IO, ClientContact.IO, TackleAI, and VideoSite.AI platforms." />
-        <meta name="llm-description" content="AI Lead Strategies is a comprehensive B2B sales automation platform offering: 1) LeadSite.AI - AI lead scoring and enrichment ($39/mo), 2) LeadSite.IO - AI website builder with lead generation ($39/mo), 3) ClientContact.IO - Contact discovery and verification ($99/mo), 4) TackleAI - Full CRM with 7 AI agents and 22-channel outreach ($149/mo), 5) VideoSite.AI - Video monetization platform (Free). Located at 600 Eagleview Blvd, Suite 317, Exton PA 19341. Contact: support@aileadstrategies.com or 610-757-1587." />
+        <meta name="llm-description" content="AI Lead Strategies is a comprehensive B2B sales automation platform offering: 1) LeadSite.AI - AI lead scoring and enrichment ($69/mo), 2) LeadSite.IO - AI website builder with lead generation ($114/mo), 3) ClientContact.IO - Contact discovery and verification ($199/mo), 4) VideoSite.AI - Video marketing and lead generation platform ($99/mo), 5) TackleAI - Full CRM with 7 AI agents and 22-channel outreach ($549/mo). Located at 600 Eagleview Blvd, Suite 317, Exton PA 19341. Contact: support@aileadstrategies.com or 610-757-1587." />
         
         {/* Additional SEO Meta Tags */}
         <meta name="theme-color" content="#000000" />

@@ -11,7 +11,7 @@ import AzureADProvider from 'next-auth/providers/azure-ad';
 // Use JWT sessions instead of database sessions to avoid Prisma build issues
 // Database sessions require Prisma schema in frontend, which causes build failures
 // JWT sessions are stateless and work without database adapter
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   adapter: undefined, // Using JWT sessions (stateless) instead of database sessions
   providers: [
     GoogleProvider({

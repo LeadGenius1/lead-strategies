@@ -79,16 +79,25 @@ export default function CopilotChat() {
   };
 
   const handleAction = async (action) => {
-    if (action.type === 'show_leads') {
-      // Navigate to leads view or show modal
-      console.log('Show leads:', action.leads);
-    } else if (action.type === 'create_campaign') {
-      // Navigate to campaign creation
-      console.log('Create campaign');
-    } else if (action.type === 'preview_sequence') {
-      // Show email sequence preview
-      console.log('Preview sequence:', action.sequence);
-    }
+    // Convert action to a chat message to continue the conversation
+    const actionMessages = {
+      'find_leads': 'Start a lead search for me',
+      'view_saved_leads': 'Show my saved leads',
+      'create_campaign': 'Help me create a new campaign',
+      'show_leads': 'Show the leads you found',
+      'preview_sequence': 'Preview the email sequence',
+      'create_email': 'Help me create an email',
+      'view_templates': 'Show me email templates',
+      'view_campaigns': 'Show my campaigns'
+    };
+    
+    const message = actionMessages[action.type] || action.label || action.type.replace(/_/g, ' ');
+    setInput(message);
+    // Auto-send the message
+    setTimeout(() => {
+      const fakeEvent = { preventDefault: () => {} };
+      handleSend();
+    }, 100);
   };
 
   const handleKeyPress = (e) => {

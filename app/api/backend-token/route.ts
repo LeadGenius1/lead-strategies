@@ -14,8 +14,8 @@ const BACKEND_TOKEN_EXPIRES_IN = parseInt(process.env.BACKEND_TOKEN_EXPIRES_IN |
 
 export async function GET(request: Request) {
   try {
-    // Get authenticated session
-    const session = await getServerSession(authOptions);
+    // Get NextAuth session (no authOptions needed with getServerSession)
+    const session = await getServerSession();
 
     if (!session || !session.user) {
       return NextResponse.json(

@@ -109,3 +109,27 @@ export const copilotApi = {
 export function clearBackendToken() {
   cachedToken = null;
 }
+
+/**
+ * API Client object for backwards compatibility
+ */
+export const apiClient = {
+  get: async (endpoint: string) => {
+    return apiRequest(endpoint, { method: 'GET' });
+  },
+  post: async (endpoint: string, data?: any) => {
+    return apiRequest(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+  put: async (endpoint: string, data?: any) => {
+    return apiRequest(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+  delete: async (endpoint: string) => {
+    return apiRequest(endpoint, { method: 'DELETE' });
+  },
+};

@@ -1,4 +1,8 @@
 import { NextResponse } from 'next/server'
+import jwt from 'jsonwebtoken'
+
+// Mark route as dynamic to prevent static rendering
+export const dynamic = 'force-dynamic'
 
 export async function GET(request) {
   try {
@@ -33,9 +37,7 @@ export async function GET(request) {
     const tier = stateData.tier || 'leadsite-ai'
     
     // Get frontend URL from request headers or env
-    const host = request.headers.get('host') || ''
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://${host}`
+    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || baseUrl
     const redirectUri = `${frontendUrl}/api/auth/oauth/callback?provider=${provider}`
 
     // Exchange authorization code for user info via backend
@@ -61,7 +63,7 @@ export async function GET(request) {
         const user = data.user || data.data?.user
 
         if (token) {
-          // Set token in cookie and redirect to dashboard
+          // Set token in cookie and redirect to copilot (not dashboard)
           const redirectResponse = NextResponse.redirect(`${baseUrl}/copilot`)
           redirectResponse.cookies.set('token', token, {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days

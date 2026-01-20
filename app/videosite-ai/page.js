@@ -28,8 +28,8 @@ function VideoSiteAISEO() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: 'What is VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is a free video monetization platform where content creators can upload videos and earn $1 for every video view.' } },
-      { '@type': 'Question', name: 'What does VideoSite.AI cost?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is $99/month for businesses using it for video marketing and lead generation. Content creators can earn $1 per video view through the platform.' } },
+      { '@type': 'Question', name: 'What is VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is a FREE video monetization platform where content creators can upload videos and earn $1.00 for every video viewer.' } },
+      { '@type': 'Question', name: 'What does VideoSite.AI cost?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is FREE to sign up. Content creators earn $1.00 per video viewer through the platform - no subscription fees required.' } },
       { '@type': 'Question', name: 'How do advertisers use VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'Advertisers can place targeted video ads on the platform, reaching engaged audiences with brand-safe content and detailed analytics.' } }
     ]
   };
@@ -40,7 +40,7 @@ function VideoSiteAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>VideoSite.AI - Free Video Monetization Platform</h1>
-        <p>VideoSite.AI is a video marketing and lead generation platform by AI Lead Strategies LLC, priced at $99/month. Features: HD video hosting, video marketing campaigns, lead generation tools, analytics dashboard, content protection, secure payments. Best for businesses wanting to use video for marketing and lead generation. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>VideoSite.AI is a FREE video monetization platform by AI Lead Strategies LLC. Content creators sign up for free and earn $1.00 per video viewer. Features: HD video hosting, video marketing campaigns, lead generation tools, analytics dashboard, content protection, secure payments. Best for content creators wanting to monetize their videos. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | 610-757-1587</p>
         <h2>VideoSite.AI Features</h2>
         <ul>
           <li>Free for content creators</li>
@@ -382,34 +382,37 @@ export default function VideoSiteAIPage() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Simple <span className="text-gradient">Pricing</span>
+              Start <span className="text-gradient">Free</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Video marketing platform with lead generation. $99/month.</p>
+            <p className="text-neutral-400 font-geist">Free to sign up. Earn $1.00 per video viewer.</p>
           </div>
 
           <div className="flex justify-center max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">VideoSite.AI</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $99<span className="text-sm text-neutral-500">/mo</span>
+            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-green-500/20 border border-green-500/30 text-green-300 text-[10px] uppercase tracking-wider font-geist">
+                Content Creators
               </div>
-              <p className="text-neutral-400 font-geist mb-6">Video marketing + lead generation</p>
+              <h3 className="text-2xl font-space-grotesk text-white mb-2">VideoSite.AI</h3>
+              <div className="text-4xl font-space-grotesk font-light text-white mb-2">
+                FREE
+              </div>
+              <p className="text-green-400 font-geist text-lg mb-6">Earn $1.00 per Video Viewer</p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
                   HD video hosting
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Video marketing campaigns
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Monetize your content
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Lead generation tools
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Real-time earnings dashboard
                 </li>
                 <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Analytics dashboard
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  Instant payouts
                 </li>
               </ul>
               <div className="text-center">

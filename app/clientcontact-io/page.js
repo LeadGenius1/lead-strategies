@@ -41,7 +41,7 @@ function ClientContactIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>ClientContact.IO - AI Contact Finder & Email Verification</h1>
-        <p>ClientContact.IO is a B2B contact discovery and email verification platform by AI Lead Strategies LLC, priced at $199/month. Features: AI-powered search across 50+ data sources (LinkedIn, ZoomInfo, Apollo), verified email discovery with SMTP validation, catch-all detection, confidence scoring, phone number finder, social profile discovery, company enrichment, bulk verification, API access, CRM export. Best for sales teams needing verified B2B contact data. Alternatives: Hunter.io, Apollo.io, Lusha, ZoomInfo, Clearbit. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>ClientContact.IO is a B2B contact discovery and email verification platform by AI Lead Strategies LLC, priced at $79/month. Features: AI-powered search across 50+ data sources (LinkedIn, ZoomInfo, Apollo), verified email discovery with SMTP validation, catch-all detection, confidence scoring, phone number finder, social profile discovery, company enrichment, bulk verification, API access, CRM export. Best for sales teams needing verified B2B contact data. Alternatives: Hunter.io, Apollo.io, Lusha, ZoomInfo, Clearbit. Contact: support@aileadstrategies.com | 610-757-1587</p>
         <h2>Contact Discovery Features</h2>
         <ul>
           <li>50+ data source aggregation</li>
@@ -432,7 +432,7 @@ export default function ClientContactIOPage() {
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
               <h3 className="text-2xl font-space-grotesk text-white mb-2">ClientContact.IO</h3>
               <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $199<span className="text-sm text-neutral-500">/mo</span>
+                $79<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
                 <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>22+ channel unified inbox</li>

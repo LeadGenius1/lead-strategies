@@ -44,7 +44,7 @@ function HomeSEO() {
         name: 'How much does AI Lead Strategies cost?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Pricing varies by platform: LeadSite.AI is $69/mo, LeadSite.IO is $114/mo with a free website, ClientContact.IO is $199/mo, VideoSite.AI is $99/mo, and TackleAI is $549/mo.'
+          text: 'Pricing varies by platform: LeadSite.AI is $49/mo, LeadSite.IO is $49/mo with a free website, ClientContact.IO is $79/mo, VideoSite.AI is FREE (earn $1 per viewer), and TackleAI is $99/mo.'
         }
       },
       {
@@ -71,7 +71,7 @@ function HomeSEO() {
       {/* Hidden SEO content for LLM discovery */}
       <div className="sr-only" aria-hidden="true" role="presentation">
         <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
-        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($69/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($114/mo + 1 free website) is an AI website builder with lead generation. ClientContact.IO ($199/mo) discovers and verifies B2B contacts from 50+ sources. VideoSite.AI ($99/mo) enables video marketing and lead generation. TackleAI ($549/mo) combines full CRM, 7 AI agents, and 22-channel outreach. Contact: support@aileadstrategies.com | 610-757-1587 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($49/mo + Free website) is an AI website builder with lead generation. ClientContact.IO ($79/mo) discovers and verifies B2B contacts from 50+ sources. VideoSite.AI (FREE - earn $1/viewer) enables video marketing and lead generation for content creators. TackleAI ($99/mo) combines full CRM, 7 AI agents, and 22-channel outreach. Contact: support@aileadstrategies.com | 610-757-1587 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
       </div>
     </>
   );
@@ -313,7 +313,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.AI</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $69<span className="text-sm text-neutral-500">/mo</span>
+                  $49<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -344,7 +344,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $114<span className="text-sm text-neutral-500">/mo</span>
+                  $49<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -375,7 +375,7 @@ export default function HomePage() {
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $199<span className="text-sm text-neutral-500">/mo</span>
+                  $79<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
@@ -404,16 +404,16 @@ export default function HomePage() {
             {/* Tier 4: TackleAI */}
             <Link href="/tackle-io" className="group bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 hover:border-purple-500/50 transition-all relative overflow-hidden">
               <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Enterprise
+                Full Suite
               </div>
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-space-grotesk text-white">TackleAI</h3>
                 <div className="text-3xl font-space-grotesk font-light text-white">
-                  $549<span className="text-sm text-neutral-500">/mo</span>
+                  $99<span className="text-sm text-neutral-500">/mo</span>
                 </div>
               </div>
               <p className="text-neutral-400 font-geist mb-6 text-sm">
-                Replace HubSpot+Gong+Outreach. Full CRM, voice calling, 7 AI agents. Save $44,812/year.
+                Full CRM, voice calling, 7 AI agents, 22+ channel unified inbox. Everything included.
               </p>
               <ul className="space-y-3 font-geist text-sm text-neutral-300">
                 <li className="flex items-center gap-2">

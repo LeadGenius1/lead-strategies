@@ -7,11 +7,11 @@ import { signup } from '@/lib/auth'
 import toast from 'react-hot-toast'
 
 const TIERS = [
-  { id: 'leadsite-ai', name: 'LeadSite.AI', price: '$69/mo', description: 'AI email lead generation' },
-  { id: 'leadsite-io', name: 'LeadSite.IO', price: '$114/mo', description: '+ 1 Free AI Website', highlight: true },
-  { id: 'clientcontact', name: 'ClientContact.IO', price: '$199/mo', description: '22+ channel unified inbox' },
-  { id: 'videosite', name: 'VideoSite.AI', price: '$99/mo', description: 'Video platform + lead gen' },
-  { id: 'tackle', name: 'TackleAI', price: '$549/mo', description: 'Full CRM + Voice + 7 AI Agents' },
+  { id: 'leadsite-ai', name: 'LeadSite.AI', price: '$49/mo', description: 'AI email lead generation' },
+  { id: 'leadsite-io', name: 'LeadSite.IO', price: '$49/mo', description: '+ Free AI Website', highlight: true },
+  { id: 'clientcontact', name: 'ClientContact.IO', price: '$79/mo', description: '22+ channel unified inbox' },
+  { id: 'videosite', name: 'VideoSite.AI', price: 'FREE', description: 'Earn $1/viewer • Content creators' },
+  { id: 'tackle', name: 'TackleAI', price: '$99/mo', description: 'Full CRM + Voice + 7 AI Agents' },
 ]
 
 function SignupForm() {

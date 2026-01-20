@@ -131,6 +131,76 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
+/* Dashboard Font Size Reduction (20% smaller for professional viewing) */
+.dashboard-text {
+  font-size: 0.8em;
+}
+
+/* Apply reduced fonts to all dashboard pages */
+[class*="dashboard"] h1,
+main h1 {
+  font-size: 1.75rem !important;
+}
+
+[class*="dashboard"] h2,
+main h2 {
+  font-size: 1.25rem !important;
+}
+
+[class*="dashboard"] h3,
+main h3 {
+  font-size: 1rem !important;
+}
+
+[class*="dashboard"] p,
+[class*="dashboard"] span,
+[class*="dashboard"] label,
+main p,
+main span,
+main label {
+  font-size: 0.8125rem;
+}
+
+[class*="dashboard"] .text-sm,
+main .text-sm {
+  font-size: 0.6875rem !important;
+}
+
+[class*="dashboard"] .text-xs,
+main .text-xs {
+  font-size: 0.625rem !important;
+}
+
+[class*="dashboard"] .text-lg,
+main .text-lg {
+  font-size: 0.9375rem !important;
+}
+
+[class*="dashboard"] .text-xl,
+main .text-xl {
+  font-size: 1.0625rem !important;
+}
+
+[class*="dashboard"] .text-2xl,
+main .text-2xl {
+  font-size: 1.25rem !important;
+}
+
+[class*="dashboard"] .text-3xl,
+main .text-3xl {
+  font-size: 1.5rem !important;
+}
+
+[class*="dashboard"] .text-4xl,
+main .text-4xl {
+  font-size: 1.75rem !important;
+}
+
+/* Sidebar font adjustments */
+nav .text-sm {
+  font-size: 0.75rem !important;
+}
+
 /* Tracking Utilities */
 .tracking-tighter {
   letter-spacing: -0.05em;

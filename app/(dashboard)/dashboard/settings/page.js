@@ -82,10 +82,11 @@ export default function SettingsPage() {
   ]
 
   const tierInfo = {
-    'tackle': { name: 'TackleAI', price: '$549/mo' },
-    'clientcontact': { name: 'ClientContact.IO', price: '$199/mo' },
-    'leadsite-io': { name: 'LeadSite.IO', price: '$114/mo' },
-    'leadsite-ai': { name: 'LeadSite.AI', price: '$69/mo' },
+    'tackle': { name: 'TackleAI', price: '$99/mo' },
+    'clientcontact': { name: 'ClientContact.IO', price: '$79/mo' },
+    'leadsite-io': { name: 'LeadSite.IO', price: '$49/mo + Free Website' },
+    'leadsite-ai': { name: 'LeadSite.AI', price: '$49/mo' },
+    'videosite': { name: 'VideoSite.AI', price: 'FREE (earn $1/viewer)' },
   }
 
   if (loading) {

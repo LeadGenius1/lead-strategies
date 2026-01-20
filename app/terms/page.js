@@ -69,11 +69,11 @@ export default function TermsPage() {
         <h3>4.1 Service Tiers</h3>
         <p>Our services are offered across multiple pricing tiers, with specific features and limits detailed on our pricing pages. Current pricing includes:</p>
         <ul>
-          <li><strong>LeadSite.AI:</strong> $69/month for AI-powered lead generation</li>
-          <li><strong>LeadSite.IO:</strong> $114/month for advanced lead management</li>
-          <li><strong>ClientContact.IO:</strong> $199/month for multi-channel engagement</li>
-          <li><strong>VideoSite.AI:</strong> $99/month for video content platform</li>
-          <li><strong>TackleAI:</strong> $549/month for full-featured 22+ channel access</li>
+          <li><strong>LeadSite.AI:</strong> $49/month for AI-powered lead generation</li>
+          <li><strong>LeadSite.IO:</strong> $49/month for AI website builder + Free Website included</li>
+          <li><strong>ClientContact.IO:</strong> $79/month for 22+ channel unified inbox</li>
+          <li><strong>VideoSite.AI:</strong> FREE for content creators (earn $1.00 per video viewer)</li>
+          <li><strong>TackleAI:</strong> $99/month for full CRM + Voice + 7 AI Agents</li>
         </ul>
 
         <h3>4.2 Billing Terms</h3>

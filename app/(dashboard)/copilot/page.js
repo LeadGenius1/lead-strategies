@@ -20,9 +20,9 @@ export default function CopilotPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 p-6 h-screen">
-        <div className="max-w-5xl mx-auto h-[calc(100vh-3rem)]">
+      {/* Content - Mobile Optimized */}
+      <div className="relative z-10 p-0 sm:p-4 md:p-6 h-screen">
+        <div className="max-w-full sm:max-w-4xl lg:max-w-5xl mx-auto h-screen sm:h-[calc(100vh-2rem)] md:h-[calc(100vh-3rem)]">
           <CopilotChat />
         </div>
       </div>

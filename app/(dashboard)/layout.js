@@ -94,10 +94,12 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen bg-black">
+    <div className="flex h-screen bg-black overflow-hidden">
       <Sidebar features={subscription?.features || {}} />
-      <main className="flex-1 overflow-y-auto p-8">
-        {children}
+      <main className="flex-1 overflow-y-auto w-full lg:w-auto p-0 sm:p-4 md:p-6 lg:p-8">
+        <div className="min-h-full">
+          {children}
+        </div>
       </main>
     </div>
   )

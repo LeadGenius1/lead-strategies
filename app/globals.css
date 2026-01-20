@@ -473,6 +473,52 @@ input, textarea, select {
   .hover\:scale-105:hover {
     transform: none;
   }
+  
+  /* Better touch feedback */
+  button:active, a:active {
+    transform: scale(0.98);
+    opacity: 0.8;
+  }
+}
+
+/* Mobile Safe Areas */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Mobile-specific utilities */
+@media (max-width: 640px) {
+  /* Reduce dashboard font sizes for mobile */
+  [class*="dashboard"] h1, main h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  [class*="dashboard"] h2, main h2 {
+    font-size: 1.125rem !important;
+  }
+  
+  /* Better mobile buttons */
+  button, .btn {
+    min-height: 44px;
+    font-size: 0.875rem;
+  }
+  
+  /* Larger tap targets */
+  .touch-manipulation {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  *:hover {
+    /* Disable hover animations on touch */
+  }
 }
 
 /* Reduced Motion */

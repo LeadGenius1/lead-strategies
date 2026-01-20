@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { logout } from '@/lib/auth'
@@ -17,7 +18,9 @@ import {
   Target,
   BarChart3,
   Zap,
-  Calendar
+  Calendar,
+  Menu,
+  X
 } from 'lucide-react'
 
 const navigation = [
@@ -36,6 +39,7 @@ const navigation = [
 
 export default function Sidebar({ features = {} }) {
   const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const visibleNav = navigation.filter((item) => {
     if (item.tier === 'all') return true
@@ -43,7 +47,30 @@ export default function Sidebar({ features = {} }) {
   })
 
   return (
-    <div className="w-64 bg-black border-r border-white/5 h-screen flex flex-col">
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-black/90 border border-white/10 rounded-lg backdrop-blur-md text-white"
+      >
+        {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`
+        fixed lg:static inset-y-0 left-0 z-40
+        w-64 bg-black border-r border-white/5 h-screen flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
       {/* Logo */}
       <div className="p-6 border-b border-white/5">
         <div className="flex items-center gap-2">
@@ -62,6 +89,7 @@ export default function Sidebar({ features = {} }) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
               className={`group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'bg-indigo-500/10 text-white border border-indigo-500/30'
@@ -102,8 +130,8 @@ export default function Sidebar({ features = {} }) {
       {/* Logout */}
       <div className="p-4 border-t border-white/5">
         <button
-          onClick={logout}
-          className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-400 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/20 transition-all duration-200"
+          onClick={() => { setMobileMenuOpen(false); logout(); }}
+          className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-400 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/20 transition-all duration-200 touch-manipulation"
         >
           <div className="w-8 h-8 rounded-lg bg-white/5 group-hover:bg-red-500/10 flex items-center justify-center transition-colors">
             <LogOut className="w-4 h-4" />
@@ -112,5 +140,6 @@ export default function Sidebar({ features = {} }) {
         </button>
       </div>
     </div>
+    </>
   )
 }

@@ -11,17 +11,19 @@ import {
   MessageSquare, 
   Phone, 
   Briefcase, 
-  Settings,
+  UserCircle,
   LogOut,
   BrainCircuit,
   Target,
   BarChart3,
-  Zap
+  Zap,
+  Calendar
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, tier: 'all' },
   { name: 'Lead Hunter', href: '/copilot', icon: BrainCircuit, tier: 'all', highlight: true },
+  { name: 'Automation', href: '/dashboard/automation', icon: Calendar, tier: 'all' },
   { name: 'Websites', href: '/dashboard/websites', icon: Globe, tier: 'websites' },
   { name: 'Campaigns', href: '/dashboard/campaigns', icon: Zap, tier: 'campaigns' },
   { name: 'Prospects', href: '/dashboard/prospects', icon: Target, tier: 'prospects' },
@@ -29,7 +31,7 @@ const navigation = [
   { name: 'Voice Calls', href: '/dashboard/calls', icon: Phone, tier: 'voice' },
   { name: 'CRM', href: '/dashboard/crm', icon: Briefcase, tier: 'crm' },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, tier: 'all' },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings, tier: 'all' },
+  { name: 'Profile', href: '/dashboard/profile', icon: UserCircle, tier: 'all' },
 ]
 
 export default function Sidebar({ features = {} }) {

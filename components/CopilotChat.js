@@ -78,10 +78,28 @@ export default function CopilotChat() {
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      setError(err.message || 'Failed to process request. Please try again.');
+      const errorStatus = err.response?.status;
+      const errorData = err.response?.data;
+      let errorText = 'Failed to process request. Please try again.';
+      
+      if (errorStatus === 503) {
+        errorText = 'AI service is not configured. Please contact support.';
+      } else if (errorStatus === 401) {
+        errorText = 'Session expired. Please log in again.';
+      } else if (errorStatus === 500) {
+        errorText = errorData?.error || 'Server error. Please try again in a moment.';
+      } else if (err.message) {
+        errorText = err.message;
+      }
+      
+      setError(`Request failed with status code ${errorStatus || 'unknown'}`);
+      
+      // If the backend returned a helpful message in data.response, use it
+      const assistantContent = errorData?.data?.response || 'Sorry, I encountered an error. Please try again.';
+      
       const errorMessage = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: assistantContent,
         error: true,
       };
       setMessages((prev) => [...prev, errorMessage]);

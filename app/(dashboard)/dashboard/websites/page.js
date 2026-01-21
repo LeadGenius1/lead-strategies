@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
-import { Globe, Search, Users, Zap, ExternalLink, Plus, Loader2 } from 'lucide-react'
+import { Globe, Search, Users, Zap, ExternalLink, Plus, Loader2, Sparkles, Eye, Edit } from 'lucide-react'
+import WebsiteBuilderChat from '@/components/WebsiteBuilderChat'
 
 export default function WebsitesPage() {
   const router = useRouter()
   const [websites, setWebsites] = useState([])
   const [loading, setLoading] = useState(true)
+  const [showBuilder, setShowBuilder] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [url, setUrl] = useState('')
 
@@ -46,6 +48,38 @@ export default function WebsitesPage() {
     }
   }
 
+  const handleWebsiteCreated = (website) => {
+    setShowBuilder(false);
+    loadWebsites();
+  };
+
+  if (showBuilder) {
+    return (
+      <div className="relative min-h-screen bg-black">
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-cyan-900/10 rounded-full blur-[100px]"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto p-6">
+          <div className="mb-6">
+            <button
+              onClick={() => setShowBuilder(false)}
+              className="text-neutral-400 hover:text-white text-sm mb-4"
+            >
+              ← Back to Websites
+            </button>
+            <h1 className="text-3xl font-medium tracking-tight text-white">AI Website Builder</h1>
+            <p className="text-neutral-500 mt-1 text-sm">Answer a few questions and we'll create your website</p>
+          </div>
+          
+          <div className="bg-neutral-900/50 border border-white/10 rounded-2xl overflow-hidden" style={{ height: 'calc(100vh - 200px)' }}>
+            <WebsiteBuilderChat onWebsiteCreated={handleWebsiteCreated} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen bg-black p-6">
       {/* Background */}
@@ -55,51 +89,20 @@ export default function WebsitesPage() {
 
       <div className="relative z-10 max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-medium tracking-tight text-white">Websites</h1>
-          <p className="text-neutral-500 mt-1 text-sm">Analyze websites to discover leads and generate campaigns</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-medium tracking-tight text-white">Websites</h1>
+            <p className="text-neutral-500 mt-1 text-sm">Create AI-powered websites with lead generation</p>
+          </div>
+          <button
+            onClick={() => setShowBuilder(true)}
+            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+          >
+            <Sparkles className="w-4 h-4" />
+            Create Website
+          </button>
         </div>
 
-        {/* Analyze Form */}
-        <div className="p-6 rounded-2xl bg-neutral-900/50 border border-white/10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-              <Search className="w-5 h-5 text-cyan-400" />
-            </div>
-            <div>
-              <h2 className="text-lg font-medium text-white">Analyze New Website</h2>
-              <p className="text-xs text-neutral-500">Enter a URL to discover leads and company information</p>
-            </div>
-          </div>
-          
-          <form onSubmit={analyzeWebsite} className="flex gap-3">
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://example.com"
-              className="flex-1 px-5 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all"
-              required
-            />
-            <button
-              type="submit"
-              disabled={analyzing}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-all flex items-center gap-2"
-            >
-              {analyzing ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Globe className="w-4 h-4" />
-                  Analyze
-                </>
-              )}
-            </button>
-          </form>
-        </div>
 
         {/* Websites List */}
         <div>
@@ -166,19 +169,39 @@ export default function WebsitesPage() {
                   </div>
 
                   <div className="flex gap-3 mt-4">
+                    {website.isPublished && website.subdomain ? (
+                      <a
+                        href={`/sites/${website.subdomain}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-sm rounded-xl transition-all flex items-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View Website
+                      </a>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          try {
+                            await api.post(`/api/v1/websites/${website.id}/publish`);
+                            toast.success('Website published!');
+                            loadWebsites();
+                          } catch (error) {
+                            toast.error('Failed to publish website');
+                          }
+                        }}
+                        className="px-4 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-sm rounded-xl transition-all flex items-center gap-2"
+                      >
+                        <Globe className="w-4 h-4" />
+                        Publish
+                      </button>
+                    )}
                     <button
-                      onClick={() => router.push(`/dashboard/prospects?websiteId=${website.id}`)}
-                      className="px-4 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-sm rounded-xl transition-all flex items-center gap-2"
-                    >
-                      <Users className="w-4 h-4" />
-                      View Prospects
-                    </button>
-                    <button
-                      onClick={() => router.push('/dashboard/campaigns')}
+                      onClick={() => router.push(`/dashboard/websites/${website.id}`)}
                       className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 text-sm rounded-xl transition-all flex items-center gap-2"
                     >
-                      <Zap className="w-4 h-4" />
-                      Create Campaign
+                      <Edit className="w-4 h-4" />
+                      Edit
                     </button>
                   </div>
                 </div>

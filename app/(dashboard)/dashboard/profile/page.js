@@ -130,15 +130,15 @@ function SubscriptionSection({ user }) {
 
   return (
     <section className="bg-neutral-900/50 border border-white/10 rounded-2xl p-6 mb-8">
-      <div className="flex items-center gap-2 mb-6">
-        <CreditCard className="w-5 h-5 text-indigo-400" />
-        <h2 className="text-xl font-semibold">Subscription</h2>
-      </div>
+        <div className="flex items-center gap-2 mb-6">
+          <CreditCard className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-lg font-medium text-white">Subscription</h2>
+        </div>
       
       {/* Current Plan */}
       <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/30 rounded-xl mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-white">{tier.name}</h3>
+          <h3 className="text-lg font-medium text-white">{tier.name}</h3>
           <p className="text-indigo-300 text-sm">{tier.price}</p>
         </div>
         <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm transition-colors">
@@ -322,19 +322,18 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <div className="max-w-5xl mx-auto">
+    <div className="relative min-h-screen bg-black p-6">
+      {/* Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-900/10 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div className="relative z-10 max-w-5xl mx-auto space-y-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-              <User className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Your Profile</h1>
-              <p className="text-neutral-400">Help Lead Hunter understand your business for personalized prospecting</p>
-            </div>
-          </div>
+        <div>
+          <h1 className="text-3xl font-medium tracking-tight text-white">Your Profile</h1>
+          <p className="text-neutral-500 mt-1 text-sm">Help Lead Hunter understand your business for personalized prospecting</p>
         </div>
 
         {/* Subscription Status */}
@@ -347,7 +346,7 @@ export default function ProfilePage() {
           <div className="flex items-start gap-3">
             <Sparkles className="w-5 h-5 text-indigo-400 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-indigo-300">Why this matters</h3>
+              <h3 className="text-sm font-medium text-indigo-300">Why this matters</h3>
               <p className="text-sm text-neutral-400 mt-1">
                 The more detailed your profile, the better Lead Hunter can find qualified prospects, 
                 write personalized emails, and give tailored advice. This information powers your AI assistant!
@@ -361,7 +360,7 @@ export default function ProfilePage() {
           <section className="bg-neutral-900/50 border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-6">
               <User className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-semibold">Personal Information</h2>
+              <h2 className="text-lg font-medium text-white">Personal Information</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -418,7 +417,7 @@ export default function ProfilePage() {
           <section className="bg-neutral-900/50 border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-6">
               <Building2 className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-semibold">Business Information</h2>
+              <h2 className="text-lg font-medium text-white">Business Information</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -505,7 +504,7 @@ export default function ProfilePage() {
           <section className="bg-gradient-to-br from-indigo-950/30 to-purple-950/30 border border-indigo-500/30 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-2">
               <Package className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-semibold">Products & Services</h2>
+              <h2 className="text-lg font-medium text-white">Products & Services</h2>
               <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 text-xs rounded-full">Critical for AI</span>
             </div>
             <p className="text-sm text-neutral-400 mb-6">This is the most important section - it helps Lead Hunter understand what you sell.</p>
@@ -555,7 +554,7 @@ export default function ProfilePage() {
           <section className="bg-neutral-900/50 border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-6">
               <Target className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-semibold">Target Audience</h2>
+              <h2 className="text-lg font-medium text-white">Target Audience</h2>
             </div>
             
             <div className="space-y-6">
@@ -590,7 +589,7 @@ export default function ProfilePage() {
           <section className="bg-neutral-900/50 border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-6">
               <DollarSign className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-semibold">Sales Context</h2>
+              <h2 className="text-lg font-medium text-white">Sales Context</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -650,7 +649,7 @@ export default function ProfilePage() {
           <section className="bg-neutral-900/50 border border-white/10 rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-6">
               <Mail className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-semibold">Outreach Preferences</h2>
+              <h2 className="text-lg font-medium text-white">Outreach Preferences</h2>
             </div>
             
             <div className="space-y-6">

@@ -177,32 +177,33 @@ export default function AutomationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="relative min-h-screen bg-black p-6">
+      {/* Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-900/10 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Automation</h1>
-              <p className="text-neutral-400">Schedule Lead Hunter to find prospects automatically</p>
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-medium tracking-tight text-white">Automation</h1>
+            <p className="text-neutral-500 mt-1 text-sm">Schedule Lead Hunter to find prospects automatically</p>
           </div>
           
           <button
             onClick={() => setShowNewForm(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl font-medium transition-all"
+            className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
           >
-            <Zap className="w-5 h-5" />
+            <Zap className="w-4 h-4" />
             New Automation
           </button>
         </div>
 
         {/* How it works */}
-        <div className="mb-8 p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-xl">
-          <h3 className="font-semibold text-indigo-300 mb-2">How Daily Automation Works</h3>
+        <div className="p-6 rounded-2xl bg-neutral-900/50 border border-white/10">
+          <h3 className="text-lg font-medium text-indigo-300 mb-4">How Daily Automation Works</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-neutral-400">
             <div className="flex items-start gap-2">
               <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs">1</div>
@@ -224,8 +225,8 @@ export default function AutomationPage() {
         </div>
 
         {/* Existing Automations */}
-        <div className="space-y-4 mb-8">
-          <h2 className="text-xl font-semibold">Your Automations</h2>
+        <div className="space-y-4">
+          <h2 className="text-lg font-medium text-white">Your Automations</h2>
           
           {automations.length === 0 ? (
             <div className="bg-neutral-900/50 border border-white/10 rounded-2xl p-12 text-center">

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '@/lib/api';
+import websocketClient from '@/lib/websocket';
+import Cookies from 'js-cookie';
 import { 
   Mail, MessageSquare, Phone, Search, Sparkles, Send, 
   Paperclip, RefreshCw, Settings, MoreVertical, CheckCircle2, X,
@@ -51,9 +53,43 @@ export default function InboxPage() {
     }
   }, [filters]);
 
+  // WebSocket connection
+  useEffect(() => {
+    const token = Cookies.get('token') || localStorage.getItem('token');
+    if (token) {
+      websocketClient.connect(token);
+      
+      // Listen for new messages
+      websocketClient.on('message:new', (data) => {
+        if (selected && data.conversation.id === selected.id) {
+          setMessages(prev => [data.message, ...prev]);
+        }
+        fetchConversations(); // Refresh conversation list
+      });
+
+      // Listen for conversation updates
+      websocketClient.on('conversation:updated', (data) => {
+        fetchConversations(); // Refresh conversation list
+      });
+
+      // Subscribe to selected conversation
+      if (selected) {
+        websocketClient.subscribeToConversation(selected.id);
+      }
+    }
+
+    return () => {
+      if (selected) {
+        websocketClient.unsubscribeFromConversation(selected.id);
+      }
+      websocketClient.disconnect();
+    };
+  }, [selected, fetchConversations]);
+
   useEffect(() => {
     fetchConversations();
-    const interval = setInterval(fetchConversations, 30000);
+    // Reduced polling interval since we have WebSocket (fallback only)
+    const interval = setInterval(fetchConversations, 60000);
     return () => clearInterval(interval);
   }, [fetchConversations]);
 

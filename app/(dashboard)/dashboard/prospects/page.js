@@ -4,15 +4,17 @@ import { useState, useEffect } from 'react'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import { Target, Mail, Eye, MessageSquare, Plus, Loader2, User, Building2, Send } from 'lucide-react'
+import AdvancedLeadFilters from '@/components/AdvancedLeadFilters'
 
 export default function ProspectsPage() {
   const [prospects, setProspects] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [advancedFilters, setAdvancedFilters] = useState({})
 
   useEffect(() => {
     loadProspects()
-  }, [filter])
+  }, [filter, advancedFilters])
 
   async function loadProspects() {
     try {
@@ -68,20 +70,30 @@ export default function ProspectsPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex gap-2">
-          {filters.map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                filter === status
-                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                  : 'bg-white/5 text-neutral-400 border border-white/10 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
+        <div className="flex items-center gap-4">
+          <div className="flex gap-2">
+            {filters.map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  filter === status
+                    ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                    : 'bg-white/5 text-neutral-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
+          <AdvancedLeadFilters
+            onApply={(filters) => {
+              setAdvancedFilters(filters);
+            }}
+            onReset={() => {
+              setAdvancedFilters({});
+            }}
+          />
         </div>
 
         {/* Prospects Grid */}

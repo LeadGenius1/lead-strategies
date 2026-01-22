@@ -5,7 +5,7 @@ import api from '@/lib/api';
 import { 
   Mail, MessageSquare, Phone, Settings, CheckCircle2, X, 
   RefreshCw, Facebook, Instagram, Twitter, Linkedin, 
-  Slack, Discord, Video, Globe
+  Slack, Video, Globe
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ const CHANNEL_ICONS = {
   twitter: Twitter,
   linkedin: Linkedin,
   slack: Slack,
-  discord: Discord,
+  discord: MessageSquare,
   teams: Video,
   telegram: MessageSquare
 };

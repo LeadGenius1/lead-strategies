@@ -100,7 +100,7 @@ export default function CCPAPage() {
         <ul>
           <li>Direct correction through account settings</li>
           <li>Email request: <a href="mailto:ccpa@aileadstrategies.com">ccpa@aileadstrategies.com</a></li>
-          <li>Phone request: <a href="tel:6107571587">610.757.1587</a></li>
+          <li>Phone request: <a href="tel:8555068886">(855) 506-8886</a></li>
         </ul>
 
         <h3>Right to Opt-Out of Sale/Sharing (CCPA § 1798.120)</h3>

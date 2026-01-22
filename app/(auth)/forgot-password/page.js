@@ -169,7 +169,7 @@ export default function ForgotPasswordPage() {
               <p className="font-semibold text-dark-text">AI Lead Strategies LLC</p>
               <p>600 Eagleview Blvd Suite 317, Exton, PA 19341</p>
               <p>
-                Phone: <a href="tel:6107571587" className="text-dark-primary hover:text-dark-primaryHover">610.757.1587</a>
+                Phone: <a href="tel:8555068886" className="text-dark-primary hover:text-dark-primaryHover">(855) 506-8886</a>
               </p>
               <p>
                 Email: <a href="mailto:info@aileadstrategies.com" className="text-dark-primary hover:text-dark-primaryHover">info@aileadstrategies.com</a>

@@ -41,7 +41,7 @@ function LeadSiteIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>LeadSite.IO - AI Website Builder with Lead Generation</h1>
-        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC, priced at $49/month plus 1 free AI website included. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC, priced at $49/month plus 1 free AI website included. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>AI Website Builder Features</h2>
         <ul>
           <li>AI generates complete website in minutes</li>

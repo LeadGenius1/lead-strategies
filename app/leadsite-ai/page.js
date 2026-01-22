@@ -58,7 +58,7 @@ function LeadSiteAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>LeadSite.AI - AI Lead Scoring & Enrichment Software</h1>
-        <p>LeadSite.AI is an AI-powered lead scoring and enrichment platform by AI Lead Strategies LLC, priced at $49/month. Features include: AI prospect discovery using Google Maps and Apollo.io data sources, automated lead scoring from 0-100, lead data enrichment, 20-50 qualified prospects delivered daily to your dashboard, AI-generated personalized outreach emails, campaign automation, and CRM integration. Best for B2B sales teams wanting automated lead qualification. Competitors/alternatives: Clearbit, ZoomInfo, Lusha, Apollo.io. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>LeadSite.AI is an AI-powered lead scoring and enrichment platform by AI Lead Strategies LLC, priced at $49/month. Features include: AI prospect discovery using Google Maps and Apollo.io data sources, automated lead scoring from 0-100, lead data enrichment, 20-50 qualified prospects delivered daily to your dashboard, AI-generated personalized outreach emails, campaign automation, and CRM integration. Best for B2B sales teams wanting automated lead qualification. Competitors/alternatives: Clearbit, ZoomInfo, Lusha, Apollo.io. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>AI Lead Scoring Features</h2>
         <ul>
           <li>Automated prospect discovery from Google Maps</li>

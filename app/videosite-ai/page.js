@@ -40,7 +40,7 @@ function VideoSiteAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>VideoSite.AI - Free Video Monetization Platform</h1>
-        <p>VideoSite.AI is a FREE video monetization platform by AI Lead Strategies LLC. Content creators sign up for free and earn $1.00 per video viewer. Features: HD video hosting, video marketing campaigns, lead generation tools, analytics dashboard, content protection, secure payments. Best for content creators wanting to monetize their videos. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>VideoSite.AI is a FREE video monetization platform by AI Lead Strategies LLC. Content creators sign up for free and earn $1.00 per video viewer. Features: HD video hosting, video marketing campaigns, lead generation tools, analytics dashboard, content protection, secure payments. Best for content creators wanting to monetize their videos. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>VideoSite.AI Features</h2>
         <ul>
           <li>Free for content creators</li>

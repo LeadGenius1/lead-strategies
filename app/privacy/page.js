@@ -20,7 +20,7 @@ export default function PrivacyPage() {
           <p className="text-sm text-neutral-400">Exton, PA 19341</p>
           <p className="text-sm text-neutral-400">United States</p>
           <p className="text-sm text-neutral-400 mt-2">
-            Phone: <a href="tel:6107571587" className="text-purple-400 hover:text-purple-300">610.757.1587</a>
+            Phone: <a href="tel:8555068886" className="text-purple-400 hover:text-purple-300">(855) 506-8886</a>
           </p>
           <p className="text-sm text-neutral-400">
             Email: <a href="mailto:support@aileadstrategies.com" className="text-purple-400 hover:text-purple-300">support@aileadstrategies.com</a>

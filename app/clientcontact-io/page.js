@@ -41,7 +41,7 @@ function ClientContactIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>ClientContact.IO - AI Contact Finder & Email Verification</h1>
-        <p>ClientContact.IO is a B2B contact discovery and email verification platform by AI Lead Strategies LLC, priced at $79/month. Features: AI-powered search across 50+ data sources (LinkedIn, ZoomInfo, Apollo), verified email discovery with SMTP validation, catch-all detection, confidence scoring, phone number finder, social profile discovery, company enrichment, bulk verification, API access, CRM export. Best for sales teams needing verified B2B contact data. Alternatives: Hunter.io, Apollo.io, Lusha, ZoomInfo, Clearbit. Contact: support@aileadstrategies.com | 610-757-1587</p>
+        <p>ClientContact.IO is a B2B contact discovery and email verification platform by AI Lead Strategies LLC, priced at $79/month. Features: AI-powered search across 50+ data sources (LinkedIn, ZoomInfo, Apollo), verified email discovery with SMTP validation, catch-all detection, confidence scoring, phone number finder, social profile discovery, company enrichment, bulk verification, API access, CRM export. Best for sales teams needing verified B2B contact data. Alternatives: Hunter.io, Apollo.io, Lusha, ZoomInfo, Clearbit. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>Contact Discovery Features</h2>
         <ul>
           <li>50+ data source aggregation</li>

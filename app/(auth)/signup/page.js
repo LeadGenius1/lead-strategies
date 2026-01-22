@@ -383,7 +383,7 @@ function SignupForm() {
                 <p className="font-semibold text-neutral-300">AI Lead Strategies LLC</p>
                 <p>600 Eagleview Blvd, Suite 317, Exton, PA 19341</p>
                 <p>
-                  Phone: <a href="tel:6107571587" className="text-purple-400 hover:text-purple-300">610.757.1587</a>
+                  Phone: <a href="tel:8555068886" className="text-purple-400 hover:text-purple-300">(855) 506-8886</a>
                 </p>
                 <p>
                   Email: <a href="mailto:support@aileadstrategies.com" className="text-purple-400 hover:text-purple-300">support@aileadstrategies.com</a>

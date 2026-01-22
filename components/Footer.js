@@ -26,8 +26,8 @@ export default function Footer({ brandName = 'AI LEAD STRATEGIES' }) {
             {/* Contact Info */}
             <div className="space-y-2 text-sm text-neutral-400 font-geist">
               <p>
-                <a href="tel:6107571587" className="hover:text-white transition-colors">
-                  Phone: 610.757.1587
+                <a href="tel:8555068886" className="hover:text-white transition-colors">
+                  Phone: (855) 506-8886
                 </a>
               </p>
               <p>

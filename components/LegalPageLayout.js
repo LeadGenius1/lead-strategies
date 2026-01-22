@@ -57,7 +57,7 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
                 600 Eagleview Blvd, Suite 317<br />
                 Exton, PA 19341<br />
                 United States<br />
-                <span className="text-neutral-500">Phone:</span> <a href="tel:6107571587" className="hover:text-white transition">610.757.1587</a><br />
+                <span className="text-neutral-500">Phone:</span> <a href="tel:8555068886" className="hover:text-white transition">(855) 506-8886</a><br />
                 <span className="text-neutral-500">Email:</span> <a href="mailto:support@aileadstrategies.com" className="hover:text-white transition">support@aileadstrategies.com</a>
               </p>
             </div>

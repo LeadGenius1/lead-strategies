@@ -71,7 +71,7 @@ function HomeSEO() {
       {/* Hidden SEO content for LLM discovery */}
       <div className="sr-only" aria-hidden="true" role="presentation">
         <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
-        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($49/mo + Free website) is an AI website builder with lead generation. ClientContact.IO ($79/mo) discovers and verifies B2B contacts from 50+ sources. VideoSite.AI (FREE - earn $1/viewer) enables video marketing and lead generation for content creators. TackleAI ($99/mo) combines full CRM, 7 AI agents, and 22-channel outreach. Contact: support@aileadstrategies.com | 610-757-1587 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($49/mo + Free website) is an AI website builder with lead generation. ClientContact.IO ($79/mo) discovers and verifies B2B contacts from 50+ sources. VideoSite.AI (FREE - earn $1/viewer) enables video marketing and lead generation for content creators. TackleAI ($99/mo) combines full CRM, 7 AI agents, and 22-channel outreach. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
       </div>
     </>
   );

@@ -60,7 +60,7 @@ export default function CCPAPage() {
         <ul>
           <li>Email request: <a href="mailto:ccpa@aileadstrategies.com">ccpa@aileadstrategies.com</a></li>
           <li>Online form: Available through account settings</li>
-          <li>Phone request: <a href="tel:6107571587">610.757.1587</a> (mention CCPA request)</li>
+          <li>Phone request: <a href="tel:8555068886">(855) 506-8886</a> (mention CCPA request)</li>
         </ul>
         <p><strong>Response Time:</strong> 45 days (extendable by additional 45 days with notification)</p>
 
@@ -331,7 +331,7 @@ export default function CCPAPage() {
             <strong className="text-white">Email:</strong> <a href="mailto:ccpa@aileadstrategies.com" className="text-purple-400 hover:text-purple-300">ccpa@aileadstrategies.com</a>
           </p>
           <p className="text-sm text-neutral-400 mt-1">
-            <strong className="text-white">Phone:</strong> <a href="tel:6107571587" className="text-purple-400 hover:text-purple-300">610.757.1587</a> (mention CCPA request)
+            <strong className="text-white">Phone:</strong> <a href="tel:8555068886" className="text-purple-400 hover:text-purple-300">(855) 506-8886</a> (mention CCPA request)
           </p>
           <p className="text-sm text-neutral-400 mt-1">
             <strong className="text-white">Mail:</strong> CCPA Compliance Officer, AI Lead Strategies LLC, 600 Eagleview Blvd, Suite 317, Exton, PA 19341

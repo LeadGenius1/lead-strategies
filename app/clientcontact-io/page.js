@@ -17,7 +17,7 @@ function ClientContactIOSEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/clientcontact-io',
-      price: '199',
+      price: '49',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -41,7 +41,7 @@ function ClientContactIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>ClientContact.IO - AI Contact Finder & Email Verification</h1>
-        <p>ClientContact.IO is a B2B contact discovery and email verification platform by AI Lead Strategies LLC, priced at $79/month. Features: AI-powered search across 50+ data sources (LinkedIn, ZoomInfo, Apollo), verified email discovery with SMTP validation, catch-all detection, confidence scoring, phone number finder, social profile discovery, company enrichment, bulk verification, API access, CRM export. Best for sales teams needing verified B2B contact data. Alternatives: Hunter.io, Apollo.io, Lusha, ZoomInfo, Clearbit. Contact: support@aileadstrategies.com | (855) 506-8886</p>
+        <p>ClientContact.IO is a 22+ channel unified inbox platform by AI Lead Strategies LLC. Plans start at $49/month. Features: AI-powered unified inbox across 22+ channels, AI auto-responder, unlimited campaigns, sentiment analysis, reply suggestions, advanced analytics, custom workflows, team collaboration, API access. Scale from 3 to unlimited team seats. Best for sales teams needing unified communication. Alternatives: Front, Intercom, Zendesk. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>Contact Discovery Features</h2>
         <ul>
           <li>50+ data source aggregation</li>
@@ -425,29 +425,84 @@ export default function ClientContactIOPage() {
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
               Simple, Transparent <span className="text-gradient">Pricing</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Single plan. No hidden fees.</p>
+            <p className="text-neutral-400 font-geist">Scale as you grow. Cancel anytime.</p>
           </div>
 
-          <div className="flex justify-center max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">ClientContact.IO</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $79<span className="text-sm text-neutral-500">/mo</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {/* Starter Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Starter</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $49<span className="text-sm text-neutral-500">/mo</span>
               </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>22+ channel unified inbox</li>
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI auto-responder</li>
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Unlimited campaigns</li>
-                <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>3 team seats included</li>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>22+ channel inbox</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>AI auto-responder</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited campaigns</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>3 team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Sentiment analysis</li>
               </ul>
               <div className="text-center">
-                <ShinyButton href="/signup?tier=clientcontact">
-                  Start Free Trial
-                </ShinyButton>
+                <ShinyButton href="/signup?product=clientcontact&tier=starter">Start Trial</ShinyButton>
               </div>
-              <p className="mt-6 text-xs text-neutral-600 font-geist text-center">No credit card required • Cancel anytime</p>
+            </div>
+
+            {/* Professional Tier - Most Popular */}
+            <div className="bg-gradient-to-br from-purple-950/30 to-[#050505] border-2 border-purple-500 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500 text-white text-[10px] uppercase tracking-wider font-geist">Most Popular</div>
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Professional</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $149<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Everything in Starter</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10 team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Advanced analytics</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Custom workflows</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>API access</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=clientcontact&tier=professional">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Business Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Business</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $349<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Everything in Pro</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>25 team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Success manager</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>SLA guarantees</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Custom integrations</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=clientcontact&tier=business">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Enterprise</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $799<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Everything in Business</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>White-label options</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Advanced security</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>99.9% uptime SLA</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=clientcontact&tier=enterprise">Contact Sales</ShinyButton>
+              </div>
             </div>
           </div>
+          <p className="mt-8 text-xs text-neutral-600 font-geist text-center">14-day free trial on all plans • No credit card required • Cancel anytime</p>
         </div>
       </section>
 

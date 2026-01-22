@@ -17,7 +17,7 @@ function LeadSiteIOSEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/leadsite-io',
-      price: '114',
+      price: '0',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -30,7 +30,7 @@ function LeadSiteIOSEO() {
     '@type': 'FAQPage',
     mainEntity: [
       { '@type': 'Question', name: 'What is LeadSite.IO?', acceptedAnswer: { '@type': 'Answer', text: 'LeadSite.IO is an AI-powered website builder that creates lead-generating websites in minutes. It includes AI design, lead capture forms, analytics, and automated prospect discovery.' } },
-      { '@type': 'Question', name: 'Is the free website really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, LeadSite.IO includes one completely free AI-generated website with your $49/month subscription. Additional websites can be added for a small fee.' } },
+      { '@type': 'Question', name: 'Is the free website really free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, LeadSite.IO offers 1 completely free website forever with no credit card required. Upgrade to paid plans starting at $49/month for lead generation credits, custom domains, and additional websites.' } },
       { '@type': 'Question', name: 'How does the AI website builder work?', acceptedAnswer: { '@type': 'Answer', text: 'Answer a few questions about your business and LeadSite.IO AI generates a complete website with optimized copy, lead capture forms, and conversion-focused design in under 3 minutes.' } }
     ]
   };
@@ -41,7 +41,7 @@ function LeadSiteIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>LeadSite.IO - AI Website Builder with Lead Generation</h1>
-        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC, priced at $49/month plus 1 free AI website included. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | (855) 506-8886</p>
+        <p>LeadSite.IO is an AI website builder by AI Lead Strategies LLC. Get 1 website free forever. Paid plans start at $49/month for lead generation and custom domains. Features: AI-powered website generation in under 3 minutes, lead capture forms with custom fields, real-time analytics and heatmaps, custom domain with auto-SSL, SEO optimization with meta tags and sitemaps, automated prospect discovery, CRM sync, premium templates from Aura.build. Best for businesses needing lead-generating websites without developers. Alternatives: Wix, Squarespace, Leadpages, Unbounce. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>AI Website Builder Features</h2>
         <ul>
           <li>AI generates complete website in minutes</li>
@@ -508,38 +508,98 @@ export default function LeadSiteIOPage() {
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
               Simple, Transparent <span className="text-gradient">Pricing</span>
             </h2>
+            <p className="text-neutral-400 font-geist mt-4">Start with 1 free website. Upgrade for more sites and lead generation.</p>
           </div>
 
-          <div className="flex justify-center max-w-6xl mx-auto">
-            {/* Single Plan - $49/mo + Free Website */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">LeadSite.IO</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
-                $49<span className="text-sm text-neutral-500">/mo</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+            {/* Free Tier */}
+            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Free</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $0<span className="text-sm text-neutral-500">/mo</span>
               </div>
-              <p className="text-green-400 text-sm font-geist mb-4">+ Free AI Website Included</p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  AI website builder
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Lead capture forms
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Automated prospect discovery
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Real-time analytics dashboard
-                </li>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-green-500 rounded-full mt-1.5"></div>1 website (FREE)</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-green-500 rounded-full mt-1.5"></div>Basic templates</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-green-500 rounded-full mt-1.5"></div>AI website builder</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-neutral-600 rounded-full mt-1.5"></div>No custom domain</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-neutral-600 rounded-full mt-1.5"></div>No lead generation</li>
               </ul>
               <div className="text-center">
-                <ShinyButton href="/signup?tier=leadsite-io">
-                  Get Started
-                </ShinyButton>
+                <ShinyButton href="/signup?product=leadsite_io&tier=free">Get Started Free</ShinyButton>
+              </div>
+            </div>
+
+            {/* Starter Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Starter</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $49<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>1 website</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>500 lead credits/mo</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>All templates</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Custom domain</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Basic SEO tools</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_io&tier=starter">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Professional Tier - Most Popular */}
+            <div className="bg-gradient-to-br from-purple-950/30 to-[#050505] border-2 border-purple-500 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500 text-white text-[10px] uppercase tracking-wider font-geist">Most Popular</div>
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Professional</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $149<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>3 websites</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>2,500 lead credits/mo</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Advanced SEO tools</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>A/B testing</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Priority support</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_io&tier=professional">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Business Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Business</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $349<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10 websites</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10,000 lead credits/mo</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>White-label options</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>API access</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Priority support</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_io&tier=business">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Enterprise</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $799<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited websites</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>50,000 lead credits/mo</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full white-label</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full API access</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Dedicated manager</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_io&tier=enterprise">Contact Sales</ShinyButton>
               </div>
             </div>
           </div>

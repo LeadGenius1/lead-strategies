@@ -17,7 +17,7 @@ function TackleAISEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/tackle-io',
-      price: '549',
+      price: '79',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -29,7 +29,7 @@ function TackleAISEO() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: 'What is TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI is a comprehensive AI sales CRM that combines full pipeline management, 7 self-healing AI agents, and 22-channel outreach in one platform for $99/month.' } },
+      { '@type': 'Question', name: 'What is TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI is a comprehensive AI sales CRM that combines full pipeline management, up to 7 self-healing AI agents, and 22-channel outreach. Plans start at $79/month and scale to enterprise.' } },
       { '@type': 'Question', name: 'What are the 7 AI agents in TackleAI?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI includes Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, and CleanOS AI - all self-healing agents that learn and adapt automatically.' } },
       { '@type': 'Question', name: 'What channels does TackleAI support?', acceptedAnswer: { '@type': 'Answer', text: 'TackleAI supports 22 outreach channels including Email, LinkedIn, SMS, WhatsApp, Facebook, Instagram, Twitter, TikTok, YouTube, phone calls, and more.' } }
     ]
@@ -41,7 +41,7 @@ function TackleAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>TackleAI - AI Sales CRM with 22-Channel Outreach</h1>
-        <p>TackleAI is the future of outreach marketing by AI Lead Strategies LLC, priced at $99/month (no tiers). Features: Full CRM with pipeline management, 7 self-healing AI agents (Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, CleanOS AI), 22-channel omnichannel outreach (LinkedIn, Email, SMS, WhatsApp, social media), AI prospect scraping, automated personalized email writing, follow-up tracking, voice calling with transcription, meeting scheduler, team collaboration, revenue forecasting. Wake up every morning with an inbox full of warmed-up, perfectly targeted leads. Stop the manual hustle and put your sales floor on intelligent autopilot. Best for B2B sales teams wanting to scale beyond manual outreach. Alternatives: HubSpot, Salesforce, Outreach.io, Salesloft. Contact: support@aileadstrategies.com | (855) 506-8886</p>
+        <p>TackleAI is the future of outreach marketing by AI Lead Strategies LLC. Plans start at $79/month and scale to $1,497/month for enterprise. Features: Full CRM with pipeline management, up to 7 self-healing AI agents (Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, CleanOS AI), 22-channel omnichannel outreach (LinkedIn, Email, SMS, WhatsApp, social media), AI prospect scraping, automated personalized email writing, follow-up tracking, voice calling with transcription, meeting scheduler, team collaboration, revenue forecasting. Wake up every morning with an inbox full of warmed-up, perfectly targeted leads. Stop the manual hustle and put your sales floor on intelligent autopilot. Best for B2B sales teams wanting to scale beyond manual outreach. Alternatives: HubSpot, Salesforce, Outreach.io, Salesloft. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>TackleAI Features</h2>
         <ul>
           <li>Full CRM with pipeline management</li>
@@ -437,62 +437,84 @@ export default function TackleAIPage() {
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
               Simple <span className="text-gradient">Pricing</span>
             </h2>
-            <p className="text-neutral-400 font-geist">One price. Everything included. No tiers. No surprises.</p>
+            <p className="text-neutral-400 font-geist">Scale from startup to enterprise. Cancel anytime.</p>
           </div>
 
-          <div className="max-w-lg mx-auto">
-            {/* Single Plan */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-10 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Full Suite
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {/* Starter Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Starter</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $79<span className="text-sm text-neutral-500">/mo</span>
               </div>
-              <h3 className="text-3xl font-space-grotesk text-white mb-2">TackleAI</h3>
-              <div className="text-6xl font-space-grotesk font-light text-white mb-2">
-                $99<span className="text-xl text-neutral-500">/mo</span>
-              </div>
-              <p className="text-neutral-400 font-geist mb-8">Your complete AI-driven sales control center</p>
-              <ul className="space-y-4 font-geist text-sm text-neutral-300 mb-10">
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  Full CRM + Pipeline Management
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  7 Self-Healing AI Agents
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  22-Channel Omnichannel Outreach
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  AI Prospect Discovery & Personalized Emails
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  Automated Follow-ups & Response Tracking
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  Voice Calling with Transcription
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  Team Collaboration & Shared Pipelines
-                </li>
-                <li className="flex items-center gap-3">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  Meeting Scheduler Built-in
-                </li>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full CRM features</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>2 AI agents active</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>2,500 contacts</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>5 team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Email & SMS campaigns</li>
               </ul>
               <div className="text-center">
-                <ShinyButton href="/signup?tier=tackle">
-                  Start Free Trial
-                </ShinyButton>
+                <ShinyButton href="/signup?product=tackle&tier=starter">Start Trial</ShinyButton>
               </div>
-              <p className="text-center text-neutral-500 text-xs font-geist mt-4">No credit card required • Cancel anytime</p>
+            </div>
+
+            {/* Professional Tier - Most Popular */}
+            <div className="bg-gradient-to-br from-purple-950/30 to-[#050505] border-2 border-purple-500 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500 text-white text-[10px] uppercase tracking-wider font-geist">Most Popular</div>
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Professional</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $299<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full CRM features</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>5 AI agents active</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10,000 contacts</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>15 team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>API access</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=tackle&tier=professional">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Business Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Business</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $699<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>All 7 AI agents</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>50,000 contacts</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>50 team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Custom integrations</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Priority support</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=tackle&tier=business">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Enterprise</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $1,497<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>All 7 AI agents (unlimited)</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited contacts</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited team seats</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>White-label options</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Dedicated manager</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=tackle&tier=enterprise">Contact Sales</ShinyButton>
+              </div>
             </div>
           </div>
+          <p className="mt-8 text-xs text-neutral-600 font-geist text-center">14-day free trial on all plans • No credit card required • Cancel anytime</p>
         </div>
       </section>
 

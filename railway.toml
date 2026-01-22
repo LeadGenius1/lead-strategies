@@ -5,6 +5,12 @@ builder = "NIXPACKS"
 startCommand = "node .next/standalone/server.js"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+healthcheckPath = "/"
+healthcheckTimeout = 300
+
+[deploy.resources]
+memoryLimit = "512Mi"
+cpuLimit = "0.5"
 
 [nixpacks.phases.setup]
 nixPkgs = ["nodejs_20"]

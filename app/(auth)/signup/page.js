@@ -22,8 +22,16 @@ function SignupForm() {
 
   useEffect(() => {
     // Read tier from URL query params
+    // Support both ?tier=leadsite-io and ?product=leadsite_io&tier=starter formats
     const tierFromUrl = searchParams.get('tier')
-    if (tierFromUrl && TIERS.some(t => t.id === tierFromUrl)) {
+    const productFromUrl = searchParams.get('product')
+    
+    // If product is specified (new pricing format), use that
+    if (productFromUrl && TIERS.some(t => t.id === productFromUrl)) {
+      setSelectedTier(productFromUrl)
+    } 
+    // Otherwise use tier parameter (legacy format)
+    else if (tierFromUrl && TIERS.some(t => t.id === tierFromUrl)) {
       setSelectedTier(tierFromUrl)
     }
 

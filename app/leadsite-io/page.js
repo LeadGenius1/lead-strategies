@@ -508,30 +508,12 @@ export default function LeadSiteIOPage() {
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
               Simple, Transparent <span className="text-gradient">Pricing</span>
             </h2>
-            <p className="text-neutral-400 font-geist mt-4">Start with 1 free website. Upgrade for more sites and lead generation.</p>
+            <p className="text-neutral-400 font-geist mt-4">1 website on all plans. Scale your lead generation as you grow.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
-            {/* Free Tier */}
-            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-xl font-space-grotesk text-white mb-2">Free</h3>
-              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
-                $0<span className="text-sm text-neutral-500">/mo</span>
-              </div>
-              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-green-500 rounded-full mt-1.5"></div>1 website (FREE)</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-green-500 rounded-full mt-1.5"></div>Basic templates</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-green-500 rounded-full mt-1.5"></div>AI website builder</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-neutral-600 rounded-full mt-1.5"></div>No custom domain</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-neutral-600 rounded-full mt-1.5"></div>No lead generation</li>
-              </ul>
-              <div className="text-center">
-                <ShinyButton href="/signup?product=leadsite_io&tier=free">Get Started Free</ShinyButton>
-              </div>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {/* Starter Tier */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
               <h3 className="text-xl font-space-grotesk text-white mb-2">Starter</h3>
               <div className="text-3xl font-space-grotesk font-light text-white mb-4">
                 $49<span className="text-sm text-neutral-500">/mo</span>
@@ -549,14 +531,14 @@ export default function LeadSiteIOPage() {
             </div>
 
             {/* Professional Tier - Most Popular */}
-            <div className="bg-gradient-to-br from-purple-950/30 to-[#050505] border-2 border-purple-500 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+            <div className="bg-gradient-to-br from-purple-950/30 to-[#050505] border-2 border-purple-500 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
               <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500 text-white text-[10px] uppercase tracking-wider font-geist">Most Popular</div>
               <h3 className="text-xl font-space-grotesk text-white mb-2">Professional</h3>
               <div className="text-3xl font-space-grotesk font-light text-white mb-4">
                 $149<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>3 websites</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>1 website</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>2,500 lead credits/mo</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Advanced SEO tools</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>A/B testing</li>
@@ -568,13 +550,13 @@ export default function LeadSiteIOPage() {
             </div>
 
             {/* Business Tier */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
               <h3 className="text-xl font-space-grotesk text-white mb-2">Business</h3>
               <div className="text-3xl font-space-grotesk font-light text-white mb-4">
                 $349<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10 websites</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>1 website</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10,000 lead credits/mo</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>White-label options</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>API access</li>
@@ -586,13 +568,13 @@ export default function LeadSiteIOPage() {
             </div>
 
             {/* Enterprise Tier */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
               <h3 className="text-xl font-space-grotesk text-white mb-2">Enterprise</h3>
               <div className="text-3xl font-space-grotesk font-light text-white mb-4">
                 $799<span className="text-sm text-neutral-500">/mo</span>
               </div>
               <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited websites</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>1 website</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>50,000 lead credits/mo</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full white-label</li>
                 <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full API access</li>

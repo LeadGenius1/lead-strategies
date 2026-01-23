@@ -354,35 +354,77 @@ export default function LeadSiteAIPage() {
             </h2>
           </div>
 
-          <div className="flex justify-center max-w-6xl mx-auto">
-            {/* Single Plan - $49/mo */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll max-w-md w-full">
-              <h3 className="text-2xl font-space-grotesk text-white mb-2">LeadSite.AI</h3>
-              <div className="text-4xl font-space-grotesk font-light text-white mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {/* Starter Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Starter</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
                 $49<span className="text-sm text-neutral-500">/mo</span>
               </div>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300 mb-8">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  AI email lead generation
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited AI personalized emails
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Automated prospect discovery
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Real-time analytics dashboard
-                </li>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>500 leads/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>5 email campaigns</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>2,500 emails/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Lead discovery</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>1 team seat</li>
               </ul>
-              <div className="text-center mt-4">
-                <ShinyButton href="/signup?tier=leadsite-ai">
-                  Get Started
-                </ShinyButton>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_ai&tier=starter">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Professional Tier - Most Popular */}
+            <div className="bg-gradient-to-br from-purple-950/30 to-[#050505] border-2 border-purple-500 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.35s_both] animate-on-scroll">
+              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500 text-white text-[10px] uppercase tracking-wider font-geist">Most Popular</div>
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Professional</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $149<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>2,500 leads/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>20 email campaigns</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>12,500 emails/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Advanced filtering</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>3 team seats</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_ai&tier=professional">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Business Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Business</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $349<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>7,500 leads/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>50 email campaigns</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>37,500 emails/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Priority support</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>10 team seats</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_ai&tier=business">Start Trial</ShinyButton>
+              </div>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-2">Enterprise</h3>
+              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
+                $799<span className="text-sm text-neutral-500">/mo</span>
+              </div>
+              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>20,000 leads/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited campaigns</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>100,000 emails/month</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Dedicated manager</li>
+                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Unlimited team seats</li>
+              </ul>
+              <div className="text-center">
+                <ShinyButton href="/signup?product=leadsite_ai&tier=enterprise">Contact Sales</ShinyButton>
               </div>
             </div>
           </div>

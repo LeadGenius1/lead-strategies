@@ -233,6 +233,201 @@ export default function LeadSiteAIPage() {
         </div>
       </section>
 
+      {/* What It Does (Simple) */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-black">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-4xl md:text-6xl uppercase mb-6 text-white tracking-tighter font-space-grotesk font-light">
+              What It Does <span className="text-gradient">(Simple)</span>
+            </h2>
+            <p className="text-lg md:text-xl text-neutral-300 font-geist leading-relaxed max-w-3xl mx-auto">
+              Turn your website into a lead-generating machine—while you sleep. Our AI finds your perfect customers, writes personalized emails, and sends them automatically. You wake up to warm leads in your inbox.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              How It <span className="text-gradient">Works</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {[
+              { 
+                step: '01', 
+                title: 'Connect Your Website', 
+                desc: 'Takes 3 minutes. No tech skills needed.' 
+              },
+              { 
+                step: '02', 
+                title: 'AI Finds Your Leads', 
+                desc: 'We search for businesses that need what you sell.' 
+              },
+              { 
+                step: '03', 
+                title: 'AI Writes Your Emails', 
+                desc: 'Personal, professional messages that get responses.' 
+              },
+              { 
+                step: '04', 
+                title: 'Leads Come to You', 
+                desc: 'Check your inbox. Start conversations. Close deals.' 
+              }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="relative [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
+                style={{ animationDelay: `${0.1 * index}s` }}
+              >
+                {index < 3 && (
+                  <div className="hidden lg:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent z-0" style={{ width: 'calc(100% - 2rem)' }}></div>
+                )}
+                <div className="relative z-10 bg-[#050505] border border-purple-500/20 p-8">
+                  <div className="text-purple-400 text-sm font-geist mb-4">{item.step}</div>
+                  <h3 className="text-xl font-space-grotesk text-white mb-3">{item.title}</h3>
+                  <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose LeadSite.AI */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-black">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Why Choose <span className="text-gradient">LeadSite.AI</span>
+            </h2>
+          </div>
+
+          <div className="bg-[#050505] border border-subtle overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {/* Old Way Column */}
+              <div className="p-8 border-r border-subtle">
+                <h3 className="text-2xl font-space-grotesk text-white mb-6">Old Way</h3>
+                <ul className="space-y-4 font-geist text-neutral-400">
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Manual prospecting takes hours</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Generic emails get ignored</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>No time to follow up properly</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Leads go cold before you reach them</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Expensive tools, complex setup</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* LeadSite.AI Way Column */}
+              <div className="p-8 bg-purple-950/10">
+                <h3 className="text-2xl font-space-grotesk text-white mb-6">LeadSite.AI Way</h3>
+                <ul className="space-y-4 font-geist text-neutral-300">
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>AI finds leads automatically, 24/7</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Personalized emails that get responses</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Automated follow-ups never miss a lead</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Warm leads delivered to your inbox</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Simple setup, affordable pricing</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The AI Advantage */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              The AI <span className="text-gradient">Advantage</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            {[
+              { title: 'Works While You Sleep', desc: 'Your lead generation never stops. AI works 24/7 to find and reach out to prospects.' },
+              { title: 'Smarter Every Day', desc: 'Machine learning improves targeting and messaging with every campaign you run.' },
+              { title: 'No Experience Needed', desc: 'Set it up in minutes. No marketing degree or technical skills required.' },
+              { title: 'Real Results, Real Fast', desc: 'See qualified leads in your inbox within days, not months.' }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all"
+                style={{ animationDelay: `${0.05 * index}s` }}
+              >
+                <h3 className="text-lg font-space-grotesk text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Who It's For */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-black">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Who It's <span className="text-gradient">For</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            {[
+              'Small business owners who need more leads',
+              'Sales teams tired of cold calling',
+              'Agencies managing multiple clients',
+              'Solo entrepreneurs wearing all hats',
+              'B2B companies looking to scale',
+              'Anyone who wants leads on autopilot'
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-neutral-300 font-geist">{item}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Key Features Grid */}
       <section className="py-24 relative z-10 border-t border-subtle bg-black">
         <div className="container mx-auto px-4 max-w-7xl">
@@ -304,41 +499,6 @@ export default function LeadSiteAIPage() {
                 </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              The Integration <span className="text-gradient">Process</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {[
-              { step: '01', title: 'Install Widget', desc: 'Add one line of code to your website. Works with WordPress, Shopify, Wix, or any platform.' },
-              { step: '02', title: 'AI Analysis', desc: 'Our AI analyzes your business and builds your ideal customer profile in minutes.' },
-              { step: '03', title: 'Generate Leads', desc: 'Sit back and watch as qualified prospects appear in your dashboard daily, with automated outreach.' },
-              { step: '04', title: 'Close Deals', desc: 'High scorers go directly to your inbox ready to convert.' }
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="relative [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                {index < 3 && (
-                  <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent z-0" style={{ width: 'calc(100% - 2rem)' }}></div>
-                )}
-                <div className="relative z-10 bg-[#050505] border border-purple-500/20 p-8">
-                  <div className="text-purple-400 text-sm font-geist mb-4">{item.step}</div>
-                  <h3 className="text-xl font-space-grotesk text-white mb-3">{item.title}</h3>
-                  <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
-                </div>
               </div>
             ))}
           </div>

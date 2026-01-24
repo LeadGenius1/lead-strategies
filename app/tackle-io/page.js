@@ -237,195 +237,243 @@ export default function TackleAIPage() {
         </div>
       </section>
 
-      {/* The Problem Section */}
+      {/* What It Does (Simple) */}
       <section id="features" className="py-24 relative z-10 border-t border-subtle">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Stop The <span className="text-gradient">Manual Hustle</span>
+              What It Does <span className="text-gradient">(Simple)</span>
             </h2>
-            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Your CRM, sequences, pipeline, and team are all in different tools—and your revenue shows it.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {/* The Problem */}
-            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-6">Without TackleAI</h3>
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Manual list-building</span>
-                  <span className="text-red-400 font-space-grotesk">Hours wasted</span>
-                </div>
-                <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Copywriting stress</span>
-                  <span className="text-red-400 font-space-grotesk">Low engagement</span>
-                </div>
-                <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Fragmented tools</span>
-                  <span className="text-red-400 font-space-grotesk">Data silos</span>
-                </div>
-                <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Cold outreach</span>
-                  <span className="text-red-400 font-space-grotesk">Low conversion</span>
-                </div>
-                <div className="flex justify-between items-center border-b border-subtle pb-3">
-                  <span className="text-neutral-400 font-geist">Manual follow-ups</span>
-                  <span className="text-red-400 font-space-grotesk">Lost deals</span>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-subtle">
-                <div className="text-xl text-red-400 font-space-grotesk">
-                  = Money left on the table
-                </div>
-              </div>
-            </div>
-
-            {/* TackleAI Solution */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Intelligent Autopilot
-              </div>
-              <h3 className="text-2xl font-space-grotesk text-white mb-6">With TackleAI</h3>
-              <div className="space-y-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">AI scrapes your ideal prospects</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Writes personalized emails automatically</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Sends follow-ups & tracks responses</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Full CRM + Pipeline in one place</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Omnichannel outreach (22 channels)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icons.Check className="w-5 h-5 text-purple-500" />
-                  <span className="text-neutral-300 font-geist">Team collaboration built-in</span>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-purple-500/20">
-                <div className="text-xl text-green-400 font-space-grotesk font-light">
-                  Warmed-up leads delivered daily
-                </div>
-              </div>
-            </div>
+            <p className="text-xl md:text-2xl text-neutral-300 font-geist max-w-4xl mx-auto leading-relaxed">
+              Stop paying for 10 different tools that don't talk to each other. Tackle.AI gives you everything—email campaigns, website builder, 22-channel inbox, voice calling, CRM, and 7 AI agents—in one powerful platform.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* 7 AI Agents Showcase */}
+      {/* The Tool Stack Problem */}
       <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              One Intelligent <span className="text-gradient">Control Center</span>
+              The Tool Stack <span className="text-gradient">Problem</span>
             </h2>
-            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">TackleAI synchronizes outreach, content, and scheduling into one intelligent system with 7 self-healing AI agents</p>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Here's what you're probably paying for right now:</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Campaign AI',
-                description: 'Orchestrates multi-channel campaigns across 22 platforms. Generates personalized messages per platform. Self-healing: detects spam flags, rewrites with warmer tone.',
-                Icon: Icons.Mail,
-                color: 'text-sky-400'
-              },
-              {
-                name: 'Social Syncs AI',
-                description: 'Monitors 8 social platforms 24/7. Auto-generates contextual replies. Self-healing: missed reply? Responds within 5 minutes.',
-                Icon: Icons.Smartphone,
-                color: 'text-purple-400'
-              },
-              {
-                name: 'Voice AI',
-                description: 'Transcribes calls, extracts pain points, budget, timeline. Auto-updates CRM. Self-healing: transcription error? Reruns with higher accuracy.',
-                Icon: Icons.Mic,
-                color: 'text-pink-400'
-              },
-              {
-                name: 'LeadGen AI',
-                description: 'Scores leads 0-100 based on behavior. Enriches profiles with external data. Self-healing: low conversion on high scores? Recalibrates model.',
-                Icon: Icons.Target,
-                color: 'text-red-400'
-              },
-              {
-                name: 'Analytics AI',
-                description: 'Analyzes A/B tests, identifies conversion bottlenecks. Natural language insights. Self-healing: data anomalies? Flags for review.',
-                Icon: Icons.BarChart,
-                color: 'text-emerald-400'
-              },
-              {
-                name: 'Integration AI',
-                description: 'Syncs data between all platforms. Handles OAuth refresh automatically. Self-healing: sync failure? Retries with exponential backoff.',
-                Icon: Icons.Link2,
-                color: 'text-blue-400'
-              },
-              {
-                name: 'CleanOS AI',
-                description: 'Monitors system health, database performance. Self-healing: slow queries? Adds indexes automatically. High errors? Restarts services.',
-                Icon: Icons.Settings,
-                color: 'text-amber-400'
-              }
-            ].map((agent, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 hover:border-purple-500/50 transition-all group relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors"></div>
-                <div className="relative z-10">
-                  <div className={`w-14 h-14 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${agent.color}`}>
-                    <agent.Icon className="w-7 h-7" />
-                  </div>
-                  <h3 className="text-xl font-space-grotesk text-white mb-3">{agent.name}</h3>
-                  <p className="text-sm text-neutral-400 font-geist leading-relaxed">{agent.description}</p>
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Email marketing tool (Mailchimp/SendGrid)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$50-200/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Website builder (Wix/Squarespace)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$20-50/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Unified inbox (Intercom/Zendesk)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$100-300/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Voice calling (Twilio/RingCentral)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$50-150/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">CRM (HubSpot/Salesforce)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$50-300/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">AI writing tools (Jasper/Copy.ai)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$50-200/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Scheduling (Calendly/Acuity)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$15-50/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Analytics (Mixpanel/Amplitude)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$50-200/mo</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-subtle pb-4">
+                  <span className="text-neutral-300 font-geist text-lg">Lead generation (Apollo/ZoomInfo)</span>
+                  <span className="text-red-400 font-space-grotesk text-lg">$100-500/mo</span>
+                </div>
+                <div className="flex justify-between items-center pt-4">
+                  <span className="text-2xl font-space-grotesk text-white font-semibold">Total Monthly Cost</span>
+                  <span className="text-3xl text-red-400 font-space-grotesk font-semibold">$485-2,100/mo</span>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Connected Growth Engine Section */}
+      {/* What's Included */}
       <section className="py-24 relative z-10 border-t border-subtle">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Your Connected <span className="text-gradient">Growth Engine</span>
+              What's <span className="text-gradient">Included</span>
             </h2>
-            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Move past fragmented tools into a truly connected system. If you sell B2B, your funnel should run on autopilot.</p>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Everything you need in one platform</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: 'Full CRM + Pipeline', desc: 'Deals, contacts, activities, custom fields—all synced in real-time' },
-              { title: 'AI Prospect Discovery', desc: 'Scrapes ideal prospects, writes emails, sends follow-ups automatically' },
-              { title: '22-Channel Outreach', desc: 'LinkedIn, Email, SMS, WhatsApp, and 18 more—all from one dashboard' },
-              { title: 'Voice Intelligence', desc: 'Call recording, transcription, sentiment analysis built-in' },
-              { title: 'Automated Follow-ups', desc: 'Never miss a lead. AI tracks responses and re-engages automatically' },
-              { title: 'Team Collaboration', desc: 'Your sales floor on intelligent autopilot with shared pipelines' },
-              { title: 'Revenue Forecasting', desc: 'AI predicts close dates and deal probability in real-time' },
-              { title: 'Meeting Scheduler', desc: 'Calendly-like booking with timezone detection and reminders' }
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.05 * index}s` }}
-              >
-                <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-neutral-400 font-geist">{feature.desc}</p>
-              </div>
-            ))}
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-[#050505] border border-subtle overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-subtle">
+                    <th className="text-left p-6 text-white font-space-grotesk text-lg">Feature</th>
+                    <th className="text-center p-6 text-white font-space-grotesk text-lg">Tackle.AI</th>
+                    <th className="text-center p-6 text-neutral-500 font-space-grotesk text-lg">Other Tools</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Email Campaigns</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">Separate tool</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Website Builder</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">Separate tool</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">22-Channel Inbox</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">Separate tool</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Voice Calling</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">Separate tool</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Full CRM</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">Separate tool</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">7 AI Agents</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">Not included</td>
+                  </tr>
+                  <tr>
+                    <td className="p-6 text-neutral-300 font-geist">All Integrated</td>
+                    <td className="p-6 text-center"><Icons.Check className="w-5 h-5 text-green-400 mx-auto" /></td>
+                    <td className="p-6 text-center text-neutral-500 font-geist">No integration</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Your 7 AI Agents */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Your <span className="text-gradient">7 AI Agents</span>
+            </h2>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">Intelligent automation that works 24/7</p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <ul className="space-y-4">
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Lead Hunter</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Researcher</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Copywriter</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Caller</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Scheduler</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Follow-Up Agent</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <Icons.Check className="w-6 h-6 text-purple-500 flex-shrink-0" />
+                  <span className="text-xl text-white font-space-grotesk">Analyst</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The Bottom Line */}
+      <section className="py-24 relative z-10 border-t border-subtle">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              The Bottom <span className="text-gradient">Line</span>
+            </h2>
+            <p className="text-neutral-400 font-geist max-w-3xl mx-auto">See the difference</p>
+          </div>
+
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-[#050505] border border-subtle overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-subtle">
+                    <th className="text-left p-6 text-white font-space-grotesk text-lg">Comparison</th>
+                    <th className="text-center p-6 text-white font-space-grotesk text-lg">Tackle.AI</th>
+                    <th className="text-center p-6 text-neutral-500 font-space-grotesk text-lg">10 Separate Tools</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Monthly Cost</td>
+                    <td className="p-6 text-center text-green-400 font-space-grotesk text-lg font-semibold">$79-1,497</td>
+                    <td className="p-6 text-center text-red-400 font-space-grotesk text-lg font-semibold">$485-2,100</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Number of Logins</td>
+                    <td className="p-6 text-center text-green-400 font-space-grotesk">1</td>
+                    <td className="p-6 text-center text-red-400 font-space-grotesk">10+</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Data Integration</td>
+                    <td className="p-6 text-center text-green-400 font-space-grotesk">Automatic</td>
+                    <td className="p-6 text-center text-red-400 font-space-grotesk">Manual/None</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">AI Agents</td>
+                    <td className="p-6 text-center text-green-400 font-space-grotesk">7 Included</td>
+                    <td className="p-6 text-center text-red-400 font-space-grotesk">Not Included</td>
+                  </tr>
+                  <tr className="border-b border-subtle">
+                    <td className="p-6 text-neutral-300 font-geist">Support</td>
+                    <td className="p-6 text-center text-green-400 font-space-grotesk">One Team</td>
+                    <td className="p-6 text-center text-red-400 font-space-grotesk">10 Different Teams</td>
+                  </tr>
+                  <tr>
+                    <td className="p-6 text-neutral-300 font-geist">Setup Time</td>
+                    <td className="p-6 text-center text-green-400 font-space-grotesk">Minutes</td>
+                    <td className="p-6 text-center text-red-400 font-space-grotesk">Weeks</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

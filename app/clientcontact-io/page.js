@@ -534,10 +534,10 @@ export default function ClientContactIOPage() {
       <section className="border-subtle bg-center z-10 border-t pt-32 pb-32 relative">
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <h2 className="md:text-8xl uppercase text-5xl font-light text-white tracking-tighter font-space-grotesk mb-8 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            Ready to Transform Your <span className="text-gradient">Lead Generation?</span>
+            Ready to Unify Your <span className="text-gradient">Customer Communications?</span>
           </h2>
           <p className="text-xl text-neutral-400 font-geist mb-10 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            Join thousands of sales professionals who trust Client Contact AI to power their prospecting efforts
+            Join teams who trust ClientContact.IO to bring all their messages into one simple inbox
           </p>
           <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
             <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">

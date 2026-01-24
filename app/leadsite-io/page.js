@@ -261,6 +261,172 @@ export default function LeadSiteIOPage() {
         </div>
       </section>
 
+      {/* What It Does (Simple) */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-black">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <p className="text-lg sm:text-xl md:text-2xl text-neutral-300 font-geist leading-relaxed">
+              Need a website that actually brings in customers? Our AI builds you a professional site in 3 minutes—then fills it with leads automatically. No designers. No developers. No waiting.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              How It <span className="text-gradient">Works</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {[
+              { step: '01', title: 'Tell Us Your Business', desc: 'Answer a few simple questions about what you do and who you serve.' },
+              { step: '02', title: 'AI Builds Your Website', desc: 'Our AI creates a professional, conversion-optimized website in minutes.' },
+              { step: '03', title: 'Lead Generation Starts', desc: 'Watch as qualified prospects automatically flow into your dashboard.' },
+              { step: '04', title: 'Watch Your Business Grow', desc: 'Convert leads into customers and scale your revenue effortlessly.' }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="relative [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
+                style={{ animationDelay: `${0.1 * index}s` }}
+              >
+                {index < 3 && (
+                  <div className="hidden lg:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent z-0" style={{ width: 'calc(100% - 2rem)' }}></div>
+                )}
+                <div className="relative z-10 bg-[#050505] border border-purple-500/20 p-8">
+                  <div className="text-purple-400 text-sm font-geist mb-4">{item.step}</div>
+                  <h3 className="text-xl font-space-grotesk text-white mb-3">{item.title}</h3>
+                  <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why This Changes Everything */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Why This Changes <span className="text-gradient">Everything</span>
+            </h2>
+          </div>
+
+          <div className="bg-[#050505] border border-subtle overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-subtle">
+                    <th className="text-left p-6 text-white font-space-grotesk text-lg"></th>
+                    <th className="text-left p-6 text-red-400 font-space-grotesk text-lg">Traditional Website</th>
+                    <th className="text-left p-6 text-green-400 font-space-grotesk text-lg">LeadSite.IO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-subtle/50">
+                    <td className="p-6 text-neutral-300 font-geist">Setup Time</td>
+                    <td className="p-6 text-neutral-400 font-geist">2-4 weeks</td>
+                    <td className="p-6 text-neutral-300 font-geist">3 minutes</td>
+                  </tr>
+                  <tr className="border-b border-subtle/50">
+                    <td className="p-6 text-neutral-300 font-geist">Cost</td>
+                    <td className="p-6 text-neutral-400 font-geist">$5,000+</td>
+                    <td className="p-6 text-neutral-300 font-geist">Free to start</td>
+                  </tr>
+                  <tr className="border-b border-subtle/50">
+                    <td className="p-6 text-neutral-300 font-geist">Lead Generation</td>
+                    <td className="p-6 text-neutral-400 font-geist">Manual work required</td>
+                    <td className="p-6 text-neutral-300 font-geist">Fully automated</td>
+                  </tr>
+                  <tr className="border-b border-subtle/50">
+                    <td className="p-6 text-neutral-300 font-geist">Design Quality</td>
+                    <td className="p-6 text-neutral-400 font-geist">Depends on budget</td>
+                    <td className="p-6 text-neutral-300 font-geist">AI-optimized, professional</td>
+                  </tr>
+                  <tr>
+                    <td className="p-6 text-neutral-300 font-geist">Ongoing Maintenance</td>
+                    <td className="p-6 text-neutral-400 font-geist">Ongoing costs</td>
+                    <td className="p-6 text-neutral-300 font-geist">Handled automatically</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What You Get */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-black">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              What You <span className="text-gradient">Get</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            {[
+              { title: 'Professional Website', desc: 'AI-generated, conversion-optimized design that looks professional from day one.' },
+              { title: 'Mobile-Ready Design', desc: 'Fully responsive across all devices—desktop, tablet, and mobile.' },
+              { title: 'Lead Capture Forms', desc: 'Built-in forms that automatically capture and organize your leads.' },
+              { title: 'AI Lead Generation', desc: 'Automated prospect discovery and outreach that works 24/7.' },
+              { title: 'Analytics Dashboard', desc: 'Track visitors, conversions, and performance in real-time.' }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all"
+                style={{ animationDelay: `${0.05 * index}s` }}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 flex items-center justify-center text-purple-400 mt-0.5">
+                    <Icons.Check className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-space-grotesk text-white mb-2">{item.title}</h3>
+                    <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Perfect For */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Perfect <span className="text-gradient">For</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            {[
+              'Small businesses needing their first website',
+              'Entrepreneurs launching new ventures',
+              'Service providers wanting more leads',
+              'Local businesses expanding online',
+              'Agencies managing multiple clients',
+              'Anyone who wants leads, not just traffic'
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all flex items-center gap-3"
+                style={{ animationDelay: `${0.05 * index}s` }}
+              >
+                <div className="w-2 h-2 bg-purple-500 rounded-full flex-shrink-0"></div>
+                <span className="text-neutral-300 font-geist">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Key Features Grid */}
       <section className="py-24 relative z-10 border-t border-subtle bg-black">
         <div className="container mx-auto px-4 max-w-7xl">
@@ -338,40 +504,6 @@ export default function LeadSiteIOPage() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              The Integration <span className="text-gradient">Process</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {[
-              { step: '01', title: 'Build Your Website', desc: 'Answer a few questions and let AI generate your website. Your first website is free. Publish instantly and start capturing leads.' },
-              { step: '02', title: 'AI Analysis', desc: 'Our AI analyzes your business and builds your ideal customer profile in minutes.' },
-              { step: '03', title: 'Generate Leads', desc: 'Sit back and watch as qualified prospects appear in your dashboard daily, with automated outreach.' },
-              { step: '04', title: 'Close Deals', desc: 'High scorers go directly to your inbox ready to convert.' }
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="relative [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                {index < 3 && (
-                  <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-transparent z-0" style={{ width: 'calc(100% - 2rem)' }}></div>
-                )}
-                <div className="relative z-10 bg-[#050505] border border-purple-500/20 p-8">
-                  <div className="text-purple-400 text-sm font-geist mb-4">{item.step}</div>
-                  <h3 className="text-xl font-space-grotesk text-white mb-3">{item.title}</h3>
-                  <p className="text-sm text-neutral-400 font-geist">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Template Showcase */}
       <section id="templates" className="py-24 relative z-10 border-t border-subtle">
@@ -438,68 +570,6 @@ export default function LeadSiteIOPage() {
         </div>
       </section>
 
-      {/* Before/After Comparison */}
-      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
-            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Before vs <span className="text-gradient">After</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Before */}
-            <div className="bg-[#050505] border border-red-500/20 p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-6">Before LeadSite.IO</h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center text-red-500">
-                    <Icons.X className="w-5 h-5" />
-                  </div>
-                  <span className="text-neutral-300 font-geist">2 weeks with developer</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center text-red-500">
-                    <Icons.X className="w-5 h-5" />
-                  </div>
-                  <span className="text-neutral-300 font-geist">$5K cost</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center text-red-500">
-                    <Icons.X className="w-5 h-5" />
-                  </div>
-                  <span className="text-neutral-300 font-geist">Generic template</span>
-                </div>
-              </div>
-            </div>
-
-            {/* After */}
-            <div className="bg-[#050505] border border-green-500/20 p-8 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-              <h3 className="text-2xl font-space-grotesk text-white mb-6">With LeadSite.IO</h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center text-green-500">
-                    <Icons.Check className="w-5 h-5" />
-                  </div>
-                  <span className="text-neutral-300 font-geist">3 minutes with AI</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center text-green-500">
-                    <Icons.Check className="w-5 h-5" />
-                  </div>
-                  <span className="text-neutral-300 font-geist">$29/month</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 flex items-center justify-center text-green-500">
-                    <Icons.Check className="w-5 h-5" />
-                  </div>
-                  <span className="text-neutral-300 font-geist">Custom design</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Pricing Tiers */}
       <section className="py-24 relative z-10 border-t border-subtle">

@@ -45,6 +45,14 @@ export default function UploadVideoPage() {
       return;
     }
 
+    // Debug logging
+    console.log('[UPLOAD] Starting upload:', {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      apiURL: api.defaults.baseURL
+    });
+
     setUploading(true);
     setError(null);
     setProgress(0);
@@ -56,6 +64,8 @@ export default function UploadVideoPage() {
       if (description) formData.append('description', description);
       formData.append('monetizationEnabled', isMonetized);
 
+      console.log('[UPLOAD] Sending request to:', '/api/v1/videos/upload');
+
       const res = await api.post('/api/v1/videos/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -63,8 +73,11 @@ export default function UploadVideoPage() {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
+          console.log('[UPLOAD] Progress:', percentCompleted + '%');
         }
       });
+
+      console.log('[UPLOAD] Response:', res.data);
 
       if (res.data?.success) {
         router.push('/dashboard/videos');
@@ -72,8 +85,14 @@ export default function UploadVideoPage() {
         setError(res.data?.error || 'Upload failed');
       }
     } catch (err) {
-      console.error('Upload error:', err);
-      setError(err.response?.data?.error || err.message || 'Upload failed');
+      console.error('[UPLOAD] Error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        statusText: err.response?.statusText
+      });
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Upload failed';
+      setError(`Upload failed: ${errorMessage}`);
     } finally {
       setUploading(false);
     }

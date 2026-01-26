@@ -12,7 +12,7 @@ function VideoSiteAISEO() {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: 'VideoSite.AI',
-    description: 'Free video monetization platform where content creators earn $1 per video view',
+    description: 'Free video monetization platform where content creators earn $1 per qualified video view with transparent earnings tracking',
     brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
     offers: {
       '@type': 'Offer',
@@ -28,8 +28,9 @@ function VideoSiteAISEO() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: 'What is VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is a FREE video monetization platform where content creators can upload videos and earn $1.00 for every video viewer.' } },
-      { '@type': 'Question', name: 'What does VideoSite.AI cost?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is FREE to sign up. Content creators earn $1.00 per video viewer through the platform - no subscription fees required.' } },
+      { '@type': 'Question', name: 'What is VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is a FREE video monetization platform where content creators can upload videos and earn $1.00 for every qualified view (30+ seconds watch time, click-through, or form submission).' } },
+      { '@type': 'Question', name: 'What does VideoSite.AI cost?', acceptedAnswer: { '@type': 'Answer', text: 'VideoSite.AI is FREE to sign up. Content creators earn $1.00 per qualified view through the platform with instant Stripe payouts - no subscription fees required.' } },
+      { '@type': 'Question', name: 'What is a qualified view?', acceptedAnswer: { '@type': 'Answer', text: 'A qualified view is when a viewer watches your video for 30+ seconds, clicks through to an advertiser, or completes a lead form. This ensures you earn money from real engagement, not just scrollers.' } },
       { '@type': 'Question', name: 'How do advertisers use VideoSite.AI?', acceptedAnswer: { '@type': 'Answer', text: 'Advertisers can place targeted video ads on the platform, reaching engaged audiences with brand-safe content and detailed analytics.' } }
     ]
   };
@@ -40,14 +41,16 @@ function VideoSiteAISEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
         <h1>VideoSite.AI - Free Video Monetization Platform</h1>
-        <p>VideoSite.AI is a FREE video monetization platform by AI Lead Strategies LLC. Content creators sign up for free and earn $1.00 per video viewer. Features: HD video hosting, video marketing campaigns, lead generation tools, analytics dashboard, content protection, secure payments. Best for content creators wanting to monetize their videos. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | (855) 506-8886</p>
+        <p>VideoSite.AI is a FREE video monetization platform by AI Lead Strategies LLC. Content creators sign up for free and earn $1.00 per qualified video view. Features: HD video hosting, transparent earnings tracking, instant Stripe payouts, lead generation tools, analytics dashboard, content protection, secure payments. Best for content creators wanting to monetize their videos with guaranteed $1 per qualified view. Alternatives: YouTube, Vimeo, Wistia. Contact: support@aileadstrategies.com | (855) 506-8886</p>
         <h2>VideoSite.AI Features</h2>
         <ul>
           <li>Free for content creators</li>
-          <li>Earn $1 per video view</li>
+          <li>Earn $1 per qualified video view</li>
+          <li>Transparent earnings tracking</li>
+          <li>Instant Stripe payouts</li>
           <li>HD video hosting</li>
           <li>Advertiser marketplace</li>
-          <li>Analytics dashboard</li>
+          <li>Real-time analytics dashboard</li>
         </ul>
       </div>
     </>
@@ -235,7 +238,7 @@ export default function VideoSiteAIPage() {
 
               {/* Subheading - reduced by 20%: base→sm, lg→base, 2xl→xl, 3xl→2xl */}
               <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-300 tracking-tight font-space-grotesk mt-4 mb-6 max-w-3xl px-4">
-                The premier platform connecting content creators with advertisers. Earn $1.00 per view while advertisers reach their perfect audience.
+                $1.00 per qualified view. See the math. See the money. Other platforms show you views—we show you dollars.
               </h2>
 
               {/* Trusted By - reduced spacing */}
@@ -260,48 +263,176 @@ export default function VideoSiteAIPage() {
               What It Does <span className="text-gradient">(Simple)</span>
             </h2>
             <p className="text-lg md:text-xl text-neutral-300 font-geist leading-relaxed max-w-3xl mx-auto">
-              You create videos. People watch them. You should get paid. VideoSite.AI pays you $1.00 per view—delivered straight to your bank via Stripe. No complicated partner programs. No waiting months for payment.
+              You create videos. People watch them. You should get paid. VideoSite.AI pays you $1.00 per qualified view—delivered straight to your bank via Stripe. No complicated partner programs. No waiting months for payment.
             </p>
           </div>
         </div>
       </section>
 
-      {/* The Math Is Simple Section */}
+      {/* See The Math Section */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-purple-950/10 to-black">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-4xl md:text-6xl uppercase mb-6 text-white tracking-tighter font-space-grotesk font-light">
+              See The <span className="text-gradient">Math</span>
+            </h2>
+            <p className="text-lg text-neutral-400 font-geist mb-8">
+              Other platforms show you views. We show you dollars.
+            </p>
+          </div>
+
+          <div className="bg-[#050505] border border-subtle p-8 md:p-12 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 text-center flex-wrap">
+              <div className="flex flex-col">
+                <span className="text-sm text-neutral-500 font-geist uppercase tracking-wider mb-2">Your Views</span>
+                <span className="text-3xl md:text-4xl text-white font-space-grotesk">1,000</span>
+              </div>
+              
+              <div className="text-2xl text-purple-500">×</div>
+              
+              <div className="flex flex-col">
+                <span className="text-sm text-neutral-500 font-geist uppercase tracking-wider mb-2">Qualified Rate</span>
+                <span className="text-3xl md:text-4xl text-green-400 font-space-grotesk">68%</span>
+              </div>
+              
+              <div className="text-2xl text-purple-500">=</div>
+              
+              <div className="flex flex-col">
+                <span className="text-sm text-neutral-500 font-geist uppercase tracking-wider mb-2">Qualified Views</span>
+                <span className="text-3xl md:text-4xl text-white font-space-grotesk">680</span>
+              </div>
+              
+              <div className="text-2xl text-purple-500">×</div>
+              
+              <div className="flex flex-col">
+                <span className="text-sm text-neutral-500 font-geist uppercase tracking-wider mb-2">Per View</span>
+                <span className="text-3xl md:text-4xl text-green-400 font-space-grotesk">$1.00</span>
+              </div>
+              
+              <div className="text-2xl text-purple-500">=</div>
+              
+              <div className="flex flex-col">
+                <span className="text-sm text-green-400 font-geist uppercase tracking-wider mb-2">Your Money</span>
+                <span className="text-4xl md:text-5xl text-green-400 font-space-grotesk font-semibold">$680</span>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-subtle">
+              <p className="text-sm text-neutral-400 font-geist text-center">
+                <span className="text-white font-semibold">Qualified View</span> = 30+ seconds watch time OR click-through OR form submission
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Transparent Earnings Section */}
+      <section className="py-24 relative z-10 border-t border-subtle">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-4xl md:text-6xl uppercase mb-6 text-white tracking-tighter font-space-grotesk font-light">
+              Every Video. Every Dollar. <span className="text-gradient">Transparent</span>
+            </h2>
+          </div>
+
+          <div className="bg-[#050505] border border-subtle overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-subtle">
+                  <tr>
+                    <th className="p-4 text-left text-white font-space-grotesk uppercase tracking-wider text-xs">Video</th>
+                    <th className="p-4 text-center text-white font-space-grotesk uppercase tracking-wider text-xs">Total Views</th>
+                    <th className="p-4 text-center text-white font-space-grotesk uppercase tracking-wider text-xs">Qualified Views</th>
+                    <th className="p-4 text-center text-white font-space-grotesk uppercase tracking-wider text-xs">Rate</th>
+                    <th className="p-4 text-right text-white font-space-grotesk uppercase tracking-wider text-xs">Your Earnings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-subtle/50 hover:bg-white/5 transition-colors">
+                    <td className="p-4 text-neutral-300 font-geist">How AI Changes Sales</td>
+                    <td className="p-4 text-center text-neutral-300 font-geist">15,420</td>
+                    <td className="p-4 text-center text-green-400 font-geist font-semibold">10,847</td>
+                    <td className="p-4 text-center text-neutral-400 font-geist text-sm">× $1.00</td>
+                    <td className="p-4 text-right text-green-400 font-geist font-semibold">$10,847.00</td>
+                  </tr>
+                  <tr className="border-b border-subtle/50 hover:bg-white/5 transition-colors">
+                    <td className="p-4 text-neutral-300 font-geist">Lead Gen Tutorial</td>
+                    <td className="p-4 text-center text-neutral-300 font-geist">8,932</td>
+                    <td className="p-4 text-center text-green-400 font-geist font-semibold">6,251</td>
+                    <td className="p-4 text-center text-neutral-400 font-geist text-sm">× $1.00</td>
+                    <td className="p-4 text-right text-green-400 font-geist font-semibold">$6,251.00</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="p-4 text-neutral-300 font-geist">Content Marketing Tips</td>
+                    <td className="p-4 text-center text-neutral-300 font-geist">12,105</td>
+                    <td className="p-4 text-center text-green-400 font-geist font-semibold">8,473</td>
+                    <td className="p-4 text-center text-neutral-400 font-geist text-sm">× $1.00</td>
+                    <td className="p-4 text-right text-green-400 font-geist font-semibold">$8,473.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-neutral-400 font-geist">
+              Track every view, every dollar, in real-time. No hidden algorithms. No mysterious adjustments.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Comparison Section */}
       <section className="py-24 relative z-10 border-t border-subtle bg-gradient-to-b from-black to-purple-950/5">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-4xl md:text-6xl uppercase mb-6 text-white tracking-tighter font-space-grotesk font-light">
-              The Math Is <span className="text-gradient">Simple</span>
+              100,000 Views = <span className="text-gradient">How Much Money?</span>
             </h2>
           </div>
 
-          <div className="overflow-x-auto [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            <table className="w-full border-collapse bg-[#050505] border border-subtle">
-              <thead>
-                <tr className="border-b border-subtle">
-                  <th className="p-4 text-left text-white font-space-grotesk uppercase tracking-wider text-sm">Platform</th>
-                  <th className="p-4 text-center text-white font-space-grotesk uppercase tracking-wider text-sm">Earnings per 1,000 Views</th>
-                  <th className="p-4 text-center text-white font-space-grotesk uppercase tracking-wider text-sm">Payment Terms</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-subtle/50 hover:bg-white/5 transition-colors">
-                  <td className="p-4 text-neutral-300 font-geist">YouTube</td>
-                  <td className="p-4 text-center text-neutral-300 font-geist">$0.50 - $5.00</td>
-                  <td className="p-4 text-center text-neutral-400 font-geist text-sm">Monthly (after threshold)</td>
-                </tr>
-                <tr className="border-b border-subtle/50 hover:bg-white/5 transition-colors">
-                  <td className="p-4 text-neutral-300 font-geist">TikTok</td>
-                  <td className="p-4 text-center text-neutral-300 font-geist">$0.20 - $2.00</td>
-                  <td className="p-4 text-center text-neutral-400 font-geist text-sm">Monthly (after threshold)</td>
-                </tr>
-                <tr className="border-b border-subtle/50 hover:bg-green-500/10 transition-colors">
-                  <td className="p-4 text-green-400 font-geist font-semibold">VideoSite.AI</td>
-                  <td className="p-4 text-center text-green-400 font-geist font-semibold">$1,000.00</td>
-                  <td className="p-4 text-center text-green-400 font-geist text-sm font-semibold">Instant via Stripe</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-4">YouTube</h3>
+              <div className="mb-4">
+                <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-red-500 rounded-full" style={{width: '1.1%'}}></div>
+                </div>
+              </div>
+              <p className="text-3xl text-red-400 font-space-grotesk mb-2">$1,100</p>
+              <p className="text-sm text-neutral-500 font-geist">100,000 views × $0.011</p>
+            </div>
+
+            <div className="bg-[#050505] border border-subtle p-8 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-4">TikTok</h3>
+              <div className="mb-4">
+                <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-pink-500 rounded-full" style={{width: '0.05%'}}></div>
+                </div>
+              </div>
+              <p className="text-3xl text-pink-400 font-space-grotesk mb-2">$50</p>
+              <p className="text-sm text-neutral-500 font-geist">100,000 views × $0.0005</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
+              <h3 className="text-xl font-space-grotesk text-white mb-4">VideoSite.AI</h3>
+              <div className="mb-4">
+                <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-green-500 rounded-full" style={{width: '100%'}}></div>
+                </div>
+              </div>
+              <p className="text-3xl text-green-400 font-space-grotesk mb-2 font-semibold">$100,000*</p>
+              <p className="text-sm text-neutral-400 font-geist">100,000 qualified views × $1.00</p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-sm text-neutral-500 font-geist">
+              *Based on 100% qualified view rate. Actual earnings depend on your qualified view rate (typically 50-80%)
+            </p>
+            <p className="text-lg text-white font-space-grotesk mt-4">
+              Same content. Same views. <span className="text-green-400 font-semibold">100x the money.</span>
+            </p>
           </div>
         </div>
       </section>
@@ -380,7 +511,7 @@ export default function VideoSiteAIPage() {
               </li>
               <li className="flex items-start gap-4">
                 <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-base md:text-lg">Transparent $1.00 per view—no hidden fees or revenue splits</span>
+                <span className="text-base md:text-lg">Transparent $1.00 per qualified view—no hidden fees or revenue splits</span>
               </li>
               <li className="flex items-start gap-4">
                 <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
@@ -399,37 +530,113 @@ export default function VideoSiteAIPage() {
         </div>
       </section>
 
+      {/* The VideoSite.AI Guarantee Section */}
+      <section className="py-24 relative z-10 border-t border-subtle">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            <h2 className="text-4xl md:text-6xl uppercase mb-6 text-white tracking-tighter font-space-grotesk font-light">
+              The <span className="text-gradient">Guarantee</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-green-950/20 to-[#050505] border border-green-500/30 p-8 md:p-10 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-2xl font-space-grotesk text-green-400 mb-4 uppercase tracking-wider">For Creators</h3>
+              <p className="text-neutral-300 font-geist leading-relaxed">
+                "You will earn <span className="text-green-400 font-semibold">$1.00 for every qualified view</span>. 
+                We show you the math. We show you the money. No hidden algorithms. No mysterious 'adjustments.' 
+                <span className="text-white font-semibold"> Your content. Your views. Your money.</span>"
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 md:p-10 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-2xl font-space-grotesk text-purple-400 mb-4 uppercase tracking-wider">For Advertisers</h3>
+              <p className="text-neutral-300 font-geist leading-relaxed">
+                "You only pay for <span className="text-purple-400 font-semibold">REAL engagement</span>. 
+                30+ seconds of actual attention, or your money back. No bots. No fraud. No wasted spend. 
+                <span className="text-white font-semibold">Guaranteed attention from real viewers.</span>"
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* For Advertisers Section */}
       <section className="py-24 relative z-10 border-t border-subtle">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-4xl md:text-6xl uppercase mb-6 text-white tracking-tighter font-space-grotesk font-light">
               For <span className="text-gradient">Advertisers</span>
             </h2>
+            <p className="text-lg text-neutral-400 font-geist">
+              Pay for results, not impressions. Guaranteed engagement from real viewers.
+            </p>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 md:p-12 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
-            <p className="text-lg md:text-xl text-neutral-300 font-geist mb-6 leading-relaxed">
-              Reach engaged audiences with targeted video ads. VideoSite.AI connects advertisers with content creators, delivering brand-safe placements and detailed analytics.
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 md:p-10 [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
+              <h3 className="text-2xl font-space-grotesk text-white mb-6">Why Advertisers Pay More</h3>
+              <ul className="space-y-4 font-geist text-neutral-300">
+                <li className="flex items-start gap-4">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-base"><span className="text-white font-semibold">Qualified Traffic</span> — No bots, no scrollers, no fakes</span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-base"><span className="text-white font-semibold">Guaranteed Attention</span> — 30+ seconds of actual watching</span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-base"><span className="text-white font-semibold">Lead Generation</span> — Forms, CTAs, click-through tracking</span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-base"><span className="text-white font-semibold">Measurable ROI</span> — Know exactly what you paid for</span>
+                </li>
+                <li className="flex items-start gap-4">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-base"><span className="text-white font-semibold">Brand Safety</span> — Verified creators, quality content</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-[#050505] border border-subtle p-8 md:p-10 [animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
+              <h3 className="text-2xl font-space-grotesk text-white mb-6">Pricing Packages</h3>
+              <div className="space-y-6">
+                <div className="border-b border-subtle pb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-lg font-space-grotesk text-purple-400">Starter</h4>
+                    <span className="text-xl font-space-grotesk text-white">$2-3</span>
+                  </div>
+                  <p className="text-sm text-neutral-400 font-geist">Per qualified view • Min $1,000 budget</p>
+                  <p className="text-sm text-neutral-500 font-geist mt-2">Basic targeting, general content</p>
+                </div>
+
+                <div className="border-b border-subtle pb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-lg font-space-grotesk text-purple-400">Growth</h4>
+                    <span className="text-xl font-space-grotesk text-white">$3-5</span>
+                  </div>
+                  <p className="text-sm text-neutral-400 font-geist">Per qualified view • Min $5,000 budget</p>
+                  <p className="text-sm text-neutral-500 font-geist mt-2">Advanced targeting, premium creators</p>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-lg font-space-grotesk text-purple-400">Enterprise</h4>
+                    <span className="text-xl font-space-grotesk text-white">$5-10+</span>
+                  </div>
+                  <p className="text-sm text-neutral-400 font-geist">Per qualified view • Min $25,000 budget</p>
+                  <p className="text-sm text-neutral-500 font-geist mt-2">Exclusive placements, custom campaigns</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-neutral-400 font-geist">
+              Advertisers pay MORE total, but LESS per real engagement. Creators earn 100x more for the same content.
             </p>
-            <ul className="space-y-4 font-geist text-neutral-300">
-              <li className="flex items-start gap-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-base md:text-lg">Flexible pricing tiers from $20-75 CPM</span>
-              </li>
-              <li className="flex items-start gap-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-base md:text-lg">Advanced targeting options for your ideal audience</span>
-              </li>
-              <li className="flex items-start gap-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-base md:text-lg">Real-time campaign analytics and performance tracking</span>
-              </li>
-              <li className="flex items-start gap-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-base md:text-lg">Brand-safe content with verified creators</span>
-              </li>
-            </ul>
           </div>
         </div>
       </section>

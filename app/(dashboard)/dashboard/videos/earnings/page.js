@@ -140,7 +140,7 @@ export default function EarningsPage() {
                         ${parseFloat(video.totalEarnings || 0).toFixed(2)}
                     </div>
                     <div className="text-xs text-neutral-400">
-                      ${(parseFloat(video.earnings || 0) / (video.viewCount || 1)).toFixed(2)} per view
+                      ${(parseFloat(video.totalEarnings || 0) / (video.viewCount || 1)).toFixed(2)} per view
                     </div>
                   </div>
                 </div>

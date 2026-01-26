@@ -32,8 +32,8 @@ export default function EarningsPage() {
       const res = await api.get('/api/v1/videos?limit=10');
       const data = res.data?.data || res.data || {};
       const monetizedVideos = (data.videos || [])
-        .filter(v => v.isMonetized)
-        .sort((a, b) => parseFloat(b.earnings || 0) - parseFloat(a.earnings || 0))
+        .filter(v => v.monetizationEnabled)
+        .sort((a, b) => parseFloat(b.totalEarnings || 0) - parseFloat(a.totalEarnings || 0))
         .slice(0, 10);
       setVideos(monetizedVideos);
     } catch (err) {
@@ -137,7 +137,7 @@ export default function EarningsPage() {
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-yellow-400">
-                      ${parseFloat(video.earnings || 0).toFixed(2)}
+                        ${parseFloat(video.totalEarnings || 0).toFixed(2)}
                     </div>
                     <div className="text-xs text-neutral-400">
                       ${(parseFloat(video.earnings || 0) / (video.viewCount || 1)).toFixed(2)} per view

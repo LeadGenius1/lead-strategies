@@ -26,9 +26,9 @@ export default function VideosPage() {
       setVideos(data.videos || []);
       
       // Calculate stats
-      const totalViews = (data.videos || []).reduce((sum, v) => sum + (v.viewCount || 0), 0);
-      const totalEarnings = (data.videos || []).reduce((sum, v) => sum + parseFloat(v.earnings || 0), 0);
-      const published = (data.videos || []).filter(v => v.status === 'published').length;
+      const totalViews = (data.videos || []).reduce((sum, v) => sum + Number(v.viewCount || 0), 0);
+      const totalEarnings = (data.videos || []).reduce((sum, v) => sum + parseFloat(v.totalEarnings || 0), 0);
+      const published = (data.videos || []).filter(v => v.visibility === 'public').length;
       
       setStats({
         total: data.videos?.length || 0,
@@ -150,7 +150,7 @@ export default function VideosPage() {
                       <Video className="w-12 h-12 text-neutral-600" />
                     </div>
                   )}
-                  {video.status === 'ready' && video.fileUrl && (
+                  {video.renderStatus === 'completed' && video.videoUrl && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity">
                       <Link
                         href={`/videos/${video.id}`}
@@ -162,12 +162,15 @@ export default function VideosPage() {
                   )}
                   <div className="absolute top-2 right-2">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      video.status === 'published' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                      video.status === 'ready' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                      video.status === 'processing' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                      video.visibility === 'public' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                      video.renderStatus === 'completed' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                      video.renderStatus === 'processing' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
                       'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                     }`}>
-                      {video.status}
+                      {video.visibility === 'public' ? 'Published' : 
+                       video.renderStatus === 'completed' ? 'Ready' :
+                       video.renderStatus === 'processing' ? 'Processing' :
+                       video.renderStatus || 'Pending'}
                     </span>
                   </div>
                 </div>
@@ -185,10 +188,10 @@ export default function VideosPage() {
                         <Eye className="w-4 h-4" />
                         {video.viewCount || 0}
                       </span>
-                      {video.isMonetized && (
+                      {video.monetizationEnabled && (
                         <span className="flex items-center gap-1 text-yellow-400">
                           <DollarSign className="w-4 h-4" />
-                          ${parseFloat(video.earnings || 0).toFixed(2)}
+                          ${parseFloat(video.totalEarnings || 0).toFixed(2)}
                         </span>
                       )}
                     </div>

@@ -1,4 +1,7 @@
 // start.js - Diagnostic startup script for Railway
+// Load environment variables from .env.local for development
+require('dotenv').config({ path: '.env.local' });
+
 console.log('='.repeat(60));
 console.log('🚀 AI LEAD STRATEGIES - STARTING APPLICATION');
 console.log('='.repeat(60));

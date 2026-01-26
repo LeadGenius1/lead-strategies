@@ -54,7 +54,7 @@ export default function UploadVideoPage() {
       formData.append('video', file);
       formData.append('title', title || file.name);
       if (description) formData.append('description', description);
-      formData.append('isMonetized', isMonetized);
+      formData.append('monetizationEnabled', isMonetized);
 
       const res = await api.post('/api/v1/videos/upload', formData, {
         headers: {

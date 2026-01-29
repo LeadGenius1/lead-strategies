@@ -69,7 +69,6 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
                 <Link href="/leadsite-ai" className="block hover:text-white transition">LeadSite.AI</Link>
                 <Link href="/leadsite-io" className="block hover:text-white transition">LeadSite.IO</Link>
                 <Link href="/clientcontact-io" className="block hover:text-white transition">ClientContact.IO</Link>
-                <Link href="/tackle-io" className="block hover:text-white transition">TackleAI</Link>
                 <Link href="/videosite-ai" className="block hover:text-white transition">VideoSite.AI</Link>
               </div>
             </div>

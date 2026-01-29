@@ -21,12 +21,12 @@ export default function VideoPage() {
   }, [videoId]);
 
   useEffect(() => {
-    // Track view when video starts playing
-    if (video && video.status === 'published' && !viewTracked) {
+    // Track view when video loads (public videos are already published)
+    if (video && video.visibility === 'public' && !viewTracked) {
       const timer = setTimeout(() => {
         trackView();
         setViewTracked(true);
-      }, 3000); // Track after 3 seconds of viewing
+      }, 3000); // Track after 3 seconds
 
       return () => clearTimeout(timer);
     }
@@ -34,9 +34,10 @@ export default function VideoPage() {
 
   const fetchVideo = async () => {
     try {
-      const res = await api.get(`/api/v1/videos/${videoId}`);
+      // Use public endpoint for unauthenticated viewing
+      const res = await api.get(`/api/v1/videos/${videoId}/public`);
       const data = res.data?.data || res.data || {};
-      setVideo(data.video);
+      setVideo(data);
     } catch (err) {
       console.error('Fetch video error:', err);
     } finally {
@@ -44,9 +45,12 @@ export default function VideoPage() {
     }
   };
 
-  const trackView = async () => {
+  const trackView = async (viewData = {}) => {
     try {
-      await api.post(`/api/v1/videos/${videoId}/track-view`);
+      await api.post(`/api/v1/videos/${videoId}/track-view`, {
+        watchDuration: viewData.watchDuration || 0,
+        completionPct: viewData.completionPct || 0
+      });
       // Refresh video to get updated view count
       fetchVideo();
     } catch (err) {
@@ -95,10 +99,11 @@ export default function VideoPage() {
         {/* Video Player */}
         <div className="mb-6">
           <VideoPlayer
-            videoUrl={video.fileUrl}
+            videoUrl={video.videoUrl}
             thumbnailUrl={video.thumbnailUrl}
-            title={video.title}
-            autoPlay={false}
+            videoId={video.id}
+            onViewTrack={trackView}
+            showControls={true}
           />
         </div>
 
@@ -117,10 +122,10 @@ export default function VideoPage() {
               <Eye className="w-4 h-4" />
               <span>{video.viewCount || 0} views</span>
             </div>
-            {video.isMonetized && (
+            {(video.monetizationEnabled || video.isMonetized) && (
               <div className="flex items-center gap-2 text-yellow-400">
                 <DollarSign className="w-4 h-4" />
-                <span>${parseFloat(video.earnings || 0).toFixed(2)} earned</span>
+                <span>${parseFloat(video.totalEarnings || video.earnings || 0).toFixed(2)} earned</span>
               </div>
             )}
             <div className="flex items-center gap-2 text-neutral-400">

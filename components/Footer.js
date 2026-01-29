@@ -45,7 +45,6 @@ export default function Footer({ brandName = 'AI LEAD STRATEGIES' }) {
               <li><Link href="/leadsite-ai" className="hover:text-white transition-colors">LeadSite.AI</Link></li>
               <li><Link href="/leadsite-io" className="hover:text-white transition-colors">LeadSite.IO</Link></li>
               <li><Link href="/clientcontact-io" className="hover:text-white transition-colors">ClientContact.IO</Link></li>
-              <li><Link href="/tackle-io" className="hover:text-white transition-colors">TackleAI</Link></li>
               <li><Link href="/videosite-ai" className="hover:text-white transition-colors">VideoSite.AI</Link></li>
             </ul>
           </div>

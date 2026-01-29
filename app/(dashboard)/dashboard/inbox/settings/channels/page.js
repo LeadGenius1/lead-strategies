@@ -51,11 +51,9 @@ export default function ChannelsSettingsPage() {
 
   const fetchConnections = async () => {
     try {
-      // This endpoint would need to be created
-      // For now, we'll use the channels endpoint
-      const res = await api.get('/api/v1/channels');
-      // In production, would fetch from /api/v1/channels/connections
-      setConnections([]);
+      const res = await api.get('/api/v1/channels/connections');
+      const data = res.data?.data || res.data || {};
+      setConnections(data.connections || []);
     } catch (err) {
       console.error('Fetch connections error:', err);
       setConnections([]);

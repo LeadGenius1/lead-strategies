@@ -31,9 +31,9 @@ export default function CRMPage() {
   async function loadCRMData() {
     try {
       const [dashboardRes, forecastRes, pipelineRes] = await Promise.all([
-        api.get('/api/v1/tackle/dashboard').catch(() => ({ data: { data: {} } })),
-        api.get('/api/v1/tackle/ai/pipeline/forecast').catch(() => ({ data: { data: {} } })),
-        api.get('/api/v1/tackle/deals/pipeline').catch(() => ({ data: { data: {} } }))
+        api.get('/api/v1/clientcontact/dashboard').catch(() => ({ data: { data: {} } })),
+        api.get('/api/v1/clientcontact/ai/pipeline/forecast').catch(() => ({ data: { data: {} } })),
+        api.get('/api/v1/clientcontact/deals/pipeline').catch(() => ({ data: { data: {} } }))
       ])
 
       setDashboard(dashboardRes.data?.data || dashboardRes.data || {})

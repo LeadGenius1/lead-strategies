@@ -8,7 +8,6 @@ const PLATFORM_TABS = [
   { id: 'leadsite-ai', label: 'LEADSITE.AI', href: '/leadsite-ai' },
   { id: 'leadsite-io', label: 'LEADSITE.IO', href: '/leadsite-io' },
   { id: 'clientcontact', label: 'CLIENTCONTACT', href: '/clientcontact-io' },
-  { id: 'tackle', label: 'TACKLE.IO', href: '/tackle-io' },
 ]
 
 export default function PlatformHeader({ activePlatform = 'ai-lead' }) {

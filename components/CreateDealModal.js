@@ -44,7 +44,7 @@ export default function CreateDealModal({ isOpen, onClose, onSuccess, initialSta
         // Note: Backend may require companyId/contactIds - for now pass as strings
         // Backend should handle creating company/contact if they don't exist
       }
-      await api.post('/api/tackle/deals', dealData)
+      await api.post('/api/v1/clientcontact/deals', dealData)
       toast.success('Deal created successfully!')
       onSuccess?.()
       onClose()

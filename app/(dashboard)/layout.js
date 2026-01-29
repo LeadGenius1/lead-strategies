@@ -35,17 +35,27 @@ export default function DashboardLayout({ children }) {
         console.log('[Dashboard] User data:', data ? 'Received' : 'null')
         
         if (data) {
-          setUser(data.user || data)
-          setSubscription(data.subscription || {
-            // Default features based on tier (fallback)
-            features: {
-              websites: true,
-              campaigns: true,
-              prospects: true,
-              inbox: data.user?.subscription_tier !== 'leadsite-ai',
-              voice: data.user?.subscription_tier === 'tackle',
-              crm: data.user?.subscription_tier === 'tackle',
-            }
+          const userData = data.user || data
+          const subscriptionData = data.subscription || {}
+          const tierFeatures = subscriptionData.tierFeatures || []
+          const subscriptionTier = userData?.subscription_tier || userData?.tier
+          
+          // Map tier features array to features object
+          const tier = userData?.tier;
+          const features = {
+            websites: tierFeatures.includes('website_builder') || subscriptionTier === 'leadsite-io' || subscriptionTier === 'clientcontact-io',
+            campaigns: tierFeatures.includes('email_campaigns') || true,
+            prospects: tierFeatures.includes('leads') || true,
+            inbox: tierFeatures.includes('unified_inbox') || subscriptionTier === 'clientcontact-io',
+            voice: subscriptionTier === 'clientcontact-io' && tier === 5,
+            crm: subscriptionTier === 'clientcontact-io' && tier === 5,
+            videos: tierFeatures.includes('video') || subscriptionTier === 'videosite-io' || subscriptionTier === 'videosite',
+          }
+          
+          setUser(userData)
+          setSubscription({
+            ...subscriptionData,
+            features
           })
           setAuthChecked(true)
         } else {

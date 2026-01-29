@@ -44,7 +44,7 @@ function HomeSEO() {
         name: 'How much does AI Lead Strategies cost?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Pricing varies by platform: LeadSite.AI is $49/mo, LeadSite.IO is $49/mo with a free website, ClientContact.IO is $79/mo, VideoSite.AI is FREE (earn $1 per viewer), and TackleAI is $99/mo.'
+          text: 'Pricing varies by platform: LeadSite.AI is $49/mo, LeadSite.IO is $49/mo with a free website, ClientContact.IO is $79–$299/mo (3 tiers), VideoSite.AI is FREE (earn $1 per viewer).'
         }
       },
       {
@@ -164,10 +164,7 @@ export default function HomePage() {
 
           <div className="hidden lg:flex items-center gap-1">
             <Link href="/clientcontact-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              ClientContact
-            </Link>
-            <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              TackleAI
+              ClientContact.IO
             </Link>
             <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               VideoSite

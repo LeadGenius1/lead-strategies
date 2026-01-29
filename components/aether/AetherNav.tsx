@@ -24,8 +24,8 @@ export default function AetherNav({
   const defaultLandingLinks: NavLink[] = [
     { label: 'LeadSite.AI', href: '/leadsite-ai' },
     { label: 'LeadSite.IO', href: '/leadsite-io' },
-    { label: 'ClientContact', href: '/clientcontact-io' },
-    { label: 'Tackle.IO', href: '/tackle-io' },
+    { label: 'ClientContact.IO', href: '/clientcontact-io' },
+    { label: 'VideoSite.AI', href: '/videosite-ai' },
   ];
 
   const defaultDashboardLinks: NavLink[] = [

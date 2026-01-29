@@ -8,7 +8,7 @@ export const metadata = {
     default: 'AI Lead Strategies | AI-Powered Lead Generation & Sales Automation Platform',
     template: '%s | AI Lead Strategies'
   },
-  description: 'AI Lead Strategies offers a complete suite of AI-powered tools for B2B lead generation, sales automation, CRM, and customer engagement. Includes LeadSite.AI, LeadSite.IO, ClientContact.IO, TackleAI, and VideoSite.AI platforms.',
+  description: 'AI Lead Strategies offers a complete suite of AI-powered tools for B2B lead generation, sales automation, CRM, and customer engagement. Includes LeadSite.AI, LeadSite.IO, ClientContact.IO, and VideoSite.AI platforms.',
   keywords: [
     'AI lead generation',
     'B2B sales automation',

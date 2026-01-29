@@ -11,7 +11,6 @@ const TIERS = [
   { id: 'leadsite-io', name: 'LeadSite.IO', price: 'FREE + Paid', description: '1 free website • Paid from $49/mo', highlight: true },
   { id: 'clientcontact', name: 'ClientContact.IO', price: 'From $49/mo', description: '22+ channel unified inbox' },
   { id: 'videosite', name: 'VideoSite.AI', price: 'FREE', description: 'Earn $1/viewer • Content creators' },
-  { id: 'tackle', name: 'TackleAI', price: 'From $79/mo', description: 'Full CRM + Voice + AI Agents' },
 ]
 
 function SignupForm() {
@@ -82,7 +81,13 @@ function SignupForm() {
         },
       })
       toast.success('Account created! Welcome to AI Lead Strategies.')
-      router.push('/copilot')
+      
+      // Redirect based on tier - VideoSite.AI users go to videos dashboard
+      if (selectedTier === 'videosite') {
+        router.push('/dashboard/videos')
+      } else {
+        router.push('/copilot')
+      }
     } catch (error) {
       toast.error(error.message || 'Signup failed')
     } finally {

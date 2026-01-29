@@ -60,7 +60,7 @@ export default function EditDealModal({ isOpen, onClose, onSuccess, dealId }) {
     setLoading(true)
     try {
       // Backend expects: name, value, stage, description, expectedClose
-      await api.put(`/api/tackle/deals/${dealId}`, {
+      await api.put(`/api/v1/clientcontact/deals/${dealId}`, {
         name: `${formData.company} - ${formData.contact}`,
         value: value,
         stage: formData.stage,

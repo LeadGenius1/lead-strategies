@@ -20,13 +20,15 @@ import {
   Zap,
   Calendar,
   Menu,
-  X
+  X,
+  Video
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, tier: 'all' },
   { name: 'Lead Hunter', href: '/copilot', icon: BrainCircuit, tier: 'all', highlight: true },
   { name: 'Automation', href: '/dashboard/automation', icon: Calendar, tier: 'all' },
+  { name: 'Videos', href: '/dashboard/videos', icon: Video, tier: 'videos' },
   { name: 'Websites', href: '/dashboard/websites', icon: Globe, tier: 'websites' },
   { name: 'Campaigns', href: '/dashboard/campaigns', icon: Zap, tier: 'campaigns' },
   { name: 'Prospects', href: '/dashboard/prospects', icon: Target, tier: 'prospects' },

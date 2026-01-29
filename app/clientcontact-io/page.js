@@ -5,19 +5,20 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 import ShinyButton from '@/components/ShinyButton';
+import ClientContactHero from '@/components/ClientContact/Hero';
 
-// SEO Component for ClientContact.IO
+// SEO: ClientContact.IO - AI-Powered Unified Inbox
 function ClientContactIOSEO() {
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: 'ClientContact.IO',
-    description: 'AI-powered B2B contact finder and email verification platform with 50+ data sources',
+    description: 'AI-Powered Unified Inbox. 22+ channels, 7 AI agents, 1 platform. The future of lead generation.',
     brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/clientcontact-io',
-      price: '49',
+      price: '99',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -29,9 +30,9 @@ function ClientContactIOSEO() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: 'What is ClientContact.IO?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO is an AI-powered contact discovery and email verification platform that finds B2B contacts from 50+ data sources including LinkedIn, ZoomInfo, and Apollo.' } },
-      { '@type': 'Question', name: 'How accurate is the email verification?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO uses SMTP validation, catch-all detection, and confidence scoring to achieve 98%+ email deliverability rates.' } },
-      { '@type': 'Question', name: 'What data sources does ClientContact.IO use?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO aggregates data from 50+ sources including LinkedIn, ZoomInfo, Apollo.io, company websites, social profiles, and proprietary databases.' } }
+      { '@type': 'Question', name: 'What is ClientContact.IO?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO is an AI-powered unified inbox and CRM that orchestrates smarter conversations across 22+ channels with 7 AI agents. Plans from $99/mo.' } },
+      { '@type': 'Question', name: 'How many channels does ClientContact support?', acceptedAnswer: { '@type': 'Answer', text: 'ClientContact.IO supports 22+ outreach channels including Email, LinkedIn, SMS, WhatsApp, and social platforms.' } },
+      { '@type': 'Question', name: 'What are the 7 AI agents?', acceptedAnswer: { '@type': 'Answer', text: 'Campaign AI, Social Syncs AI, Voice AI, LeadGen AI, Analytics AI, Integration AI, and CleanOS AI—all self-healing agents.' } }
     ]
   };
 
@@ -40,15 +41,15 @@ function ClientContactIOSEO() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="sr-only" aria-hidden="true">
-        <h1>ClientContact.IO - AI Contact Finder & Email Verification</h1>
-        <p>ClientContact.IO is a 22+ channel unified inbox platform by AI Lead Strategies LLC. Plans start at $49/month. Features: AI-powered unified inbox across 22+ channels, AI auto-responder, unlimited campaigns, sentiment analysis, reply suggestions, advanced analytics, custom workflows, team collaboration, API access. Scale from 3 to unlimited team seats. Best for sales teams needing unified communication. Alternatives: Front, Intercom, Zendesk. Contact: support@aileadstrategies.com | (855) 506-8886</p>
-        <h2>Contact Discovery Features</h2>
+        <h1>ClientContact.IO - AI-Powered Unified Inbox | 22+ Channels, 7 AI Agents</h1>
+        <p>The future of lead generation. Orchestrate smarter conversations across every channel your buyers use. 22 channels, 7 AI agents, 1 platform. Start free trial. Contact: support@aileadstrategies.com | (855) 506-8886</p>
+        <h2>ClientContact.IO Features</h2>
         <ul>
-          <li>50+ data source aggregation</li>
-          <li>SMTP email verification</li>
-          <li>Phone number discovery</li>
-          <li>Company enrichment data</li>
-          <li>Bulk verification tools</li>
+          <li>22+ channel unified inbox</li>
+          <li>7 self-healing AI agents</li>
+          <li>Full CRM and pipeline</li>
+          <li>Voice calling and transcription</li>
+          <li>Team collaboration</li>
         </ul>
       </div>
     </>
@@ -216,13 +217,12 @@ export default function ClientContactIOPage() {
     <>
       <ClientContactIOSEO />
       <div className="relative overflow-x-hidden">
-      {/* Navigation */}
+      {/* Navigation: AI LEAD | LEADSITE.AI | LEADSITE.IO | ● CLIENTCONTACT.IO | VIDEOSITE */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
         <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
           <Link href="/" className="bg-white/5 hover:bg-white/10 px-3 sm:px-5 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
             AI LEAD
           </Link>
-
           <div className="hidden lg:flex items-center gap-1">
             <Link href="/leadsite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               LeadSite.AI
@@ -231,19 +231,11 @@ export default function ClientContactIOPage() {
               LeadSite.IO
             </Link>
           </div>
-
           <div className="px-2 sm:px-6 text-lg sm:text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
-            <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-            <span className="hidden sm:inline">CLIENT</span>CONTACT
+            <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]" aria-hidden="true" />
+            CLIENTCONTACT.IO
           </div>
-
           <div className="hidden lg:flex items-center gap-1">
-            <Link href="/clientcontact-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-white font-geist">
-              ClientContact
-            </Link>
-            <Link href="/tackle-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              TackleAI
-            </Link>
             <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               VideoSite
             </Link>
@@ -251,78 +243,7 @@ export default function ClientContactIOPage() {
         </div>
       </nav>
 
-      {/* Hero Section with Full-Page Video Background */}
-      <section className="relative min-h-screen overflow-hidden">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video autoPlay muted loop playsInline className="absolute w-full h-full object-cover">
-            <source src="/meeting-handshake.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-black/70"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black"></div>
-        </div>
-
-        {/* Grid Background (over video) */}
-        <div className="absolute inset-0 z-[1] pointer-events-none">
-          <div className="grid-overlay">
-            <div className="grid-inner">
-              <div className="grid-line-v"></div>
-              <div className="grid-line-v hidden md:block"></div>
-              <div className="grid-line-v hidden lg:block"></div>
-              <div className="grid-line-v"></div>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 pt-36 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
-            <div className="flex flex-col text-center mb-16 relative items-center justify-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] sm:text-xs font-medium tracking-wide mb-8 [animation:animationIn_0.8s_ease-out_0.15s_both] animate-on-scroll">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
-                </span>
-                AI-POWERED LEAD DISCOVERY PLATFORM
-              </div>
-
-              <div className="flex flex-col z-10 w-full items-center justify-center">
-                <h1 className="leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-2 mb-6 font-space-grotesk px-4">
-                  <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll block">Find Your Perfect Clients with</span>
-                  <span className="text-gradient font-light [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll block">AI Intelligence</span>
-                </h1>
-              </div>
-
-              <p className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-300 tracking-tight font-geist mt-4 mb-6 max-w-3xl px-4">
-                Search, enrich, and verify leads from 8+ premium data sources. Save hours of research with AI-powered contact discovery and intelligent lead scoring.
-              </p>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll mt-12 px-4 sm:px-0">
-                <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                    <span data-target="8" data-suffix="+">8+</span>
-                  </div>
-                  <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Data Sources</h3>
-                </div>
-                <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                    <span data-target="99.9" data-suffix="%">99.9%</span>
-                  </div>
-                  <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Uptime</h3>
-                </div>
-                <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">GDPR</div>
-                  <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Compliant</h3>
-                </div>
-                <div className="bg-[#050505] border border-subtle p-4 sm:p-6">
-                  <div className="text-xl sm:text-2xl md:text-3xl text-white mb-1 tracking-tighter font-space-grotesk font-light">Real-time</div>
-                  <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500 font-geist">Enrichment</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ClientContactHero />
 
       {/* Features */}
       <section id="features" className="py-24 relative z-10 border-t border-subtle bg-black">

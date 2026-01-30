@@ -72,7 +72,7 @@ const landingPages = [
   'app/leadsite-ai/page.js',
   'app/leadsite-io/page.js',
   'app/clientcontact-io/page.js',
-  'app/tackle-io/page.js',
+  'app/tackle-io/page.js', // legacy redirect to clientcontact-io
 ];
 
 landingPages.forEach(page => {

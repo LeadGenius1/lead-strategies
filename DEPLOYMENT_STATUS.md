@@ -109,7 +109,7 @@ Expected Response:
 ```json
 {
   "status": "ok",
-  "platforms": ["leadsite.ai", "leadsite.io", "clientcontact.io", "videosite.io", "tackle.io"]
+  "platforms": ["leadsite.ai", "leadsite.io", "clientcontact.io", "videosite.io"]
 }
 ```
 
@@ -134,9 +134,9 @@ Expected: HTML response with status 200
 - `POST /api/channels/connect` - Should connect channel
 - `GET /api/conversations` - Should return conversations
 
-**Tackle.IO:**
-- `GET /api/tackle/deals/pipeline` - Should return pipeline
-- `POST /api/tackle/meetings/book` - Should book meeting
+**ClientContact.IO CRM:**
+- `GET /api/v1/clientcontact/deals/pipeline` - Should return pipeline
+- `POST /api/v1/clientcontact/meetings/book` - Should book meeting
 
 **VideoSite.AI:**
 - `POST /api/videos/generate` - Should start generation

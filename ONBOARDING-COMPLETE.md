@@ -10,7 +10,7 @@ The seamless 3-click onboarding experience is fully implemented and deployed for
 **Location:** Landing page → `/signup`
 
 **User sees:**
-- Tier selection (LeadSite.AI, LeadSite.IO, ClientContact.IO, Tackle.IO)
+- Tier selection (LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI)
 - Quick signup form (name, email, password)
 - OAuth options (Google, Microsoft, LinkedIn)
 

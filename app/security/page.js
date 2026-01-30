@@ -12,7 +12,7 @@ export default function SecurityPage() {
       <section>
         <h2>Security Overview</h2>
         <p>
-          Our comprehensive security framework protects your data across all platforms including LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, and TackleAI. We employ enterprise-grade security measures, continuous monitoring, and proactive threat detection to ensure your information remains secure.
+          Our comprehensive security framework protects your data across all platforms including LeadSite.AI, LeadSite.IO, ClientContact.IO, and VideoSite.AI. We employ enterprise-grade security measures, continuous monitoring, and proactive threat detection to ensure your information remains secure.
         </p>
       </section>
 

@@ -11,7 +11,7 @@ This frontend powers all 5 platforms with feature-gated access:
 | **LeadSite.AI** | Tier 1 | $49/mo | Email campaigns, prospect discovery, AI content |
 | **LeadSite.IO** | Special | $29/mo | AI website builder, lead capture forms |
 | **ClientContact.IO** | Tier 2 | $149/mo | 22+ channel integration, unified inbox |
-| **Tackle.IO** | Tier 3 | $499/mo | Voice calls, CRM, 7 AI agents |
+| **ClientContact.IO** | Tier 3/5 | $99–$299/mo | Unified inbox, CRM, 7 AI agents |
 | **VideoSite.IO** | Coming | TBD | Video marketing platform |
 
 ## 🛠 Tech Stack
@@ -96,7 +96,7 @@ Backend deployed on Railway: `https://backend-production-2987.up.railway.app`
 - 22+ channel integration
 - AI auto-responder
 
-### Tier 3 (Tackle.IO)
+### Tier 3 / 5 (ClientContact.IO)
 - Voice calling with Twilio
 - Full CRM with pipeline
 - 7 AI agents dashboard

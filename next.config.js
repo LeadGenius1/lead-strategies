@@ -26,7 +26,7 @@ const nextConfig = {
   },
   // Output configuration for Railway
   output: 'standalone',
-  // Redirect legacy TackleAI URLs to ClientContact.IO
+  // Legacy URL redirects (no trademark reference)
   async redirects() {
     return [
       { source: '/tackle-io', destination: '/clientcontact-io', permanent: true },

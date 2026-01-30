@@ -1,4 +1,4 @@
-// Tackle.IO 7 AI Agents System
+// ClientContact.IO 7 AI Agents System
 // Sales automation agents for CRM operations
 
 const { PrismaClient } = require('@prisma/client');

@@ -8,7 +8,7 @@ export default function PrivacyPage() {
       <section>
         <h2>Introduction</h2>
         <p>
-          AI Lead Strategies LLC ("we," "our," or "us") is committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platforms and services, including LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, TackleAI, and related services (collectively, the "Services").
+          AI Lead Strategies LLC ("we," "our," or "us") is committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platforms and services, including LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, and related services (collectively, the "Services").
         </p>
       </section>
 

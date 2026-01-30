@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
       {/* Filters */}
       <div className="flex gap-4 items-center">
         <div className="flex gap-2">
-          {['all', 'leadsite-ai', 'leadsite-io', 'clientcontact', 'tackle'].map((tier) => (
+          {['all', 'leadsite-ai', 'leadsite-io', 'clientcontact', 'videosite'].map((tier) => (
             <button
               key={tier}
               onClick={() => setFilter(tier)}

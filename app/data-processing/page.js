@@ -12,7 +12,7 @@ export default function DataProcessingPage() {
       <section>
         <h2>Data Processing Overview</h2>
         <p>
-          As a provider of AI-powered marketing automation services, we process various types of data to deliver our LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, and TackleAI platforms. Our data processing activities are designed to provide you with effective lead generation, multi-channel marketing automation, and business growth solutions.
+          As a provider of AI-powered marketing automation services, we process various types of data to deliver our LeadSite.AI, LeadSite.IO, ClientContact.IO, and VideoSite.AI platforms. Our data processing activities are designed to provide you with effective lead generation, multi-channel marketing automation, and business growth solutions.
         </p>
 
         <h3>Our Role in Data Processing</h3>

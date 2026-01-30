@@ -39,7 +39,7 @@ export async function GET(request) {
           'leadsite-ai': 0,
           'leadsite-io': 0,
           'clientcontact': 0,
-          'tackle': 0
+          'clientcontact': 0
         }
       },
       leads: {

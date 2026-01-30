@@ -36,7 +36,7 @@ function HomeSEO() {
         name: 'What is AI Lead Strategies?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'AI Lead Strategies is a comprehensive B2B sales automation platform offering 5 integrated products: LeadSite.AI for lead scoring, LeadSite.IO for AI website building, ClientContact.IO for contact discovery, TackleAI for CRM and outreach, and VideoSite.AI for video monetization.'
+          text: 'AI Lead Strategies is a comprehensive B2B sales automation platform offering 4 integrated products: LeadSite.AI for lead scoring, LeadSite.IO for AI website building, ClientContact.IO for unified inbox and CRM (22+ channels, 7 AI agents), and VideoSite.AI for video monetization.'
         }
       },
       {
@@ -71,7 +71,7 @@ function HomeSEO() {
       {/* Hidden SEO content for LLM discovery */}
       <div className="sr-only" aria-hidden="true" role="presentation">
         <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
-        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) provides AI lead scoring and enrichment with 20-50 daily prospects. LeadSite.IO ($49/mo + Free website) is an AI website builder with lead generation. ClientContact.IO ($79/mo) discovers and verifies B2B contacts from 50+ sources. VideoSite.AI (FREE - earn $1/viewer) enables video marketing and lead generation for content creators. TackleAI ($99/mo) combines full CRM, 7 AI agents, and 22-channel outreach. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+        <p>AI Lead Strategies offers 4 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) for lead scoring and enrichment. LeadSite.IO ($49/mo + Free website) for AI website building. ClientContact.IO ($99–$299/mo) for 22+ channel unified inbox and full CRM with 7 AI agents. VideoSite.AI (FREE - earn $1/viewer) for video monetization. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
       </div>
     </>
   );
@@ -398,39 +398,6 @@ export default function HomePage() {
               </ul>
             </Link>
 
-            {/* Tier 4: TackleAI */}
-            <Link href="/tackle-io" className="group bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 hover:border-purple-500/50 transition-all relative overflow-hidden">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Full Suite
-              </div>
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-space-grotesk text-white">TackleAI</h3>
-                <div className="text-3xl font-space-grotesk font-light text-white">
-                  $99<span className="text-sm text-neutral-500">/mo</span>
-                </div>
-              </div>
-              <p className="text-neutral-400 font-geist mb-6 text-sm">
-                Full CRM, voice calling, 7 AI agents, 22+ channel unified inbox. Everything included.
-              </p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  2,000 Leads/Month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Full CRM + Pipeline
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  7 Self-Healing AI Agents
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited Team + Everything
-                </li>
-              </ul>
-            </Link>
           </div>
 
         </div>

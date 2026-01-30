@@ -8,7 +8,7 @@ export default function TermsPage() {
       <section>
         <h2>1. Agreement Overview</h2>
         <p>
-          These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "Customer," or "you") and AI Lead Strategies LLC ("Company," "we," "our," or "us") governing your use of our platforms and services, including LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, TackleAI, and related services (collectively, the "Services").
+          These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "Customer," or "you") and AI Lead Strategies LLC ("Company," "we," "our," or "us") governing your use of our platforms and services, including LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, and related services (collectively, the "Services").
         </p>
         <div className="bg-[#050505] border border-white/10 rounded-lg p-6 not-prose mt-4">
           <p className="font-semibold text-white mb-2">Company Information</p>
@@ -47,7 +47,6 @@ export default function TermsPage() {
           <li><strong>LeadSite.IO:</strong> Advanced lead management and nurturing system</li>
           <li><strong>ClientContact.IO:</strong> Multi-channel client communication and engagement platform</li>
           <li><strong>VideoSite.AI:</strong> Video content creation and distribution platform with creator monetization</li>
-          <li><strong>TackleAI:</strong> Comprehensive marketing automation across 22+ channels including LinkedIn, Instagram, Facebook, Twitter, TikTok, YouTube, Email, SMS, and WhatsApp</li>
         </ul>
 
         <h3>3.2 AI-Powered Services</h3>
@@ -73,7 +72,6 @@ export default function TermsPage() {
           <li><strong>LeadSite.IO:</strong> $49/month for AI website builder + Free Website included</li>
           <li><strong>ClientContact.IO:</strong> $79/month for 22+ channel unified inbox</li>
           <li><strong>VideoSite.AI:</strong> FREE for content creators (earn $1.00 per video viewer)</li>
-          <li><strong>TackleAI:</strong> $99/month for full CRM + Voice + 7 AI Agents</li>
         </ul>
 
         <h3>4.2 Billing Terms</h3>

@@ -29,7 +29,7 @@ export default function AdminStatsPage() {
             'leadsite-ai': 0,
             'leadsite-io': 0,
             'clientcontact': 0,
-            'tackle': 0
+            'clientcontact': 0
           }
         },
         leads: { total: 0, today: 0 },

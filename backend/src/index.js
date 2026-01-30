@@ -1,5 +1,5 @@
 // LeadSite.AI Backend - Main Entry Point
-// Unified API for all 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO, Tackle.IO
+// Unified API for 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO
 require('dotenv').config();
 
 const express = require('express');
@@ -23,8 +23,8 @@ const cannedResponseRoutes = require('./routes/cannedResponses');
 const autoResponseRoutes = require('./routes/autoResponses');
 const conversationNoteRoutes = require('./routes/conversationNotes');
 
-// Tackle.IO Routes (Tier 5 - Enterprise CRM)
-const tackleRoutes = require('./routes/tackle');
+// ClientContact CRM Routes (Tier 5)
+const clientcontactCrmRoutes = require('./routes/tackle');
 
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
@@ -56,8 +56,6 @@ const allowedOrigins = process.env.CORS_ORIGINS?.split(',') || [
   'https://leadsite.io',
   'https://clientcontact.io',
   'https://videosite.io',
-  'https://tackle.io',
-  'https://tackleai.ai'
 ];
 
 app.use(cors({
@@ -123,7 +121,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     version: '1.0.0',
     service: 'leadsite-backend',
-    platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.io', 'tackle.io'],
+    platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.io'],
     selfHealing: {
       enabled: selfHealingSystem?.running || false,
       agents: selfHealingSystem?.running ? Object.keys(selfHealingSystem.getAgentStatus()).length : 0
@@ -163,8 +161,8 @@ app.use('/api/v1/canned-responses', cannedResponseRoutes);
 app.use('/api/v1/auto-responses', autoResponseRoutes);
 app.use('/api/v1/conversation-notes', conversationNoteRoutes);
 
-// Tackle.IO Routes (Tier 5 Enterprise CRM)
-app.use('/api/v1/tackle', tackleRoutes);
+// ClientContact CRM Routes (Tier 5)
+app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
 
 // Admin Routes (Internal AI Lead Strategies staff only)
 app.use('/admin', adminRoutes);
@@ -234,7 +232,7 @@ app.listen(PORT, '0.0.0.0', async () => {
 ║   • LeadSite.IO (Tier 2)                          ║
 ║   • ClientContact.IO (Tier 3)                     ║
 ║   • VideoSite.IO (Tier 4)                         ║
-║   • Tackle.IO (Tier 5)                            ║
+║   • ClientContact CRM (Tier 5)                    ║
 ║                                                   ║
 ║   Health: http://localhost:${PORT}/health            ║
 ║   API:    http://localhost:${PORT}/api/v1            ║
@@ -246,11 +244,11 @@ app.listen(PORT, '0.0.0.0', async () => {
   // ===========================================
   // SELF-HEALING SYSTEM STARTUP
   // ===========================================
-  // Monitors all 5 platforms from single system
+  // Monitors all 4 platforms from single system
   if (process.env.ENABLE_SELF_HEALING === 'true') {
     try {
       console.log('\n🔧 Starting Self-Healing System...');
-      console.log('   Monitoring all 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO, Tackle.IO\n');
+      console.log('   Monitoring all 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO\n');
 
       // Start all 7 agents
       await startAgents({

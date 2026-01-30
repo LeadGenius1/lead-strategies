@@ -30,12 +30,6 @@ export default function sitemap() {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/tackle-io`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
       url: `${baseUrl}/videosite-ai`,
       lastModified: currentDate,
       changeFrequency: 'weekly',

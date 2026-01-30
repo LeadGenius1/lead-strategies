@@ -91,8 +91,8 @@ const TIER_INFO = {
       videos: 'Unlimited'
     }
   },
-  'tackle': {
-    name: 'TackleAI',
+  'clientcontact-io': {
+    name: 'ClientContact.IO',
     price: '$99/mo',
     features: {
       leads: true,

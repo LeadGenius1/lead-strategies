@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 /**
- * Legacy route: TackleAI was consolidated into ClientContact.IO.
- * Redirect /tackle-io → /clientcontact-io (per legal rebrand).
+ * Legacy route redirect to ClientContact.IO.
+ * Paths /tackle-io and /tackle redirect here for compatibility.
  */
-export default function TackleIORedirectPage() {
+export default function LegacyRedirectPage() {
   const router = useRouter();
   useEffect(() => {
     router.replace('/clientcontact-io');

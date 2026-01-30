@@ -150,7 +150,7 @@ export default function DealsPage() {
     try {
       const [pipelineRes, dealsRes] = await Promise.all([
         api.get('/api/v1/clientcontact/pipelines').catch(() => ({ data: { data: [] } })),
-        api.get('/api/v1/tackle/deals/pipeline').catch(() => ({ data: { data: {} } }))
+        api.get('/api/v1/clientcontact/deals/pipeline').catch(() => ({ data: { data: {} } }))
       ])
 
       const pipelines = pipelineRes.data?.data || pipelineRes.data || []

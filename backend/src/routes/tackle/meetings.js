@@ -1,6 +1,6 @@
 /**
  * Meetings API Routes
- * Tackle.IO - Meeting Scheduler & Calendar Integration
+ * ClientContact.IO CRM - Meeting Scheduler & Calendar Integration
  */
 
 const express = require('express');
@@ -9,7 +9,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-// GET /api/v1/tackle/meetings - List meetings
+// GET /api/v1/clientcontact/meetings - List meetings
 router.get('/', async (req, res) => {
   try {
     const userId = req.user.id;
@@ -70,7 +70,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/v1/tackle/meetings/book - Book a meeting
+// POST /api/v1/clientcontact/meetings/book - Book a meeting
 router.post('/book', async (req, res) => {
   try {
     const {
@@ -138,7 +138,7 @@ router.post('/book', async (req, res) => {
   }
 });
 
-// PUT /api/v1/tackle/meetings/:id - Update meeting
+// PUT /api/v1/clientcontact/meetings/:id - Update meeting
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -188,7 +188,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/v1/tackle/meetings/:id - Cancel meeting
+// DELETE /api/v1/clientcontact/meetings/:id - Cancel meeting
 router.delete('/:id', async (req, res) => {
   try {
     const meeting = await prisma.meeting.findFirst({

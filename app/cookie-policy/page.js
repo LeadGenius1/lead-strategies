@@ -6,7 +6,7 @@ export default function CookiePolicyPage() {
   return (
     <LegalPageLayout title="Cookie Policy" lastUpdated="January 19, 2026">
       <p className="text-lg">
-        AI Lead Strategies LLC uses cookies and similar tracking technologies to provide, protect, and improve our services across all platforms including LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, and TackleAI. This Cookie Policy explains what cookies are, how we use them, and your choices regarding cookies.
+        AI Lead Strategies LLC uses cookies and similar tracking technologies to provide, protect, and improve our services across all platforms including LeadSite.AI, LeadSite.IO, ClientContact.IO, and VideoSite.AI. This Cookie Policy explains what cookies are, how we use them, and your choices regarding cookies.
       </p>
 
       <section>
@@ -153,7 +153,7 @@ export default function CookiePolicyPage() {
           <li><strong>Performance Analytics:</strong> Video performance and audience analytics</li>
         </ul>
 
-        <h3>TackleAI (Multi-Channel Platform)</h3>
+        <h3>ClientContact.IO (Unified Inbox & CRM)</h3>
         <ul>
           <li><strong>Channel Management:</strong> Social media platform connections and preferences</li>
           <li><strong>Content Scheduling:</strong> Posting preferences and timing optimization</li>

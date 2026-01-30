@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -201,6 +202,21 @@ export default function SignupPage() {
                     <p className="text-sm text-neutral-400 font-geist">22+ channel inbox</p>
                   </button>
 
+                  {/* VideoSite.IO - No Tackle.IO */}
+                  <button
+                    onClick={() => setTier('videosite-io')}
+                    className={`text-left p-6 border transition-all ${
+                      tier === 'videosite-io'
+                        ? 'border-purple-500 bg-purple-500/5'
+                        : 'border-subtle hover:border-purple-500/30'
+                    }`}
+                  >
+                    <h3 className="text-xl font-space-grotesk text-white mb-2">VideoSite.IO</h3>
+                    <p className="text-3xl font-space-grotesk font-light text-white mb-2">
+                      Contact
+                    </p>
+                    <p className="text-sm text-neutral-400 font-geist">7 AI agents, n8n workflows</p>
+                  </button>
                 </div>
 
                 <button
@@ -467,6 +483,7 @@ export default function SignupPage() {
                     {tier === 'leadsite-ai' && 'LeadSite.AI - $49/mo'}
                     {tier === 'leadsite-io' && 'LeadSite.IO - $49/mo'}
                     {tier === 'clientcontact-io' && 'ClientContact.IO - $149/mo'}
+                    {tier === 'videosite-io' && 'VideoSite.IO - Contact'}
                   </p>
                   <p className="text-sm text-neutral-400 font-geist mt-2">
                     Trial ends in 14 days. Add payment anytime to continue.
@@ -485,14 +502,7 @@ export default function SignupPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-subtle bg-black py-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center text-[10px] uppercase tracking-widest text-neutral-600 font-geist">
-            © 2025 AI Lead Strategies LLC. All Rights Reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -314,19 +315,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-subtle bg-black py-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-neutral-600">
-            <p className="font-geist">© 2025 AI Lead Strategies LLC. All Rights Reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="/privacy" className="hover:text-white transition-colors font-geist">Privacy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors font-geist">Terms</Link>
-              <Link href="/support" className="hover:text-white transition-colors font-geist">Support</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

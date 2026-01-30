@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import Footer from '@/components/Footer';
 
 function LoginForm() {
   const router = useRouter();
@@ -224,14 +225,7 @@ function LoginForm() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-subtle bg-black py-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center text-[10px] uppercase tracking-widest text-neutral-600 font-geist">
-            © 2025 AI Lead Strategies LLC. All Rights Reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

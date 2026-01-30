@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 export default function LeadSiteIOPage() {
   useEffect(() => {
@@ -586,31 +587,7 @@ export default function LeadSiteIOPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-subtle bg-black pt-12 pb-8 relative z-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
-            <div className="text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
-              <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse"></div>
-              AI LEAD STRATEGIES
-            </div>
-            <div className="flex gap-8 text-xs font-geist text-neutral-500 uppercase tracking-widest">
-              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="#" className="hover:text-white transition-colors">Security</Link>
-            </div>
-          </div>
-
-          <div className="border-t border-subtle pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-neutral-600">
-            <p className="font-geist">© 2025 AI Lead Strategies LLC. All Rights Reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="#" className="hover:text-white transition-colors font-geist">Twitter</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">LinkedIn</Link>
-              <Link href="#" className="hover:text-white transition-colors font-geist">GitHub</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

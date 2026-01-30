@@ -1,0 +1,70 @@
+CRITICAL RESTORATION TASK - READ CAREFULLY
+
+GOAL: Restore the AI Lead Strategies platform to the EXACT state it was in BEFORE any Google OAuth work, WITH all TackleAI references removed.
+
+WHAT WE NEED TO RESTORE:
+1. The AETHER UI design system (dark theme, purple accents, animated grids)
+2. The complete hero section with:
+   - "ONE PLATFORM INFINITE REVENUE" headline
+   - "7 Agents Active" status indicator
+   - Animated counter stats
+   - Professional AETHER styling
+
+3. Complete feature content including:
+   - "22+ channels" unified inbox messaging
+   - "7 AI agents" references and descriptions
+   - All VideoSite.IO features and upgrades
+   - All LeadSite.AI features
+   - All LeadSite.IO features (website builder)
+   - All ClientContact.IO features (unified inbox)
+   - n8n workflow integrations descriptions
+   - All enterprise-grade features
+
+4. Platform navigation showing: AI LEAD, LEADSITE.AI, LEADSITE.IO, CLIENTCONTACT, VIDEOSITE
+   (NOTE: Remove any TACKLE.IO references)
+
+5. Pricing tiers (WITHOUT Tackle):
+   - LeadSite.AI: $49/mo (1,000 leads/month)
+   - LeadSite.IO: $49/mo (1,000 leads + 1 free website)
+   - ClientContact.IO: $149/mo (22+ channel inbox)
+   - VideoSite.IO: (Add pricing if available)
+
+6. All dashboard features, analytics, campaigns functionality
+7. All the upgraded content from the "initial commit" or latest feature-complete version
+
+WHAT TO REMOVE:
+- ALL TackleAI/Tackle.IO branding
+- Tackle.IO navigation links
+- Tackle.IO pricing tier ($249)
+- Any Tackle CRM references
+
+FILES TO CHECK AND RESTORE:
+- app/page.tsx (main landing page - CRITICAL)
+- app/signup/page.tsx (remove Tackle tier)
+- app/clientcontact-io/page.tsx
+- app/leadsite-ai/page.tsx
+- app/leadsite-io/page.tsx
+- app/videosite-io/page.tsx
+- app/dashboard/*.tsx (all dashboard pages)
+- components/* (all UI components)
+
+CURRENT PROBLEM:
+The site is showing a simple purple HTML page instead of the full Next.js React application with all features.
+
+REFERENCE COMMITS:
+Look at commit 151f836 (Initial commit) and commit 98be471 (pricing updates) for the complete feature set.
+
+ACTION REQUIRED:
+1. Review the current state of all files
+2. Restore ALL missing content and features
+3. Ensure AETHER design is fully implemented
+4. Remove ALL TackleAI references
+5. Verify all 22+ channels and 7 agents content is present
+6. Test that the site serves the React app, not static HTML
+
+DEPLOYMENT NOTE:
+- This Next.js app lives at: C:\Users\ailea\Documents\lead-strategies
+- Railway "strong-communication" must deploy THIS repo (lead-strategies) for aileadstrategies.com to serve the React app.
+- If Railway is currently deploying aileadstrategies-frontend (static HTML), switch the deploy source to the lead-strategies repo so customers see the full React app.
+
+This is a PRODUCTION EMERGENCY. The current deployment is showing the wrong content to customers.

@@ -22,6 +22,7 @@ export interface CampaignAnalytics {
   unsubscribed: number;
   bounceRate: number;
 }
+
 // lib/campaigns.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
 
@@ -32,6 +33,10 @@ export interface Campaign {
   type: 'email' | 'sms' | 'multi-channel';
   subject?: string;
   content?: string;
+  template?: string;
+  recipientCount?: number;
+  sentAt?: string;
+  leadIds?: string[];
   leads: number;
   sent: number;
   opened: number;
@@ -77,6 +82,7 @@ export const DEFAULT_TEMPLATES: CampaignTemplate[] = [
     name: 'Cold Outreach',
     description: 'Initial contact with new prospects',
     subject: 'Quick question about {{company}}',
+    body: '',
     content: `Hi {{firstName}},
 
 I noticed {{company}} is doing great things in {{industry}}. I wanted to reach out because we help companies like yours generate more qualified leads.
@@ -92,6 +98,7 @@ Best,
     name: 'Follow Up',
     description: 'Second touch after no response',
     subject: 'Re: Quick question about {{company}}',
+    body: '',
     content: `Hi {{firstName}},
 
 I wanted to follow up on my previous email. I understand you're busy, but I think we could really help {{company}} with lead generation.
@@ -107,6 +114,7 @@ Best,
     name: 'Value Add',
     description: 'Provide value before asking',
     subject: 'Thought you might find this useful',
+    body: '',
     content: `Hi {{firstName}},
 
 I came across this resource on {{topic}} and thought of {{company}}. 
@@ -124,6 +132,7 @@ Best,
     name: 'Meeting Request',
     description: 'Direct meeting request',
     subject: 'Meeting request - {{company}} + AI Lead Strategies',
+    body: '',
     content: `Hi {{firstName}},
 
 I'd love to show you how AI Lead Strategies can help {{company}} increase qualified leads by 40%.
@@ -252,15 +261,3 @@ export async function sendTestEmail(id: string, email: string): Promise<void> {
     body: JSON.stringify({ email }),
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-

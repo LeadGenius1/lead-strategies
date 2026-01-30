@@ -32,10 +32,6 @@ export interface Campaign {
   type: 'email' | 'sms' | 'multi-channel';
   subject?: string;
   content?: string;
-  template?: string;
-  recipientCount?: number;
-  sentAt?: string;
-  leadIds?: string[];
   leads: number;
   sent: number;
   opened: number;

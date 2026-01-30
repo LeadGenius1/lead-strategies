@@ -1,0 +1,24 @@
+﻿TASK: Remove ALL TackleAI/Tackle.IO references from the following files:
+
+FILES TO EDIT:
+1. app/signup/page.tsx
+   - Remove Tackle.IO tier option from tier selection
+   - Change default tier from 'tackle-io' to 'clientcontact-io'
+   - Remove all Tackle.IO pricing display logic
+
+2. app/clientcontact-io/page.tsx, app/leadsite-ai/page.tsx, app/leadsite-io/page.tsx, app/videosite-io/page.tsx
+   - Remove Tackle.IO from navigation menu
+   - Keep: AI LEAD, LEADSITE.AI, LEADSITE.IO, CLIENTCONTACT, VIDEOSITE
+
+3. app/dashboard/billing/page.tsx
+   - Remove Tackle.IO from pricing tiers
+   - Keep only: LeadSite.AI (), LeadSite.IO (), ClientContact.IO (), VideoSite.IO
+
+4. app/dashboard/page.tsx
+   - Remove any Tackle.IO dashboard references
+
+IMPORTANT: 
+- Keep ALL other features and content
+- Keep the 22 channels, 7 AI agents content
+- Only remove TackleAI branding and pricing
+- Don't break any functionality

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function SignupPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [tier, setTier] = useState('tackle-io');
+  const [tier, setTier] = useState('clientcontact-io');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -63,8 +63,8 @@ export default function SignupPage() {
         return;
       }
 
-      // Ensure tier is set (default to leadsite-ai if not set)
-      const selectedTier = tier || 'leadsite-ai';
+      // Ensure tier is set (default to clientcontact-io if not set)
+      const selectedTier = tier || 'clientcontact-io';
 
       // Submit to API with credentials for cookie handling
       const response = await fetch('/api/auth/signup', {
@@ -201,26 +201,6 @@ export default function SignupPage() {
                     <p className="text-sm text-neutral-400 font-geist">22+ channel inbox</p>
                   </button>
 
-                  {/* Tackle.IO */}
-                  <button
-                    onClick={() => setTier('tackle-io')}
-                    className={`text-left p-6 border transition-all ${
-                      tier === 'tackle-io'
-                        ? 'border-purple-500 bg-purple-500/5'
-                        : 'border-subtle hover:border-purple-500/30'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-space-grotesk text-white">Tackle.IO</h3>
-                      <span className="px-2 py-0.5 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                        Enterprise
-                      </span>
-                    </div>
-                    <p className="text-3xl font-space-grotesk font-light text-white mb-2">
-                      $249<span className="text-sm text-neutral-500">/mo</span>
-                    </p>
-                    <p className="text-sm text-neutral-400 font-geist">2,000 Leads + Full CRM</p>
-                  </button>
                 </div>
 
                 <button
@@ -487,7 +467,6 @@ export default function SignupPage() {
                     {tier === 'leadsite-ai' && 'LeadSite.AI - $49/mo'}
                     {tier === 'leadsite-io' && 'LeadSite.IO - $49/mo'}
                     {tier === 'clientcontact-io' && 'ClientContact.IO - $149/mo'}
-                    {tier === 'tackle-io' && 'Tackle.IO - $249/mo'}
                   </p>
                   <p className="text-sm text-neutral-400 font-geist mt-2">
                     Trial ends in 14 days. Add payment anytime to continue.

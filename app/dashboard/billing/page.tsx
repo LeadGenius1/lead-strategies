@@ -114,11 +114,10 @@ export default function BillingPage() {
       features: ['22+ Channels Unified', 'AI Auto-Responder', 'Unlimited Campaigns', '3 Team Seats'],
     },
     {
-      id: 'tackle-io',
-      name: 'Tackle.IO',
-      price: 249,
-      features: ['2,000 Leads/Month', 'Full CRM + Pipeline', '7 AI Agents', 'Unlimited Team'],
-      enterprise: true,
+      id: 'videosite-io',
+      name: 'VideoSite.IO',
+      price: 399,
+      features: ['100 videos/month', '4K resolution', 'AI Video Generator', 'Multi-platform export'],
     },
   ];
 
@@ -218,16 +217,8 @@ export default function BillingPage() {
                     (user.tier || 'free') === tier.id
                       ? 'border-purple-500/50 bg-purple-500/5'
                       : 'border-subtle hover:border-purple-500/30'
-                  } ${tier.enterprise ? 'bg-gradient-to-br from-purple-950/20 to-[#050505]' : ''}`}
+                  }`}
                 >
-                  {tier.enterprise && (
-                    <div className="mb-4">
-                      <span className="px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                        Enterprise
-                      </span>
-                    </div>
-                  )}
-                  
                   <h3 className="text-xl font-space-grotesk text-white mb-2">{tier.name}</h3>
                   <div className="text-3xl font-space-grotesk font-light text-white mb-6">
                     ${tier.price}<span className="text-sm text-neutral-500">/mo</span>
@@ -251,7 +242,7 @@ export default function BillingPage() {
                       onClick={() => handleUpgrade(tier.id)}
                       className="w-full bg-white text-black px-6 py-3 text-xs font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist"
                     >
-                      {tier.enterprise ? 'Contact Sales' : 'Upgrade'}
+                      Upgrade
                     </button>
                   )}
                 </div>

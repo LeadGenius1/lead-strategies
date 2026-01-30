@@ -111,8 +111,8 @@ export default function VideoSiteIOPage() {
             <Link href="/clientcontact-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               ClientContact
             </Link>
-            <Link href="/tackle-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Tackle.IO
+            <Link href="/videosite-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-white font-geist">
+              VideoSite
             </Link>
           </div>
 
@@ -592,8 +592,8 @@ export default function VideoSiteIOPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
+              { name: 'LeadSite.AI', desc: 'AI lead scoring and enrichment', href: '/leadsite-ai' },
               { name: 'LeadSite.IO', desc: 'Embed videos in sites', href: '/leadsite-io' },
-              { name: 'Tackle.IO', desc: 'Video outreach automation', href: '/tackle-io' },
               { name: 'ClientContact.IO', desc: 'Video responses', href: '/clientcontact-io' }
             ].map((platform, index) => (
               <Link

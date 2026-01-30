@@ -100,8 +100,8 @@ export default function LeadSiteAIPage() {
             <Link href="/clientcontact-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               ClientContact
             </Link>
-            <Link href="/tackle-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Tackle.IO
+            <Link href="/videosite-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
+              VideoSite
             </Link>
           </div>
 
@@ -448,7 +448,7 @@ export default function LeadSiteAIPage() {
             {[
               { name: 'LeadSite.IO', desc: 'Website builder to capture more leads', href: '/leadsite-io' },
               { name: 'ClientContact.IO', desc: 'Unified inbox for follow-up', href: '/clientcontact-io' },
-              { name: 'Tackle.IO', desc: 'Multi-channel outreach automation', href: '/tackle-io' }
+              { name: 'VideoSite.IO', desc: 'AI video marketing platform', href: '/videosite-io' }
             ].map((platform, index) => (
               <Link
                 key={index}

@@ -100,9 +100,7 @@ export default function HomePage() {
             <Link href="/clientcontact-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
               ClientContact
             </Link>
-            <Link href="/tackle-io" className="hover:text-white px-4 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              Tackle.IO
-            </Link>
+            
           </div>
 
           <Link href="/signup" className="group relative bg-white text-black px-6 py-2 text-xs font-semibold tracking-widest uppercase transition-transform overflow-hidden">
@@ -321,38 +319,7 @@ export default function HomePage() {
             </Link>
 
             {/* Tier 4: Tackle.IO */}
-            <Link href="/tackle-io" className="group bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-8 hover:border-purple-500/50 transition-all relative overflow-hidden">
-              <div className="absolute top-4 right-4 px-2 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] uppercase tracking-wider font-geist">
-                Enterprise
-              </div>
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-space-grotesk text-white">Tackle.IO</h3>
-                <div className="text-3xl font-space-grotesk font-light text-white">
-                  $249<span className="text-sm text-neutral-500">/mo</span>
-                </div>
-              </div>
-              <p className="text-neutral-400 font-geist mb-6 text-sm">
-                Replace HubSpot+Gong+Outreach. Full CRM, voice calling, 7 AI agents. Save $44,812/year.
-              </p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  2,000 Leads/Month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Full CRM + Pipeline
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  7 Self-Healing AI Agents
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited Team + Everything
-                </li>
-              </ul>
-            </Link>
+            
           </div>
 
           <div className="text-center mt-12">

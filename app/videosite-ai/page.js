@@ -197,12 +197,9 @@ export default function VideoSiteAIPage() {
             loop
             playsInline
             className="absolute w-full h-full object-cover"
-            poster="/social_media_views_poster.jpg"
           >
-            {/* Primary: social_media_views converted to mp4 for browser compatibility */}
+            <source src="/videosite-streaming-content.mp4" type="video/mp4" />
             <source src="/social_media_views.mp4" type="video/mp4" />
-            {/* Fallback: meeting-handshake */}
-            <source src="/meeting-handshake.mp4" type="video/mp4" />
           </video>
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-black/70"></div>
@@ -221,9 +218,9 @@ export default function VideoSiteAIPage() {
                 </span>
               </div>
 
-              {/* Main heading - reduced by 20%: 4xl→3xl, 5xl→4xl, 7xl→6xl, 9xl→7xl */}
+              {/* Main heading - reduced 15% for readability and responsive */}
               <div className="flex flex-col z-10 w-full items-center justify-center">
-                <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-4 mb-6">
+                <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-3 md:gap-y-4 text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tighter mt-2 mb-4">
                   <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                     Monetize Your Videos
                   </span>
@@ -233,8 +230,8 @@ export default function VideoSiteAIPage() {
                 </h1>
               </div>
 
-              {/* Subheading - reduced by 20%: base→sm, lg→base, 2xl→xl, 3xl→2xl */}
-              <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-300 tracking-tight font-space-grotesk mt-4 mb-6 max-w-3xl px-4">
+              {/* Subheading */}
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-xs sm:text-sm md:text-base lg:text-xl text-neutral-300 tracking-tight font-space-grotesk mt-2 mb-4 max-w-3xl px-4">
                 $1.00 per qualified view. See the math. See the money. Other platforms show you views—we show you dollars.
               </h2>
 

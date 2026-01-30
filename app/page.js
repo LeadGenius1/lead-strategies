@@ -204,10 +204,10 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 pt-32 pb-20 sm:pt-44 sm:pb-24 md:pt-56 md:pb-36">
+        {/* Hero Content - font sizes reduced 15% for readability, responsive */}
+        <div className="relative z-10 pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-44 md:pb-28 lg:pt-52 lg:pb-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
-          <div className="flex flex-col text-center mb-16 sm:mb-28 relative items-center justify-center">
+          <div className="flex flex-col text-center mb-12 sm:mb-20 relative items-center justify-center">
             {/* Version Tag */}
             <div className="absolute -left-4 md:left-20 top-0 flex flex-col gap-2 opacity-30 hidden lg:flex [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
               <span className="text-[10px] uppercase tracking-widest text-neutral-500 font-geist">Est. 2024</span>
@@ -215,7 +215,7 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-6 text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-semibold text-white tracking-tighter mt-4 sm:mt-8 mb-6 sm:mb-8">
+              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-3 md:gap-y-4 text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold text-white tracking-tighter mt-2 sm:mt-6 mb-4 sm:mb-6">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                   ONE PLATFORM
                 </span>
@@ -225,31 +225,33 @@ export default function HomePage() {
               </h1>
             </div>
 
-            <div className="flex flex-col z-10 w-full mt-8 mb-8 gap-y-4 items-center justify-center">
+            <div className="flex flex-col z-10 w-full mt-6 mb-6 gap-y-3 items-center justify-center">
               {/* Future of Outreach Marketing Badge */}
               <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-                <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[10px] sm:text-xs uppercase tracking-wider font-geist">
+                <span className="px-3 py-1.5 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[9px] sm:text-[10px] uppercase tracking-wider font-geist">
                   THE FUTURE OF OUTREACH MARKETING
                 </span>
               </div>
 
-              <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-base sm:text-lg md:text-2xl lg:text-3xl text-neutral-400 tracking-tight font-space-grotesk">
+              <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-400 tracking-tight font-space-grotesk">
                 Automated B2B Marketing Ecosystem
               </h2>
             </div>
 
-            <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-500 font-space-grotesk text-center max-w-2xl px-4 mt-4">
+            <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-xs sm:text-sm md:text-base lg:text-xl text-neutral-500 font-space-grotesk text-center max-w-2xl px-4 mt-2">
               Stop juggling 10 tools. One unified platform for lead generation, website building, omnichannel outreach, and enterprise sales automation.
             </div>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 max-w-6xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+          {/* Stats Grid - modern flat icon style (dark grey square) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-6xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             {/* Card 1 */}
-            <div className="bg-[#050505] border border-subtle p-8 flex flex-col justify-between min-h-[220px] relative group hover:border-white/10 transition-colors">
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">01</div>
               <div className="flex justify-between items-start">
-                <Icons.Grid className="w-6 h-6 text-neutral-300" />
+                <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
+                  <Icons.Grid className="w-5 h-5 text-purple-400" />
+                </div>
                 <div className="px-2 py-0.5 border border-purple-900/30 bg-purple-900/10 text-purple-400 text-[10px] uppercase tracking-wider font-geist">
                   Live
                 </div>
@@ -263,10 +265,12 @@ export default function HomePage() {
             </div>
 
             {/* Card 2 */}
-            <div className="bg-[#050505] border border-subtle p-8 flex flex-col justify-between min-h-[220px] relative group hover:border-white/10 transition-colors">
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">02</div>
               <div className="flex justify-between items-start">
-                <Icons.Users className="w-6 h-6 text-neutral-300" />
+                <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
+                  <Icons.Users className="w-5 h-5 text-sky-400" />
+                </div>
               </div>
               <div>
                 <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
@@ -277,10 +281,12 @@ export default function HomePage() {
             </div>
 
             {/* Card 3 */}
-            <div className="bg-[#050505] border border-subtle p-8 flex flex-col justify-between min-h-[220px] relative group hover:border-white/10 transition-colors">
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">03</div>
               <div className="flex justify-between items-start">
-                <Icons.TrendingUp className="w-6 h-6 text-neutral-300" />
+                <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
+                  <Icons.TrendingUp className="w-5 h-5 text-emerald-400" />
+                </div>
               </div>
               <div>
                 <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">

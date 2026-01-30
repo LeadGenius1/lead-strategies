@@ -178,7 +178,7 @@ export default function LeadSiteAIPage() {
             playsInline
             className="absolute w-full h-full object-cover"
           >
-            <source src="/meeting-handshake.mp4" type="video/mp4" />
+            <source src="/handshake.mp4" type="video/mp4" />
           </video>
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-black/70"></div>
@@ -212,7 +212,7 @@ export default function LeadSiteAIPage() {
             </div>
 
             <div className="flex flex-col z-10 w-full items-center justify-center">
-              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-4 md:gap-y-5 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold text-white tracking-tighter mt-4 mb-6">
+              <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-3 md:gap-y-4 text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tighter mt-2 mb-4">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
                   TURN YOUR WEBSITE INTO A
                 </span>
@@ -222,7 +222,7 @@ export default function LeadSiteAIPage() {
               </h1>
             </div>
 
-            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-400 tracking-tight font-space-grotesk mt-4 mb-6 max-w-3xl px-4">
+            <h2 className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-xs sm:text-sm md:text-base lg:text-xl text-neutral-400 tracking-tight font-space-grotesk mt-2 mb-4 max-w-3xl px-4">
               AI-powered prospect discovery and personalized outreach. Install once, generate qualified leads forever. No manual work required.
             </h2>
           </div>
@@ -491,8 +491,8 @@ export default function LeadSiteAIPage() {
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all group [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.05 * index}s` }}
               >
-                <div className={`w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${feature.color}`}>
-                  <feature.Icon className="w-6 h-6" />
+                <div className={`w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center mb-4 ${feature.color}`}>
+                  <feature.Icon className="w-5 h-5" />
                 </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>

@@ -264,8 +264,8 @@ export default function ClientContactIOPage() {
                 className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
                 style={{ animationDelay: `${0.05 * index}s` }}
               >
-                <div className={`w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center mb-4 ${feature.color}`}>
-                  <feature.Icon className="w-6 h-6" />
+                <div className={`w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center mb-4 ${feature.color}`}>
+                  <feature.Icon className="w-5 h-5" />
                 </div>
                 <h3 className="text-lg font-space-grotesk text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-neutral-400 font-geist leading-relaxed">{feature.desc}</p>

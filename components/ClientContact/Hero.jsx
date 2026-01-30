@@ -17,9 +17,13 @@ export default function ClientContactHero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900">
-      {/* Background: gradient (image optional - add /public/assets/clientcontact-hero-bg.jpg to use) */}
+      {/* Video background: handshake.mp4 */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
+        <video autoPlay muted loop playsInline className="absolute w-full h-full object-cover">
+          <source src="/handshake.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80" />
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-purple-900/10 to-blue-900/10" />
       </div>
 
@@ -44,18 +48,18 @@ export default function ClientContactHero() {
           </span>
         </div>
 
-        {/* Main Headline */}
-        <h1 className="mb-8">
-          <span className="block text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight text-white mb-2">
+        {/* Main Headline - reduced 15% for readability */}
+        <h1 className="mb-6">
+          <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-white mb-2">
             THE FUTURE OF
           </span>
-          <span className="block text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] tracking-tight text-white">
+          <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-white">
             LEAD GENERATION
           </span>
         </h1>
 
         {/* Subheadline */}
-        <p className="text-xl md:text-2xl lg:text-3xl font-light leading-relaxed text-slate-200 max-w-5xl mx-auto mb-16 tracking-wide">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-light leading-relaxed text-slate-200 max-w-5xl mx-auto mb-12 tracking-wide">
           The future of lead generation isn&apos;t about sending more messages
           <span className="block mt-2">
             —it&apos;s about orchestrating smarter conversations across every

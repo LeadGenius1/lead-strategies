@@ -43,10 +43,6 @@ export interface Campaign {
   replied: number;
   createdAt: string;
   updatedAt: string;
-  template?: string;
-  recipientCount?: number;
-  sentAt?: string;
-  leadIds?: string[];
   openedCount?: number;
   clickedCount?: number;
 }

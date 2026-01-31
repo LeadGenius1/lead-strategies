@@ -89,7 +89,8 @@ function SignupForm() {
         router.push('/copilot')
       }
     } catch (error) {
-      toast.error(error.message || 'Signup failed')
+      const msg = error.response?.data?.message || error.response?.data?.error || error.message
+      toast.error(msg || 'Signup failed')
     } finally {
       setLoading(false)
     }

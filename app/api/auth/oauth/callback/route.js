@@ -63,8 +63,10 @@ export async function GET(request) {
         const user = data.user || data.data?.user
 
         if (token) {
-          // Set token in cookie and redirect to copilot (not dashboard)
-          const redirectResponse = NextResponse.redirect(`${baseUrl}/copilot`)
+          // Redirect based on tier: VideoSite users → videos dashboard, others → main dashboard (copilot)
+          const tier = (user?.subscription_tier || user?.tier || stateData.tier || '').toLowerCase()
+          const redirectPath = (tier === 'videosite' || tier === 'videosite-io') ? '/dashboard/videos' : '/copilot'
+          const redirectResponse = NextResponse.redirect(`${baseUrl}${redirectPath}`)
           redirectResponse.cookies.set('token', token, {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
             httpOnly: false, // Needs to be accessible by client-side JS

@@ -31,6 +31,7 @@ const nextConfig = {
     return [
       { source: '/tackle-io', destination: '/clientcontact-io', permanent: true },
       { source: '/tackle', destination: '/clientcontact-io', permanent: true },
+      { source: '/videosite-io', destination: '/videosite-ai', permanent: true },
     ];
   },
 }

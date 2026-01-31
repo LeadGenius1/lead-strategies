@@ -63,9 +63,17 @@ export async function GET(request) {
         const user = data.user || data.data?.user
 
         if (token) {
-          // Redirect based on tier: VideoSite users → videos dashboard, others → main dashboard (copilot)
+          // Redirect each tier to their chosen platform dashboard (not all platforms offer same products)
           const tier = (user?.subscription_tier || user?.tier || stateData.tier || '').toLowerCase()
-          const redirectPath = (tier === 'videosite' || tier === 'videosite-io') ? '/dashboard/videos' : '/copilot'
+          const tierDashboardMap = {
+            'videosite': '/dashboard/videos',
+            'videosite-io': '/dashboard/videos',
+            'leadsite-io': '/dashboard/websites',
+            'clientcontact': '/dashboard/inbox',
+            'clientcontact-io': '/dashboard/inbox',
+            'leadsite-ai': '/dashboard/prospects',
+          }
+          const redirectPath = tierDashboardMap[tier] || '/dashboard'
           const redirectResponse = NextResponse.redirect(`${baseUrl}${redirectPath}`)
           redirectResponse.cookies.set('token', token, {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days

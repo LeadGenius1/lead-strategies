@@ -19,9 +19,18 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      await login(formData.email, formData.password)
+      const { user } = await login(formData.email, formData.password)
       toast.success('Welcome back!')
-      router.push('/copilot')
+      // Redirect to user's platform dashboard (tier: 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact, 4=VideoSite, 5=ClientContact CRM)
+      const tierDashboardMap = {
+        1: '/dashboard/prospects',
+        2: '/dashboard/websites',
+        3: '/dashboard/inbox',
+        4: '/dashboard/videos',
+        5: '/dashboard/inbox',
+      }
+      const dashboardPath = tierDashboardMap[user?.tier] || '/dashboard'
+      router.push(dashboardPath)
     } catch (error) {
       toast.error(error.message || 'Login failed')
     } finally {

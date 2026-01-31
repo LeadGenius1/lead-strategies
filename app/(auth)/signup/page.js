@@ -82,12 +82,17 @@ function SignupForm() {
       })
       toast.success('Account created! Welcome to AI Lead Strategies.')
       
-      // Redirect based on tier - VideoSite.AI users go to videos dashboard
-      if (selectedTier === 'videosite') {
-        router.push('/dashboard/videos')
-      } else {
-        router.push('/copilot')
+      // Redirect each tier to their chosen platform dashboard (not all platforms offer same products)
+      const tierDashboardMap = {
+        'videosite': '/dashboard/videos',       // VideoSite.AI - video monetization
+        'videosite-io': '/dashboard/videos',
+        'leadsite-io': '/dashboard/websites',   // LeadSite.IO - website builder
+        'clientcontact': '/dashboard/inbox',    // ClientContact.IO - 22 channels, unified inbox
+        'clientcontact-io': '/dashboard/inbox',
+        'leadsite-ai': '/dashboard/prospects',  // LeadSite.AI - AI lead gen
       }
+      const dashboardPath = tierDashboardMap[selectedTier] || '/dashboard'
+      router.push(dashboardPath)
     } catch (error) {
       const msg = error.response?.data?.message || error.response?.data?.error || error.message
       toast.error(msg || 'Signup failed')

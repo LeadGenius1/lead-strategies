@@ -104,9 +104,16 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen bg-black overflow-hidden">
+    <div className="flex h-screen bg-black overflow-hidden relative">
+      {/* Aether ambient background – stars, grid, glow blobs */}
+      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <div className="stars absolute w-[1px] h-[1px] bg-transparent rounded-full opacity-50 top-0 left-0" />
+        <div className="absolute inset-0 aether-bg-grid opacity-30" />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] glow-blob" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] glow-blob" style={{ animationDelay: '2s' }} />
+      </div>
       <Sidebar features={subscription?.features || {}} />
-      <main className="flex-1 overflow-y-auto w-full lg:w-auto p-0 sm:p-4 md:p-6 lg:p-8">
+      <main className="flex-1 overflow-y-auto w-full lg:w-auto p-0 sm:p-4 md:p-6 lg:p-8 relative z-10">
         <div className="min-h-full">
           {children}
         </div>

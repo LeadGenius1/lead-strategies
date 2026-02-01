@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import api from '@/lib/api'
 import Cookies from 'js-cookie'
+import { Monitor, Bot, AlertTriangle, BarChart3 } from 'lucide-react'
 
 export default function AdminDashboardPage() {
   const [health, setHealth] = useState(null)
@@ -153,8 +154,8 @@ export default function AdminDashboardPage() {
 
       {/* Metrics */}
       {health?.metrics && (
-        <div className="bg-[#050505] border border-white/10 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-6">System Metrics</h2>
+        <div className="aether-card p-6 bg-neutral-900/30">
+          <h2 className="text-xl font-medium text-white mb-6 tracking-tight">System Metrics</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <div className="flex justify-between mb-2">
@@ -236,8 +237,8 @@ export default function AdminDashboardPage() {
 
       {/* Platform Stats Preview */}
       {stats && (
-        <div className="bg-[#050505] border border-white/10 rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-4">Platform Overview</h2>
+        <div className="aether-card p-6 bg-neutral-900/30">
+          <h2 className="text-xl font-medium text-white mb-4 tracking-tight">Platform Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <p className="text-sm text-neutral-400">Total Users</p>

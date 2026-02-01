@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { Check, X } from 'lucide-react';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 import ShinyButton from '@/components/ShinyButton';
@@ -338,23 +339,23 @@ export default function LeadSiteAIPage() {
                 <h3 className="text-2xl font-space-grotesk text-white mb-6">LeadSite.AI Way</h3>
                 <ul className="space-y-4 font-geist text-neutral-300">
                   <li className="flex items-start gap-3">
-                    <span className="text-green-400 mt-1">✓</span>
+                    <Check className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
                     <span>AI finds leads automatically, 24/7</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-green-400 mt-1">✓</span>
+                    <Check className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
                     <span>Personalized emails that get responses</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-green-400 mt-1">✓</span>
+                    <Check className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
                     <span>Automated follow-ups never miss a lead</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-green-400 mt-1">✓</span>
+                    <Check className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
                     <span>Warm leads delivered to your inbox</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-green-400 mt-1">✓</span>
+                    <Check className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
                     <span>Simple setup, affordable pricing</span>
                   </li>
                 </ul>

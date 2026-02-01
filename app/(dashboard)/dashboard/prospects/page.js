@@ -81,18 +81,13 @@ export default function ProspectsPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black p-6">
-      {/* Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-900/10 rounded-full blur-[100px]"></div>
-      </div>
-
+    <div className="relative min-h-screen p-6 font-sans">
       <div className="relative z-10 max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-medium tracking-tight text-white">Prospects</h1>
-            <p className="text-neutral-500 mt-1 text-sm">Manage and track your leads</p>
+            <p className="text-neutral-400 mt-1 text-sm font-light">Manage and track your leads</p>
           </div>
           <button
             onClick={() => toast.success('Use Lead Hunter to find new prospects!')}
@@ -128,8 +123,8 @@ export default function ProspectsPage() {
             </button>
           </div>
           {leadHunterResults?.results?.length > 0 && (
-            <div className="mt-3 p-3 rounded-xl bg-black/40 border border-white/5">
-              <p className="text-xs text-neutral-500 mb-2">Knowledge context ({leadHunterResults.results.length} chunks)</p>
+            <div className="relative z-10 mt-3 p-3 rounded-xl bg-black/40 border border-white/5">
+              <p className="text-xs text-neutral-500 mb-2 font-light">Knowledge context ({leadHunterResults.results.length} chunks)</p>
               <ul className="space-y-1 text-sm text-neutral-400">
                 {leadHunterResults.results.slice(0, 3).map((r, i) => (
                   <li key={i} className="truncate">• {r.title || r.id}</li>
@@ -187,7 +182,7 @@ export default function ProspectsPage() {
                   key={prospect.id}
                   className="group p-6 rounded-2xl bg-neutral-900/50 border border-white/10 hover:border-indigo-500/30 transition-all duration-300"
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="relative z-10 flex items-start justify-between">
                     <div className="flex gap-4">
                       <div className={`w-12 h-12 rounded-xl bg-${color}-500/20 border border-${color}-500/30 flex items-center justify-center text-lg font-medium text-${color}-400`}>
                         {prospect.name?.charAt(0) || '?'}

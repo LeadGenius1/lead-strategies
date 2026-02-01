@@ -146,19 +146,13 @@ export default function CRMPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black p-6">
-      {/* Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-emerald-900/10 rounded-full blur-[100px]"></div>
-      </div>
-
-      <div className="relative z-10 max-w-full mx-auto space-y-8">
+    <div className="relative min-h-screen p-6">
+      <div className="relative z-10 max-w-full mx-auto space-y-8 font-sans">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-medium tracking-tight text-white">CRM Pipeline</h1>
-            <p className="text-neutral-500 mt-1 text-sm">Track deals through your sales pipeline</p>
+            <p className="text-neutral-400 mt-1 text-sm font-light">Track deals through your sales pipeline</p>
           </div>
           <button className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2">
             <Plus className="w-4 h-4" />
@@ -185,16 +179,19 @@ export default function CRMPage() {
               return (
                 <div
                   key={agent.id}
-                  className="p-4 rounded-xl bg-black/40 border border-white/10 hover:border-white/20 transition-colors"
+                  className="group relative p-4 rounded-xl bg-neutral-900/30 border border-white/10 hover:border-indigo-500/50 transition-all duration-500 overflow-hidden"
                 >
-                  <div className={`w-9 h-9 rounded-lg ${agent.iconBg} border ${agent.iconBorder} flex items-center justify-center mb-3`}>
-                    <Icon className={`w-4 h-4 ${agent.iconColor}`} />
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
+                  <div className="relative z-10">
+                    <div className={`w-9 h-9 rounded-lg ${agent.iconBg} border ${agent.iconBorder} flex items-center justify-center mb-3`}>
+                      <Icon className={`w-4 h-4 ${agent.iconColor}`} />
+                    </div>
+                    <p className="text-sm font-medium text-white truncate">{agent.name}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5 font-light">
+                      {agentsStatus === 'active' ? 'Active' : agentsStatus === 'unavailable' ? '—' : '…'}
+                    </p>
+                    <p className="text-xs text-neutral-400 mt-1 font-light">{agent.stat}</p>
                   </div>
-                  <p className="text-sm font-medium text-white truncate">{agent.name}</p>
-                  <p className="text-xs text-neutral-500 mt-0.5">
-                    {agentsStatus === 'active' ? 'Active' : agentsStatus === 'unavailable' ? '—' : '…'}
-                  </p>
-                  <p className="text-xs text-neutral-400 mt-1">{agent.stat}</p>
                 </div>
               )
             })}
@@ -206,14 +203,15 @@ export default function CRMPage() {
           {stats.map((stat) => {
             const Icon = stat.icon
             return (
-              <div key={stat.label} className="p-5 rounded-2xl bg-neutral-900/50 border border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 border border-${stat.color}-500/20 flex items-center justify-center`}>
-                    <Icon className={`w-5 h-5 text-${stat.color}-400`} />
+              <div key={stat.label} className="group relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-indigo-500/50 transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
+                <div className="relative z-10 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400">
+                    <Icon className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-2xl font-medium text-white">{stat.value}</p>
-                    <p className="text-xs text-neutral-500">{stat.label}</p>
+                    <p className="text-xs text-neutral-500 font-light">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -226,7 +224,7 @@ export default function CRMPage() {
           <div className="rounded-2xl bg-purple-900/20 border border-purple-500/30 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-5 h-5 text-purple-400" />
-              <h2 className="text-lg font-semibold text-purple-300">✨ AI Insights</h2>
+              <h2 className="text-lg font-medium text-purple-300">AI Insights</h2>
             </div>
             <ul className="space-y-2">
               {forecast.insights.map((insight, i) => (
@@ -244,7 +242,7 @@ export default function CRMPage() {
           <div className="rounded-2xl bg-blue-900/20 border border-blue-500/30 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Lightbulb className="w-5 h-5 text-blue-400" />
-              <h2 className="text-lg font-semibold text-blue-300">💡 AI Recommendations</h2>
+              <h2 className="text-lg font-semibold text-blue-300">AI Recommendations</h2>
             </div>
             <div className="space-y-3">
               {forecast.recommendations.map((rec, i) => (
@@ -262,7 +260,7 @@ export default function CRMPage() {
           <div className="rounded-2xl bg-red-900/20 border border-red-500/30 p-6">
             <div className="flex items-center gap-2 mb-4">
               <AlertCircle className="w-5 h-5 text-red-400" />
-              <h2 className="text-lg font-semibold text-red-300">⚠️ Deals at Risk</h2>
+              <h2 className="text-lg font-medium text-red-300">Deals at Risk</h2>
             </div>
             <ul className="space-y-2">
               {forecast.atRiskDeals.map((dealTitle, i) => (

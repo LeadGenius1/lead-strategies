@@ -6,6 +6,7 @@ import api from '@/lib/api'
 import { getCurrentUser } from '@/lib/auth'
 import toast from 'react-hot-toast'
 import Cookies from 'js-cookie'
+import { Check, Bot } from 'lucide-react'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -91,8 +92,8 @@ export default function OnboardingPage() {
           {/* Progress Steps */}
           <div className="flex justify-center gap-2 mt-6">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">
-                ✓
+              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white">
+                <Check className="w-4 h-4" />
               </div>
               <span className="text-sm text-dark-textMuted">Sign Up</span>
             </div>
@@ -268,7 +269,7 @@ export default function OnboardingPage() {
             <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-2xl">🤖</span>
+                  <Bot className="w-6 h-6 text-purple-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-white mb-2">Your AI Agent is Ready</h3>

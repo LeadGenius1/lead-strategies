@@ -92,21 +92,15 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black p-6">
-      {/* Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-900/10 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-purple-900/10 rounded-full blur-[100px]"></div>
-      </div>
-
+    <div className="relative min-h-screen p-6 font-sans">
       <div className="relative z-10 max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-medium tracking-tight text-white">Analytics</h1>
-          <p className="text-neutral-500 mt-1 text-sm">Track your lead generation performance</p>
+          <p className="text-neutral-500 mt-1 text-sm font-light">Track your lead generation performance</p>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid – Aether cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat) => {
             const Icon = stat.icon
@@ -114,7 +108,7 @@ export default function AnalyticsPage() {
             return (
               <div
                 key={stat.label}
-                className="p-6 rounded-2xl bg-neutral-900/50 border border-white/10"
+                className="aether-card p-6 bg-neutral-900/30"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className={`w-10 h-10 rounded-xl bg-${stat.color}-500/10 border border-${stat.color}-500/20 flex items-center justify-center`}>
@@ -126,7 +120,7 @@ export default function AnalyticsPage() {
                   </span>
                 </div>
                 <p className="text-3xl font-medium text-white">{stat.value}</p>
-                <p className="text-sm text-neutral-500 mt-1">{stat.label}</p>
+                <p className="text-sm text-neutral-500 mt-1 font-light">{stat.label}</p>
               </div>
             )
           })}
@@ -167,7 +161,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Top Campaigns */}
-          <div className="p-6 rounded-2xl bg-neutral-900/50 border border-white/10">
+          <div className="aether-card p-6 bg-neutral-900/30">
             <h2 className="text-lg font-medium text-white mb-6">Top Campaigns</h2>
             <div className="space-y-4">
               {data?.topCampaigns?.map((campaign, index) => (

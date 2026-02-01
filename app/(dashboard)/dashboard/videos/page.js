@@ -78,14 +78,14 @@ export default function VideosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen p-6 font-sans">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">Video Library</h1>
-              <p className="text-neutral-400">Manage and monetize your video content</p>
+              <h1 className="text-3xl font-medium tracking-tight text-white mb-2">Video Library</h1>
+              <p className="text-neutral-400 text-sm font-light">Manage and monetize your video content</p>
             </div>
             <Link
               href="/dashboard/videos/upload"
@@ -96,11 +96,14 @@ export default function VideosPage() {
             </Link>
           </div>
 
-          {/* Earnings Hero */}
-          <div className="rounded-2xl bg-gradient-to-br from-amber-900/20 to-neutral-900 border border-amber-500/30 p-6 mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <DollarSign className="w-5 h-5 text-amber-400" />
-              <h2 className="text-lg font-semibold text-white">Your Earnings</h2>
+          {/* Earnings Hero – Aether card */}
+          <div className="group relative rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-amber-500/50 transition-all duration-500 overflow-hidden p-6 mb-8">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
+            <div className="relative z-10 flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-amber-400">
+                <DollarSign className="w-5 h-5" />
+              </div>
+              <h2 className="text-lg font-medium text-white">Your Earnings</h2>
             </div>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div>
@@ -108,7 +111,7 @@ export default function VideosPage() {
                   ${typeof stats.totalEarnings === 'number' ? stats.totalEarnings.toFixed(2) : '0.00'}
                 </p>
                 <p className="text-neutral-400 text-sm">this month</p>
-                <p className="text-neutral-500 text-xs mt-2">
+                <p className="text-neutral-500 text-xs mt-2 font-light">
                   {stats.totalViews.toLocaleString()} qualified views × $1.00
                 </p>
                 <div className="flex items-center gap-3 mt-4">
@@ -148,36 +151,25 @@ export default function VideosPage() {
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats – Aether cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-neutral-900 rounded-xl p-4 border border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-neutral-400 text-sm">Total Videos</span>
-                <Video className="w-4 h-4 text-indigo-400" />
+            {[
+              { label: 'Total Videos', value: stats.total, Icon: Video, color: 'indigo' },
+              { label: 'Total Views', value: stats.totalViews.toLocaleString(), Icon: Eye, color: 'green' },
+              { label: 'Total Earnings', value: `$${stats.totalEarnings.toFixed(2)}`, Icon: DollarSign, color: 'amber' },
+              { label: 'Published', value: stats.published, Icon: TrendingUp, color: 'purple' },
+            ].map(({ label, value, Icon }) => (
+              <div key={label} className="group relative rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-indigo-500/50 transition-all duration-500 overflow-hidden p-4">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true" />
+                <div className="relative z-10 flex items-center justify-between mb-2">
+                  <span className="text-neutral-400 text-sm font-light">{label}</span>
+                  <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400">
+                    <Icon className="w-4 h-4" />
+                  </div>
+                </div>
+                <p className="text-2xl font-medium text-white">{value}</p>
               </div>
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
-            </div>
-            <div className="bg-neutral-900 rounded-xl p-4 border border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-neutral-400 text-sm">Total Views</span>
-                <Eye className="w-4 h-4 text-green-400" />
-              </div>
-              <p className="text-2xl font-bold text-white">{stats.totalViews.toLocaleString()}</p>
-            </div>
-            <div className="bg-neutral-900 rounded-xl p-4 border border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-neutral-400 text-sm">Total Earnings</span>
-                <DollarSign className="w-4 h-4 text-yellow-400" />
-              </div>
-              <p className="text-2xl font-bold text-white">${stats.totalEarnings.toFixed(2)}</p>
-            </div>
-            <div className="bg-neutral-900 rounded-xl p-4 border border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-neutral-400 text-sm">Published</span>
-                <TrendingUp className="w-4 h-4 text-purple-400" />
-              </div>
-              <p className="text-2xl font-bold text-white">{stats.published}</p>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -200,8 +192,9 @@ export default function VideosPage() {
             {videos.map((video) => (
               <div
                 key={video.id}
-                className="bg-neutral-900 rounded-xl border border-white/10 overflow-hidden hover:border-indigo-500/50 transition-all"
+                className="group relative rounded-2xl bg-neutral-900/30 border border-white/10 overflow-hidden hover:border-indigo-500/50 transition-all duration-500"
               >
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" aria-hidden="true" />
                 {/* Thumbnail */}
                 <div className="aspect-video bg-neutral-800 relative">
                   {video.thumbnailUrl ? (
@@ -241,7 +234,7 @@ export default function VideosPage() {
                 </div>
 
                 {/* Info */}
-                <div className="p-4">
+                <div className="relative z-10 p-4">
                   <h3 className="text-white font-medium mb-2 line-clamp-2">{video.title}</h3>
                   {video.description && (
                     <p className="text-neutral-400 text-sm mb-3 line-clamp-2">{video.description}</p>

@@ -2,15 +2,32 @@
 
 import { useState, useEffect } from 'react'
 import api from '@/lib/api'
+import AgentService from '@/lib/agents'
 import toast from 'react-hot-toast'
-import { Target, Mail, Eye, MessageSquare, Plus, Loader2, User, Building2, Send } from 'lucide-react'
+import { Target, Mail, Eye, MessageSquare, Plus, Loader2, User, Building2, Send, Sparkles, Search } from 'lucide-react'
 import AdvancedLeadFilters from '@/components/AdvancedLeadFilters'
+
+const INITIAL_COLOR_CLASSES = [
+  { bg: 'bg-indigo-500/20', border: 'border-indigo-500/30', text: 'text-indigo-400' },
+  { bg: 'bg-purple-500/20', border: 'border-purple-500/30', text: 'text-purple-400' },
+  { bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400' },
+  { bg: 'bg-emerald-500/20', border: 'border-emerald-500/30', text: 'text-emerald-400' },
+  { bg: 'bg-pink-500/20', border: 'border-pink-500/30', text: 'text-pink-400' },
+]
+const getInitialColorClasses = (name) => {
+  const index = name ? name.charCodeAt(0) % INITIAL_COLOR_CLASSES.length : 0
+  return INITIAL_COLOR_CLASSES[index]
+}
 
 export default function ProspectsPage() {
   const [prospects, setProspects] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
   const [advancedFilters, setAdvancedFilters] = useState({})
+  const [leadHunterQuery, setLeadHunterQuery] = useState('')
+  const [leadHunterLoading, setLeadHunterLoading] = useState(false)
+  const [leadHunterResults, setLeadHunterResults] = useState(null)
+  const [aiHookForCards, setAiHookForCards] = useState(null)
 
   useEffect(() => {
     loadProspects()
@@ -40,10 +57,27 @@ export default function ProspectsPage() {
     }
   }
 
-  const getInitialColor = (name) => {
-    const colors = ['indigo', 'purple', 'cyan', 'emerald', 'pink']
-    const index = name ? name.charCodeAt(0) % colors.length : 0
-    return colors[index]
+  async function runLeadHunterSearch() {
+    if (!leadHunterQuery.trim()) {
+      toast.error('Enter a search term (e.g. industry, title)')
+      return
+    }
+    setLeadHunterLoading(true)
+    setLeadHunterResults(null)
+    setAiHookForCards(null)
+    try {
+      const data = await AgentService.searchKnowledge(leadHunterQuery.trim(), { platform: 'leadsite_ai', limit: 5 })
+      setLeadHunterResults(data)
+      const firstSnippet = data?.results?.[0]?.content?.slice(0, 120)
+      setAiHookForCards(firstSnippet ? `${firstSnippet}…` : null)
+      toast.success(data?.results?.length ? `Found ${data.results.length} knowledge matches` : 'No matches')
+    } catch (err) {
+      console.error('Lead Hunter search error:', err)
+      toast.error('Knowledge search unavailable. Backend Lead Hunter will be used when ready.')
+      setLeadHunterResults({ error: err.message })
+    } finally {
+      setLeadHunterLoading(false)
+    }
   }
 
   return (
@@ -67,6 +101,42 @@ export default function ProspectsPage() {
             <Plus className="w-4 h-4" />
             Add Prospect
           </button>
+        </div>
+
+        {/* Lead Hunter / AI search */}
+        <div className="rounded-2xl bg-neutral-900/50 border border-white/10 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-5 h-5 text-purple-400" />
+            <h2 className="text-base font-semibold text-white">Lead Hunter</h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="text"
+              value={leadHunterQuery}
+              onChange={(e) => setLeadHunterQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && runLeadHunterSearch()}
+              placeholder="Search by industry, title, company (uses Knowledge API)"
+              className="flex-1 min-w-[200px] px-4 py-2.5 rounded-xl bg-black border border-white/10 text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-indigo-500/50"
+            />
+            <button
+              onClick={runLeadHunterSearch}
+              disabled={leadHunterLoading}
+              className="px-4 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50"
+            >
+              {leadHunterLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+              Search
+            </button>
+          </div>
+          {leadHunterResults?.results?.length > 0 && (
+            <div className="mt-3 p-3 rounded-xl bg-black/40 border border-white/5">
+              <p className="text-xs text-neutral-500 mb-2">Knowledge context ({leadHunterResults.results.length} chunks)</p>
+              <ul className="space-y-1 text-sm text-neutral-400">
+                {leadHunterResults.results.slice(0, 3).map((r, i) => (
+                  <li key={i} className="truncate">• {r.title || r.id}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Filters */}
@@ -137,7 +207,12 @@ export default function ProspectsPage() {
                       {prospect.status || 'new'}
                     </span>
                   </div>
-                  
+                  {aiHookForCards && (
+                    <div className="mt-3 p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                      <p className="text-xs text-purple-400 font-medium mb-1">AI-suggested personalization</p>
+                      <p className="text-sm text-neutral-300 line-clamp-2">{aiHookForCards}</p>
+                    </div>
+                  )}
                   <div className="flex gap-6 mt-4 pt-4 border-t border-white/5">
                     <span className="text-sm text-neutral-500 flex items-center gap-2">
                       <Mail className="w-4 h-4 text-cyan-400" />

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import api from '@/lib/api'
+import AgentService from '@/lib/agents'
 import { 
   Briefcase, 
   DollarSign, 
@@ -14,8 +15,25 @@ import {
   User,
   Sparkles,
   AlertCircle,
-  Lightbulb
+  Lightbulb,
+  Target,
+  PenLine,
+  Shield,
+  Flame,
+  BarChart3,
+  Brain,
+  Wrench
 } from 'lucide-react'
+
+const SEVEN_AGENTS = [
+  { id: 'lead-hunter', name: 'Lead Hunter', icon: Target, stat: 'Leads', iconBg: 'bg-indigo-500/10', iconBorder: 'border-indigo-500/20', iconColor: 'text-indigo-400' },
+  { id: 'copy-writer', name: 'Copy Writer', icon: PenLine, stat: 'Emails', iconBg: 'bg-purple-500/10', iconBorder: 'border-purple-500/20', iconColor: 'text-purple-400' },
+  { id: 'compliance-guardian', name: 'Compliance Guardian', icon: Shield, stat: 'Checks', iconBg: 'bg-emerald-500/10', iconBorder: 'border-emerald-500/20', iconColor: 'text-emerald-400' },
+  { id: 'warmup-conductor', name: 'Warmup Conductor', icon: Flame, stat: 'Accounts', iconBg: 'bg-orange-500/10', iconBorder: 'border-orange-500/20', iconColor: 'text-orange-400' },
+  { id: 'engagement-analyzer', name: 'Engagement Analyzer', icon: BarChart3, stat: 'Analyzed', iconBg: 'bg-cyan-500/10', iconBorder: 'border-cyan-500/20', iconColor: 'text-cyan-400' },
+  { id: 'analytics-brain', name: 'Analytics Brain', icon: Brain, stat: 'Predictions', iconBg: 'bg-violet-500/10', iconBorder: 'border-violet-500/20', iconColor: 'text-violet-400' },
+  { id: 'healing-sentinel', name: 'Healing Sentinel', icon: Wrench, stat: 'Health', iconBg: 'bg-rose-500/10', iconBorder: 'border-rose-500/20', iconColor: 'text-rose-400' },
+]
 
 export default function CRMPage() {
   const [dashboard, setDashboard] = useState(null)
@@ -23,9 +41,16 @@ export default function CRMPage() {
   const [pipeline, setPipeline] = useState(null)
   const [deals, setDeals] = useState([])
   const [loading, setLoading] = useState(true)
+  const [agentsStatus, setAgentsStatus] = useState(null)
 
   useEffect(() => {
     loadCRMData()
+  }, [])
+
+  useEffect(() => {
+    AgentService.checkKnowledgeHealth()
+      .then((data) => setAgentsStatus(data?.status === 'healthy' ? 'active' : 'degraded'))
+      .catch(() => setAgentsStatus('unavailable'))
   }, [])
 
   async function loadCRMData() {
@@ -139,6 +164,41 @@ export default function CRMPage() {
             <Plus className="w-4 h-4" />
             Add Deal
           </button>
+        </div>
+
+        {/* 7 AI Agents Status */}
+        <div className="rounded-2xl bg-neutral-900/50 border border-white/10 p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-purple-400" />
+            <h2 className="text-lg font-semibold text-white">7 AI Agents</h2>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${
+              agentsStatus === 'active' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+              agentsStatus === 'unavailable' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+              'bg-neutral-500/20 text-neutral-400 border border-neutral-500/30'
+            }`}>
+              {agentsStatus === 'active' ? 'Active' : agentsStatus === 'unavailable' ? 'Unavailable' : 'Checking...'}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+            {SEVEN_AGENTS.map((agent) => {
+              const Icon = agent.icon
+              return (
+                <div
+                  key={agent.id}
+                  className="p-4 rounded-xl bg-black/40 border border-white/10 hover:border-white/20 transition-colors"
+                >
+                  <div className={`w-9 h-9 rounded-lg ${agent.iconBg} border ${agent.iconBorder} flex items-center justify-center mb-3`}>
+                    <Icon className={`w-4 h-4 ${agent.iconColor}`} />
+                  </div>
+                  <p className="text-sm font-medium text-white truncate">{agent.name}</p>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    {agentsStatus === 'active' ? 'Active' : agentsStatus === 'unavailable' ? '—' : '…'}
+                  </p>
+                  <p className="text-xs text-neutral-400 mt-1">{agent.stat}</p>
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         {/* Stats */}

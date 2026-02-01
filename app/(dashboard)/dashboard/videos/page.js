@@ -1,9 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '@/lib/api';
-import { Video, Upload, Play, DollarSign, Eye, TrendingUp, MoreVertical, Edit, Trash2 } from 'lucide-react';
+import { Video, Upload, Play, DollarSign, Eye, TrendingUp, MoreVertical, Edit, Trash2, ExternalLink, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
+
+// Placeholder last 30 days earnings for chart (when API has daily data, replace)
+function useEarningsChart(totalEarnings) {
+  return useMemo(() => {
+    const days = 30;
+    const base = totalEarnings / Math.max(days, 1);
+    return Array.from({ length: days }, (_, i) => ({
+      day: i + 1,
+      value: Math.max(0, base * (0.6 + (i / days) * 0.4)),
+    }));
+  }, [totalEarnings]);
+}
 
 export default function VideosPage() {
   const [videos, setVideos] = useState([]);
@@ -14,6 +26,7 @@ export default function VideosPage() {
     totalEarnings: 0,
     published: 0
   });
+  const chartData = useEarningsChart(stats.totalEarnings);
 
   useEffect(() => {
     fetchVideos();
@@ -81,6 +94,58 @@ export default function VideosPage() {
               <Upload className="w-4 h-4" />
               Upload Video
             </Link>
+          </div>
+
+          {/* Earnings Hero */}
+          <div className="rounded-2xl bg-gradient-to-br from-amber-900/20 to-neutral-900 border border-amber-500/30 p-6 mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <DollarSign className="w-5 h-5 text-amber-400" />
+              <h2 className="text-lg font-semibold text-white">Your Earnings</h2>
+            </div>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <div>
+                <p className="text-4xl font-bold text-white mb-1">
+                  ${typeof stats.totalEarnings === 'number' ? stats.totalEarnings.toFixed(2) : '0.00'}
+                </p>
+                <p className="text-neutral-400 text-sm">this month</p>
+                <p className="text-neutral-500 text-xs mt-2">
+                  {stats.totalViews.toLocaleString()} qualified views × $1.00
+                </p>
+                <div className="flex items-center gap-3 mt-4">
+                  <a
+                    href="https://dashboard.stripe.com/connect/account/overview"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-amber-300 rounded-xl text-sm font-medium transition-all"
+                  >
+                    Withdraw to Stripe
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <Link
+                    href="/dashboard/videos/earnings"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 rounded-xl text-sm font-medium transition-all"
+                  >
+                    View History
+                  </Link>
+                </div>
+              </div>
+              <div className="flex-1 max-w-md">
+                <p className="text-xs text-neutral-500 mb-2 flex items-center gap-1">
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  Last 30 days
+                </p>
+                <div className="flex items-end gap-0.5 h-16">
+                  {chartData.map((d, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 min-w-0 rounded-t bg-amber-500/40 hover:bg-amber-500/60 transition-colors"
+                      style={{ height: `${Math.max(4, (d.value / (Math.max(...chartData.map((x) => x.value)) || 1)) * 100)}%` }}
+                      title={`Day ${d.day}: $${d.value.toFixed(2)}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Stats */}

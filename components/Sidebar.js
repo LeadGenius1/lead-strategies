@@ -7,8 +7,6 @@ import { logout } from '@/lib/auth'
 import { 
   LayoutDashboard, 
   Globe, 
-  Mail, 
-  Users, 
   MessageSquare, 
   Phone, 
   Briefcase, 
@@ -21,22 +19,23 @@ import {
   Calendar,
   Menu,
   X,
-  Video
+  Video,
+  Settings
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, tier: 'all' },
+  { name: 'Prospects', href: '/dashboard/prospects', icon: Target, tier: 'prospects' },
+  { name: 'Campaigns', href: '/dashboard/campaigns', icon: Zap, tier: 'campaigns' },
+  { name: 'Websites', href: '/dashboard/websites', icon: Globe, tier: 'websites' },
+  { name: 'Inbox', href: '/dashboard/inbox', icon: MessageSquare, tier: 'inbox' },
+  { name: 'CRM', href: '/dashboard/crm', icon: Briefcase, tier: 'crm' },
+  { name: 'Videos', href: '/dashboard/videos', icon: Video, tier: 'videos' },
   { name: 'Lead Hunter', href: '/copilot', icon: BrainCircuit, tier: 'all', highlight: true },
   { name: 'Automation', href: '/dashboard/automation', icon: Calendar, tier: 'all' },
-  { name: 'Videos', href: '/dashboard/videos', icon: Video, tier: 'videos' },
-  { name: 'Websites', href: '/dashboard/websites', icon: Globe, tier: 'websites' },
-  { name: 'Campaigns', href: '/dashboard/campaigns', icon: Zap, tier: 'campaigns' },
-  { name: 'Prospects', href: '/dashboard/prospects', icon: Target, tier: 'prospects' },
-  { name: 'Inbox', href: '/dashboard/inbox', icon: MessageSquare, tier: 'inbox' },
-  { name: 'Voice Calls', href: '/dashboard/calls', icon: Phone, tier: 'voice' },
-  { name: 'CRM', href: '/dashboard/crm', icon: Briefcase, tier: 'crm' },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, tier: 'all' },
   { name: 'Profile', href: '/dashboard/profile', icon: UserCircle, tier: 'all' },
+  { name: 'Settings', href: '/dashboard/settings', icon: Settings, tier: 'all' },
 ]
 
 export default function Sidebar({ features = {} }) {

@@ -358,38 +358,39 @@ export default function HomePage() {
               <Link href="/signup?tier=clientcontact-io" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → ClientContact dashboard</Link>
             </div>
 
-            {/* 4: UltraLead */}
-            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+            {/* 4: UltraLead - FLAGSHIP */}
+            <div className="group relative bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-500/30 rounded-2xl p-6 hover:border-purple-400/50 transition-all flex flex-col">
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-1 text-xs font-bold bg-purple-500 text-white rounded">FLAGSHIP</span>
+              </div>
               <Link href="/ultralead" className="flex-grow">
-                <div className="flex justify-between items-start mb-6">
-                  <h3 className="text-2xl font-space-grotesk text-white">UltraLead</h3>
-                  <div className="text-3xl font-space-grotesk font-light text-white">$99<span className="text-sm text-neutral-500">/mo</span></div>
-                </div>
-                <p className="text-neutral-400 font-geist mb-6 text-sm">Full CRM, 7 AI agents, voice + pipeline. Enterprise sales automation.</p>
-                <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>7 Self-Healing AI Agents</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Voice + CRM + Pipeline</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>API Access</li>
+                <h3 className="text-xl font-bold text-white mb-2">UltraLead</h3>
+                <p className="text-3xl font-bold text-white mb-1">$99<span className="text-sm font-normal text-neutral-400">/mo</span></p>
+                <p className="text-neutral-400 mb-4">Full CRM + 7 AI Agents</p>
+                <ul className="space-y-2 text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> 7 Self-Healing AI Agents</li>
+                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> Full CRM Pipeline</li>
+                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> Voice + AI Transcription</li>
+                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> 2,000 Leads/Month</li>
                 </ul>
               </Link>
               <Link href="/signup?tier=ultralead" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → UltraLead CRM dashboard</Link>
             </div>
 
             {/* 5: VideoSite.AI */}
-            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+            <div className="group relative bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-500/30 rounded-2xl p-6 hover:border-green-400/50 transition-all flex flex-col">
               <Link href="/videosite-ai" className="flex-grow">
-                <div className="flex justify-between items-start mb-6">
-                  <h3 className="text-2xl font-space-grotesk text-white">VideoSite.AI</h3>
-                  <div className="text-3xl font-space-grotesk font-light text-white">FREE</div>
-                </div>
-                <p className="text-neutral-400 font-geist mb-6 text-sm">Earn $1 per viewer. Video monetization for content creators.</p>
-                <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-green-500 rounded-full"></div>Earn $1/View</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Stripe Payouts</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Upload & Monetize</li>
+                <h3 className="text-xl font-bold text-white mb-2">VideoSite.AI</h3>
+                <p className="text-3xl font-bold text-green-400 mb-1">FREE</p>
+                <p className="text-neutral-400 mb-4">Earn $1 per viewer</p>
+                <ul className="space-y-2 text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> $1/Qualified View (30s+)</li>
+                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Instant Stripe Payouts</li>
+                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Unlimited Video Hosting</li>
+                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> 0% Platform Fees</li>
                 </ul>
               </Link>
-              <Link href="/signup?tier=videosite" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → VideoSite dashboard</Link>
+              <Link href="/signup?tier=videosite" className="mt-6 inline-block w-full text-center bg-green-500/20 border border-green-500/30 text-green-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-green-500/30 transition-colors">Get started → VideoSite dashboard</Link>
             </div>
           </div>
 

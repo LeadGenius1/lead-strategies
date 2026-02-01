@@ -1,11 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
+
+const platforms = [
+  { name: 'LeadSite.AI', href: '/leadsite-ai', price: '$49/mo', description: 'AI Email Lead Generation' },
+  { name: 'LeadSite.IO', href: '/leadsite-io', price: '$49/mo', description: 'AI Website Builder' },
+  { name: 'ClientContact.IO', href: '/clientcontact-io', price: '$79/mo', description: '22+ Channel Inbox' },
+  { name: 'UltraLead', href: '/ultralead', price: '$99/mo', description: 'Full CRM + 7 AI Agents', featured: true },
+  { name: 'VideoSite.AI', href: '/videosite-ai', price: 'FREE', description: 'Earn $1/Viewer' },
+]
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const [productsOpen, setProductsOpen] = useState(false)
 
   return (
     <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-md">
@@ -17,11 +26,30 @@ export default function Navigation() {
         </Link>
 
         <div className="hidden md:flex items-center gap-4 text-xs font-medium text-neutral-400">
-          <Link href="/leadsite-ai" className="hover:text-white transition-colors">LeadSite.AI</Link>
-          <Link href="/leadsite-io" className="hover:text-white transition-colors">LeadSite.IO</Link>
-          <Link href="/clientcontact-io" className="hover:text-white transition-colors">ClientContact</Link>
-          <Link href="/ultralead" className="hover:text-white transition-colors">UltraLead</Link>
-          <Link href="/videosite-ai" className="hover:text-white transition-colors">VideoSite</Link>
+          <div className="relative">
+            <button
+              onClick={() => setProductsOpen(!productsOpen)}
+              className="flex items-center gap-1 hover:text-white transition-colors"
+            >
+              Products <ChevronDown className={`w-4 h-4 transition-transform ${productsOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {productsOpen && (
+              <div className="absolute top-full left-0 mt-1 py-2 w-64 bg-black/95 border border-white/10 rounded-lg shadow-xl z-50">
+                {platforms.map((p) => (
+                  <Link
+                    key={p.href}
+                    href={p.href}
+                    className="block px-4 py-2 hover:bg-white/5 text-neutral-300 hover:text-white transition-colors"
+                    onClick={() => setProductsOpen(false)}
+                  >
+                    <span className="font-medium">{p.name}</span>
+                    <span className="text-neutral-500 ml-1">— {p.price}</span>
+                    {p.featured && <span className="ml-2 text-[10px] bg-purple-500/30 text-purple-300 px-1 rounded">FLAGSHIP</span>}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           <Link href="/signup" className="hover:text-white transition-colors">Get Started</Link>
         </div>
 

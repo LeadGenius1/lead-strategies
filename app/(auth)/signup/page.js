@@ -7,11 +7,11 @@ import { signup } from '@/lib/auth'
 import toast from 'react-hot-toast'
 
 const TIERS = [
-  { id: 'leadsite-ai', name: 'LeadSite.AI', price: 'From $49/mo', description: 'AI email lead generation' },
-  { id: 'leadsite-io', name: 'LeadSite.IO', price: 'FREE + Paid', description: '1 free website • Paid from $49/mo', highlight: true },
-  { id: 'clientcontact', name: 'ClientContact.IO', price: 'From $49/mo', description: '22+ channel unified inbox' },
-  { id: 'ultralead', name: 'UltraLead', price: 'From $99/mo', description: 'Full CRM • 7 AI agents • Voice + pipeline' },
-  { id: 'videosite', name: 'VideoSite.AI', price: 'FREE', description: 'Earn $1/viewer • Content creators' },
+  { id: 'leadsite-ai', name: 'LeadSite.AI', price: '$49/mo', description: 'AI email lead generation' },
+  { id: 'leadsite-io', name: 'LeadSite.IO', price: '$49/mo', description: '1 free website • AI website builder', highlight: true },
+  { id: 'clientcontact', name: 'ClientContact.IO', price: '$79/mo', description: '22+ channel unified inbox' },
+  { id: 'ultralead', name: 'UltraLead', price: '$99/mo', description: 'Full CRM • 7 AI agents • Voice + pipeline', flagship: true },
+  { id: 'videosite', name: 'VideoSite.AI', price: 'FREE', description: 'Earn $1/viewer • Content creators', free: true },
 ]
 
 function SignupForm() {
@@ -192,7 +192,12 @@ function SignupForm() {
                   >
                     {tier.highlight && (
                       <div className="absolute top-0 right-0 px-1.5 py-0.5 bg-green-500/20 border-l border-b border-green-500/30 text-green-400 text-[8px] uppercase tracking-wider font-geist">
-                        +Free Site
+                        +FREE SITE
+                      </div>
+                    )}
+                    {tier.flagship && (
+                      <div className="absolute top-0 right-0 px-1.5 py-0.5 bg-purple-500/30 border-l border-b border-purple-500/50 text-white text-[8px] uppercase tracking-wider font-geist font-bold">
+                        FLAGSHIP
                       </div>
                     )}
                     {tier.free && (

@@ -49,6 +49,16 @@ export default function UltraLeadPage() {
     return () => observer.disconnect();
   }, []);
 
+  const agents = [
+    { name: 'Lead Hunter', icon: '🎯', description: 'Finds and enriches prospects automatically' },
+    { name: 'Copy Writer', icon: '✍️', description: 'Generates personalized email content' },
+    { name: 'Compliance Guardian', icon: '⚖️', description: 'Ensures CAN-SPAM/GDPR compliance' },
+    { name: 'Warmup Conductor', icon: '🔥', description: 'Manages domain warming and deliverability' },
+    { name: 'Engagement Analyzer', icon: '📊', description: 'Tracks opens, clicks, and replies' },
+    { name: 'Analytics Brain', icon: '🧠', description: 'Predicts and reports on performance' },
+    { name: 'Healing Sentinel', icon: '🛡️', description: 'Auto-fixes failing campaigns' },
+  ];
+
   const features = [
     { title: 'Full CRM + Pipeline Management', desc: 'Deals, stages, and forecasting in one place. Never drop a lead again.', Icon: Icons.TrendingUp, color: 'text-purple-400' },
     { title: '7 Self-Healing AI Agents', desc: 'Campaign, Social Syncs, Voice, LeadGen, Analytics, Integration, and CleanOS AI—always on.', Icon: Icons.Brain, color: 'text-sky-400' },
@@ -173,6 +183,32 @@ export default function UltraLeadPage() {
                 <ShinyButton href="/signup?tier=ultralead">Start Free Trial</ShinyButton>
                 <p className="text-xs sm:text-sm text-neutral-500 font-geist">No credit card required • 14-day free trial</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 7 AI Agents Section */}
+        <section className="py-24 relative z-10 border-t border-subtle bg-black">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="text-center mb-16 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+              <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+                7 AI <span className="text-gradient">Agents</span>
+              </h2>
+              <p className="text-neutral-400 font-geist max-w-3xl mx-auto">
+                Self-healing AI agents that run your sales automation 24/7
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-24">
+              {agents.map((agent, index) => (
+                <div
+                  key={index}
+                  className="bg-[#050505] border border-subtle p-6 hover:border-purple-500/30 transition-all [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll"
+                >
+                  <span className="text-2xl mb-2 block">{agent.icon}</span>
+                  <h3 className="text-lg font-space-grotesk text-white mb-2">{agent.name}</h3>
+                  <p className="text-sm text-neutral-400 font-geist">{agent.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

@@ -39,8 +39,8 @@ ai-lead-strategies-frontend/
 │   │   ├── 📁 videosite-io/
 │   │   │   └── 📄 page.js          # VideoSite.IO Dashboard
 │   │   │
-│   │   └── 📁 tackle-io/
-│   │       └── 📄 page.js          # Tackle.IO Dashboard
+│   │   └── 📁 ultralead/
+│   │       └── 📄 page.js          # UltraLead Dashboard
 │   │
 │   └── 📁 settings/
 │       └── 📄 page.js              # Settings page
@@ -77,7 +77,7 @@ ai-lead-strategies-frontend/
 - `app/dashboard/leadsite-io/page.js` - Website builder management
 - `app/dashboard/clientcontact-io/page.js` - 22+ channel marketing
 - `app/dashboard/videosite-io/page.js` - Video platform
-- `app/dashboard/tackle-io/page.js` - Enterprise suite
+- `app/dashboard/ultralead/page.js` - Enterprise suite
 
 ### Configuration
 - `tailwind.config.js` - Aether animations configured

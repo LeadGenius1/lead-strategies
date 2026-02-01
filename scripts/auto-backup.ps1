@@ -73,7 +73,7 @@ function Generate-BackupContent {
 ``````json
 {
   "ADMIN_JWT_SECRET": "QH87JKf4ZhNEFDXriPolSsOBcwUjMnGAvy5kIR6amdu0gV9p3xWeLYt1CTqzb2",
-  "CORS_ORIGINS": "https://aileadstrategies.com,https://www.aileadstrategies.com,https://tackleai.ai",
+  "CORS_ORIGINS": "https://aileadstrategies.com,https://www.aileadstrategies.com,https://ultralead.ai",
   "DATABASE_URL": "postgresql://postgres:UoEdmdhelexwzWLhphExkiaHXrRUXQCQ@switchyard.proxy.rlwy.net:32069/railway",
   "ENABLE_SELF_HEALING": "true",
   "JWT_EXPIRES_IN": "24h",

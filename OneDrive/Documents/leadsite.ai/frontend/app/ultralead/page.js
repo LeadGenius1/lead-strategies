@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Navigation from '../../components/Navigation'
 import { Briefcase, Check, ArrowRight, Phone, Database, Headphones } from 'lucide-react'
 
-export default function TackleIOPage() {
+export default function UltraLeadPage() {
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -14,7 +14,7 @@ export default function TackleIOPage() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-8">
             <Briefcase className="w-4 h-4" />
-            Tackle.IO Platform
+            UltraLead Platform
           </div>
           
           <h1 className="text-4xl md:text-6xl font-medium tracking-tight mb-6">
@@ -32,7 +32,7 @@ export default function TackleIOPage() {
                 <ArrowRight className="w-5 h-5" />
               </button>
             </Link>
-            <Link href="/dashboard/tackle-io">
+            <Link href="/dashboard/ultralead">
               <button className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-medium transition-colors border border-white/10">
                 View Dashboard
               </button>

@@ -3,7 +3,7 @@
 import Navigation from '../../../components/Navigation'
 import { Briefcase, TrendingUp, Phone, Users, Mail, MessageSquare, Video, Globe, Plus } from 'lucide-react'
 
-export default function TackleIODashboard() {
+export default function UltraLeadDashboard() {
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -15,7 +15,7 @@ export default function TackleIODashboard() {
                 <Briefcase className="w-5 h-5 text-indigo-400" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-medium tracking-tight">Tackle.IO</h1>
+                <h1 className="text-2xl md:text-3xl font-medium tracking-tight">UltraLead</h1>
                 <p className="text-neutral-500 text-sm">Full Suite Dashboard - Voice + CRM + All Platforms</p>
               </div>
             </div>

@@ -21,25 +21,25 @@ All frontend routes, components, and API integrations have been updated to match
   - Response handling: Extracts `data.leads` from backend
   - Send email: Uses campaign creation as workaround (backend endpoint needed)
 
-### 2. CRM → Tackle ✅
+### 2. CRM → UltraLead ✅
 - **Files Updated:** 3 files
   - `app/(dashboard)/dashboard/crm/page.js`
   - `components/CreateDealModal.js`
   - `components/EditDealModal.js`
 - **Changes:**
-  - `/api/crm/deals` → `/api/tackle/deals`
-  - Pipeline view: `/api/tackle/deals/pipeline`
+  - `/api/crm/deals` → `/api/ultralead/deals`
+  - Pipeline view: `/api/ultralead/deals/pipeline`
   - Field mapping: `company.name`, `contacts[0]`, `expectedClose`
   - Response handling: Handles backend's nested structure
 
-### 3. Calls → Tackle Calls ✅
+### 3. Calls → UltraLead Calls ✅
 - **Files Updated:** 1 file
   - `app/(dashboard)/dashboard/calls/page.js`
 - **Changes:**
-  - `/api/calls` → `/api/tackle/calls`
-  - `/api/calls/make` → `/api/tackle/calls/initiate`
-  - `/api/calls/:id/recording` → `/api/tackle/calls/:id/recording`
-  - Stats: `/api/tackle/calls/stats/summary`
+  - `/api/calls` → `/api/ultralead/calls`
+  - `/api/calls/make` → `/api/ultralead/calls/initiate`
+  - `/api/calls/:id/recording` → `/api/ultralead/calls/:id/recording`
+  - Stats: `/api/ultralead/calls/stats/summary`
   - Field mapping: `startedAt`, `toNumber`, `recordingUrl`
 
 ### 4. Inbox → Conversations ✅
@@ -285,7 +285,7 @@ The following endpoints need to be implemented in the backend for full functiona
 
 3. **Error Handling:** All API calls have proper error handling with user-friendly messages.
 
-4. **Tier Restrictions:** CRM and Calls features require Tier 5 (Tackle.IO) - backend enforces this.
+4. **Tier Restrictions:** CRM and Calls features require Tier 5 (UltraLead) - backend enforces this.
 
 5. **Missing Endpoints:** Frontend gracefully handles missing backend endpoints with fallbacks or clear error messages.
 

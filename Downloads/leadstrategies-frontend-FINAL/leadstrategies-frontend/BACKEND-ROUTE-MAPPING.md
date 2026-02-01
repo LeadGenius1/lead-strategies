@@ -20,10 +20,10 @@ The backend routes exist but use different paths than the frontend expects. Here
 | `/api/prospects/:id` | `/api/leads/:id` | ❌ Mismatch |
 | `/api/prospects/:id/send-email` | ❌ Not implemented | ❌ Missing |
 | `/api/prospects/search` | ❌ Not implemented | ❌ Missing |
-| `/api/crm/deals` | `/api/tackle/deals` | ❌ Mismatch |
-| `/api/crm/deals/:id` | `/api/tackle/deals/:id` | ❌ Mismatch |
-| `/api/calls` | `/api/tackle/calls` | ❌ Mismatch |
-| `/api/calls/make` | `/api/tackle/calls/initiate` | ❌ Mismatch |
+| `/api/crm/deals` | `/api/ultralead/deals` | ❌ Mismatch |
+| `/api/crm/deals/:id` | `/api/ultralead/deals/:id` | ❌ Mismatch |
+| `/api/calls` | `/api/ultralead/calls` | ❌ Mismatch |
+| `/api/calls/make` | `/api/ultralead/calls/initiate` | ❌ Mismatch |
 | `/api/inbox/messages` | `/api/conversations` | ❌ Mismatch |
 | `/api/inbox/messages/:id/reply` | `/api/conversations/:id/messages` | ❌ Mismatch |
 | `/api/users/active` | ❌ Not implemented | ❌ Missing |
@@ -54,8 +54,8 @@ The backend routes exist but use different paths than the frontend expects. Here
 ### Option 1: Update Frontend Routes (Quick Fix)
 Update frontend to use backend routes:
 - `/api/prospects` → `/api/leads`
-- `/api/crm/deals` → `/api/tackle/deals`
-- `/api/calls` → `/api/tackle/calls`
+- `/api/crm/deals` → `/api/ultralead/deals`
+- `/api/calls` → `/api/ultralead/calls`
 - `/api/inbox/messages` → `/api/conversations`
 
 ### Option 2: Add Backend Route Aliases (Better UX)
@@ -63,8 +63,8 @@ Add route aliases in backend `src/index.js`:
 ```javascript
 // Add after existing routes
 app.use('/api/prospects', leadRoutes);  // Alias for /api/leads
-app.use('/api/crm', tackleRoutes);     // Alias for /api/tackle
-app.use('/api/calls', tackleCallsRoutes); // Alias for /api/tackle/calls
+app.use('/api/crm', ultraleadRoutes);     // Alias for /api/ultralead
+app.use('/api/calls', ultraleadCallsRoutes); // Alias for /api/ultralead/calls
 app.use('/api/inbox', conversationRoutes); // Alias for /api/conversations
 ```
 
@@ -95,14 +95,14 @@ Add the missing endpoints to backend:
 
 ### CRM Deals
 **Frontend:** `/api/crm/deals`  
-**Backend:** `/api/tackle/deals`  
-**Note:** Backend requires Tier 5 (Tackle.IO) subscription  
+**Backend:** `/api/ultralead/deals`  
+**Note:** Backend requires Tier 5 (UltraLead) subscription  
 **Action:** Update frontend OR add alias, check tier access
 
 ### Calls
 **Frontend:** `/api/calls`  
-**Backend:** `/api/tackle/calls`  
-**Note:** Backend requires Tier 5 (Tackle.IO) subscription  
+**Backend:** `/api/ultralead/calls`  
+**Note:** Backend requires Tier 5 (UltraLead) subscription  
 **Action:** Update frontend OR add alias, check tier access
 
 ### Inbox
@@ -116,7 +116,7 @@ Add the missing endpoints to backend:
 ## ⚠️ Important Notes
 
 1. **Tier Restrictions:**
-   - `/api/tackle/*` routes require Tier 5 (Tackle.IO)
+   - `/api/ultralead/*` routes require Tier 5 (UltraLead)
    - Frontend should check user tier before calling these routes
 
 2. **Authentication:**

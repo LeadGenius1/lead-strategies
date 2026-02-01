@@ -4,7 +4,7 @@
 
 ### Platform Explored: LeadSite.AI (https://leadstrategies-frontend.vercel.app)
 **Key Features Discovered:**
-- **5 Platform Tiers**: LeadSite.AI ($49/mo), LeadSite.IO ($29/mo), ClientContact.IO ($149/mo), Tackle.IO ($499/mo), VideoSite.IO (Coming Soon)
+- **5 Platform Tiers**: LeadSite.AI ($49/mo), LeadSite.IO ($29/mo), ClientContact.IO ($149/mo), UltraLead ($499/mo), VideoSite.IO (Coming Soon)
 - **Core Capabilities**: 
   - AI-powered prospect discovery (scans 50M+ profiles daily)
   - Personalized email generation

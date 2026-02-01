@@ -78,8 +78,8 @@ export default function SignupPage() {
       ]
     },
     {
-      id: 'tackle',
-      name: 'Tackle.IO',
+      id: 'ultralead',
+      name: 'UltraLead',
       price: 499,
       icon: Briefcase,
       color: 'indigo',
@@ -156,8 +156,8 @@ export default function SignupPage() {
         'clientcontact-io': '/dashboard/clientcontact-io',
         'videosite': '/dashboard/videosite-io',
         'videosite-io': '/dashboard/videosite-io',
-        'tackle': '/dashboard/tackle-io',
-        'tackle-io': '/dashboard/tackle-io'
+        'ultralead': '/dashboard/ultralead',
+        'ultralead-io': '/dashboard/ultralead'
       }
       
       const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'

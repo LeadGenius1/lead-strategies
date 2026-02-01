@@ -39,7 +39,7 @@
    - ✅ Forms route: `/api/forms`
    - ✅ Channels route: `/api/channels`
    - ✅ Videos route: `/api/videos`
-   - ✅ Meetings route: `/api/tackle/meetings`
+   - ✅ Meetings route: `/api/ultralead/meetings`
    - ✅ Master validation route: `/api/master`
 
 3. **Dependencies**

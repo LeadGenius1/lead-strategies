@@ -26,11 +26,11 @@ const nextConfig = {
   },
   // Output configuration for Railway
   output: 'standalone',
-  // Legacy URL redirects (no trademark reference)
+  // Legacy URL redirects
   async redirects() {
     return [
-      { source: '/tackle-io', destination: '/clientcontact-io', permanent: true },
-      { source: '/tackle', destination: '/clientcontact-io', permanent: true },
+      { source: '/tackle-io', destination: '/ultralead', permanent: true },
+      { source: '/tackle', destination: '/ultralead', permanent: true },
       { source: '/videosite-io', destination: '/videosite-ai', permanent: true },
     ];
   },

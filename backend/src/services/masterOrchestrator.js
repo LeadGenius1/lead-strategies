@@ -10,7 +10,7 @@ class MasterOrchestrator {
       platform1: { name: 'LeadSite.AI', status: 'pending', tests: [] },
       platform2: { name: 'LeadSite.IO', status: 'pending', tests: [] },
       platform3: { name: 'ClientContact.IO', status: 'pending', tests: [] },
-      platform4: { name: 'ClientContact.IO CRM', status: 'pending', tests: [] },
+      platform4: { name: 'UltraLead', status: 'pending', tests: [] },
       platform5: { name: 'VideoSite.AI', status: 'pending', tests: [] }
     };
   }
@@ -30,8 +30,8 @@ class MasterOrchestrator {
     // Test Platform 3: ClientContact.IO
     await this.validateClientContactIO(userId);
 
-    // Test Platform 4: ClientContact CRM
-    await this.validateTackleIO(userId);
+    // Test Platform 4: UltraLead (Tier 5 CRM)
+    await this.validateUltraLead(userId);
 
     // Test Platform 5: VideoSite.AI
     await this.validateVideoSiteAI(userId);
@@ -140,9 +140,9 @@ class MasterOrchestrator {
   }
 
   /**
-   * Validate ClientContact CRM Platform
+   * Validate UltraLead Platform (Tier 5 CRM)
    */
-  async validateClientContactCRM(userId) {
+  async validateUltraLead(userId) {
     const platform = this.testResults.platform4;
     console.log(`\n📊 Testing ${platform.name}...`);
 
@@ -345,7 +345,7 @@ class MasterOrchestrator {
 
   async testAIAgents(userId) {
     try {
-      const { CampaignAI } = require('./tackleAgents'); // ClientContact CRM agents
+      const { CampaignAI } = require('./ultraleadAgents'); // UltraLead CRM agents
       return { name: 'AI Agents', status: 'passed', message: '7 AI agents system functional' };
     } catch (error) {
       return { name: 'AI Agents', status: 'failed', message: error.message };

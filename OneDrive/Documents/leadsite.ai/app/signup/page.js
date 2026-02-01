@@ -6,7 +6,7 @@ import Navigation from '../../components/Navigation'
 import { Check, Mail, Globe, MessageSquare, Video, Briefcase, ChevronRight } from 'lucide-react'
 
 export default function SignupPage() {
-  const [selectedTier, setSelectedTier] = useState('tackle')
+  const [selectedTier, setSelectedTier] = useState('ultralead')
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -73,8 +73,8 @@ export default function SignupPage() {
       ]
     },
     {
-      id: 'tackle',
-      name: 'Tackle.IO',
+      id: 'ultralead',
+      name: 'UltraLead',
       price: 499,
       icon: Briefcase,
       color: 'indigo',

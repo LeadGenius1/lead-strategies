@@ -12,7 +12,7 @@
 - ✅ LeadSite.IO Dashboard - Website builder management
 - ✅ ClientContact.IO Dashboard - 22+ channel omnichannel marketing
 - ✅ VideoSite.IO Dashboard - Video platform with creator payments
-- ✅ Tackle.IO Dashboard - Full suite enterprise dashboard
+- ✅ UltraLead Dashboard - Full suite enterprise dashboard
 - ✅ Settings - Account management
 
 **Features:**
@@ -138,7 +138,7 @@ ai-lead-strategies-frontend/
 │   │   ├── leadsite-io/page.js           # LeadSite.IO Dashboard
 │   │   ├── clientcontact-io/page.js      # ClientContact.IO Dashboard
 │   │   ├── videosite-io/page.js          # VideoSite.IO Dashboard
-│   │   └── tackle-io/page.js             # Tackle.IO Dashboard
+│   │   └── ultralead/page.js             # UltraLead Dashboard
 │   └── settings/
 │       └── page.js                        # Settings page
 ├── components/
@@ -201,7 +201,7 @@ export default api
 - LeadSite.IO: $79/month
 - ClientContact.IO: $149/month
 - VideoSite.IO: $99/month
-- Tackle.IO: $499/month
+- UltraLead: $499/month
 
 ---
 
@@ -261,7 +261,7 @@ All pages are fully responsive with tailored experiences for each device size.
 - Live streaming
 - Monetization tools
 
-### Tackle.IO ($499/mo) ⭐ MOST POPULAR
+### UltraLead ($499/mo) ⭐ MOST POPULAR
 - All platform features
 - AI voice calls
 - Advanced CRM

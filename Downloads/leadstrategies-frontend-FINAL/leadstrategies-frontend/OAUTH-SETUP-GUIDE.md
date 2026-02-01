@@ -110,7 +110,7 @@ The backend needs to implement the OAuth callback endpoint:
   "provider": "google" | "microsoft" | "linkedin",
   "code": "authorization_code_from_provider",
   "redirectUri": "https://leadsite.ai/api/auth/oauth/callback?provider=google",
-  "tier": "leadsite-ai" | "leadsite-io" | "clientcontact" | "tackle"
+  "tier": "leadsite-ai" | "leadsite-io" | "clientcontact" | "ultralead"
 }
 ```
 

@@ -24,7 +24,7 @@ model User {
   // 2 = LeadSite.IO ($149/mo) - 100 leads, website builder
   // 3 = ClientContact.IO ($249/mo) - 500 leads, 22+ channels
   // 4 = VideoSite.IO ($99/mo) - 1000 leads, video monetization
-  // 5 = Tackle.AI ($599/mo) - 10000 leads, all features + API
+  // 5 = UltraLead ($599/mo) - 10000 leads, all features + API
   tier Int @default(1)
 
   // Subscription
@@ -53,7 +53,7 @@ model User {
   autoResponses     AutoResponse[]
   conversationNotes ConversationNote[]
 
-  // Tackle.IO Relations (Tier 5)
+  // UltraLead Relations (Tier 5)
   companies         Company[]
   contacts          Contact[]
   deals             Deal[]
@@ -827,7 +827,7 @@ model AdminSession {
   @@map("admin_sessions")
 }
 
-// ==================== TACKLE.IO (Tier 5 - Enterprise CRM) ====================
+// ==================== ULTRALEAD (Tier 5 - Enterprise CRM) ====================
 
 // Companies - B2B company profiles
 model Company {
@@ -1289,7 +1289,7 @@ model SequenceStep {
   @@map("sequence_steps")
 }
 
-// ==================== MEETINGS (Tier 5 - Tackle.IO) ====================
+// ==================== MEETINGS (Tier 5 - UltraLead) ====================
 
 model Meeting {
   id        String  @id @default(uuid())

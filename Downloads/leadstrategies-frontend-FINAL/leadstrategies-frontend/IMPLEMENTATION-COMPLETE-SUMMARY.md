@@ -11,18 +11,18 @@ All frontend routes have been updated to match the backend API structure.
    - ✅ Updated in: `prospects/page.js`, `AddProspectModal.js`, `ProspectProfileModal.js`, `CreateCampaignModal.js`
    - ✅ Response handling: Extracts `data.leads` from backend response
 
-2. **CRM → Tackle**
-   - ✅ `/api/crm/deals` → `/api/tackle/deals`
+2. **CRM → UltraLead**
+   - ✅ `/api/crm/deals` → `/api/ultralead/deals`
    - ✅ Updated in: `crm/page.js`, `CreateDealModal.js`, `EditDealModal.js`
-   - ✅ Pipeline view: Uses `/api/tackle/deals/pipeline`
+   - ✅ Pipeline view: Uses `/api/ultralead/deals/pipeline`
    - ✅ Response handling: Handles backend's pipeline structure
 
-3. **Calls → Tackle Calls**
-   - ✅ `/api/calls` → `/api/tackle/calls`
-   - ✅ `/api/calls/make` → `/api/tackle/calls/initiate`
-   - ✅ `/api/calls/:id/recording` → `/api/tackle/calls/:id/recording`
+3. **Calls → UltraLead Calls**
+   - ✅ `/api/calls` → `/api/ultralead/calls`
+   - ✅ `/api/calls/make` → `/api/ultralead/calls/initiate`
+   - ✅ `/api/calls/:id/recording` → `/api/ultralead/calls/:id/recording`
    - ✅ Updated in: `calls/page.js`
-   - ✅ Stats: Uses `/api/tackle/calls/stats/summary`
+   - ✅ Stats: Uses `/api/ultralead/calls/stats/summary`
 
 4. **Inbox → Conversations**
    - ✅ `/api/inbox/messages` → `/api/conversations`
@@ -62,8 +62,8 @@ Updated axios interceptor to automatically extract `data` from backend responses
 - ✅ `prospects/page.js` - Full CRUD with `/api/leads`
 
 ### CRM Components:
-- ✅ `CreateDealModal.js` - Uses `/api/tackle/deals` with proper field mapping
-- ✅ `EditDealModal.js` - Uses `/api/tackle/deals/:id` with response normalization
+- ✅ `CreateDealModal.js` - Uses `/api/ultralead/deals` with proper field mapping
+- ✅ `EditDealModal.js` - Uses `/api/ultralead/deals/:id` with response normalization
 - ✅ `crm/page.js` - Pipeline and list views with proper data extraction
 
 ### Campaign Components:

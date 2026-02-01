@@ -84,7 +84,7 @@
 - ❌ `PUT /api/crm/deals/:id` - Update deal
 - ❌ `DELETE /api/crm/deals/:id` - Delete deal
 
-**Note:** Backend has `/api/tackle` routes - may contain CRM functionality
+**Note:** Backend has `/api/ultralead` routes - may contain CRM functionality
 
 #### Calls Missing:
 - ❌ `GET /api/calls` - List calls
@@ -111,14 +111,14 @@
 Update frontend to match backend routes:
 - Change `/api/prospects` → `/api/leads`
 - Change `/api/inbox` → `/api/conversations` (if applicable)
-- Check if `/api/tackle` contains CRM endpoints
+- Check if `/api/ultralead` contains CRM endpoints
 
 ### Option 2: Add Missing Backend Routes (Recommended)
 Add the missing endpoints to backend:
 1. Add `/api/prospects` routes (map to leads or create separate)
 2. Add `/api/users` routes (profile, password, active users)
 3. Add `/api/inbox` routes (or map conversations)
-4. Add `/api/crm` routes (or check tackle routes)
+4. Add `/api/crm` routes (or check ultralead routes)
 5. Add `/api/calls` routes
 6. Add AI agent endpoints
 7. Add daily-status endpoint

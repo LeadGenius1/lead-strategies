@@ -73,7 +73,7 @@ Visit these pages:
 - ✅ Homepage: https://www.leadsite.ai
 - ✅ Signup: https://www.leadsite.ai/signup
 - ✅ Login: https://www.leadsite.ai/login
-- ✅ Dashboard (after login): https://www.leadsite.ai/dashboard/tackle-io
+- ✅ Dashboard (after login): https://www.leadsite.ai/dashboard/ultralead
 
 ---
 

@@ -56,8 +56,8 @@ export default function LoginPage() {
         'clientcontact-io': '/dashboard/clientcontact-io',
         'videosite': '/dashboard/videosite-io',
         'videosite-io': '/dashboard/videosite-io',
-        'tackle': '/dashboard/tackle-io',
-        'tackle-io': '/dashboard/tackle-io'
+        'ultralead': '/dashboard/ultralead',
+        'ultralead-io': '/dashboard/ultralead'
       }
       
       const dashboardRoute = tierRouteMap[tier] || '/dashboard/leadsite-ai'

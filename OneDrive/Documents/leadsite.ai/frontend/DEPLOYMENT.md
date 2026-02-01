@@ -112,7 +112,7 @@ export default api
    - LeadSite.IO: $79/month
    - ClientContact.IO: $149/month
    - VideoSite.IO: $99/month
-   - Tackle.IO: $499/month
+   - UltraLead: $499/month
 
 2. Get Stripe publishable key
 3. Update Vercel environment variable

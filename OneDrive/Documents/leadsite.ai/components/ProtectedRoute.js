@@ -29,7 +29,7 @@ export default function ProtectedRoute({ children, requiredTier }) {
           'leadsite-io': 2,
           'clientcontact': 3,
           'videosite': 3, // Same level as clientcontact
-          'tackle': 4 // Highest - includes everything
+          'ultralead': 4 // Highest - includes everything
         }
         
         const userTierLevel = tierHierarchy[userTier] || 0

@@ -72,7 +72,7 @@ const landingPages = [
   'app/leadsite-ai/page.js',
   'app/leadsite-io/page.js',
   'app/clientcontact-io/page.js',
-  'app/tackle-io/page.js', // legacy redirect to clientcontact-io
+  'app/ultralead/page.js', // UltraLead product page
 ];
 
 landingPages.forEach(page => {

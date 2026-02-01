@@ -85,7 +85,7 @@ export default function SettingsPage() {
                     <div className="p-6 rounded-lg bg-indigo-500/10 border border-indigo-500/50">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="font-medium text-white">Tackle.IO</h3>
+                          <h3 className="font-medium text-white">UltraLead</h3>
                           <p className="text-sm text-neutral-400">Full Suite + Voice + CRM</p>
                         </div>
                         <div className="text-right">

@@ -161,7 +161,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Tackle.IO - Featured */}
+          {/* UltraLead - Featured */}
           <div className="group relative p-8 rounded-2xl bg-neutral-900/30 border-2 border-indigo-500/50 hover:border-indigo-500 transition-all duration-500 overflow-hidden md:col-span-2 lg:col-span-1">
             <div className="absolute top-4 right-4 px-2 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/50 text-[10px] text-indigo-300 font-medium">
               MOST POPULAR
@@ -171,13 +171,13 @@ export default function HomePage() {
               <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-indigo-400">
                 <Briefcase className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-medium text-white mb-2">Tackle.IO</h3>
+              <h3 className="text-lg font-medium text-white mb-2">UltraLead</h3>
               <div className="text-2xl font-bold text-white mb-4">$499<span className="text-sm text-neutral-500 font-normal">/mo</span></div>
               <p className="text-sm text-neutral-400 leading-relaxed font-light mb-6">
                 Full suite with Voice + CRM. Complete marketing automation with AI-powered voice calls, advanced CRM, and every feature from all platforms.
               </p>
               <div className="flex flex-col gap-2">
-                <Link href="/tackle-io" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+                <Link href="/ultralead" className="inline-flex items-center text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
                   Learn More <ChevronRight className="w-4 h-4 ml-1" />
                 </Link>
                 <Link href="/signup" className="inline-flex items-center text-xs text-neutral-500 hover:text-neutral-400 transition-colors">

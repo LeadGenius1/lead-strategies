@@ -21,15 +21,16 @@ export default function LoginPage() {
     try {
       const { user } = await login(formData.email, formData.password)
       toast.success('Welcome back!')
-      // Redirect to user's platform dashboard (tier: 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact, 4=VideoSite, 5=ClientContact CRM)
+      // Redirect to user's platform dashboard (tier: 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact, 4=VideoSite, 5=UltraLead CRM)
       const tierDashboardMap = {
-        1: '/dashboard/prospects',
-        2: '/dashboard/websites',
-        3: '/dashboard/inbox',
-        4: '/dashboard/videos',
-        5: '/dashboard/inbox',
+        1: '/dashboard/prospects',   // LeadSite.AI
+        2: '/dashboard/websites',    // LeadSite.IO
+        3: '/dashboard/inbox',       // ClientContact.IO
+        4: '/dashboard/videos',      // VideoSite.AI
+        5: '/dashboard/crm',         // UltraLead (full CRM)
       }
-      const dashboardPath = tierDashboardMap[user?.tier] || '/dashboard'
+      const tier = user?.tier != null ? Number(user.tier) : null
+      const dashboardPath = tierDashboardMap[tier] || '/dashboard'
       router.push(dashboardPath)
     } catch (error) {
       toast.error(error.message || 'Login failed')

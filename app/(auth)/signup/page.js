@@ -10,6 +10,7 @@ const TIERS = [
   { id: 'leadsite-ai', name: 'LeadSite.AI', price: 'From $49/mo', description: 'AI email lead generation' },
   { id: 'leadsite-io', name: 'LeadSite.IO', price: 'FREE + Paid', description: '1 free website • Paid from $49/mo', highlight: true },
   { id: 'clientcontact', name: 'ClientContact.IO', price: 'From $49/mo', description: '22+ channel unified inbox' },
+  { id: 'ultralead', name: 'UltraLead', price: 'From $99/mo', description: 'Full CRM • 7 AI agents • Voice + pipeline' },
   { id: 'videosite', name: 'VideoSite.AI', price: 'FREE', description: 'Earn $1/viewer • Content creators' },
 ]
 
@@ -21,16 +22,15 @@ function SignupForm() {
 
   useEffect(() => {
     // Read tier from URL query params
-    // Support both ?tier=leadsite-io and ?product=leadsite_io&tier=starter formats
+    // Support ?tier=leadsite-io, ?tier=ultralead, and ?product=leadsite_io&tier=starter
     const tierFromUrl = searchParams.get('tier')
     const productFromUrl = searchParams.get('product')
+    // Normalize product (e.g. leadsite_ai -> leadsite-ai) to match TIERS id
+    const productNormalized = productFromUrl?.replace(/_/g, '-')
     
-    // If product is specified (new pricing format), use that
-    if (productFromUrl && TIERS.some(t => t.id === productFromUrl)) {
-      setSelectedTier(productFromUrl)
-    } 
-    // Otherwise use tier parameter (legacy format)
-    else if (tierFromUrl && TIERS.some(t => t.id === tierFromUrl)) {
+    if (productNormalized && TIERS.some(t => t.id === productNormalized)) {
+      setSelectedTier(productNormalized)
+    } else if (tierFromUrl && TIERS.some(t => t.id === tierFromUrl)) {
       setSelectedTier(tierFromUrl)
     }
 
@@ -82,14 +82,16 @@ function SignupForm() {
       })
       toast.success('Account created! Welcome to AI Lead Strategies.')
       
-      // Redirect each tier to their chosen platform dashboard (not all platforms offer same products)
+      // Redirect each tier to their chosen platform dashboard
       const tierDashboardMap = {
-        'videosite': '/dashboard/videos',       // VideoSite.AI - video monetization
-        'videosite-io': '/dashboard/videos',
-        'leadsite-io': '/dashboard/websites',   // LeadSite.IO - website builder
-        'clientcontact': '/dashboard/inbox',    // ClientContact.IO - 22 channels, unified inbox
+        'leadsite-ai': '/dashboard/prospects',   // LeadSite.AI - AI lead gen
+        'leadsite-io': '/dashboard/websites',    // LeadSite.IO - website builder
+        'clientcontact': '/dashboard/inbox',     // ClientContact.IO - unified inbox
         'clientcontact-io': '/dashboard/inbox',
-        'leadsite-ai': '/dashboard/prospects',  // LeadSite.AI - AI lead gen
+        'ultralead': '/dashboard/crm',           // UltraLead - full CRM, pipeline, voice
+        'clientcontact-crm': '/dashboard/crm',
+        'videosite': '/dashboard/videos',        // VideoSite.AI - video monetization
+        'videosite-io': '/dashboard/videos',
       }
       const dashboardPath = tierDashboardMap[selectedTier] || '/dashboard'
       router.push(dashboardPath)

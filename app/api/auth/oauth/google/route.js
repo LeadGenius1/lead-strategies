@@ -12,7 +12,7 @@ export async function GET(request) {
     const host = request.headers.get('host') || ''
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
     const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://${host}`
-    const redirectUri = `${frontendUrl}/api/auth/oauth/callback?provider=google`
+    const redirectUri = `${frontendUrl}/api/auth/oauth/callback`
     
     // Google OAuth 2.0 configuration
     const clientId = process.env.GOOGLE_CLIENT_ID
@@ -47,3 +47,4 @@ export async function GET(request) {
     return NextResponse.redirect(`${frontendUrl}/signup?error=${encodeURIComponent('OAuth initiation failed. Please try again.')}`)
   }
 }
+

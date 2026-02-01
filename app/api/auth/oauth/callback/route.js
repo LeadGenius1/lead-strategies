@@ -9,7 +9,6 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const state = searchParams.get('state')
-    const provider = searchParams.get('provider') || 'google'
     const error = searchParams.get('error')
     const errorDescription = searchParams.get('error_description')
 
@@ -34,11 +33,12 @@ export async function GET(request) {
       console.error('State parse error:', e)
     }
 
+    const provider = stateData.provider || 'google'
     const tier = stateData.tier || 'leadsite-ai'
     
     // Get frontend URL from request headers or env
     const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || baseUrl
-    const redirectUri = `${frontendUrl}/api/auth/oauth/callback?provider=${provider}`
+    const redirectUri = `${frontendUrl}/api/auth/oauth/callback`
 
     // Exchange authorization code for user info via backend
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
@@ -99,3 +99,5 @@ export async function GET(request) {
     return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent('Authentication error occurred. Please try again.')}`)
   }
 }
+
+

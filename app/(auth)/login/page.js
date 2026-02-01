@@ -59,14 +59,15 @@ export default function LoginPage() {
           <div className="bg-[#050505] border border-subtle p-6 sm:p-8 md:p-10">
             {/* Logo */}
             <div className="text-center mb-8">
-              <Link href="/" className="inline-flex items-center gap-2 text-2xl text-white uppercase tracking-tighter font-space-grotesk font-light mb-6">
+              <Link href="/" className="inline-flex items-center gap-2 text-2xl text-white uppercase tracking-tighter font-space-grotesk font-light mb-2">
                 <div className="w-2 h-2 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
                 AI LEAD STRATEGIES
               </Link>
+              <p className="text-neutral-500 font-geist text-xs mb-4">aileadstrategies.com</p>
               <h1 className="text-4xl sm:text-5xl md:text-6xl uppercase font-light text-white tracking-tighter font-space-grotesk mb-4">
                 Sign <span className="text-gradient">In</span>
               </h1>
-              <p className="text-neutral-400 font-geist text-base sm:text-lg">Welcome back to your dashboard</p>
+              <p className="text-neutral-400 font-geist text-base sm:text-lg">Welcome back — you&apos;ll go to your product dashboard</p>
             </div>
 
             {/* Social Auth Buttons */}

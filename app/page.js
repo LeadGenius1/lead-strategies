@@ -143,33 +143,27 @@ export default function HomePage() {
       <div className="relative overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-2 sm:px-4 [animation:animationIn_0.8s_ease-out_0.1s_both] animate-on-scroll">
-        <div className="border-subtle flex bg-black/90 w-full max-w-4xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
+        <div className="border-subtle flex bg-black/90 w-full max-w-5xl border p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl gap-x-1 items-center justify-between">
           <Link href="/" className="bg-white/5 hover:bg-white/10 px-3 sm:px-5 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
             AI LEAD
           </Link>
           
           <div className="hidden lg:flex items-center gap-1">
-            <Link href="/leadsite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              LeadSite.AI
-            </Link>
-            <Link href="/leadsite-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              LeadSite.IO
-            </Link>
+            <Link href="/leadsite-ai" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">LeadSite.AI</Link>
+            <Link href="/leadsite-io" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">LeadSite.IO</Link>
+            <Link href="/clientcontact-io" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">ClientContact</Link>
+            <Link href="/ultralead" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">UltraLead</Link>
+            <Link href="/videosite-ai" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">VideoSite</Link>
           </div>
 
-          <div className="px-2 sm:px-6 text-lg sm:text-2xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
+          <div className="px-2 sm:px-4 text-base sm:text-xl text-white uppercase flex items-center gap-2 tracking-tighter font-space-grotesk font-light">
             <div className="w-1.5 h-1.5 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-            AI LEAD
+            <span className="text-neutral-400 font-geist normal-case text-[10px] sm:text-xs hidden sm:inline">aileadstrategies.com</span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-1">
-            <Link href="/clientcontact-io" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              ClientContact.IO
-            </Link>
-            <Link href="/videosite-ai" className="hover:text-white px-3 py-2 text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">
-              VideoSite
-            </Link>
-          </div>
+          <Link href="/signup" className="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-3 sm:px-4 py-2 text-[10px] sm:text-xs tracking-widest uppercase text-purple-300 font-geist transition-all">
+            Get Started
+          </Link>
         </div>
       </nav>
 
@@ -310,100 +304,93 @@ export default function HomePage() {
             <p className="text-neutral-400 font-geist">Unified SaaS ecosystem. Start with one tier, scale to enterprise.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {/* Tier 1: LeadSite.AI */}
-            <Link href="/leadsite-ai" className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-space-grotesk text-white">LeadSite.AI</h3>
-                <div className="text-3xl font-space-grotesk font-light text-white">
-                  $49<span className="text-sm text-neutral-500">/mo</span>
-                </div>
-              </div>
-              <p className="text-neutral-400 font-geist mb-6 text-sm">
-                Email lead generation on autopilot. AI scrapes prospects, writes emails, manages follow-ups.
-              </p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  1,000 Leads/Month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Email Campaigns
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  AI-Generated Content
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Lead Scoring & Analytics
-                </li>
-              </ul>
-            </Link>
+          <p className="text-neutral-500 font-geist text-sm mb-10 max-w-2xl mx-auto">5 platforms, 5 separate dashboards. Choose one — after signup you go straight to that product&apos;s dashboard.</p>
 
-            {/* Tier 2: LeadSite.IO */}
-            <Link href="/leadsite-io" className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
-                <div className="text-3xl font-space-grotesk font-light text-white">
-                  $49<span className="text-sm text-neutral-500">/mo</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* 1: LeadSite.AI */}
+            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+              <Link href="/leadsite-ai" className="flex-grow">
+                <div className="flex justify-between items-start mb-6">
+                  <h3 className="text-2xl font-space-grotesk text-white">LeadSite.AI</h3>
+                  <div className="text-3xl font-space-grotesk font-light text-white">$49<span className="text-sm text-neutral-500">/mo</span></div>
                 </div>
-              </div>
-              <p className="text-neutral-400 font-geist mb-6 text-sm">
-                AI website builder + lead generation. Includes 1 free AI-built website.
-              </p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  1,000 Leads/Month
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  <span className="text-green-400">1 Free Website Included</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  AI Site Generator
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Lead Forms + Analytics
-                </li>
-              </ul>
-            </Link>
+                <p className="text-neutral-400 font-geist mb-6 text-sm">Email lead generation on autopilot. AI scrapes prospects, writes emails, manages follow-ups.</p>
+                <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>1,000 Leads/Month</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Email Campaigns</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Lead Scoring & Analytics</li>
+                </ul>
+              </Link>
+              <Link href="/signup?tier=leadsite-ai" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → LeadSite.AI dashboard</Link>
+            </div>
 
-            {/* Tier 3: ClientContact.IO */}
-            <Link href="/clientcontact-io" className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
-                <div className="text-3xl font-space-grotesk font-light text-white">
-                  $79<span className="text-sm text-neutral-500">/mo</span>
+            {/* 2: LeadSite.IO */}
+            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+              <Link href="/leadsite-io" className="flex-grow">
+                <div className="flex justify-between items-start mb-6">
+                  <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
+                  <div className="text-3xl font-space-grotesk font-light text-white">$49<span className="text-sm text-neutral-500">/mo</span></div>
                 </div>
-              </div>
-              <p className="text-neutral-400 font-geist mb-6 text-sm">
-                Unified inbox for 22+ channels. AI auto-responds and books meetings.
-              </p>
-              <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  22+ Channels Unified
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  AI Auto-Responder
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  Unlimited Campaigns
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-purple-500 rounded-full"></div>
-                  3 Team Seats
-                </li>
-              </ul>
-            </Link>
+                <p className="text-neutral-400 font-geist mb-6 text-sm">AI website builder + lead generation. Includes 1 free AI-built website.</p>
+                <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>1 Free Website Included</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI Site Generator</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Lead Forms + Analytics</li>
+                </ul>
+              </Link>
+              <Link href="/signup?tier=leadsite-io" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → LeadSite.IO dashboard</Link>
+            </div>
 
+            {/* 3: ClientContact.IO */}
+            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+              <Link href="/clientcontact-io" className="flex-grow">
+                <div className="flex justify-between items-start mb-6">
+                  <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
+                  <div className="text-3xl font-space-grotesk font-light text-white">$79<span className="text-sm text-neutral-500">/mo</span></div>
+                </div>
+                <p className="text-neutral-400 font-geist mb-6 text-sm">Unified inbox for 22+ channels. AI auto-responds and books meetings.</p>
+                <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>22+ Channels Unified</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI Auto-Responder</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>3 Team Seats</li>
+                </ul>
+              </Link>
+              <Link href="/signup?tier=clientcontact-io" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → ClientContact dashboard</Link>
+            </div>
+
+            {/* 4: UltraLead */}
+            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+              <Link href="/ultralead" className="flex-grow">
+                <div className="flex justify-between items-start mb-6">
+                  <h3 className="text-2xl font-space-grotesk text-white">UltraLead</h3>
+                  <div className="text-3xl font-space-grotesk font-light text-white">$99<span className="text-sm text-neutral-500">/mo</span></div>
+                </div>
+                <p className="text-neutral-400 font-geist mb-6 text-sm">Full CRM, 7 AI agents, voice + pipeline. Enterprise sales automation.</p>
+                <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>7 Self-Healing AI Agents</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Voice + CRM + Pipeline</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>API Access</li>
+                </ul>
+              </Link>
+              <Link href="/signup?tier=ultralead" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → UltraLead CRM dashboard</Link>
+            </div>
+
+            {/* 5: VideoSite.AI */}
+            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
+              <Link href="/videosite-ai" className="flex-grow">
+                <div className="flex justify-between items-start mb-6">
+                  <h3 className="text-2xl font-space-grotesk text-white">VideoSite.AI</h3>
+                  <div className="text-3xl font-space-grotesk font-light text-white">FREE</div>
+                </div>
+                <p className="text-neutral-400 font-geist mb-6 text-sm">Earn $1 per viewer. Video monetization for content creators.</p>
+                <ul className="space-y-3 font-geist text-sm text-neutral-300">
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-green-500 rounded-full"></div>Earn $1/View</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Stripe Payouts</li>
+                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Upload & Monetize</li>
+                </ul>
+              </Link>
+              <Link href="/signup?tier=videosite" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → VideoSite dashboard</Link>
+            </div>
           </div>
 
         </div>
@@ -415,9 +402,12 @@ export default function HomePage() {
           <h2 className="md:text-6xl uppercase text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6">
             Ready to <span className="text-neutral-600">Scale?</span>
           </h2>
-          <p className="text-lg text-neutral-400 font-geist max-w-xl mx-auto">
-            Choose your platform above to get started with your 14-day free trial. No credit card required.
+          <p className="text-lg text-neutral-400 font-geist max-w-xl mx-auto mb-8">
+            5 platforms, 5 dashboards. Choose your product above — after signup you go straight to that product&apos;s dashboard. 14-day free trial. No credit card required.
           </p>
+          <Link href="/signup" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
+            Sign up at aileadstrategies.com
+          </Link>
         </div>
       </section>
 

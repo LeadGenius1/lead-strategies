@@ -461,7 +461,7 @@ export default function ClientContactIOPage() {
             Join teams who trust ClientContact.IO to bring all their messages into one simple inbox
           </p>
           <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
-            <Link href="/signup" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
+            <Link href="/signup?tier=clientcontact-io" className="inline-block bg-white text-black px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-neutral-200 transition-colors font-geist">
               Start Your Free Trial
             </Link>
           </div>

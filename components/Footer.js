@@ -40,11 +40,12 @@ export default function Footer({ brandName = 'AI LEAD STRATEGIES' }) {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-4">Platforms</h4>
+            <h4 className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-4">5 Platforms (aileadstrategies.com)</h4>
             <ul className="space-y-2 text-sm font-geist text-neutral-400">
               <li><Link href="/leadsite-ai" className="hover:text-white transition-colors">LeadSite.AI</Link></li>
               <li><Link href="/leadsite-io" className="hover:text-white transition-colors">LeadSite.IO</Link></li>
               <li><Link href="/clientcontact-io" className="hover:text-white transition-colors">ClientContact.IO</Link></li>
+              <li><Link href="/ultralead" className="hover:text-white transition-colors">UltraLead</Link></li>
               <li><Link href="/videosite-ai" className="hover:text-white transition-colors">VideoSite.AI</Link></li>
             </ul>
           </div>

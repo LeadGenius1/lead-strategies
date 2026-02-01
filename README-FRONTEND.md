@@ -71,12 +71,12 @@ lib/
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Railway (only)
 
-1. Connect GitHub repository to Vercel
+1. Connect GitHub repository to Railway
 2. Set environment variables:
    - `NEXT_PUBLIC_API_URL=https://backend-production-2987.up.railway.app`
-3. Deploy!
+3. Deploy
 
 ### Backend
 

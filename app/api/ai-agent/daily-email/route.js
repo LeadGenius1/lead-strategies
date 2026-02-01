@@ -8,16 +8,16 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request) {
   try {
-    // Vercel Cron sends authorization header with bearer token
-    // The token is set in Vercel dashboard under Cron Jobs
+    // Railway cron / external scheduler sends authorization header with bearer token
+    // Set CRON_SECRET in Railway environment variables
     const authHeader = request.headers.get('authorization')
     const cronSecretHeader = request.headers.get('x-cron-secret')
     
-    // Verify authorization (Vercel Cron) or cron secret (manual testing)
+    // Verify authorization (Railway cron) or cron secret (manual testing)
     let isAuthorized = false
     
     if (authHeader?.startsWith('Bearer ')) {
-      // Vercel Cron request - authorized
+      // Cron request - authorized
       isAuthorized = true
     } else if (cronSecretHeader === process.env.CRON_SECRET) {
       // Manual testing with header - authorized

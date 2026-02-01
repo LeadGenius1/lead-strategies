@@ -72,6 +72,7 @@ export async function GET(request) {
             'clientcontact': '/dashboard/inbox',
             'clientcontact-io': '/dashboard/inbox',
             'leadsite-ai': '/dashboard/prospects',
+            'ultralead': '/dashboard/crm',
           }
           const redirectPath = tierDashboardMap[tier] || '/dashboard'
           const redirectResponse = NextResponse.redirect(`${baseUrl}${redirectPath}`)

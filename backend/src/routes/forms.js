@@ -187,7 +187,7 @@ router.post('/:id/submit', async (req, res) => {
     }
 
     // Validate required fields
-    const requiredFields = form.fields.filter((f: any) => f.required);
+    const requiredFields = form.fields.filter((f) => f.required);
     for (const field of requiredFields) {
       if (!submissionData[field.name]) {
         return res.status(400).json({ error: `Field ${field.name} is required` });

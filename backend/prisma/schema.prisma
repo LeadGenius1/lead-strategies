@@ -923,6 +923,7 @@ model Contact {
   deals      Deal[]     @relation("ContactDeals")
   activities Activity[]
   calls      Call[]
+  meetings   Meeting[]
 
   @@unique([userId, email])
   @@index([userId])

@@ -1,21 +1,23 @@
 import { NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
 
 // Mark route as dynamic to prevent static rendering
 export const dynamic = 'force-dynamic'
 
+function getBaseUrl(request) {
+  if (process.env.NEXT_PUBLIC_FRONTEND_URL) return process.env.NEXT_PUBLIC_FRONTEND_URL.replace(/\/$/, '')
+  const host = request.headers.get('host') || 'aileadstrategies.com'
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+  return `${protocol}://${host}`
+}
+
 export async function GET(request) {
   try {
+    const baseUrl = getBaseUrl(request)
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const state = searchParams.get('state')
     const error = searchParams.get('error')
     const errorDescription = searchParams.get('error_description')
-
-    // Get base URL for absolute redirects
-    const host = request.headers.get('host') || 'aileadstrategies.com'
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const baseUrl = `${protocol}://${host}`
 
     if (error) {
       const errorMsg = errorDescription || error
@@ -35,10 +37,7 @@ export async function GET(request) {
 
     const provider = stateData.provider || 'google'
     const tier = stateData.tier || 'leadsite-ai'
-    
-    // Get frontend URL from request headers or env
-    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || baseUrl
-    const redirectUri = `${frontendUrl}/api/auth/oauth/callback`
+    const redirectUri = `${baseUrl}/api/auth/oauth/callback`
 
     // Exchange authorization code for user info via backend
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
@@ -87,7 +86,7 @@ export async function GET(request) {
         }
       } else {
         const errorData = await response.json().catch(() => ({}))
-        const errorMsg = errorData.message || 'OAuth authentication failed'
+        const errorMsg = errorData.message || errorData.error || `OAuth failed (${response.status})`
         return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent(errorMsg)}`)
       }
     } catch (backendError) {
@@ -96,7 +95,8 @@ export async function GET(request) {
     }
   } catch (error) {
     console.error('OAuth callback error:', error)
-    return NextResponse.redirect(`${baseUrl}/signup?error=${encodeURIComponent('Authentication error occurred. Please try again.')}`)
+    const fallbackUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://aileadstrategies.com'
+    return NextResponse.redirect(`${fallbackUrl.replace(/\/$/, '')}/signup?error=${encodeURIComponent('Authentication error occurred. Please try again.')}`)
   }
 }
 

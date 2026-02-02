@@ -8,10 +8,9 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const tier = searchParams.get('tier') || 'leadsite-ai'
     
-    // Get frontend URL from request headers or env
-    const host = request.headers.get('host') || ''
+    const host = request.headers.get('host') || 'aileadstrategies.com'
     const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://${host}`
+    const frontendUrl = (process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://${host}`).replace(/\/$/, '')
     const redirectUri = `${frontendUrl}/api/auth/oauth/callback`
     
     // Google OAuth 2.0 configuration

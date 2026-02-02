@@ -1,10 +1,26 @@
 // Website Builder Routes (LeadSite.IO)
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+
+// Lazy-load Prisma only when DATABASE_URL is available
+let prisma = null;
+
+function getPrisma() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!prisma) {
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
+
+// Mock data for development without database
+const mockWebsites = [
+  { id: '1', name: 'My Business Site', subdomain: 'mybusiness', url: 'https://mybusiness.leadsite.io', status: 'published', isPublished: true, company_name: 'My Business LLC', prospects_count: 24, campaigns_count: 2, createdAt: new Date(), updatedAt: new Date() },
+  { id: '2', name: 'Product Launch', subdomain: 'launch2024', url: 'https://launch2024.leadsite.io', status: 'draft', isPublished: false, company_name: 'Launch Corp', prospects_count: 0, campaigns_count: 0, createdAt: new Date(), updatedAt: new Date() },
+];
 
 // All routes require authentication and website_builder feature (Tier 2+)
 router.use(authenticate);
@@ -13,16 +29,23 @@ router.use(requireFeature('website_builder'));
 // Get all websites
 router.get('/', async (req, res) => {
   try {
-    const websites = await prisma.website.findMany({
+    const db = getPrisma();
+
+    if (!db) {
+      return res.json({
+        success: true,
+        data: { websites: mockWebsites }
+      });
+    }
+
+    const websites = await db.website.findMany({
       where: { userId: req.user.id },
       orderBy: { updatedAt: 'desc' }
     });
 
     res.json({
       success: true,
-      data: {
-        websites
-      }
+      data: { websites }
     });
   } catch (error) {
     console.error('Get websites error:', error);
@@ -33,7 +56,13 @@ router.get('/', async (req, res) => {
 // Get single website
 router.get('/:id', async (req, res) => {
   try {
-    const website = await prisma.website.findFirst({
+    const db = getPrisma();
+    if (!db) {
+      const website = mockWebsites.find(w => w.id === req.params.id);
+      if (!website) return res.status(404).json({ error: 'Website not found' });
+      return res.json({ success: true, data: website });
+    }
+    const website = await db.website.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -57,10 +86,16 @@ router.get('/:id', async (req, res) => {
 // Create website
 router.post('/', async (req, res) => {
   try {
+    const db = getPrisma();
     const { name, domain, subdomain, pages, settings, theme } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: 'Website name is required' });
+    }
+
+    if (!db) {
+      const newWebsite = { id: Date.now().toString(), name, subdomain: subdomain || name.toLowerCase().replace(/[^a-z0-9]/g, '-'), status: 'draft', createdAt: new Date() };
+      return res.status(201).json({ success: true, data: newWebsite });
     }
 
     // Generate subdomain if not provided
@@ -71,7 +106,7 @@ router.post('/', async (req, res) => {
       let exists = true;
       while (exists) {
         const checkSubdomain = counter === 1 ? baseSubdomain : `${baseSubdomain}-${counter}`;
-        const existing = await prisma.website.findUnique({
+        const existing = await db.website.findUnique({
           where: { subdomain: checkSubdomain }
         });
         if (!existing) {
@@ -83,7 +118,7 @@ router.post('/', async (req, res) => {
       }
     } else {
       // Check if subdomain is available
-      const existing = await prisma.website.findUnique({
+      const existing = await db.website.findUnique({
         where: { subdomain: finalSubdomain }
       });
       if (existing) {
@@ -91,7 +126,7 @@ router.post('/', async (req, res) => {
       }
     }
 
-    const website = await prisma.website.create({
+    const website = await db.website.create({
       data: {
         userId: req.user.id,
         name,
@@ -120,7 +155,7 @@ router.post('/', async (req, res) => {
 // Update website
 router.put('/:id', async (req, res) => {
   try {
-    const website = await prisma.website.findFirst({
+    const website = await db.website.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -147,7 +182,7 @@ router.put('/:id', async (req, res) => {
     if (subdomain !== undefined) {
       // Check if new subdomain is available
       if (subdomain !== website.subdomain) {
-        const existing = await prisma.website.findUnique({
+        const existing = await db.website.findUnique({
           where: { subdomain }
         });
         if (existing) {
@@ -161,7 +196,7 @@ router.put('/:id', async (req, res) => {
     if (theme !== undefined) updateData.theme = theme;
     if (isPublished !== undefined) updateData.isPublished = isPublished;
 
-    const updatedWebsite = await prisma.website.update({
+    const updatedWebsite = await db.website.update({
       where: { id: req.params.id },
       data: updateData
     });
@@ -180,7 +215,7 @@ router.put('/:id', async (req, res) => {
 // Delete website
 router.delete('/:id', async (req, res) => {
   try {
-    const website = await prisma.website.findFirst({
+    const website = await db.website.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -191,7 +226,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Website not found' });
     }
 
-    await prisma.website.delete({
+    await db.website.delete({
       where: { id: req.params.id }
     });
 
@@ -208,7 +243,7 @@ router.delete('/:id', async (req, res) => {
 // Publish website
 router.post('/:id/publish', async (req, res) => {
   try {
-    const website = await prisma.website.findFirst({
+    const website = await db.website.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -219,7 +254,7 @@ router.post('/:id/publish', async (req, res) => {
       return res.status(404).json({ error: 'Website not found' });
     }
 
-    const updatedWebsite = await prisma.website.update({
+    const updatedWebsite = await db.website.update({
       where: { id: req.params.id },
       data: { isPublished: true }
     });
@@ -241,7 +276,7 @@ router.post('/:id/publish', async (req, res) => {
 // Unpublish website
 router.post('/:id/unpublish', async (req, res) => {
   try {
-    const website = await prisma.website.findFirst({
+    const website = await db.website.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -252,7 +287,7 @@ router.post('/:id/unpublish', async (req, res) => {
       return res.status(404).json({ error: 'Website not found' });
     }
 
-    const updatedWebsite = await prisma.website.update({
+    const updatedWebsite = await db.website.update({
       where: { id: req.params.id },
       data: { isPublished: false }
     });
@@ -271,7 +306,7 @@ router.post('/:id/unpublish', async (req, res) => {
 // POST /api/websites/:id/domain - Setup custom domain
 router.post('/:id/domain', async (req, res) => {
   try {
-    const website = await prisma.website.findFirst({
+    const website = await db.website.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -300,7 +335,7 @@ router.post('/:id/domain', async (req, res) => {
     // 3. Configure CDN routing
     // For now, just update the domain field
 
-    const updatedWebsite = await prisma.website.update({
+    const updatedWebsite = await db.website.update({
       where: { id: req.params.id },
       data: { domain: domain.trim().toLowerCase() }
     });

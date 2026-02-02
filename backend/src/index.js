@@ -33,6 +33,7 @@ const crmRoutes = require('./routes/crm');
 const agentRoutes = require('./routes/agents');
 const videositeRoutes = require('./routes/videosite');
 const videoRoutes = require('./routes/videos');
+const payoutsRoutes = require('./routes/payouts');
 const masterValidationRoutes = require('./routes/master-validation');
 
 // Admin Routes (Internal only)
@@ -204,6 +205,7 @@ app.use('/api/v1/videos', videoRoutes);  // Also mount at v1 path
 app.use('/api/canned-responses', cannedResponseRoutes);
 app.use('/api/auto-responses', autoResponseRoutes);
 app.use('/api/conversation-notes', conversationNoteRoutes);
+app.use('/api/v1/payouts', payoutsRoutes);  // VideoSite earnings payouts
 
 // 404 handler
 app.use((req, res) => {

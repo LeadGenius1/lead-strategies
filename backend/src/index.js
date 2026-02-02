@@ -26,6 +26,15 @@ const conversationNoteRoutes = require('./routes/conversationNotes');
 // UltraLead / ClientContact CRM Routes (Tier 5)
 const clientcontactCrmRoutes = require('./routes/ultralead');
 
+// New Platform Routes
+const copilotRoutes = require('./routes/copilot');
+const templateRoutes = require('./routes/templates');
+const crmRoutes = require('./routes/crm');
+const agentRoutes = require('./routes/agents');
+const videositeRoutes = require('./routes/videosite');
+const videoRoutes = require('./routes/videos');
+const masterValidationRoutes = require('./routes/master-validation');
+
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
 
@@ -163,6 +172,14 @@ app.use('/api/v1/conversation-notes', conversationNoteRoutes);
 
 // ClientContact CRM Routes (Tier 5)
 app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
+
+// New Platform Routes (Multi-Agent Build)
+app.use('/api/v1/copilot', copilotRoutes);         // LeadSite.AI AI Email Generation
+app.use('/api/v1/templates', templateRoutes);       // LeadSite.IO 60 Templates
+app.use('/api/v1/crm', crmRoutes);                  // UltraLead CRM (Contacts, Companies, Deals)
+app.use('/api/v1/agents', agentRoutes);             // UltraLead 7 AI Agents Control
+app.use('/api/v1/videosite', videositeRoutes);      // VideoSite.AI Monetization
+app.use('/api/v1/channels', channelRoutes);         // ClientContact.IO Channels
 
 // Admin Routes (Internal AI Lead Strategies staff only)
 app.use('/admin', adminRoutes);

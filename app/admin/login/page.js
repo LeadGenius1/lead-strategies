@@ -25,14 +25,15 @@ export default function AdminLoginPage() {
 
     setLoading(true)
     try {
-      // Use admin login endpoint
-      const response = await api.post('/api/admin/login', formData)
+      // Use admin login endpoint (backend: /admin/login, not /api/admin/login)
+      const response = await api.post('/admin/login', formData)
       
-      // Store admin token
-      const token = response.data?.token || response.data?.data?.token
+      // Store admin token (backend returns { success, data: { token, admin } })
+      const token = response.data?.data?.token || response.data?.token
+      const admin = response.data?.data?.admin || response.data?.admin
       if (token) {
         Cookies.set('admin_token', token, { expires: 7 }) // 7 days
-        Cookies.set('admin_user', JSON.stringify(response.data?.admin || response.data?.data?.admin), { expires: 7 })
+        Cookies.set('admin_user', JSON.stringify(admin || {}), { expires: 7 })
         toast.success('Admin login successful!')
         router.push('/admin/dashboard')
       } else {
@@ -102,9 +103,9 @@ export default function AdminLoginPage() {
           {/* Default Credentials Info */}
           <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
             <p className="text-xs text-yellow-400">
-              <strong>Default Credentials:</strong><br />
+              <strong>Credentials (from Railway):</strong><br />
               Email: admin@aileadstrategies.com<br />
-              Password: YourSecurePassword123!
+              Password: AILeadAdmin2026!
             </p>
             <p className="text-xs text-yellow-400 mt-2">
               ⚠️ Change this password after first login for security.

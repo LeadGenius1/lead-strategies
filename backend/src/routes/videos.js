@@ -2,15 +2,32 @@
 // AI-powered video generation and management
 
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+
+// Lazy-load Prisma only when DATABASE_URL is available
+let prisma = null;
+
+function getPrisma() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!prisma) {
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
+
+// Mock data for development without database
+const mockVideos = [
+  { id: '1', title: 'Product Demo Video', status: 'published', visibility: 'public', viewCount: 1250, totalEarnings: 125.00, duration: 180, thumbnail: null, createdAt: new Date() },
+  { id: '2', title: 'Customer Testimonial', status: 'published', visibility: 'public', viewCount: 890, totalEarnings: 89.00, duration: 120, thumbnail: null, createdAt: new Date() },
+  { id: '3', title: 'How-To Tutorial', status: 'draft', visibility: 'private', viewCount: 0, totalEarnings: 0, duration: 300, thumbnail: null, createdAt: new Date() },
+];
 
 // All routes require authentication and video feature (Tier 4+)
 router.use(authenticate);
-router.use(requireFeature('video_generation'));
+router.use(requireFeature('video'));
 
 // Initialize Anthropic for AI video generation
 let anthropic = null;
@@ -28,7 +45,20 @@ if (process.env.ANTHROPIC_API_KEY) {
 // GET /api/videos - List all videos
 router.get('/', async (req, res) => {
   try {
+    const db = getPrisma();
     const { status, template, page = 1, limit = 50 } = req.query;
+
+    if (!db) {
+      let filtered = [...mockVideos];
+      if (status) filtered = filtered.filter(v => v.status === status);
+      return res.json({
+        success: true,
+        data: {
+          videos: filtered,
+          pagination: { page: 1, limit: 50, total: filtered.length, pages: 1 }
+        }
+      });
+    }
 
     const where = { userId: req.user.id };
     if (status) where.status = status;
@@ -37,13 +67,13 @@ router.get('/', async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const [videos, total] = await Promise.all([
-      prisma.video.findMany({
+      db.video.findMany({
         where,
         skip,
         take: parseInt(limit),
         orderBy: { createdAt: 'desc' }
       }),
-      prisma.video.count({ where })
+      db.video.count({ where })
     ]);
 
     res.json({
@@ -67,7 +97,7 @@ router.get('/', async (req, res) => {
 // GET /api/videos/:id - Get video details
 router.get('/:id', async (req, res) => {
   try {
-    const video = await prisma.video.findFirst({
+    const video = await db.video.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -154,7 +184,7 @@ Return JSON with:
     }
 
     // Create video record
-    const video = await prisma.video.create({
+    const video = await db.video.create({
       data: {
         userId: req.user.id,
         title: prompt.substring(0, 100),
@@ -200,7 +230,7 @@ Return JSON with:
 // PUT /api/videos/:id - Update video
 router.put('/:id', async (req, res) => {
   try {
-    const video = await prisma.video.findFirst({
+    const video = await db.video.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -228,7 +258,7 @@ router.put('/:id', async (req, res) => {
     if (settings !== undefined) updateData.settings = settings;
     if (aspectRatio !== undefined) updateData.aspectRatio = aspectRatio;
 
-    const updatedVideo = await prisma.video.update({
+    const updatedVideo = await db.video.update({
       where: { id: req.params.id },
       data: updateData
     });
@@ -249,7 +279,7 @@ router.post('/:id/publish', async (req, res) => {
   try {
     const { platforms = ['youtube'], aspectRatios } = req.body;
 
-    const video = await prisma.video.findFirst({
+    const video = await db.video.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -293,7 +323,7 @@ router.post('/:id/publish', async (req, res) => {
 // GET /api/videos/:id/analytics - Get video analytics
 router.get('/:id/analytics', async (req, res) => {
   try {
-    const video = await prisma.video.findFirst({
+    const video = await db.video.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -328,7 +358,7 @@ router.get('/:id/analytics', async (req, res) => {
 // DELETE /api/videos/:id - Delete video
 router.delete('/:id', async (req, res) => {
   try {
-    const video = await prisma.video.findFirst({
+    const video = await db.video.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -339,7 +369,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Video not found' });
     }
 
-    await prisma.video.delete({
+    await db.video.delete({
       where: { id: req.params.id }
     });
 

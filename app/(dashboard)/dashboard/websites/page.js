@@ -21,9 +21,10 @@ export default function WebsitesPage() {
 
   async function loadWebsites() {
     try {
-      const response = await api.get('/api/websites')
-      const websitesList = response.data?.websites || response.data || []
-      setWebsites(websitesList)
+      const response = await api.get('/api/v1/websites')
+      const data = response.data?.data || response.data || {}
+      const websitesList = data.websites || data || []
+      setWebsites(Array.isArray(websitesList) ? websitesList : [])
     } catch (error) {
       console.error('Error loading websites:', error)
     } finally {
@@ -37,7 +38,7 @@ export default function WebsitesPage() {
 
     setAnalyzing(true)
     try {
-      await api.post('/api/websites/analyze', { url })
+      await api.post('/api/v1/websites/analyze', { url })
       toast.success('Website analyzed successfully!')
       await loadWebsites()
       setUrl('')

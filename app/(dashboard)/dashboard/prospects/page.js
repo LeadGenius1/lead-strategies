@@ -19,6 +19,14 @@ const getInitialColorClasses = (name) => {
   return INITIAL_COLOR_CLASSES[index]
 }
 
+// Alias for backwards compatibility
+const getInitialColor = (name) => {
+  const classes = getInitialColorClasses(name)
+  // Extract color name from class (e.g., 'bg-indigo-500/20' -> 'indigo')
+  const match = classes.bg.match(/bg-(\w+)-/)
+  return match ? match[1] : 'indigo'
+}
+
 export default function ProspectsPage() {
   const [prospects, setProspects] = useState([])
   const [loading, setLoading] = useState(true)

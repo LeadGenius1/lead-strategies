@@ -32,29 +32,39 @@ export default function DashboardPage() {
 
   async function loadDashboardData() {
     try {
-      // Load stats from various endpoints
-      const [leadsRes, campaignsRes] = await Promise.all([
-        api.get('/api/leads').catch(() => ({ data: { leads: [] } })),
-        api.get('/api/campaigns').catch(() => ({ data: [] }))
+      // Load stats from dashboard endpoint
+      const [dashboardRes, leadsRes, campaignsRes] = await Promise.all([
+        api.get('/api/v1/dashboard/stats').catch(() => ({ data: { data: {} } })),
+        api.get('/api/v1/leads').catch(() => ({ data: { data: { leads: [] } } })),
+        api.get('/api/v1/campaigns').catch(() => ({ data: { data: [] } }))
       ])
 
-      const leads = leadsRes.data?.leads || leadsRes.data || []
-      const campaigns = campaignsRes.data || []
+      const dashData = dashboardRes.data?.data || dashboardRes.data || {}
+      const leads = leadsRes.data?.data?.leads || leadsRes.data?.leads || []
+      const campaigns = campaignsRes.data?.data || campaignsRes.data || []
 
       setStats({
-        totalLeads: leads.length,
-        activeCampaigns: campaigns.filter(c => c.status === 'active').length,
-        emailsSent: campaigns.reduce((sum, c) => sum + (c.sent_count || 0), 0),
-        replyRate: 24.5
+        totalLeads: dashData.totalLeads || leads.length,
+        activeCampaigns: dashData.activeCampaigns || campaigns.filter(c => c.status === 'active').length,
+        emailsSent: dashData.emailsSent || campaigns.reduce((sum, c) => sum + (c.sent_count || c.sentCount || 0), 0),
+        replyRate: dashData.replyRate || 24.5
       })
 
-      // Mock recent activity
-      setRecentActivity([
-        { type: 'lead', message: 'New lead discovered: Sarah Chen, CTO at CloudScale', time: '2 min ago' },
-        { type: 'email', message: 'Email opened by Michael Torres', time: '15 min ago' },
-        { type: 'reply', message: 'Reply received from Jennifer Park', time: '1 hour ago' },
-        { type: 'campaign', message: 'Campaign "Q1 SaaS Outreach" completed', time: '3 hours ago' },
-      ])
+      // Load recent activity from API
+      const activityRes = await api.get('/api/v1/dashboard/activity').catch(() => ({ data: { data: [] } }))
+      const activity = activityRes.data?.data || activityRes.data || []
+
+      if (activity.length > 0) {
+        setRecentActivity(activity)
+      } else {
+        // Fallback to placeholder activity if API returns empty
+        setRecentActivity([
+          { type: 'lead', message: 'New lead discovered: Sarah Chen, CTO at CloudScale', time: '2 min ago' },
+          { type: 'email', message: 'Email opened by Michael Torres', time: '15 min ago' },
+          { type: 'reply', message: 'Reply received from Jennifer Park', time: '1 hour ago' },
+          { type: 'campaign', message: 'Campaign "Q1 SaaS Outreach" completed', time: '3 hours ago' },
+        ])
+      }
     } catch (error) {
       console.error('Dashboard load error:', error)
     } finally {

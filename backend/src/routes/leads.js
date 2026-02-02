@@ -1,11 +1,40 @@
 // Leads Routes
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 const { authenticate, checkLeadLimit } = require('../middleware/auth');
-const { calculateLeadScore, scoreLeadsBatch } = require('../services/leadScoringService');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+
+// Lazy-load Prisma only when DATABASE_URL is available
+let prisma = null;
+let calculateLeadScore = null;
+let scoreLeadsBatch = null;
+
+function getPrisma() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!prisma) {
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
+
+function getLeadScoring() {
+  if (!calculateLeadScore) {
+    const scoring = require('../services/leadScoringService');
+    calculateLeadScore = scoring.calculateLeadScore;
+    scoreLeadsBatch = scoring.scoreLeadsBatch;
+  }
+  return { calculateLeadScore, scoreLeadsBatch };
+}
+
+// Mock data for development without database
+const mockLeads = [
+  { id: '1', email: 'sarah.chen@cloudscale.com', name: 'Sarah Chen', company: 'CloudScale', title: 'CTO', status: 'new', score: 85, source: 'ai-discovery', createdAt: new Date() },
+  { id: '2', email: 'michael.torres@techcorp.com', name: 'Michael Torres', company: 'TechCorp', title: 'VP Sales', status: 'contacted', score: 72, source: 'linkedin', createdAt: new Date() },
+  { id: '3', email: 'jennifer.park@innovate.io', name: 'Jennifer Park', company: 'Innovate.io', title: 'CEO', status: 'replied', score: 91, source: 'referral', createdAt: new Date() },
+  { id: '4', email: 'david.kim@startupxyz.com', name: 'David Kim', company: 'StartupXYZ', title: 'Founder', status: 'new', score: 68, source: 'website', createdAt: new Date() },
+  { id: '5', email: 'amanda.wilson@enterprise.co', name: 'Amanda Wilson', company: 'Enterprise Co', title: 'Director', status: 'qualified', score: 78, source: 'ai-discovery', createdAt: new Date() },
+];
 
 // All routes require authentication
 router.use(authenticate);
@@ -14,9 +43,38 @@ router.use(authenticate);
 router.get('/', async (req, res) => {
   try {
     const { status, source, search, limit = 100, offset = 0 } = req.query;
+    const db = getPrisma();
+
+    // Return mock data if no database
+    if (!db) {
+      let filteredLeads = [...mockLeads];
+      if (status) filteredLeads = filteredLeads.filter(l => l.status === status);
+      if (source) filteredLeads = filteredLeads.filter(l => l.source === source);
+      if (search) {
+        const s = search.toLowerCase();
+        filteredLeads = filteredLeads.filter(l =>
+          l.email.toLowerCase().includes(s) ||
+          l.name.toLowerCase().includes(s) ||
+          l.company.toLowerCase().includes(s)
+        );
+      }
+      return res.json({
+        success: true,
+        data: {
+          leads: filteredLeads.map(l => ({
+            ...l,
+            firstName: l.name?.split(' ')[0] || '',
+            lastName: l.name?.split(' ').slice(1).join(' ') || ''
+          })),
+          total: filteredLeads.length,
+          limit: parseInt(limit),
+          offset: parseInt(offset)
+        }
+      });
+    }
 
     const where = { userId: req.user.id };
-    
+
     if (status) where.status = status;
     if (source) where.source = source;
     if (search) {
@@ -28,13 +86,13 @@ router.get('/', async (req, res) => {
     }
 
     const [leads, total] = await Promise.all([
-      prisma.lead.findMany({
+      db.lead.findMany({
         where,
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' }
       }),
-      prisma.lead.count({ where })
+      db.lead.count({ where })
     ]);
 
     // Format leads for frontend
@@ -78,7 +136,13 @@ router.get('/', async (req, res) => {
 // Get single lead
 router.get('/:id', async (req, res) => {
   try {
-    const lead = await prisma.lead.findFirst({
+    const db = getPrisma();
+    if (!db) {
+      const lead = mockLeads.find(l => l.id === req.params.id);
+      if (!lead) return res.status(404).json({ error: 'Lead not found' });
+      return res.json({ success: true, data: { ...lead, firstName: lead.name?.split(' ')[0] || '', lastName: lead.name?.split(' ').slice(1).join(' ') || '' } });
+    }
+    const lead = await db.lead.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -106,6 +170,10 @@ router.get('/:id', async (req, res) => {
 // Create lead
 router.post('/', checkLeadLimit, async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(201).json({ success: true, message: 'Lead created (mock)', data: { id: Date.now().toString(), ...req.body, status: 'new', createdAt: new Date() } });
+    }
     const {
       email,
       firstName,
@@ -129,7 +197,7 @@ router.post('/', checkLeadLimit, async (req, res) => {
     }
 
     // Check if lead already exists
-    const existingLead = await prisma.lead.findUnique({
+    const existingLead = await db.lead.findUnique({
       where: {
         userId_email: {
           userId: req.user.id,
@@ -145,7 +213,7 @@ router.post('/', checkLeadLimit, async (req, res) => {
     // Use name if provided, otherwise combine firstName and lastName
     const finalName = name || (firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || null);
 
-    const lead = await prisma.lead.create({
+    const lead = await db.lead.create({
       data: {
         userId: req.user.id,
         email,
@@ -182,6 +250,10 @@ router.post('/', checkLeadLimit, async (req, res) => {
 // Bulk create leads (for CSV import)
 router.post('/bulk', checkLeadLimit, async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(201).json({ success: true, message: 'Bulk import (mock)', data: { created: req.body.leads?.length || 0, failed: 0 } });
+    }
     const { leads } = req.body;
 
     if (!Array.isArray(leads) || leads.length === 0) {
@@ -189,7 +261,7 @@ router.post('/bulk', checkLeadLimit, async (req, res) => {
     }
 
     // Check lead limit
-    const currentCount = await prisma.lead.count({
+    const currentCount = await db.lead.count({
       where: { userId: req.user.id }
     });
 
@@ -215,7 +287,7 @@ router.post('/bulk', checkLeadLimit, async (req, res) => {
         }
 
         // Check if lead exists
-        const existing = await prisma.lead.findUnique({
+        const existing = await db.lead.findUnique({
           where: {
             userId_email: {
               userId: req.user.id,
@@ -231,7 +303,7 @@ router.post('/bulk', checkLeadLimit, async (req, res) => {
 
         const name = leadData.name || (leadData.firstName && leadData.lastName ? `${leadData.firstName} ${leadData.lastName}` : leadData.firstName || leadData.lastName || null);
 
-        const lead = await prisma.lead.create({
+        const lead = await db.lead.create({
           data: {
             userId: req.user.id,
             email: leadData.email,
@@ -275,7 +347,11 @@ router.post('/bulk', checkLeadLimit, async (req, res) => {
 // Update lead
 router.put('/:id', async (req, res) => {
   try {
-    const lead = await prisma.lead.findFirst({
+    const db = getPrisma();
+    if (!db) {
+      return res.json({ success: true, message: 'Lead updated (mock)', data: { id: req.params.id, ...req.body } });
+    }
+    const lead = await db.lead.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -330,7 +406,7 @@ router.put('/:id', async (req, res) => {
       updateData.lastContactedAt = new Date();
     }
 
-    const updatedLead = await prisma.lead.update({
+    const updatedLead = await db.lead.update({
       where: { id: req.params.id },
       data: updateData
     });
@@ -353,7 +429,11 @@ router.put('/:id', async (req, res) => {
 // Delete lead
 router.delete('/:id', async (req, res) => {
   try {
-    const lead = await prisma.lead.findFirst({
+    const db = getPrisma();
+    if (!db) {
+      return res.json({ success: true, message: 'Lead deleted (mock)' });
+    }
+    const lead = await db.lead.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -364,7 +444,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Lead not found' });
     }
 
-    await prisma.lead.delete({
+    await db.lead.delete({
       where: { id: req.params.id }
     });
 
@@ -381,13 +461,23 @@ router.delete('/:id', async (req, res) => {
 // Export leads as CSV
 router.get('/export/csv', async (req, res) => {
   try {
+    const db = getPrisma();
     const { status, source } = req.query;
+
+    if (!db) {
+      // Return mock CSV
+      const csv = 'Email,Name,Company,Phone,Title,Website,Source,Status,Score,Created At\n' +
+        mockLeads.map(l => `"${l.email}","${l.name}","${l.company}","","${l.title}","","${l.source}","${l.status}",${l.score},"${l.createdAt.toISOString()}"`).join('\n');
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=leads-export.csv');
+      return res.send(csv);
+    }
 
     const where = { userId: req.user.id };
     if (status) where.status = status;
     if (source) where.source = source;
 
-    const leads = await prisma.lead.findMany({
+    const leads = await db.lead.findMany({
       where,
       orderBy: { createdAt: 'desc' }
     });
@@ -424,10 +514,19 @@ router.get('/export/csv', async (req, res) => {
 // POST /api/leads/discover - Multi-source AI Prospect Discovery (ClientContact.IO)
 router.post('/discover', checkLeadLimit, async (req, res) => {
   try {
+    const db = getPrisma();
     const { location, industry, keywords, maxResults = 20, sources, useAggregation = false } = req.body;
 
+    if (!db) {
+      // Return mock discovered leads
+      const mockDiscovered = [
+        { id: Date.now().toString(), email: 'new.lead@discovered.com', name: 'New Lead', company: 'Discovered Corp', title: 'CEO', score: 75, source: 'ai-discovery' }
+      ];
+      return res.json({ success: true, message: 'Discovered 1 new prospects (mock)', data: { discovered: 1, leads: mockDiscovered } });
+    }
+
     // Get user profile for ICP matching
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id: req.user.id },
       select: { company: true, customFields: true }
     });
@@ -453,7 +552,7 @@ router.post('/discover', checkLeadLimit, async (req, res) => {
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${company.toLowerCase().replace(/\s+/g, '')}.com`;
 
       // Check if lead already exists
-      const existing = await prisma.lead.findUnique({
+      const existing = await db.lead.findUnique({
         where: {
           userId_email: {
             userId: req.user.id,
@@ -512,7 +611,7 @@ router.post('/discover', checkLeadLimit, async (req, res) => {
 
     for (const prospect of scoredProspects) {
       try {
-        const lead = await prisma.lead.create({
+        const lead = await db.lead.create({
           data: {
             userId: req.user.id,
             email: prospect.email,
@@ -552,7 +651,12 @@ router.post('/discover', checkLeadLimit, async (req, res) => {
 // POST /api/leads/:id/score - Calculate and update lead score
 router.post('/:id/score', async (req, res) => {
   try {
-    const lead = await prisma.lead.findFirst({
+    const db = getPrisma();
+    if (!db) {
+      const lead = mockLeads.find(l => l.id === req.params.id);
+      return res.json({ success: true, message: 'Lead scored (mock)', data: { ...lead, score: 85, scoreBreakdown: { profile: 30, engagement: 25, fit: 30 } } });
+    }
+    const lead = await db.lead.findFirst({
       where: {
         id: req.params.id,
         userId: req.user.id
@@ -564,7 +668,7 @@ router.post('/:id/score', async (req, res) => {
     }
 
     // Get user profile for ICP matching
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id: req.user.id },
       select: { company: true, customFields: true }
     });
@@ -576,7 +680,7 @@ router.post('/:id/score', async (req, res) => {
     });
 
     // Update lead with new score
-    const updatedLead = await prisma.lead.update({
+    const updatedLead = await db.lead.update({
       where: { id: lead.id },
       data: {
         score: scoringResult.score,
@@ -607,13 +711,19 @@ router.post('/:id/score', async (req, res) => {
 // POST /api/leads/batch/score - Score multiple leads
 router.post('/batch/score', async (req, res) => {
   try {
+    const db = getPrisma();
     const { leadIds } = req.body;
 
     if (!Array.isArray(leadIds) || leadIds.length === 0) {
       return res.status(400).json({ error: 'leadIds array is required' });
     }
 
-    const leads = await prisma.lead.findMany({
+    if (!db) {
+      const scoredLeads = mockLeads.filter(l => leadIds.includes(l.id)).map(l => ({ ...l, score: 80 }));
+      return res.json({ success: true, message: `Scored ${scoredLeads.length} leads (mock)`, data: { leads: scoredLeads, count: scoredLeads.length } });
+    }
+
+    const leads = await db.lead.findMany({
       where: {
         id: { in: leadIds },
         userId: req.user.id
@@ -625,7 +735,7 @@ router.post('/batch/score', async (req, res) => {
     }
 
     // Get user profile
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id: req.user.id },
       select: { company: true, customFields: true }
     });
@@ -640,7 +750,7 @@ router.post('/batch/score', async (req, res) => {
     for (const lead of leads) {
       const scoringResult = calculateLeadScore(lead, userProfile);
       
-      const updatedLead = await prisma.lead.update({
+      const updatedLead = await db.lead.update({
         where: { id: lead.id },
         data: {
           score: scoringResult.score,

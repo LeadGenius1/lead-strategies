@@ -56,32 +56,73 @@ export default function CRMPage() {
   async function loadCRMData() {
     try {
       const [dashboardRes, forecastRes, pipelineRes] = await Promise.all([
-        api.get('/api/v1/clientcontact/dashboard').catch(() => ({ data: { data: {} } })),
-        api.get('/api/v1/clientcontact/ai/pipeline/forecast').catch(() => ({ data: { data: {} } })),
-        api.get('/api/v1/clientcontact/deals/pipeline').catch(() => ({ data: { data: {} } }))
+        api.get('/api/v1/crm/stats').catch(() => ({ data: { data: {} } })),
+        api.get('/api/v1/crm/forecast').catch(() => ({ data: { data: {} } })),
+        api.get('/api/v1/crm/pipeline').catch(() => ({ data: { data: {} } }))
       ])
 
-      setDashboard(dashboardRes.data?.data || dashboardRes.data || {})
-      setForecast(forecastRes.data?.data || forecastRes.data || {})
-      
+      const statsData = dashboardRes.data?.data || dashboardRes.data || {}
+      const forecastData = forecastRes.data?.data || forecastRes.data || {}
       const pipelineData = pipelineRes.data?.data || pipelineRes.data || {}
-      
+
+      // Map stats to expected dashboard format
+      setDashboard({
+        overview: {
+          deals: {
+            pipelineValue: statsData.pipelineValue || 0,
+            open: statsData.activeDeals || 0,
+            total: statsData.deals || 0
+          },
+          contactCount: statsData.contacts || 0,
+          companyCount: statsData.companies || 0,
+          dealCount: statsData.deals || 0,
+          activities: {
+            activityCount: statsData.activities || 0
+          }
+        }
+      })
+
+      // Map forecast to expected format
+      setForecast({
+        totalPipeline: forecastData.pipelineValue || statsData.pipelineValue || 0,
+        weightedPipeline: forecastData.pipelineValue ? forecastData.pipelineValue * 0.75 : 0,
+        expectedRevenue: {
+          thisMonth: forecastData.thisMonth || 0,
+          nextMonth: forecastData.nextMonth || 0,
+          quarter: forecastData.quarter || 0
+        },
+        insights: [],
+        recommendations: [],
+        atRiskDeals: []
+      })
+
       // Transform pipeline data for display
-      const stages = ['lead', 'qualified', 'proposal', 'negotiation', 'closed_won', 'closed_lost']
-      const pipelineStages = stages.map(stage => ({
-        id: stage,
-        label: stage.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-        deals: pipelineData[stage]?.deals || [],
-        count: pipelineData[stage]?.count || 0,
-        totalValue: parseFloat(pipelineData[stage]?.totalValue || 0)
-      }))
+      const stageConfig = pipelineData.stages || [
+        { id: 'lead', name: 'Lead' },
+        { id: 'qualified', name: 'Qualified' },
+        { id: 'proposal', name: 'Proposal' },
+        { id: 'negotiation', name: 'Negotiation' },
+        { id: 'won', name: 'Won' },
+        { id: 'lost', name: 'Lost' }
+      ]
+
+      const pipelineMap = pipelineData.pipeline || {}
+      const pipelineStages = stageConfig.map(stage => {
+        const stageDeals = pipelineMap[stage.id] || []
+        return {
+          id: stage.id,
+          label: stage.name,
+          deals: stageDeals,
+          count: stageDeals.length,
+          totalValue: stageDeals.reduce((sum, d) => sum + parseFloat(d.value || 0), 0)
+        }
+      })
 
       setPipeline(pipelineStages)
-      
+
       // Flatten all deals for display
-      const allDeals = stages.reduce((acc, stage) => {
-        const stageDeals = pipelineData[stage]?.deals || []
-        return [...acc, ...stageDeals]
+      const allDeals = pipelineStages.reduce((acc, stage) => {
+        return [...acc, ...stage.deals]
       }, [])
       setDeals(allDeals)
 

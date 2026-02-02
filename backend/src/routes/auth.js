@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
 
 // POST /api/v1/auth/login
 router.post('/login', async (req, res) => {

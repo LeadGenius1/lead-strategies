@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import { getCurrentUser } from '@/lib/auth'
 import Cookies from 'js-cookie'
+import Link from 'next/link'
 
 export default function DashboardLayout({ children }) {
   const router = useRouter()
@@ -13,35 +14,63 @@ export default function DashboardLayout({ children }) {
   const [subscription, setSubscription] = useState(null)
   const [loading, setLoading] = useState(true)
   const [authChecked, setAuthChecked] = useState(false)
+  const [isAdminMode, setIsAdminMode] = useState(false)
 
   useEffect(() => {
     async function loadUser() {
-      // Small delay to ensure cookie is set after login redirect
       await new Promise(resolve => setTimeout(resolve, 100))
-      
+
       const token = Cookies.get('token')
-      console.log('[Dashboard] Token check:', token ? 'Found' : 'Not found')
-      
+      const adminToken = Cookies.get('admin_token')
+      const adminUser = Cookies.get('admin_user')
+
+      // Admin can access all dashboards with full features (inspection, upgrades, system checks)
+      if (adminToken && adminUser) {
+        try {
+          const adminData = JSON.parse(adminUser)
+          setUser({
+            email: adminData.email,
+            name: adminData.name || 'Admin',
+            subscription_tier: 'admin',
+            tier: 5,
+            isAdmin: true,
+          })
+          setSubscription({
+            features: {
+              websites: true,
+              campaigns: true,
+              prospects: true,
+              inbox: true,
+              voice: true,
+              crm: true,
+              videos: true,
+            },
+          })
+          setIsAdminMode(true)
+          setAuthChecked(true)
+        } catch {
+          router.replace('/admin/login')
+        } finally {
+          setLoading(false)
+        }
+        return
+      }
+
       if (!token) {
-        console.log('[Dashboard] No token, redirecting to login')
         setAuthChecked(true)
         router.replace('/login')
+        setLoading(false)
         return
       }
 
       try {
-        console.log('[Dashboard] Fetching user data...')
         const data = await getCurrentUser()
-        console.log('[Dashboard] User data:', data ? 'Received' : 'null')
-        
         if (data) {
           const userData = data.user || data
           const subscriptionData = data.subscription || {}
           const tierFeatures = subscriptionData.tierFeatures || []
           const subscriptionTier = userData?.subscription_tier || userData?.tier
-          
-          // Map tier features array to features object
-          const tier = userData?.tier;
+          const tier = userData?.tier
           const features = {
             websites: tierFeatures.includes('website_builder') || subscriptionTier === 'leadsite-io' || subscriptionTier === 'clientcontact-io',
             campaigns: tierFeatures.includes('email_campaigns') || true,
@@ -51,23 +80,16 @@ export default function DashboardLayout({ children }) {
             crm: subscriptionTier === 'clientcontact-io' && tier === 5,
             videos: tierFeatures.includes('video') || subscriptionTier === 'videosite-io' || subscriptionTier === 'videosite',
           }
-          
           setUser(userData)
-          setSubscription({
-            ...subscriptionData,
-            features
-          })
+          setSubscription({ ...subscriptionData, features })
           setAuthChecked(true)
         } else {
-          // User data is null but we have a token - might be invalid token
-          console.log('[Dashboard] User data null, clearing token and redirecting')
           Cookies.remove('token')
           setAuthChecked(true)
           router.replace('/login')
         }
       } catch (error) {
         console.error('[Dashboard] Error loading user:', error)
-        // On error, clear token and redirect
         Cookies.remove('token')
         setAuthChecked(true)
         router.replace('/login')
@@ -112,8 +134,14 @@ export default function DashboardLayout({ children }) {
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] glow-blob" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] glow-blob" style={{ animationDelay: '2s' }} />
       </div>
-      <Sidebar features={subscription?.features || {}} />
+      <Sidebar features={subscription?.features || {}} isAdminMode={isAdminMode} />
       <main className="flex-1 overflow-y-auto w-full lg:w-auto p-0 sm:p-4 md:p-6 lg:p-8 relative z-10">
+        {isAdminMode && (
+          <div className="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 py-2 bg-purple-500/20 border-b border-purple-500/30 text-sm">
+            <span className="text-purple-300 font-medium">Admin mode — viewing all product dashboards for inspection and system checks</span>
+            <Link href="/admin/dashboard" className="text-purple-400 hover:text-white transition-colors whitespace-nowrap">← Back to Admin Panel</Link>
+          </div>
+        )}
         <div className="min-h-full">
           {children}
         </div>

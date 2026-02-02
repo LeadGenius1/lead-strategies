@@ -30,6 +30,19 @@ export default function AdminSidebar({ admin }) {
     )
   }
 
+  const productDashboards = [
+    { name: 'Overview', href: '/dashboard', icon: '📋' },
+    { name: 'Prospects (LeadSite.AI)', href: '/dashboard/prospects', icon: '🎯' },
+    { name: 'Websites (LeadSite.IO)', href: '/dashboard/websites', icon: '🌐' },
+    { name: 'Inbox (ClientContact.IO)', href: '/dashboard/inbox', icon: '💬' },
+    { name: 'CRM (UltraLead)', href: '/dashboard/crm', icon: '📊' },
+    { name: 'Videos (VideoSite.AI)', href: '/dashboard/videos', icon: '🎬' },
+    { name: 'Campaigns', href: '/dashboard/campaigns', icon: '📧' },
+    { name: 'Analytics', href: '/dashboard/analytics', icon: '📈' },
+    { name: 'Automation', href: '/dashboard/automation', icon: '⚡' },
+    { name: 'Settings', href: '/dashboard/settings', icon: '⚙️' },
+  ]
+
   return (
     <div className="w-64 bg-[#050505] border-r border-white/10 h-screen flex flex-col">
       {/* Header */}
@@ -49,7 +62,8 @@ export default function AdminSidebar({ admin }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <p className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Admin Panel</p>
         {navigation.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -64,6 +78,26 @@ export default function AdminSidebar({ admin }) {
             >
               <span className="text-xl">{item.icon}</span>
               <span className="font-medium">{item.name}</span>
+            </Link>
+          )
+        })}
+
+        <p className="px-4 py-2 mt-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Product Dashboards</p>
+        <p className="px-4 pb-2 text-[11px] text-neutral-600">Inspect, upgrade, system checks</p>
+        {productDashboards.map((item) => {
+          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors text-sm ${
+                isActive
+                  ? 'bg-indigo-500/30 text-indigo-300 border border-indigo-500/40'
+                  : 'text-neutral-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <span className="text-base">{item.icon}</span>
+              <span>{item.name}</span>
             </Link>
           )
         })}

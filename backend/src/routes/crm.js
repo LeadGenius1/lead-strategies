@@ -2,11 +2,40 @@
 // Full CRM functionality for the flagship platform
 
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+
+// Lazy-load Prisma only when DATABASE_URL is available
+let prisma = null;
+
+function getPrisma() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!prisma) {
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
+
+// Mock data for development without database
+const mockContacts = [
+  { id: '1', firstName: 'John', lastName: 'Smith', email: 'john@acme.com', phone: '555-0101', title: 'CEO', status: 'active', company: { id: '1', name: 'Acme Corp' } },
+  { id: '2', firstName: 'Jane', lastName: 'Doe', email: 'jane@techstart.io', phone: '555-0102', title: 'CTO', status: 'active', company: { id: '2', name: 'TechStart' } },
+  { id: '3', firstName: 'Bob', lastName: 'Wilson', email: 'bob@enterprise.co', phone: '555-0103', title: 'VP Sales', status: 'lead', company: { id: '3', name: 'Enterprise Co' } },
+];
+
+const mockCompanies = [
+  { id: '1', name: 'Acme Corp', industry: 'Technology', website: 'https://acme.com', size: '50-200', revenue: '$10M-$50M' },
+  { id: '2', name: 'TechStart', industry: 'SaaS', website: 'https://techstart.io', size: '10-50', revenue: '$1M-$10M' },
+  { id: '3', name: 'Enterprise Co', industry: 'Enterprise', website: 'https://enterprise.co', size: '500+', revenue: '$100M+' },
+];
+
+const mockDeals = [
+  { id: '1', name: 'Acme Enterprise Deal', value: 50000, stage: 'proposal', probability: 60, company: mockCompanies[0] },
+  { id: '2', name: 'TechStart Pilot', value: 15000, stage: 'negotiation', probability: 80, company: mockCompanies[1] },
+  { id: '3', name: 'Enterprise Expansion', value: 120000, stage: 'discovery', probability: 30, company: mockCompanies[2] },
+];
 
 // All routes require authentication
 router.use(authenticate);
@@ -18,7 +47,25 @@ router.use(authenticate);
 // GET /api/v1/crm/contacts - List contacts
 router.get('/contacts', async (req, res) => {
   try {
+    const db = getPrisma();
     const { search, company, status, limit = 50, offset = 0 } = req.query;
+
+    // Return mock data if no database
+    if (!db) {
+      let filtered = [...mockContacts];
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(c =>
+          c.firstName.toLowerCase().includes(s) ||
+          c.lastName.toLowerCase().includes(s) ||
+          c.email.toLowerCase().includes(s)
+        );
+      }
+      return res.json({
+        success: true,
+        data: { contacts: filtered, total: filtered.length, limit: parseInt(limit), offset: parseInt(offset) }
+      });
+    }
 
     const where = { userId: req.user.id };
     if (company) where.companyId = company;
@@ -32,14 +79,14 @@ router.get('/contacts', async (req, res) => {
     }
 
     const [contacts, total] = await Promise.all([
-      prisma.contact.findMany({
+      db.contact.findMany({
         where,
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' },
         include: { company: true }
       }),
-      prisma.contact.count({ where })
+      db.contact.count({ where })
     ]);
 
     res.json({
@@ -61,7 +108,7 @@ router.post('/contacts', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Email is required' });
     }
 
-    const contact = await prisma.contact.create({
+    const contact = await db.contact.create({
       data: {
         userId: req.user.id,
         firstName,
@@ -86,7 +133,7 @@ router.post('/contacts', async (req, res) => {
 // PUT /api/v1/crm/contacts/:id - Update contact
 router.put('/contacts/:id', async (req, res) => {
   try {
-    const contact = await prisma.contact.findFirst({
+    const contact = await db.contact.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -94,7 +141,7 @@ router.put('/contacts/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Contact not found' });
     }
 
-    const updated = await prisma.contact.update({
+    const updated = await db.contact.update({
       where: { id: req.params.id },
       data: req.body,
       include: { company: true }
@@ -110,7 +157,7 @@ router.put('/contacts/:id', async (req, res) => {
 // DELETE /api/v1/crm/contacts/:id - Delete contact
 router.delete('/contacts/:id', async (req, res) => {
   try {
-    const contact = await prisma.contact.findFirst({
+    const contact = await db.contact.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -118,7 +165,7 @@ router.delete('/contacts/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Contact not found' });
     }
 
-    await prisma.contact.delete({ where: { id: req.params.id } });
+    await db.contact.delete({ where: { id: req.params.id } });
     res.json({ success: true, message: 'Contact deleted' });
   } catch (error) {
     console.error('Delete contact error:', error);
@@ -133,7 +180,15 @@ router.delete('/contacts/:id', async (req, res) => {
 // GET /api/v1/crm/companies - List companies
 router.get('/companies', async (req, res) => {
   try {
+    const db = getPrisma();
     const { search, industry, limit = 50, offset = 0 } = req.query;
+
+    if (!db) {
+      return res.json({
+        success: true,
+        data: { companies: mockCompanies, total: mockCompanies.length, limit: parseInt(limit), offset: parseInt(offset) }
+      });
+    }
 
     const where = { userId: req.user.id };
     if (industry) where.industry = industry;
@@ -145,14 +200,14 @@ router.get('/companies', async (req, res) => {
     }
 
     const [companies, total] = await Promise.all([
-      prisma.company.findMany({
+      db.company.findMany({
         where,
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' },
         include: { _count: { select: { contacts: true, deals: true } } }
       }),
-      prisma.company.count({ where })
+      db.company.count({ where })
     ]);
 
     res.json({
@@ -174,7 +229,7 @@ router.post('/companies', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Company name is required' });
     }
 
-    const company = await prisma.company.create({
+    const company = await db.company.create({
       data: {
         userId: req.user.id,
         name,
@@ -196,7 +251,7 @@ router.post('/companies', async (req, res) => {
 // PUT /api/v1/crm/companies/:id - Update company
 router.put('/companies/:id', async (req, res) => {
   try {
-    const company = await prisma.company.findFirst({
+    const company = await db.company.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -204,7 +259,7 @@ router.put('/companies/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Company not found' });
     }
 
-    const updated = await prisma.company.update({
+    const updated = await db.company.update({
       where: { id: req.params.id },
       data: req.body
     });
@@ -219,7 +274,7 @@ router.put('/companies/:id', async (req, res) => {
 // DELETE /api/v1/crm/companies/:id - Delete company
 router.delete('/companies/:id', async (req, res) => {
   try {
-    const company = await prisma.company.findFirst({
+    const company = await db.company.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -227,7 +282,7 @@ router.delete('/companies/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Company not found' });
     }
 
-    await prisma.company.delete({ where: { id: req.params.id } });
+    await db.company.delete({ where: { id: req.params.id } });
     res.json({ success: true, message: 'Company deleted' });
   } catch (error) {
     console.error('Delete company error:', error);
@@ -251,7 +306,15 @@ const pipelineStages = [
 // GET /api/v1/crm/deals - List deals
 router.get('/deals', async (req, res) => {
   try {
+    const db = getPrisma();
     const { stage, company, contact, limit = 50, offset = 0 } = req.query;
+
+    if (!db) {
+      return res.json({
+        success: true,
+        data: { deals: mockDeals, total: mockDeals.length, limit: parseInt(limit), offset: parseInt(offset) }
+      });
+    }
 
     const where = { userId: req.user.id };
     if (stage) where.stage = stage;
@@ -259,14 +322,14 @@ router.get('/deals', async (req, res) => {
     if (contact) where.contactId = contact;
 
     const [deals, total] = await Promise.all([
-      prisma.deal.findMany({
+      db.deal.findMany({
         where,
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { updatedAt: 'desc' },
         include: { company: true, contact: true }
       }),
-      prisma.deal.count({ where })
+      db.deal.count({ where })
     ]);
 
     res.json({
@@ -288,7 +351,7 @@ router.post('/deals', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Deal name is required' });
     }
 
-    const deal = await prisma.deal.create({
+    const deal = await db.deal.create({
       data: {
         userId: req.user.id,
         name,
@@ -313,7 +376,7 @@ router.post('/deals', async (req, res) => {
 // PUT /api/v1/crm/deals/:id - Update deal
 router.put('/deals/:id', async (req, res) => {
   try {
-    const deal = await prisma.deal.findFirst({
+    const deal = await db.deal.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -326,7 +389,7 @@ router.put('/deals/:id', async (req, res) => {
     if (updateData.probability) updateData.probability = parseInt(updateData.probability);
     if (updateData.expectedCloseDate) updateData.expectedCloseDate = new Date(updateData.expectedCloseDate);
 
-    const updated = await prisma.deal.update({
+    const updated = await db.deal.update({
       where: { id: req.params.id },
       data: updateData,
       include: { company: true, contact: true }
@@ -344,7 +407,7 @@ router.put('/deals/:id/stage', async (req, res) => {
   try {
     const { stage } = req.body;
 
-    const deal = await prisma.deal.findFirst({
+    const deal = await db.deal.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -356,7 +419,7 @@ router.put('/deals/:id/stage', async (req, res) => {
     const stageInfo = pipelineStages.find(s => s.id === stage);
     const probability = stage === 'won' ? 100 : stage === 'lost' ? 0 : (stageInfo?.order || 1) * 20;
 
-    const updated = await prisma.deal.update({
+    const updated = await db.deal.update({
       where: { id: req.params.id },
       data: {
         stage,
@@ -367,7 +430,7 @@ router.put('/deals/:id/stage', async (req, res) => {
     });
 
     // Log activity
-    await prisma.activity.create({
+    await db.activity.create({
       data: {
         userId: req.user.id,
         dealId: deal.id,
@@ -387,7 +450,7 @@ router.put('/deals/:id/stage', async (req, res) => {
 // DELETE /api/v1/crm/deals/:id - Delete deal
 router.delete('/deals/:id', async (req, res) => {
   try {
-    const deal = await prisma.deal.findFirst({
+    const deal = await db.deal.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -395,7 +458,7 @@ router.delete('/deals/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Deal not found' });
     }
 
-    await prisma.deal.delete({ where: { id: req.params.id } });
+    await db.deal.delete({ where: { id: req.params.id } });
     res.json({ success: true, message: 'Deal deleted' });
   } catch (error) {
     console.error('Delete deal error:', error);
@@ -410,7 +473,27 @@ router.delete('/deals/:id', async (req, res) => {
 // GET /api/v1/crm/pipeline - Get pipeline view (deals grouped by stage)
 router.get('/pipeline', async (req, res) => {
   try {
-    const deals = await prisma.deal.findMany({
+    const db = getPrisma();
+
+    if (!db) {
+      const pipeline = {
+        discovery: [mockDeals[2]],
+        qualification: [],
+        proposal: [mockDeals[0]],
+        negotiation: [mockDeals[1]],
+        closing: []
+      };
+      return res.json({
+        success: true,
+        data: {
+          stages: pipelineStages,
+          pipeline,
+          totals: { count: 3, value: 185000, weightedValue: 75000 }
+        }
+      });
+    }
+
+    const deals = await db.deal.findMany({
       where: {
         userId: req.user.id,
         stage: { notIn: ['won', 'lost'] } // Only active deals
@@ -461,13 +544,13 @@ router.get('/activities', async (req, res) => {
     if (type) where.type = type;
 
     const [activities, total] = await Promise.all([
-      prisma.activity.findMany({
+      db.activity.findMany({
         where,
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' }
       }),
-      prisma.activity.count({ where })
+      db.activity.count({ where })
     ]);
 
     res.json({
@@ -485,7 +568,7 @@ router.post('/activities', async (req, res) => {
   try {
     const { type, subject, description, dealId, contactId, dueDate, customFields } = req.body;
 
-    const activity = await prisma.activity.create({
+    const activity = await db.activity.create({
       data: {
         userId: req.user.id,
         type: type || 'note',
@@ -512,7 +595,7 @@ router.post('/activities', async (req, res) => {
 // GET /api/v1/crm/forecast - Revenue forecast
 router.get('/forecast', async (req, res) => {
   try {
-    const deals = await prisma.deal.findMany({
+    const deals = await db.deal.findMany({
       where: {
         userId: req.user.id,
         stage: { notIn: ['lost'] }
@@ -546,7 +629,7 @@ router.get('/forecast', async (req, res) => {
       return deals.reduce((sum, d) => sum + ((d.value || 0) * (d.probability || 50) / 100), 0);
     };
 
-    const wonThisMonth = await prisma.deal.aggregate({
+    const wonThisMonth = await db.deal.aggregate({
       where: {
         userId: req.user.id,
         stage: 'won',
@@ -580,11 +663,30 @@ router.get('/forecast', async (req, res) => {
 // GET /api/v1/crm/stats - CRM overview stats
 router.get('/stats', async (req, res) => {
   try {
+    const db = getPrisma();
+
+    // Return mock stats if no database
+    if (!db) {
+      return res.json({
+        success: true,
+        data: {
+          contacts: 3,
+          companies: 3,
+          deals: 3,
+          activeDeals: 3,
+          pipelineValue: 185000,
+          wonThisMonth: 45000,
+          activities: 24,
+          winRate: 65
+        }
+      });
+    }
+
     const [contacts, companies, deals, activities] = await Promise.all([
-      prisma.contact.count({ where: { userId: req.user.id } }),
-      prisma.company.count({ where: { userId: req.user.id } }),
-      prisma.deal.findMany({ where: { userId: req.user.id } }),
-      prisma.activity.count({
+      db.contact.count({ where: { userId: req.user.id } }),
+      db.company.count({ where: { userId: req.user.id } }),
+      db.deal.findMany({ where: { userId: req.user.id } }),
+      db.activity.count({
         where: {
           userId: req.user.id,
           createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }

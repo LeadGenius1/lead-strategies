@@ -41,7 +41,8 @@ export default function AdminLoginPage() {
       }
     } catch (error) {
       console.error('Admin login error:', error)
-      toast.error(error.response?.data?.message || 'Invalid email or password')
+      const msg = error.response?.data?.message || error.response?.data?.error || 'Invalid email or password'
+      toast.error(msg)
     } finally {
       setLoading(false)
     }

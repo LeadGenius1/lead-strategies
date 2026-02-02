@@ -94,6 +94,58 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/videos/earnings - Get overall video earnings stats
+router.get('/earnings', async (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      totalEarnings: 214.00,
+      thisMonth: 89.50,
+      lastMonth: 124.50,
+      totalViews: 2140,
+      avgEarningsPerView: 0.10,
+      topPerformingCategory: 'demos'
+    }
+  });
+});
+
+// GET /api/videos/:id/analytics - Get video analytics
+router.get('/:id/analytics', async (req, res) => {
+  const videoId = req.params.id;
+  const video = mockVideos.find(v => v.id === videoId);
+
+  res.json({
+    success: true,
+    data: {
+      videoId,
+      title: video?.title || 'Unknown Video',
+      totalViews: video?.viewCount || 0,
+      totalEarnings: video?.totalEarnings || 0,
+      avgWatchTime: 125,
+      completionRate: 68,
+      viewsByDay: [
+        { date: '2026-01-27', views: 150 },
+        { date: '2026-01-28', views: 180 },
+        { date: '2026-01-29', views: 220 },
+        { date: '2026-01-30', views: 195 },
+        { date: '2026-01-31', views: 240 },
+        { date: '2026-02-01', views: 265 },
+        { date: '2026-02-02', views: 0 }
+      ],
+      demographics: {
+        desktop: 45,
+        mobile: 40,
+        tablet: 15
+      },
+      topCountries: [
+        { country: 'United States', views: 850 },
+        { country: 'Canada', views: 200 },
+        { country: 'United Kingdom', views: 150 }
+      ]
+    }
+  });
+});
+
 // GET /api/videos/:id - Get video details
 router.get('/:id', async (req, res) => {
   try {

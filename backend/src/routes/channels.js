@@ -2,29 +2,61 @@
 // OAuth connections for email, social media, etc.
 
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
-// All routes require authentication and unified_inbox feature (Tier 3+)
+// Lazy-load Prisma only when DATABASE_URL is available
+let prisma = null;
+
+function getPrisma() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!prisma) {
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
+
+// Mock data for development
+const mockChannels = [
+  { id: '1', type: 'email', name: 'Business Email', status: 'active', connected: true },
+  { id: '2', type: 'sms', name: 'Twilio SMS', status: 'active', connected: true },
+  { id: '3', type: 'whatsapp', name: 'WhatsApp Business', status: 'pending', connected: false },
+];
+
+const mockConnections = [
+  { id: '1', channelId: '1', provider: 'gmail', status: 'connected', email: 'business@example.com' },
+  { id: '2', channelId: '2', provider: 'twilio', status: 'connected', phone: '+1555123456' },
+];
+
+// All routes require authentication and inbox feature (Tier 3+)
 router.use(authenticate);
-router.use(requireFeature('unified_inbox'));
+router.use(requireFeature('inbox'));
 
 // Get all connected channels
 router.get('/', async (req, res) => {
   try {
-    const channels = await prisma.channel.findMany({
+    const db = getPrisma();
+
+    if (!db) {
+      return res.json({
+        success: true,
+        data: {
+          channels: mockChannels,
+          enabled: ['email', 'sms', 'whatsapp', 'webchat', 'voice']
+        }
+      });
+    }
+
+    const channels = await db.channel.findMany({
       where: { userId: req.user.id },
       orderBy: { createdAt: 'desc' }
     });
 
     res.json({
       success: true,
-      data: {
-        channels
-      }
+      data: { channels }
     });
   } catch (error) {
     console.error('Get channels error:', error);
@@ -33,6 +65,25 @@ router.get('/', async (req, res) => {
       error: 'Failed to fetch channels',
     });
   }
+});
+
+// Get channel connections
+router.get('/connections', async (req, res) => {
+  res.json({
+    success: true,
+    data: { connections: mockConnections }
+  });
+});
+
+// OAuth authorize endpoint
+router.get('/oauth/:channelId/authorize', async (req, res) => {
+  const { channelId } = req.params;
+  res.json({
+    success: true,
+    data: {
+      authUrl: `https://example.com/oauth/${channelId}/authorize?redirect=http://localhost:3000/dashboard/inbox/settings/channels`
+    }
+  });
 });
 
 // Connect a channel (OAuth or manual)
@@ -62,7 +113,7 @@ router.post('/connect', async (req, res) => {
     }
 
     // Check if channel already exists
-    const existing = await prisma.channel.findFirst({
+    const existing = await db.channel.findFirst({
       where: {
         userId: req.user.id,
         type,
@@ -78,7 +129,7 @@ router.post('/connect', async (req, res) => {
     }
 
     // Create channel connection
-    const channel = await prisma.channel.create({
+    const channel = await db.channel.create({
       data: {
         userId: req.user.id,
         type,
@@ -122,7 +173,7 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, credentials, settings, status } = req.body;
 
-    const channel = await prisma.channel.findFirst({
+    const channel = await db.channel.findFirst({
       where: {
         id,
         userId: req.user.id
@@ -142,7 +193,7 @@ router.put('/:id', async (req, res) => {
     if (settings !== undefined) updateData.settings = settings;
     if (status !== undefined) updateData.status = status;
 
-    const updatedChannel = await prisma.channel.update({
+    const updatedChannel = await db.channel.update({
       where: { id },
       data: updateData
     });
@@ -173,7 +224,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const channel = await prisma.channel.findFirst({
+    const channel = await db.channel.findFirst({
       where: {
         id,
         userId: req.user.id
@@ -187,7 +238,7 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    await prisma.channel.delete({
+    await db.channel.delete({
       where: { id }
     });
 
@@ -209,7 +260,7 @@ router.post('/:id/test', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const channel = await prisma.channel.findFirst({
+    const channel = await db.channel.findFirst({
       where: {
         id,
         userId: req.user.id

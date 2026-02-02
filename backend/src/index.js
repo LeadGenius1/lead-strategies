@@ -34,6 +34,8 @@ const agentRoutes = require('./routes/agents');
 const videositeRoutes = require('./routes/videosite');
 const videoRoutes = require('./routes/videos');
 const payoutsRoutes = require('./routes/payouts');
+const clipsRoutes = require('./routes/clips');
+const publishRoutes = require('./routes/publish');
 const masterValidationRoutes = require('./routes/master-validation');
 
 // Admin Routes (Internal only)
@@ -206,6 +208,8 @@ app.use('/api/canned-responses', cannedResponseRoutes);
 app.use('/api/auto-responses', autoResponseRoutes);
 app.use('/api/conversation-notes', conversationNoteRoutes);
 app.use('/api/v1/payouts', payoutsRoutes);  // VideoSite earnings payouts
+app.use('/api/v1/clips', clipsRoutes);      // Video clips management
+app.use('/api/v1/publish', publishRoutes);  // Social media publishing
 
 // 404 handler
 app.use((req, res) => {

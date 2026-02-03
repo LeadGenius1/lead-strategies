@@ -16,9 +16,12 @@ export default function CampaignsPage() {
   async function loadCampaigns() {
     try {
       const response = await api.get('/api/campaigns')
-      setCampaigns(response.data || [])
+      const data = response.data?.data || response.data
+      const list = Array.isArray(data?.campaigns) ? data.campaigns : (Array.isArray(data) ? data : [])
+      setCampaigns(list)
     } catch (error) {
       console.error('Error loading campaigns:', error)
+      setCampaigns([])
     } finally {
       setLoading(false)
     }
@@ -35,10 +38,11 @@ export default function CampaignsPage() {
     }
   }
 
+  const campaignsList = Array.isArray(campaigns) ? campaigns : []
   const stats = [
-    { label: 'Total Campaigns', value: campaigns.length, icon: Zap, color: 'indigo' },
-    { label: 'Active', value: campaigns.filter(c => c.status === 'active').length, icon: Play, color: 'emerald' },
-    { label: 'Emails Sent', value: campaigns.reduce((sum, c) => sum + (c.sent_count || 0), 0), icon: Mail, color: 'cyan' },
+    { label: 'Total Campaigns', value: campaignsList.length, icon: Zap, color: 'indigo' },
+    { label: 'Active', value: campaignsList.filter(c => c.status === 'active').length, icon: Play, color: 'emerald' },
+    { label: 'Emails Sent', value: campaignsList.reduce((sum, c) => sum + (c.sentCount || c.sent_count || 0), 0), icon: Mail, color: 'cyan' },
     { label: 'Avg Reply Rate', value: '24%', icon: MessageSquare, color: 'purple' },
   ]
 
@@ -101,7 +105,7 @@ export default function CampaignsPage() {
             <Loader2 className="w-8 h-8 text-indigo-400 animate-spin mx-auto mb-3" />
             <p className="text-neutral-500 text-sm">Loading campaigns...</p>
           </div>
-        ) : campaigns.length === 0 ? (
+        ) : campaignsList.length === 0 ? (
           <div className="p-12 rounded-2xl bg-neutral-900/50 border border-white/10 text-center">
             <Zap className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
             <p className="text-neutral-400 mb-2">No campaigns yet</p>
@@ -124,7 +128,7 @@ export default function CampaignsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {campaigns.map((campaign) => (
+                {campaignsList.map((campaign) => (
                   <tr key={campaign.id} className="hover:bg-white/5 transition-colors">
                     <td className="px-6 py-4">
                       <p className="font-medium text-white">{campaign.name}</p>
@@ -138,19 +142,19 @@ export default function CampaignsPage() {
                     <td className="px-6 py-4">
                       <span className="text-white flex items-center gap-2">
                         <Mail className="w-4 h-4 text-neutral-500" />
-                        {campaign.sent_count || 0}
+                        {campaign.sentCount || campaign.sent_count || 0}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-white flex items-center gap-2">
                         <Eye className="w-4 h-4 text-neutral-500" />
-                        {campaign.open_count || 0}
+                        {campaign.openedCount || campaign.open_count || 0}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-white flex items-center gap-2">
                         <MessageSquare className="w-4 h-4 text-neutral-500" />
-                        {campaign.reply_count || 0}
+                        {campaign.replyCount || campaign.reply_count || 0}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">

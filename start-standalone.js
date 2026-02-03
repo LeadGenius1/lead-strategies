@@ -31,4 +31,8 @@ try {
 console.log('\n⏳ Starting standalone server...\n');
 
 process.env.HOSTNAME = process.env.HOSTNAME || '0.0.0.0';
-require(serverPath);
+
+// Standalone server must run from its directory (Next.js requirement)
+const standaloneDir = path.join(__dirname, '.next', 'standalone');
+process.chdir(standaloneDir);
+require(path.join(standaloneDir, 'server.js'));

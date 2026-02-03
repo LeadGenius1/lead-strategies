@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "node start-standalone.js"
+startCommand = "node start.js"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 healthcheckPath = "/api/health"
@@ -21,8 +21,4 @@ cmds = [
 ]
 
 [nixpacks.phases.build]
-cmds = [
-  "npm run build",
-  "cp -r public .next/standalone/public || true",
-  "cp -r .next/static .next/standalone/.next/static || true"
-]
+cmds = ["npm run build"]

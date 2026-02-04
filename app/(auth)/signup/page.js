@@ -84,14 +84,14 @@ function SignupForm() {
       
       // Redirect each tier to their chosen platform dashboard
       const tierDashboardMap = {
-        'leadsite-ai': '/dashboard/prospects',   // LeadSite.AI - AI lead gen
-        'leadsite-io': '/dashboard/websites',    // LeadSite.IO - website builder
-        'clientcontact': '/dashboard/inbox',     // ClientContact.IO - unified inbox
-        'clientcontact-io': '/dashboard/inbox',
-        'ultralead': '/dashboard/crm',           // UltraLead - full CRM, pipeline, voice
-        'clientcontact-crm': '/dashboard/crm',
-        'videosite': '/dashboard/videos',        // VideoSite.AI - video monetization
-        'videosite-io': '/dashboard/videos',
+        'leadsite-ai': '/prospects',
+        'leadsite-io': '/dashboard',
+        'clientcontact': '/inbox',
+        'clientcontact-io': '/inbox',
+        'ultralead': '/crm',
+        'clientcontact-crm': '/crm',
+        'videosite': '/dashboard',
+        'videosite-io': '/dashboard',
       }
       const dashboardPath = tierDashboardMap[selectedTier] || '/dashboard'
       router.push(dashboardPath)

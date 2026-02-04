@@ -122,7 +122,7 @@ export default function ChannelsSettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <Link
-            href="/dashboard/inbox"
+            href="/inbox"
             className="text-neutral-400 hover:text-white mb-4 inline-flex items-center gap-2 text-sm"
           >
             ← Back to Inbox

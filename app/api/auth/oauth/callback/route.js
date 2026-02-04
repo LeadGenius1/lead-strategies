@@ -65,13 +65,13 @@ export async function GET(request) {
           // Redirect each tier to their chosen platform dashboard (not all platforms offer same products)
           const tier = (user?.subscription_tier || user?.tier || stateData.tier || '').toLowerCase()
           const tierDashboardMap = {
-            'videosite': '/dashboard/videos',
-            'videosite-io': '/dashboard/videos',
-            'leadsite-io': '/dashboard/websites',
-            'clientcontact': '/dashboard/inbox',
-            'clientcontact-io': '/dashboard/inbox',
-            'leadsite-ai': '/dashboard/prospects',
-            'ultralead': '/dashboard/crm',
+            'videosite': '/dashboard',
+            'videosite-io': '/dashboard',
+            'leadsite-io': '/dashboard',
+            'clientcontact': '/inbox',
+            'clientcontact-io': '/inbox',
+            'leadsite-ai': '/prospects',
+            'ultralead': '/crm',
           }
           const redirectPath = tierDashboardMap[tier] || '/dashboard'
           const redirectResponse = NextResponse.redirect(`${baseUrl}${redirectPath}`)

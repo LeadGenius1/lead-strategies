@@ -7,37 +7,19 @@ import { logout } from '@/lib/auth'
 import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 import { 
-  LayoutDashboard, 
-  Globe, 
   MessageSquare, 
-  Phone, 
-  Briefcase, 
-  UserCircle,
   LogOut,
   BrainCircuit,
-  Target,
-  BarChart3,
-  Zap,
-  Calendar,
   Menu,
   X,
-  Video,
   Settings
 } from 'lucide-react'
 
+// Simplified sidebar – Lead Hunter as master coordinator
 const navigation = [
-  { name: 'Overview', href: '/dashboard', icon: LayoutDashboard, tier: 'all' },
-  { name: 'Prospects', href: '/dashboard/prospects', icon: Target, tier: 'prospects' },
-  { name: 'Campaigns', href: '/dashboard/campaigns', icon: Zap, tier: 'campaigns' },
-  { name: 'Websites', href: '/dashboard/websites', icon: Globe, tier: 'websites' },
-  { name: 'Inbox', href: '/dashboard/inbox', icon: MessageSquare, tier: 'inbox' },
-  { name: 'CRM', href: '/dashboard/crm', icon: Briefcase, tier: 'crm' },
-  { name: 'Videos', href: '/dashboard/videos', icon: Video, tier: 'videos' },
-  { name: 'Lead Hunter', href: '/copilot', icon: BrainCircuit, tier: 'all', highlight: true },
-  { name: 'Automation', href: '/dashboard/automation', icon: Calendar, tier: 'all' },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, tier: 'all' },
-  { name: 'Profile', href: '/dashboard/profile', icon: UserCircle, tier: 'all' },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings, tier: 'all' },
+  { name: 'Lead Hunter', href: '/copilot', icon: BrainCircuit, highlight: true },
+  { name: 'Inbox', href: '/inbox', icon: MessageSquare },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
 export default function Sidebar({ features = {}, isAdminMode = false }) {
@@ -56,10 +38,7 @@ export default function Sidebar({ features = {}, isAdminMode = false }) {
     }
   }
 
-  const visibleNav = navigation.filter((item) => {
-    if (item.tier === 'all') return true
-    return features[item.tier] === true
-  })
+  const visibleNav = navigation
 
   return (
     <>
@@ -97,7 +76,7 @@ export default function Sidebar({ features = {}, isAdminMode = false }) {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {visibleNav.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
           const Icon = item.icon
           
           return (

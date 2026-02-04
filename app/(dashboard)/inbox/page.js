@@ -44,7 +44,8 @@ export default function InboxPage() {
 
       const res = await api.get(`/api/v1/conversations?${params}`);
       const data = res.data?.data || res.data || {};
-      setConversations(data.conversations || []);
+      const convList = data.conversations;
+      setConversations(Array.isArray(convList) ? convList : []);
     } catch (err) {
       console.error('Fetch error:', err);
       setConversations([]);
@@ -197,7 +198,8 @@ export default function InboxPage() {
           <p className="px-3 py-2 text-xs font-semibold text-neutral-400 uppercase">Channels</p>
           {Object.entries(CHANNELS).map(([key, channel]) => {
             const Icon = channel.icon;
-            const count = key === 'all' ? conversations.length : conversations.filter(c => c.channel === key).length;
+            const list = Array.isArray(conversations) ? conversations : [];
+            const count = key === 'all' ? list.length : list.filter(c => c.channel === key).length;
             return (
               <button
                 key={key}
@@ -236,7 +238,7 @@ export default function InboxPage() {
 
         <div className="p-3 border-t border-white/10">
           <a 
-            href="/dashboard/inbox-settings" 
+            href="/inbox/settings/channels" 
             className="flex items-center gap-3 px-3 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition-all"
           >
             <Settings size={18} /> Inbox Settings

@@ -342,7 +342,7 @@ export default function CRMPage() {
                     {stage.deals.map((deal) => (
                       <Link
                         key={deal.id}
-                        href={`/dashboard/crm/deals/${deal.id}`}
+                        href={`/crm/deals/${deal.id}`}
                         className="group block p-4 rounded-xl bg-black/50 border border-white/10 hover:border-indigo-500/30 cursor-pointer transition-all"
                       >
                         <div className="flex items-start justify-between mb-3">
@@ -405,28 +405,28 @@ export default function CRMPage() {
         {/* Quick Links */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link 
-            href="/dashboard/crm/deals" 
+            href="/crm/deals" 
             className="p-5 rounded-2xl bg-neutral-900/50 border border-white/10 hover:border-indigo-500/30 transition"
           >
             <h3 className="font-semibold text-white mb-1">Deals</h3>
             <p className="text-sm text-neutral-500">{dashboard?.overview?.dealCount || 0} total</p>
           </Link>
           <Link 
-            href="/dashboard/crm/contacts" 
+            href="/crm/contacts" 
             className="p-5 rounded-2xl bg-neutral-900/50 border border-white/10 hover:border-indigo-500/30 transition"
           >
             <h3 className="font-semibold text-white mb-1">Contacts</h3>
             <p className="text-sm text-neutral-500">{dashboard?.overview?.contactCount || 0} total</p>
           </Link>
           <Link 
-            href="/dashboard/crm/companies" 
+            href="/crm/companies" 
             className="p-5 rounded-2xl bg-neutral-900/50 border border-white/10 hover:border-indigo-500/30 transition"
           >
             <h3 className="font-semibold text-white mb-1">Companies</h3>
             <p className="text-sm text-neutral-500">{dashboard?.overview?.companyCount || 0} total</p>
           </Link>
           <Link 
-            href="/dashboard/crm/activities" 
+            href="/crm/activities" 
             className="p-5 rounded-2xl bg-neutral-900/50 border border-white/10 hover:border-indigo-500/30 transition"
           >
             <h3 className="font-semibold text-white mb-1">Activities</h3>

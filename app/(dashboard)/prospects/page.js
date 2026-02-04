@@ -44,10 +44,12 @@ export default function ProspectsPage() {
   async function loadProspects() {
     try {
       const params = filter !== 'all' ? `?status=${filter}` : ''
-      const response = await api.get(`/api/leads${params}`)
-      setProspects(response.data?.leads || response.data?.prospects || response.data || [])
+      const response = await api.get(`/api/v1/leads${params}`)
+      const raw = response.data?.data?.leads ?? response.data?.leads ?? response.data?.prospects ?? response.data
+      setProspects(Array.isArray(raw) ? raw : [])
     } catch (error) {
       console.error('Error loading prospects:', error)
+      setProspects([])
     } finally {
       setLoading(false)
     }

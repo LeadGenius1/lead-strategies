@@ -22,13 +22,13 @@ export default function LoginPage() {
       const { user } = await login(formData.email, formData.password)
       toast.success('Welcome back!')
       // Redirect to user's platform dashboard (tier: 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact, 4=VideoSite, 5=UltraLead CRM)
-      const tierDashboardMap = {
-        1: '/dashboard/prospects',   // LeadSite.AI
-        2: '/dashboard/websites',    // LeadSite.IO
-        3: '/dashboard/inbox',       // ClientContact.IO
-        4: '/dashboard/videos',      // VideoSite.AI
-        5: '/dashboard/crm',         // UltraLead (full CRM)
-      }
+    const tierDashboardMap = {
+      1: '/prospects',
+      2: '/dashboard',
+      3: '/inbox',
+      4: '/dashboard',
+      5: '/crm',
+    }
       const tier = user?.tier != null ? Number(user.tier) : null
       const dashboardPath = tierDashboardMap[tier] || '/dashboard'
       router.push(dashboardPath)

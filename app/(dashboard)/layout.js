@@ -4,12 +4,41 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { getNavigation } from '@/lib/platform-navigation';
-import { BrainCircuit, MessageSquare, User, LogOut } from 'lucide-react';
+import {
+  BrainCircuit,
+  MessageSquare,
+  User,
+  LogOut,
+  Target,
+  Mail,
+  BarChart3,
+  Settings,
+  Globe,
+  LayoutGrid,
+  Users,
+  DollarSign,
+  PlayCircle,
+  Upload,
+  Wallet,
+} from 'lucide-react';
 
 const ICON_MAP = {
   MagnifyingGlass: BrainCircuit,
   Inbox: MessageSquare,
-  User,
+  User: User,
+  UserCircle: User,
+  Cog: Settings,
+  Users,
+  Envelope: Mail,
+  ChatBubbleLeft: MessageSquare,
+  ChartBar: BarChart3,
+  Globe,
+  Squares2X2: LayoutGrid,
+  UserGroup: Users,
+  CurrencyDollar: DollarSign,
+  PlayCircle,
+  ArrowUpTray: Upload,
+  BankNotes: Wallet,
 };
 
 export default function DashboardLayout({ children }) {

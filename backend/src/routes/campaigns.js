@@ -42,6 +42,34 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/v1/campaigns/replies - Campaign replies only
+router.get('/replies', async (req, res) => {
+  try {
+    const db = getPrisma();
+    if (!db) return res.json({ success: true, data: { replies: [] } });
+    const events = await db.emailEvent.findMany({
+      where: { eventType: 'replied', campaign: { userId: req.user.id } },
+      include: { campaign: { select: { name: true } }, lead: { select: { name: true, email: true } } },
+      orderBy: { createdAt: 'desc' },
+      take: 100
+    });
+    const replies = events.map((e) => {
+      const ed = (e.eventData && typeof e.eventData === 'object') ? e.eventData : {};
+      return {
+        id: e.id,
+        from_name: e.lead?.name || ed.fromName || 'Unknown',
+        from_email: e.lead?.email || ed.fromEmail || '',
+        body: ed.body || ed.content || '',
+        received_at: e.createdAt,
+        campaign_name: e.campaign?.name
+      };
+    });
+    res.json({ success: true, data: { replies } });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // POST /api/v1/campaigns
 router.post('/', async (req, res) => {
   try {

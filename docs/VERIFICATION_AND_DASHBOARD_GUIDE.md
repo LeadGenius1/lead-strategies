@@ -66,6 +66,16 @@ Dashboards are accessed at:
 
 ---
 
+## Lead Hunter Email Sending
+
+When you ask Lead Hunter to "send" an email, it uses the **send_email** tool to actually deliver via SendGrid.
+
+**Requirement:** Set `SENDGRID_API_KEY` in Railway backend environment variables. Without it, Lead Hunter will respond that email sending is not configured and suggest using the Campaign flow instead.
+
+**Optional:** `FROM_EMAIL` (default: noreply@aileadstrategies.com), `FROM_NAME` (default: AI Lead Strategies).
+
+---
+
 ## Platform Summary
 
 | Platform        | Marketing Page            | Dashboard Entry      | Status |

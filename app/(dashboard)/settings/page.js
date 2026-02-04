@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import { User, Building2, Briefcase, Target, Save, Loader2 } from 'lucide-react';
+import { User, Building2, Target, Save, Loader2 } from 'lucide-react';
 
 const CHAT_STYLE = {
   container: 'bg-black min-h-screen',
@@ -30,6 +30,12 @@ export default function ProfilePage() {
     uniqueValueProposition: '',
     targetAudience: '',
     idealCustomerProfile: '',
+    keyBenefits: '',
+    painPointsSolved: '',
+    competitorDifferentiation: '',
+    preferredTone: 'professional',
+    callToAction: '',
+    testimonialHighlight: '',
   });
 
   useEffect(() => {
@@ -54,6 +60,12 @@ export default function ProfilePage() {
         uniqueValueProposition: data.uniqueValueProposition ?? '',
         targetAudience: data.targetAudience ?? '',
         idealCustomerProfile: data.idealCustomerProfile ?? '',
+        keyBenefits: data.keyBenefits ?? '',
+        painPointsSolved: data.painPointsSolved ?? '',
+        competitorDifferentiation: data.competitorDifferentiation ?? '',
+        preferredTone: data.preferredTone ?? 'professional',
+        callToAction: data.callToAction ?? '',
+        testimonialHighlight: data.testimonialHighlight ?? '',
       });
     } catch (err) {
       console.error('Profile load error:', err);
@@ -81,6 +93,12 @@ export default function ProfilePage() {
         uniqueValueProposition: profile.uniqueValueProposition,
         targetAudience: profile.targetAudience,
         idealCustomerProfile: profile.idealCustomerProfile,
+        keyBenefits: profile.keyBenefits,
+        painPointsSolved: profile.painPointsSolved,
+        competitorDifferentiation: profile.competitorDifferentiation,
+        preferredTone: profile.preferredTone,
+        callToAction: profile.callToAction,
+        testimonialHighlight: profile.testimonialHighlight,
       });
       toast.success('Profile saved');
     } catch (err) {
@@ -216,13 +234,16 @@ export default function ProfilePage() {
           </div>
 
           <div className={CHAT_STYLE.card}>
-            <h2 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
+            <h2 className="text-sm font-medium text-white mb-2 flex items-center gap-2">
               <Target className="w-4 h-4 text-indigo-400" />
               For Lead Hunter
             </h2>
+            <p className="text-xs text-neutral-500 mb-4">
+              Critical for better leads and personalized emails. Fill these out for best results.
+            </p>
             <div className="space-y-4">
               <div>
-                <label className={CHAT_STYLE.label}>Products & services</label>
+                <label className={CHAT_STYLE.label}>Products & services *</label>
                 <textarea
                   value={profile.productsServices}
                   onChange={(e) => setProfile((p) => ({ ...p, productsServices: e.target.value }))}
@@ -232,7 +253,27 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <label className={CHAT_STYLE.label}>Target audience</label>
+                <label className={CHAT_STYLE.label}>Unique value proposition</label>
+                <textarea
+                  value={profile.uniqueValueProposition}
+                  onChange={(e) => setProfile((p) => ({ ...p, uniqueValueProposition: e.target.value }))}
+                  className={`${CHAT_STYLE.input} min-h-[60px] resize-y`}
+                  placeholder="What makes you different from competitors?"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Key benefits</label>
+                <textarea
+                  value={profile.keyBenefits}
+                  onChange={(e) => setProfile((p) => ({ ...p, keyBenefits: e.target.value }))}
+                  className={`${CHAT_STYLE.input} min-h-[60px] resize-y`}
+                  placeholder="Main benefits customers get"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Target audience *</label>
                 <textarea
                   value={profile.targetAudience}
                   onChange={(e) => setProfile((p) => ({ ...p, targetAudience: e.target.value }))}
@@ -248,6 +289,60 @@ export default function ProfilePage() {
                   onChange={(e) => setProfile((p) => ({ ...p, idealCustomerProfile: e.target.value }))}
                   className={`${CHAT_STYLE.input} min-h-[60px] resize-y`}
                   placeholder="Job titles, company types, etc."
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Pain points you solve</label>
+                <textarea
+                  value={profile.painPointsSolved}
+                  onChange={(e) => setProfile((p) => ({ ...p, painPointsSolved: e.target.value }))}
+                  className={`${CHAT_STYLE.input} min-h-[60px] resize-y`}
+                  placeholder="What problems do you solve for customers?"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Competitor differentiation</label>
+                <input
+                  type="text"
+                  value={profile.competitorDifferentiation}
+                  onChange={(e) => setProfile((p) => ({ ...p, competitorDifferentiation: e.target.value }))}
+                  className={CHAT_STYLE.input}
+                  placeholder="How you stand out vs competitors"
+                />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Preferred tone</label>
+                <select
+                  value={profile.preferredTone}
+                  onChange={(e) => setProfile((p) => ({ ...p, preferredTone: e.target.value }))}
+                  className={CHAT_STYLE.input}
+                >
+                  <option value="professional">Professional</option>
+                  <option value="friendly">Friendly</option>
+                  <option value="formal">Formal</option>
+                  <option value="casual">Casual</option>
+                  <option value="direct">Direct</option>
+                </select>
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Call to action</label>
+                <input
+                  type="text"
+                  value={profile.callToAction}
+                  onChange={(e) => setProfile((p) => ({ ...p, callToAction: e.target.value }))}
+                  className={CHAT_STYLE.input}
+                  placeholder="e.g. Book a call, Reply to schedule"
+                />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Testimonial to highlight</label>
+                <textarea
+                  value={profile.testimonialHighlight}
+                  onChange={(e) => setProfile((p) => ({ ...p, testimonialHighlight: e.target.value }))}
+                  className={`${CHAT_STYLE.input} min-h-[60px] resize-y`}
+                  placeholder="Quote or social proof to use in emails"
                   rows={2}
                 />
               </div>

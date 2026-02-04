@@ -92,10 +92,8 @@ export default function CopilotChat() {
         errorText = err.message;
       }
       
-      setError(`Request failed with status code ${errorStatus || 'unknown'}`);
-      
-      // If the backend returned a helpful message in data.response, use it
       const assistantContent = errorData?.data?.response || 'Sorry, I encountered an error. Please try again.';
+      setError(errorStatus === 500 ? 'AI service temporarily unavailable. Please try again.' : `Request failed (${errorStatus || 'unknown'})`);
       
       const errorMessage = {
         role: 'assistant',

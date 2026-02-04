@@ -109,9 +109,10 @@ export default function VideosPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video) => (
-              <div
+              <Link
                 key={video.id}
-                className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6 overflow-hidden group hover:border-indigo-500/30 transition-all"
+                href={`/videos/${video.id}`}
+                className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6 overflow-hidden group hover:border-indigo-500/30 transition-all block"
               >
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
                 <div className="flex items-start justify-between mb-4">
@@ -129,7 +130,7 @@ export default function VideosPage() {
                 <h3 className="text-white font-medium text-sm truncate mb-2">{video.title || 'Untitled'}</h3>
                 <div className="flex items-center gap-4 text-xs text-neutral-500">
                   <span>{video.qualifiedViews ?? video.views ?? 0} views</span>
-                  <span className="text-indigo-400">${(video.totalEarnings ?? video.earnings ?? 0).toFixed(2)}</span>
+                  <span className="text-indigo-400">{`$${(video.totalEarnings ?? video.earnings ?? 0).toFixed(2)}`}</span>
                 </div>
               </Link>
             ))}

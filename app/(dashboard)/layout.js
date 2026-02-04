@@ -20,6 +20,7 @@ import {
   PlayCircle,
   Upload,
   Wallet,
+  ShieldCheck,
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -40,6 +41,7 @@ const ICON_MAP = {
   PlayCircle,
   ArrowUpTray: Upload,
   BankNotes: Wallet,
+  ShieldCheck,
 };
 
 export default function DashboardLayout({ children }) {
@@ -50,8 +52,8 @@ export default function DashboardLayout({ children }) {
 
   const platform =
     typeof window !== 'undefined'
-      ? getNavigation(window.location.hostname)
-      : getNavigation('localhost');
+      ? getNavigation(window.location.hostname, user?.tier)
+      : getNavigation('localhost', user?.tier);
 
   useEffect(() => {
     async function loadUser() {

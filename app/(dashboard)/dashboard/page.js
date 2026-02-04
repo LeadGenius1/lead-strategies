@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { getNavigation } from '@/lib/platform-navigation'
 
 const DEFAULT_STATS = {
   totalLeads: 0,
@@ -25,6 +26,8 @@ export default function DashboardPage() {
   const [stats, setStats] = useState(DEFAULT_STATS)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [user, setUser] = useState(null)
+  const [platformName, setPlatformName] = useState('')
 
   useEffect(() => {
     async function loadDashboard() {
@@ -40,15 +43,26 @@ export default function DashboardPage() {
         }
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
-        const res = await fetch(`${apiUrl}/api/v1/dashboard/stats`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
 
-        if (!res.ok) {
-          throw new Error(`Stats API failed: ${res.status}`)
+        const [statsRes, meRes] = await Promise.all([
+          fetch(`${apiUrl}/api/v1/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${apiUrl}/api/v1/auth/me`, { headers: { Authorization: `Bearer ${token}` } }),
+        ])
+
+        if (meRes.ok) {
+          const meJson = await meRes.json()
+          const u = meJson.data?.user || meJson.user || meJson
+          setUser(u)
+          const platform = getNavigation(
+            typeof window !== 'undefined' ? window.location.hostname : '',
+            u?.tier
+          )
+          setPlatformName(platform.name)
         }
 
-        const json = await res.json()
+        if (!statsRes.ok) throw new Error(`Stats API failed: ${statsRes.status}`)
+
+        const json = await statsRes.json()
         const data = json.data || json
         const s = data.stats || data
 
@@ -96,19 +110,36 @@ export default function DashboardPage() {
     )
   }
 
+  const tier = user?.tier != null ? Number(user.tier) : null
+  const isVideoSite = tier === 4
+  const isUltraLead = tier === 5
+  const isClientContact = tier === 3
+
+  const primaryCta = isVideoSite
+    ? { href: '/videos/upload', label: 'Upload Video' }
+    : isUltraLead
+      ? { href: '/crm', label: 'Open CRM' }
+      : isClientContact
+        ? { href: '/inbox', label: 'Open Inbox' }
+        : { href: '/lead-hunter', label: 'Open Lead Hunter' }
+
   return (
     <div className="relative min-h-screen bg-black p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-lg font-medium text-white">Dashboard</h1>
-            <p className="text-neutral-500 mt-1 text-sm font-light">Lead generation overview.</p>
+            <h1 className="text-lg font-medium text-white">
+              {platformName || 'Dashboard'}
+            </h1>
+            <p className="text-neutral-500 mt-1 text-sm font-light">
+              {isVideoSite ? 'Video monetization overview.' : isUltraLead ? 'CRM pipeline overview.' : isClientContact ? 'Unified inbox overview.' : 'Lead generation overview.'}
+            </p>
           </div>
           <Link
-            href="/lead-hunter"
+            href={primaryCta.href}
             className="px-4 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 rounded-lg text-sm font-medium transition-all"
           >
-            Open Lead Hunter
+            {primaryCta.label}
           </Link>
         </div>
 

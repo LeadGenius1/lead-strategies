@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { getNavigation } from '@/lib/platform-navigation';
-import { BrainCircuit, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { BrainCircuit, MessageSquare, User, LogOut } from 'lucide-react';
 
 const ICON_MAP = {
   MagnifyingGlass: BrainCircuit,
   Inbox: MessageSquare,
-  Cog6Tooth: Settings,
+  User,
 };
 
 export default function DashboardLayout({ children }) {
@@ -59,42 +59,41 @@ export default function DashboardLayout({ children }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black">
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        </div>
-
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500" />
-          <div className="mt-4 text-purple-300 text-sm font-medium">Loading...</div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-2 border-white/20 border-t-indigo-500 rounded-full animate-spin" />
+          <p className="text-sm text-neutral-500 font-light">Loading...</p>
         </div>
       </div>
     );
   }
 
+  const trialEndsAt = user?.trialEndsAt ? new Date(user.trialEndsAt) : null;
+  const isTrial = user?.subscriptionStatus === 'trial' && trialEndsAt;
+  const daysLeft = isTrial ? Math.max(0, Math.ceil((trialEndsAt - new Date()) / (1000 * 60 * 60 * 24))) : null;
+
   return (
     <div className="min-h-screen bg-black">
-      {/* AETHER BACKGROUND - Ambient mystical glow */}
+      {/* Clean background - matches Lead Hunter chat */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-2000" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(124,58,237,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(124,58,237,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 bg-black" />
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundSize: '40px 40px',
+            backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+          }}
+        />
       </div>
 
       <div className="relative flex">
-        {/* AETHER SIDEBAR */}
-        <aside className="w-64 h-screen bg-gray-900/30 backdrop-blur-xl border-r border-purple-500/20 fixed left-0 top-0 shadow-2xl shadow-purple-900/20 flex flex-col">
-          <div className="p-6 border-b border-purple-500/20">
+        {/* Sidebar - clean & simple */}
+        <aside className="w-64 h-screen bg-black/50 backdrop-blur-md border-r border-white/5 fixed left-0 top-0 flex flex-col">
+          <div className="p-6 border-b border-white/5">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">{platform.name.charAt(0)}</span>
+              <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
+                <span className="text-white font-semibold text-sm">{platform.name.charAt(0)}</span>
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {platform.name}
-              </h1>
+              <h1 className="text-base font-medium text-white">{platform.name}</h1>
             </div>
           </div>
 
@@ -107,20 +106,20 @@ export default function DashboardLayout({ children }) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  className={`group flex items-center px-3 py-2.5 text-sm font-light rounded-lg transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/50'
-                      : 'text-gray-300 hover:bg-purple-500/10 hover:text-white hover:shadow-lg hover:shadow-purple-500/20'
+                      ? 'bg-indigo-500/10 text-white border border-indigo-500/30'
+                      : 'text-neutral-400 hover:bg-white/5 hover:text-white border border-transparent'
                   }`}
                 >
                   <Icon
                     className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                      isActive ? 'text-white' : 'text-purple-400'
+                      isActive ? 'text-indigo-400' : 'text-neutral-500 group-hover:text-neutral-300'
                     }`}
                   />
                   {item.name}
                   {item.unique && (
-                    <span className="ml-auto text-xs bg-purple-500/30 text-purple-200 px-2 py-0.5 rounded-full border border-purple-400/30">
+                    <span className="ml-auto text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30">
                       Pro
                     </span>
                   )}
@@ -129,16 +128,23 @@ export default function DashboardLayout({ children }) {
             })}
           </nav>
 
-          <div className="p-4 border-t border-purple-500/20 bg-gray-900/50 backdrop-blur-xl">
+          <div className="p-4 border-t border-white/5 bg-black/30">
             {user && (
-              <div className="mb-3 px-3 py-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                <p className="text-xs text-gray-400">Signed in as</p>
-                <p className="text-sm text-white font-medium truncate">
+              <div className="mb-3 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
+                <p className="text-[10px] text-neutral-500 uppercase tracking-wide">Signed in as</p>
+                <p className="text-sm text-white font-light truncate">
                   {user.email || user.data?.email}
                 </p>
-                <p className="text-xs text-purple-400 mt-1 capitalize">
-                  {user.plan_tier || user.planTier || 'Free'} Plan
-                </p>
+                <div className="flex items-center justify-between mt-1.5">
+                  <span className="text-xs text-neutral-400 capitalize">
+                    {user.plan_tier || user.planTier || 'Free'} Plan
+                  </span>
+                  {daysLeft !== null && (
+                    <span className="text-[10px] text-amber-400 font-medium">
+                      {daysLeft} day{daysLeft !== 1 ? 's' : ''} left
+                    </span>
+                  )}
+                </div>
               </div>
             )}
 
@@ -147,9 +153,9 @@ export default function DashboardLayout({ children }) {
                 document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                 router.push('/login');
               }}
-              className="w-full flex items-center px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-red-500/10 rounded-lg transition-all duration-200 group"
+              className="w-full flex items-center px-3 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10 transition-all group"
             >
-              <LogOut className="mr-3 h-5 w-5 text-red-400 group-hover:text-red-300" />
+              <LogOut className="mr-3 h-5 w-5 text-neutral-500 group-hover:text-red-400" />
               Logout
             </button>
           </div>

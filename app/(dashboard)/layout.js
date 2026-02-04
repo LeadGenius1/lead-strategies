@@ -49,6 +49,7 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [suggestedHrefs, setSuggestedHrefs] = useState([]);
 
   const platform =
     typeof window !== 'undefined'
@@ -87,6 +88,57 @@ export default function DashboardLayout({ children }) {
 
     loadUser();
   }, [router]);
+
+  // Fetch profile + stats to determine suggested next steps (pulsate guidance)
+  useEffect(() => {
+    if (!user) return;
+
+    const token = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('token='))
+      ?.split('=')[1];
+    if (!token) return;
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
+    const headers = { Authorization: `Bearer ${token}` };
+
+    async function loadNextStep() {
+      try {
+        const [profileRes, statsRes] = await Promise.all([
+          fetch(`${apiUrl}/api/v1/users/profile`, { headers }),
+          fetch(`${apiUrl}/api/v1/dashboard/stats`, { headers }),
+        ]);
+
+        const profile = profileRes.ok ? (await profileRes.json()).data : null;
+        const stats = statsRes.ok ? (await statsRes.json()).data?.stats : null;
+
+        const productsOk = !!profile?.productsServices?.trim();
+        const targetOk = !!profile?.targetAudience?.trim();
+        const profileComplete = productsOk && targetOk;
+        const leadsCount = stats?.leads ?? stats?.totalLeads ?? 0;
+        const campaignsCount = stats?.campaigns ?? stats?.totalCampaigns ?? 0;
+        const tier = Number(user?.tier);
+
+        const hrefs = [];
+        if (!profileComplete) {
+          hrefs.push('/settings'); // Profile first - critical for Lead Hunter
+        } else if (tier === 4) {
+          hrefs.push('/videos/upload'); // VideoSite: upload first video
+        } else if (leadsCount === 0) {
+          hrefs.push('/lead-hunter'); // Find leads
+        } else if (campaignsCount === 0) {
+          hrefs.push('/campaigns'); // Create campaign
+        } else {
+          hrefs.push('/lead-hunter'); // Ongoing: use Lead Hunter
+        }
+        setSuggestedHrefs(hrefs);
+      } catch (e) {
+        setSuggestedHrefs(['/settings']); // Default: complete profile
+      }
+    }
+
+    loadNextStep();
+  }, [user]);
 
   if (loading) {
     return (
@@ -133,6 +185,7 @@ export default function DashboardLayout({ children }) {
             {platform.nav.map((item) => {
               const Icon = ICON_MAP[item.icon] || BrainCircuit;
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+              const isSuggested = suggestedHrefs.includes(item.href) && !isActive;
 
               return (
                 <Link
@@ -142,7 +195,7 @@ export default function DashboardLayout({ children }) {
                     isActive
                       ? 'bg-indigo-500/10 text-white border border-indigo-500/30'
                       : 'text-neutral-400 hover:bg-white/5 hover:text-white border border-transparent'
-                  }`}
+                  } ${isSuggested ? 'nav-pulsate border-indigo-500/30' : ''}`}
                 >
                   <Icon
                     className={`mr-3 h-5 w-5 flex-shrink-0 ${

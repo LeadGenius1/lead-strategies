@@ -21,6 +21,7 @@ import {
   Upload,
   Wallet,
   ShieldCheck,
+  Zap,
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -42,6 +43,7 @@ const ICON_MAP = {
   ArrowUpTray: Upload,
   BankNotes: Wallet,
   ShieldCheck,
+  Zap,
 };
 
 export default function DashboardLayout({ children }) {
@@ -125,7 +127,7 @@ export default function DashboardLayout({ children }) {
         } else if (tier === 4) {
           hrefs.push('/videos/upload'); // VideoSite: upload first video
         } else if (leadsCount === 0) {
-          hrefs.push('/lead-hunter'); // Find leads
+          hrefs.push('/lead-hunter'); // Find leads (or /proactive-hunter for 24/7 machine)
         } else if (campaignsCount === 0) {
           hrefs.push('/campaigns'); // Create campaign
         } else {

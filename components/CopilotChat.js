@@ -21,7 +21,7 @@ import {
   BrainCircuit
 } from 'lucide-react';
 
-export default function CopilotChat() {
+export default function CopilotChat({ selectedLead }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -63,7 +63,7 @@ export default function CopilotChat() {
     try {
       const response = await api.post('/api/v1/copilot', {
         message: userMessage.content,
-        context: {},
+        context: selectedLead ? { lead: { email: selectedLead.email, name: selectedLead.name, company: selectedLead.company } } : {},
       });
 
       const responseData = response.data?.data || response.data || {};

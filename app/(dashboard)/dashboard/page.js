@@ -105,7 +105,7 @@ export default function DashboardPage() {
             <p className="text-neutral-500 mt-1 text-sm">Welcome back. Here&apos;s your lead generation overview.</p>
           </div>
           <Link
-            href="/copilot"
+            href="/lead-hunter"
             className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all"
           >
             Open Lead Hunter

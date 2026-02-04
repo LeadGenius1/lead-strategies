@@ -2,12 +2,12 @@
 
 import CopilotChat from '@/components/CopilotChat';
 
-export default function CopilotPage() {
+export default function LeadHunterPage() {
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">
       {/* Ambient Background Effects */}
       <div className="fixed inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute inset-0 opacity-30"
           style={{
             backgroundSize: '40px 40px',
@@ -15,9 +15,9 @@ export default function CopilotPage() {
             maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
           }}
-        ></div>
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }}></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
+        />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
       </div>
 
       {/* Content - Mobile Optimized */}

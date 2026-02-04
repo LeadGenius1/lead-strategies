@@ -17,7 +17,7 @@ import {
 
 // Simplified sidebar – Lead Hunter as master coordinator
 const navigation = [
-  { name: 'Lead Hunter', href: '/copilot', icon: BrainCircuit, highlight: true },
+  { name: 'Lead Hunter', href: '/lead-hunter', icon: BrainCircuit, highlight: true },
   { name: 'Inbox', href: '/inbox', icon: MessageSquare },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]

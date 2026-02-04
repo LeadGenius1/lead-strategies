@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CopilotChat from '@/components/CopilotChat';
 import AutoScheduler from './components/AutoScheduler';
 import EmailDatabase from './components/EmailDatabase';
 import api from '@/lib/api';
 import { Search, MessageSquare } from 'lucide-react';
 
+const SIMPLIFIED_PLATFORMS = ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'ultralead.ai'];
+
 export default function LeadHunterPage() {
+  const [simplified, setSimplified] = useState(false);
   const [mode, setMode] = useState('chat'); // 'chat' | 'wizard'
   const [step, setStep] = useState('search');
   const [leads, setLeads] = useState([]);
@@ -16,6 +19,11 @@ export default function LeadHunterPage() {
   const [searchParams, setSearchParams] = useState({ industry: '', titles: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const host = typeof window !== 'undefined' ? window.location.hostname.replace(/^www\./, '').split(':')[0] : '';
+    setSimplified(SIMPLIFIED_PLATFORMS.includes(host));
+  }, []);
 
   async function handleSearch() {
     setLoading(true);
@@ -99,7 +107,7 @@ export default function LeadHunterPage() {
             </div>
           </div>
 
-          {mode === 'chat' ? (
+          {(simplified || mode === 'chat') ? (
             <div className="h-[calc(100vh-12rem)]">
               <CopilotChat />
             </div>

@@ -24,6 +24,7 @@ import {
 
 const ICON_MAP = {
   MagnifyingGlass: BrainCircuit,
+  Target,
   Inbox: MessageSquare,
   User: User,
   UserCircle: User,

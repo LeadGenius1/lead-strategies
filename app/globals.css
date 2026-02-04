@@ -278,6 +278,17 @@ nav .text-sm {
   animation: pulse-glow 8s infinite;
 }
 
+/* Aether – glow blobs (full Aether style) */
+.aether-glow-blob {
+  animation: pulse-glow 8s infinite;
+}
+.aether-glow-delay {
+  animation-delay: 2s;
+}
+.aether-glow-slow {
+  animation: pulse-glow 12s infinite;
+}
+
 /* Pulsating Glow for Buttons */
 .animate-pulse-glow {
   animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;

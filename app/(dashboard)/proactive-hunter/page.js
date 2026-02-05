@@ -65,6 +65,16 @@ export default function ProactiveHunterPage() {
     }
   }
 
+  async function handleToggleScheduling(checked) {
+    try {
+      await api.put('/api/v1/proactive-hunter/icp', { isActive: checked })
+      toast.success(checked ? 'Automatic scheduling is on' : 'Automatic scheduling is off')
+      loadStatus()
+    } catch (e) {
+      toast.error(e.response?.data?.error || 'Failed to update scheduling')
+    }
+  }
+
   const hasICP = status?.hasICP
   const icp = status?.icp
   const recentRuns = status?.recentRuns || []
@@ -137,9 +147,27 @@ export default function ProactiveHunterPage() {
             </div>
 
             <div className={STYLE.card}>
+              <h2 className="text-lg font-medium text-white mb-4">Scheduling</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-neutral-300 text-sm">Automatic runs daily at 6 AM (discovery), 8 AM (outreach), and 6 PM (summary)</p>
+                  <p className="text-neutral-500 text-xs mt-1">Toggle off to pause automatic runs.</p>
+                </div>
+                <button
+                  role="switch"
+                  aria-checked={icp?.isActive !== false}
+                  onClick={() => handleToggleScheduling(icp?.isActive === false)}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-black ${icp?.isActive !== false ? 'bg-indigo-500' : 'bg-neutral-600'}`}
+                >
+                  <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform ${icp?.isActive !== false ? 'translate-x-5' : 'translate-x-1'}`} />
+                </button>
+              </div>
+            </div>
+
+            <div className={STYLE.card}>
               <h2 className="text-lg font-medium text-white mb-4">Run Now</h2>
               <p className="text-neutral-500 text-sm mb-4">
-                Manually trigger a discovery + outreach run. Normally runs automatically at 6 AM and 8 AM.
+                Manually trigger a discovery + outreach run.
               </p>
               <button onClick={handleTriggerRun} disabled={triggering} className={STYLE.btn}>
                 {triggering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
@@ -172,7 +200,7 @@ export default function ProactiveHunterPage() {
 
         <div className="rounded-xl bg-indigo-500/10 border border-indigo-500/20 p-4">
           <p className="text-sm text-indigo-200">
-            <strong>How it works:</strong> After scanning your website, the Proactive Lead Hunter runs daily at 6 AM (discovery), 8 AM (outreach), and 6 PM (summary email). Set ENABLE_PROACTIVE_SCHEDULER=true on the backend to enable automatic runs.
+            <strong>How it works:</strong> After scanning your website, use the scheduling toggle to turn automatic runs on or off. When on, the Proactive Lead Hunter runs daily at 6 AM (discovery), 8 AM (outreach), and 6 PM (summary email).
           </p>
         </div>
       </div>

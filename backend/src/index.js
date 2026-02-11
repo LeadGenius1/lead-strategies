@@ -2,6 +2,17 @@
 // Unified API for 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO
 require('dotenv').config();
 
+// Railway Postgres fix: use public URL when internal (*.railway.internal) unreachable
+if (process.env.DATABASE_PUBLIC_URL && process.env.DATABASE_URL?.includes('railway.internal')) {
+  console.log('Using DATABASE_PUBLIC_URL (Railway public connection - internal host unreachable)');
+  process.env.DATABASE_URL = process.env.DATABASE_PUBLIC_URL;
+}
+// Startup log: DB host for sanity check (no credentials)
+try {
+  const dbHost = process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL).hostname : 'not set';
+  console.log('Database host:', dbHost);
+} catch (_) { /* ignore malformed URL */ }
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -22,6 +33,7 @@ const channelRoutes = require('./routes/channels');
 const cannedResponseRoutes = require('./routes/cannedResponses');
 const autoResponseRoutes = require('./routes/autoResponses');
 const conversationNoteRoutes = require('./routes/conversationNotes');
+const emailRoutes = require('./routes/emails');
 
 // UltraLead / ClientContact CRM Routes (Tier 5)
 const clientcontactCrmRoutes = require('./routes/ultralead');

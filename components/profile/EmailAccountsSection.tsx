@@ -62,7 +62,7 @@ export default function EmailAccountsSection() {
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     if (params.get('pool') === 'success') {
       setTimeout(fetchAccounts, 3000);
-      if (typeof window !== 'undefined') window.history.replaceState({}, '', '/profile');
+      if (typeof window !== 'undefined') window.history.replaceState({}, '', '/settings');
     }
   }, []);
 

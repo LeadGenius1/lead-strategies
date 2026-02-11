@@ -15,12 +15,12 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       return NextResponse.redirect(
-        new URL(`/profile?error=oauth_${error}`, req.url)
+        new URL(`/settings?error=oauth_${error}`, req.url)
       );
     }
 
     if (!code || !state) {
-      return NextResponse.redirect(new URL('/profile?error=oauth_missing', req.url));
+      return NextResponse.redirect(new URL('/settings?error=oauth_missing', req.url));
     }
 
     const cookieStore = await cookies();
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     const userId = cookieStore.get('email_oauth_user_id')?.value;
 
     if (!savedState || savedState !== state || !userId) {
-      return NextResponse.redirect(new URL('/profile?error=oauth_invalid_state', req.url));
+      return NextResponse.redirect(new URL('/settings?error=oauth_invalid_state', req.url));
     }
 
     const tokens = await exchangeGoogleEmailCode(code);
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     const { data } = await oauth2.userinfo.get();
     const email = data.email;
     if (!email) {
-      return NextResponse.redirect(new URL('/profile?error=oauth_no_email', req.url));
+      return NextResponse.redirect(new URL('/settings?error=oauth_no_email', req.url));
     }
 
     const existing = await prisma.userEmailAccount.findUnique({
@@ -71,12 +71,12 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const res = NextResponse.redirect(new URL('/profile?email=connected', req.url));
+    const res = NextResponse.redirect(new URL('/settings?email=connected', req.url));
     res.cookies.delete('email_oauth_state');
     res.cookies.delete('email_oauth_user_id');
     return res;
   } catch (err) {
     console.error('Google OAuth callback error:', err);
-    return NextResponse.redirect(new URL('/profile?error=oauth_failed', req.url));
+    return NextResponse.redirect(new URL('/settings?error=oauth_failed', req.url));
   }
 }

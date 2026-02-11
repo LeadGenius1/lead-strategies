@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const session = await getSession();
     if (!session?.user?.id) {
       return NextResponse.redirect(
-        new URL('/login?error=Unauthorized&callbackUrl=/profile', req.url)
+        new URL('/login?error=Unauthorized&callbackUrl=/settings', req.url)
       );
     }
 
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Google OAuth init error:', error);
     return NextResponse.redirect(
-      new URL('/profile?error=oauth_failed', req.url)
+      new URL('/settings?error=oauth_failed', req.url)
     );
   }
 }

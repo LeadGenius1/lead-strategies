@@ -62,8 +62,8 @@ export async function POST(req: NextRequest) {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${appUrl}/profile?pool=success`,
-      cancel_url: `${appUrl}/profile?pool=canceled`,
+      success_url: `${appUrl}/settings?pool=success`,
+      cancel_url: `${appUrl}/settings?pool=canceled`,
       metadata: {
         userId: session.user.id,
         subscriptionDbId: subscription.id,

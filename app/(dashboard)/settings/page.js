@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { User, Building2, Target, Save, Loader2 } from 'lucide-react';
+import EmailAccountsSection from '@/components/profile/EmailAccountsSection';
 
 const CHAT_STYLE = {
   container: 'bg-black min-h-screen',
@@ -232,6 +233,10 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+
+          <section className="mt-8">
+            <EmailAccountsSection />
+          </section>
 
           <div className={CHAT_STYLE.card}>
             <h2 className="text-sm font-medium text-white mb-2 flex items-center gap-2">

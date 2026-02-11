@@ -10,6 +10,7 @@ const nextConfig = {
   },
   // Configure server actions
   experimental: {
+    instrumentationHook: true,
     serverActions: {
       bodySizeLimit: '2mb',
     },

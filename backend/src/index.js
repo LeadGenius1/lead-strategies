@@ -58,17 +58,21 @@ const PORT = process.env.PORT || 3001;
 // Security headers
 app.use(helmet());
 
-// CORS configuration
-const allowedOrigins = process.env.CORS_ORIGINS?.split(',') || [
+// CORS configuration - aileadstrategies.com and leadsite always allowed (CORS_ORIGINS adds, never overrides)
+const defaultOrigins = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'https://aileadstrategies.com',
   'https://www.aileadstrategies.com',
   'https://leadsite.ai',
   'https://www.leadsite.ai',
+  'https://app.leadsite.ai',
   'https://leadsite.io',
   'https://clientcontact.io',
   'https://videosite.io',
 ];
+const envOrigins = process.env.CORS_ORIGINS?.split(',').map(o => o.trim()).filter(Boolean) || [];
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
 app.use(cors({
   origin: (origin, callback) => {

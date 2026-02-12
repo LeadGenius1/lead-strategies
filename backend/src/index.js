@@ -50,6 +50,7 @@ const videoRoutes = require('./routes/videos');
 const payoutsRoutes = require('./routes/payouts');
 const clipsRoutes = require('./routes/clips');
 const publishRoutes = require('./routes/publish');
+const emailSentinelRoutes = require('./routes/emailSentinel');
 const masterValidationRoutes = require('./routes/master-validation');
 
 // Admin Routes (Internal only)
@@ -205,6 +206,7 @@ app.use('/api/v1/crm', crmRoutes);                  // UltraLead CRM (Contacts, 
 app.use('/api/v1/agents', agentRoutes);             // UltraLead 7 AI Agents Control
 app.use('/api/v1/videosite', videositeRoutes);      // VideoSite.AI Monetization
 app.use('/api/v1/channels', channelRoutes);         // ClientContact.IO Channels
+app.use('/api/v1/email-sentinel', emailSentinelRoutes);  // Email Sentinel (Redis backend only)
 
 // Admin Routes (Internal AI Lead Strategies staff only)
 app.use('/admin', adminRoutes);
@@ -312,6 +314,14 @@ app.listen(PORT, '0.0.0.0', async () => {
   } else {
     console.log('\n💡 Self-Healing System disabled');
     console.log('   Enable with ENABLE_SELF_HEALING=true environment variable\n');
+  }
+
+  // Email Sentinel - backend only (Redis). Frontend never connects to Redis.
+  try {
+    const { startEmailSentinel } = require('./emailSentinel');
+    await startEmailSentinel();
+  } catch (err) {
+    console.warn('[Email Sentinel] Skip:', err.message);
   }
 });
 

@@ -4,17 +4,24 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
-import { Globe, Plus, Loader2, ExternalLink, ArrowRight } from 'lucide-react'
+import { Globe, Loader2, ExternalLink, ArrowRight, Sparkles } from 'lucide-react'
+import WebsiteBuilderChat from '@/components/WebsiteBuilderChat'
 
 export default function WebsitesPage() {
   const [websites, setWebsites] = useState([])
   const [loading, setLoading] = useState(true)
   const [featureBlocked, setFeatureBlocked] = useState(false)
   const [upgradeMessage, setUpgradeMessage] = useState('')
+  const [showBuilder, setShowBuilder] = useState(false)
 
   useEffect(() => {
     loadWebsites()
   }, [])
+
+  function handleWebsiteCreated() {
+    setShowBuilder(false)
+    loadWebsites()
+  }
 
   async function loadWebsites() {
     try {
@@ -61,13 +68,13 @@ export default function WebsitesPage() {
             <p className="text-neutral-500 mt-1 text-sm">AI-built websites that generate leads 24/7</p>
           </div>
           {!featureBlocked && (
-            <Link
-              href="/lead-hunter"
+            <button
+              onClick={() => setShowBuilder(true)}
               className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
             >
-              <Plus className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               New Website
-            </Link>
+            </button>
           )}
         </div>
 
@@ -90,14 +97,15 @@ export default function WebsitesPage() {
           <div className="rounded-2xl bg-neutral-900/50 border border-white/10 p-12 text-center">
             <Globe className="w-16 h-16 text-neutral-600 mx-auto mb-4" />
             <h2 className="text-xl font-medium text-white mb-2">No websites yet</h2>
-            <p className="text-neutral-500 mb-6">Use Lead Hunter to create your first AI-powered website in minutes.</p>
-            <Link
-              href="/lead-hunter"
+            <p className="text-neutral-500 mb-6">Build your first AI-powered website in minutes with our chat wizard.</p>
+            <button
+              onClick={() => setShowBuilder(true)}
               className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 rounded-xl font-medium transition-all"
             >
-              Go to Lead Hunter
+              <Sparkles className="w-4 h-4" />
+              Build with AI
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -134,6 +142,32 @@ export default function WebsitesPage() {
           </div>
         )}
       </div>
+
+      {/* AI Website Builder Modal */}
+      {showBuilder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl max-h-[90vh] rounded-2xl bg-neutral-950 border border-white/10 shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-cyan-400" />
+                <h2 className="text-lg font-medium text-white">Build Your Website with AI</h2>
+              </div>
+              <button
+                onClick={() => setShowBuilder(false)}
+                className="p-2 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                aria-label="Close"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden min-h-[400px]">
+              <WebsiteBuilderChat onWebsiteCreated={handleWebsiteCreated} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

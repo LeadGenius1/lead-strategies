@@ -26,7 +26,9 @@ const leadRoutes = require('./routes/leads');
 const analyticsRoutes = require('./routes/analytics');
 const stripeRoutes = require('./routes/stripe');
 const webhookRoutes = require('./routes/webhooks');
-const websiteRoutes = require('./routes/websites');
+const websiteRoutesModule = require('./routes/websites');
+const websiteRoutes = websiteRoutesModule.default || websiteRoutesModule;
+const websitePublicRoutes = websiteRoutesModule.publicRouter;
 const formRoutes = require('./routes/forms');
 const conversationRoutes = require('./routes/conversations');
 const channelRoutes = require('./routes/channels');
@@ -183,6 +185,9 @@ app.use('/api/v1/emails', emailRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/stripe', stripeRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
+if (websitePublicRoutes) {
+  app.use('/api/v1/websites', websitePublicRoutes); // Public subdomain route (no auth)
+}
 app.use('/api/v1/websites', websiteRoutes);
 app.use('/api/v1/forms', formRoutes);
 app.use('/api/v1/conversations', conversationRoutes);

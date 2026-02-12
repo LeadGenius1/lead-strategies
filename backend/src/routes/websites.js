@@ -83,6 +83,101 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Build pages from chat answers (template-based, compatible with sites renderer)
+// chatAnswers order from WebsiteBuilderChat: goal, audience, valueProp, features, cta, template
+function buildPagesFromChatAnswers(chatAnswers, templateId) {
+  const a = (chatAnswers || []).map(x => (x && x.answer) ? String(x.answer).trim() : '');
+  const goal = a[0] || 'Generate leads and grow your business';
+  const valueProp = a[2] || 'We deliver exceptional results';
+  const featuresStr = a[3] || 'Quality, Trust, Results';
+  const cta = a[4] || 'Get Started';
+  const features = featuresStr.split(/[,;]| and /).map(s => s.trim()).filter(Boolean).slice(0, 5);
+  const featureItems = features.length ? features.map((title) => ({ title, description: `Delivering on ${title.toLowerCase()}` })) : [
+    { title: 'Quality', description: 'Premium solutions for your needs' },
+    { title: 'Trust', description: 'Built on reliability' },
+    { title: 'Results', description: 'Proven outcomes' }
+  ];
+  const name = (valueProp || goal).split(/[.!?]/)[0].trim().substring(0, 80) || 'My Website';
+  return [{
+    id: 'home',
+    name: 'Home',
+    slug: 'home',
+    sections: [
+      { type: 'hero', items: { headline: name, subheadline: valueProp || goal, ctaText: cta } },
+      { type: 'about', items: { title: 'About', description: valueProp || goal } },
+      { type: 'features', items: featureItems },
+      { type: 'cta', items: { headline: `Ready to ${cta}?`, subheadline: valueProp, buttonText: cta } },
+      { type: 'contact', items: { title: 'Get In Touch', description: 'We\'d love to hear from you.' } }
+    ]
+  }];
+}
+
+// POST /generate - AI-style website generation from chat answers
+router.post('/generate', async (req, res) => {
+  try {
+    const db = getPrisma();
+    const { chatAnswers, templateId } = req.body;
+
+    if (!chatAnswers || !Array.isArray(chatAnswers)) {
+      return res.status(400).json({ error: 'chatAnswers array is required' });
+    }
+
+    const pages = buildPagesFromChatAnswers(chatAnswers, templateId);
+    const firstSection = pages[0]?.sections?.[0];
+    const name = firstSection?.items?.headline || 'My Website';
+    const subdomain = name.toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 30);
+
+    if (!db) {
+      const newWebsite = {
+        id: Date.now().toString(),
+        name,
+        subdomain,
+        pages,
+        settings: { primaryColor: '#6366f1', secondaryColor: '#ffffff' },
+        theme: 'default',
+        isPublished: false,
+        createdAt: new Date()
+      };
+      return res.status(201).json({ success: true, data: { website: newWebsite } });
+    }
+
+    let finalSubdomain = subdomain;
+    let counter = 1;
+    let exists = true;
+    while (exists) {
+      const checkSubdomain = counter === 1 ? finalSubdomain : `${finalSubdomain}-${counter}`;
+      const existing = await db.website.findUnique({ where: { subdomain: checkSubdomain } });
+      if (!existing) {
+        finalSubdomain = checkSubdomain;
+        exists = false;
+      } else {
+        counter++;
+      }
+    }
+
+    const website = await db.website.create({
+      data: {
+        userId: req.user.id,
+        name,
+        subdomain: finalSubdomain,
+        pages,
+        settings: { primaryColor: '#6366f1', secondaryColor: '#ffffff' },
+        theme: 'default',
+        isPublished: false
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Website generated successfully',
+      data: { website }
+    });
+  } catch (error) {
+    console.error('Generate website error:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
 // Create website
 router.post('/', async (req, res) => {
   try {
@@ -155,6 +250,10 @@ router.post('/', async (req, res) => {
 // Update website
 router.put('/:id', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
     const website = await db.website.findFirst({
       where: {
         id: req.params.id,
@@ -215,6 +314,10 @@ router.put('/:id', async (req, res) => {
 // Delete website
 router.delete('/:id', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
     const website = await db.website.findFirst({
       where: {
         id: req.params.id,
@@ -243,6 +346,10 @@ router.delete('/:id', async (req, res) => {
 // Publish website
 router.post('/:id/publish', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
     const website = await db.website.findFirst({
       where: {
         id: req.params.id,
@@ -276,6 +383,10 @@ router.post('/:id/publish', async (req, res) => {
 // Unpublish website
 router.post('/:id/unpublish', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
     const website = await db.website.findFirst({
       where: {
         id: req.params.id,
@@ -306,6 +417,10 @@ router.post('/:id/unpublish', async (req, res) => {
 // POST /api/websites/:id/domain - Setup custom domain
 router.post('/:id/domain', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
     const website = await db.website.findFirst({
       where: {
         id: req.params.id,
@@ -358,4 +473,35 @@ router.post('/:id/domain', async (req, res) => {
   }
 });
 
+// Public router: GET /subdomain/:subdomain (no auth - for sites renderer)
+const publicRouter = express.Router();
+publicRouter.get('/subdomain/:subdomain', async (req, res) => {
+  try {
+    const db = getPrisma();
+    const { subdomain } = req.params;
+    if (!subdomain) {
+      return res.status(400).json({ error: 'Subdomain is required' });
+    }
+    if (!db) {
+      const mock = mockWebsites.find(w => w.subdomain === subdomain);
+      if (!mock) return res.status(404).json({ error: 'Website not found' });
+      return res.json({ success: true, data: mock });
+    }
+    const website = await db.website.findFirst({
+      where: { subdomain }
+    });
+    if (!website) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+    if (!website.isPublished) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+    res.json({ success: true, data: website });
+  } catch (error) {
+    console.error('Get website by subdomain error:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
 module.exports = router;
+module.exports.publicRouter = publicRouter;

@@ -130,7 +130,7 @@ export default function VideosPage() {
                 <h3 className="text-white font-medium text-sm truncate mb-2">{video.title || 'Untitled'}</h3>
                 <div className="flex items-center gap-4 text-xs text-neutral-500">
                   <span>{video.qualifiedViews ?? video.views ?? 0} views</span>
-                  <span className="text-indigo-400">{`$${(video.totalEarnings ?? video.earnings ?? 0).toFixed(2)}`}</span>
+                  <span className="text-indigo-400">{`$${Number(video.totalEarnings ?? video.earnings ?? 0).toFixed(2)}`}</span>
                 </div>
               </Link>
             ))}

@@ -223,7 +223,7 @@ export default function VideoDetailPage() {
                       </div>
                       <span className="text-neutral-400 text-sm">Earnings</span>
                     </div>
-                    <span className="text-cyan-400 font-medium font-mono">${earnings.toFixed(2)}</span>
+                    <span className="text-cyan-400 font-medium font-mono">${Number(earnings).toFixed(2)}</span>
                   </div>
 
                   {duration != null && (

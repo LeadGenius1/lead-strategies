@@ -9,7 +9,7 @@ export default function ContentGrid({ items = [] }) {
           <div key={item.id} className="p-4 rounded-xl bg-neutral-900/30 border border-white/10 hover:border-purple-500/50 transition-all duration-300">
             <div className="text-xs text-purple-400 mb-2">{item.type}</div>
             <div className="text-sm text-white truncate">{item.filename}</div>
-            <div className="text-xs text-neutral-500 mt-1">{(item.file_size / 1024 / 1024).toFixed(2)} MB</div>
+            <div className="text-xs text-neutral-500 mt-1">{(Number(item.file_size) / 1024 / 1024).toFixed(2)} MB</div>
           </div>
         ))}
       </div>

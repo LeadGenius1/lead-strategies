@@ -43,7 +43,7 @@ export function middleware(request) {
     font-src 'self' https://fonts.gstatic.com data:;
     img-src 'self' data: https: blob:;
     media-src 'self' https: blob:;
-    connect-src 'self' https://api.aileadstrategies.com https://www.google-analytics.com https://api.stripe.com wss:;
+    connect-src 'self' https://api.aileadstrategies.com https://www.google-analytics.com https://api.stripe.com https://*.r2.cloudflarestorage.com wss:;
     frame-src 'self' https://js.stripe.com https://hooks.stripe.com;
     object-src 'none';
     base-uri 'self';

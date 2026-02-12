@@ -1,0 +1,3 @@
+# Backend uses Node 20 for AWS SDK compatibility (Node 18 deprecated Jan 2026)
+[phases.setup]
+nixPkgs = ["nodejs_20"]

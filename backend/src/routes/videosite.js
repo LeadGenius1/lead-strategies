@@ -20,6 +20,7 @@ const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL ||
   (R2_ACCOUNT_ID && R2_BUCKET ? `https://${R2_BUCKET}.${R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : null);
 
 // R2 S3 client (R2 is S3-compatible)
+// Disable automatic checksums - R2 does not support x-amz-checksum-crc32 for browser PUT uploads
 let s3Client = null;
 if (R2_ACCOUNT_ID && R2_ACCESS_KEY && R2_SECRET_KEY) {
   s3Client = new S3Client({
@@ -28,7 +29,9 @@ if (R2_ACCOUNT_ID && R2_ACCESS_KEY && R2_SECRET_KEY) {
     credentials: {
       accessKeyId: R2_ACCESS_KEY,
       secretAccessKey: R2_SECRET_KEY
-    }
+    },
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED'
   });
 }
 

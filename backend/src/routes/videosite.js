@@ -47,10 +47,10 @@ const MIN_PAYOUT_AMOUNT = 10.00;
 // All routes require authentication
 router.use(authenticate);
 
-// Normalize user ID (JWT may use id or sub)
+// Normalize user ID (JWT may use id, sub, or userId)
 router.use((req, res, next) => {
   console.log('[VideoSite Auth Debug]', JSON.stringify(req.user));
-  req.userId = req.user?.id ?? req.user?.sub;
+  req.userId = req.user?.id ?? req.user?.sub ?? req.user?.userId;
   next();
 });
 

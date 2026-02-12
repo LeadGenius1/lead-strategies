@@ -54,6 +54,7 @@ const clipsRoutes = require('./routes/clips');
 const publishRoutes = require('./routes/publish');
 const emailSentinelRoutes = require('./routes/emailSentinel');
 const masterValidationRoutes = require('./routes/master-validation');
+const statusRoutes = require('./routes/status');
 
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
@@ -180,6 +181,7 @@ app.get('/api/v1/health', async (req, res) => {
 });
 
 // API Routes (v1)
+app.use('/api/v1/status', statusRoutes);   // Integration status (public)
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
@@ -239,6 +241,7 @@ app.use('/api/canned-responses', cannedResponseRoutes);
 app.use('/api/auto-responses', autoResponseRoutes);
 app.use('/api/conversation-notes', conversationNoteRoutes);
 app.use('/api/v1/payouts', payoutsRoutes);  // VideoSite earnings payouts
+app.use('/api/status', statusRoutes);       // Backward compat
 app.use('/api/v1/clips', clipsRoutes);      // Video clips management
 app.use('/api/v1/publish', publishRoutes);  // Social media publishing
 

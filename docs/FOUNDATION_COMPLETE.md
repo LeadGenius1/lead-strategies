@@ -34,6 +34,12 @@
 
 ---
 
+## Integration Status
+
+`GET /api/v1/status/integrations` — Reports which features are configured (no auth). Use to verify env vars after adding to Railway.
+
+---
+
 ## Quick Verification
 
 ```powershell

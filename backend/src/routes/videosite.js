@@ -18,21 +18,6 @@ const R2_SECRET_KEY = process.env.CLOUDFLARE_R2_SECRET_KEY;
 const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
 const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
 
-function convertToPublicUrl(internalUrl) {
-  if (!internalUrl) return internalUrl;
-  if (internalUrl.includes('r2.cloudflarestorage.com')) {
-    try {
-      const urlObj = new URL(internalUrl);
-      const path = urlObj.pathname.replace(/^\//, '');
-      return path ? `${R2_PUBLIC_URL}/${path}` : internalUrl;
-    } catch {
-      const filename = internalUrl.split('/').pop();
-      return `${R2_PUBLIC_URL}/${filename}`;
-    }
-  }
-  return internalUrl;
-}
-
 // R2 S3 client (R2 is S3-compatible)
 // Disable automatic checksums - R2 does not support x-amz-checksum-crc32 for browser PUT uploads
 let s3Client = null;
@@ -92,14 +77,9 @@ router.get('/videos', async (req, res) => {
       prisma.video.count({ where })
     ]);
 
-    const videosWithPublicUrls = videos.map(video => ({
-      ...video,
-      file_url: convertToPublicUrl(video.file_url)
-    }));
-
     res.json({
       success: true,
-      data: { videos: videosWithPublicUrls, total, limit: parseInt(limit), offset: parseInt(offset) }
+      data: { videos, total, limit: parseInt(limit), offset: parseInt(offset) }
     });
   } catch (error) {
     console.error('Get videos error:', error);
@@ -118,12 +98,7 @@ router.get('/videos/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Video not found' });
     }
 
-    const videoWithPublicUrl = {
-      ...video,
-      file_url: convertToPublicUrl(video.file_url)
-    };
-
-    res.json({ success: true, data: videoWithPublicUrl });
+    res.json({ success: true, data: video });
   } catch (error) {
     console.error('Get video error:', error);
     res.status(500).json({ success: false, error: error.message });
@@ -235,14 +210,9 @@ router.post('/upload/complete', async (req, res) => {
       }).catch(() => {});
     }, 2000);
 
-    const updatedWithPublicUrl = {
-      ...updated,
-      file_url: convertToPublicUrl(updated.file_url)
-    };
-
     res.json({
       success: true,
-      data: updatedWithPublicUrl,
+      data: updated,
       message: 'Upload complete. Video is being processed.'
     });
   } catch (error) {

@@ -11,6 +11,7 @@ import {
   ArrowLeftIcon,
   ChartBarIcon,
   ClockIcon,
+  ShareIcon,
 } from '@heroicons/react/24/outline';
 import StatusBadge from '@/components/videosite/StatusBadge';
 import VideoPlayer from '@/components/video/VideoPlayer';
@@ -31,6 +32,7 @@ export default function VideoDetailPage() {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     async function loadVideo() {
@@ -93,6 +95,16 @@ export default function VideoDetailPage() {
     }
   }
 
+  const watchUrl = typeof window !== 'undefined' ? `${window.location.origin}/watch/${params.id}` : '';
+
+  function copyWatchLink() {
+    if (!watchUrl) return;
+    navigator.clipboard?.writeText(watchUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -108,9 +120,9 @@ export default function VideoDetailPage() {
     return null;
   }
 
-  const videoUrl = video.videoUrl || video.video_url;
+  const videoUrl = video.videoUrl || video.video_url || video.file_url;
   const thumbnailUrl = video.thumbnailUrl || video.thumbnail_url;
-  const views = video.views ?? video.qualifiedViews ?? 0;
+  const views = video.views ?? video.qualifiedViews ?? video.view_count ?? 0;
   const earnings = Number(video.earnings ?? video.totalEarnings ?? 0);
   const duration = video.duration ?? video.durationSeconds;
   const createdAt = video.createdAt || video.created_at;
@@ -151,15 +163,27 @@ export default function VideoDetailPage() {
             <StatusBadge status={video.status} />
           </div>
 
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={deleting}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 hover:border-red-500/40 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <TrashIcon className="w-4 h-4" />
-            {deleting ? 'Deleting...' : 'Delete Video'}
-          </button>
+          <div className="flex items-center gap-2">
+            {videoUrl && (
+              <button
+                type="button"
+                onClick={copyWatchLink}
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/20 hover:border-indigo-500/40 transition-all text-sm"
+              >
+                <ShareIcon className="w-4 h-4" />
+                {copied ? 'Copied!' : 'Copy watch link'}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 hover:border-red-500/40 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <TrashIcon className="w-4 h-4" />
+              {deleting ? 'Deleting...' : 'Delete Video'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

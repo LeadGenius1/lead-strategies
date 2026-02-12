@@ -25,7 +25,75 @@ const mockVideos = [
   { id: '3', title: 'How-To Tutorial', status: 'draft', visibility: 'private', viewCount: 0, totalEarnings: 0, duration: 300, thumbnail: null, createdAt: new Date() },
 ];
 
-// All routes require authentication and video feature (Tier 4+)
+// ---- PUBLIC ROUTES (no auth) - for /watch/[id] full-page viewing ----
+function toPublicVideo(v) {
+  if (!v) return null;
+  return {
+    id: v.id,
+    title: v.title,
+    description: v.description,
+    videoUrl: v.file_url || v.videoUrl,
+    thumbnailUrl: v.thumbnailUrl || v.thumbnail_url,
+    duration: v.duration,
+    viewCount: v.view_count ?? 0,
+    views: v.view_count ?? 0,
+    earnings: v.earnings,
+    totalEarnings: v.earnings,
+    isMonetized: v.isMonetized ?? v.is_monetized ?? false,
+    monetizationEnabled: v.isMonetized ?? v.is_monetized ?? false,
+    createdAt: v.createdAt ?? v.created_at,
+    created_at: v.createdAt ?? v.created_at,
+    visibility: 'public',
+    status: v.status
+  };
+}
+
+// GET /api/v1/videos/:id/public - Public video for playback (no auth)
+router.get('/:id/public', async (req, res) => {
+  try {
+    const db = getPrisma();
+    const videoId = req.params.id;
+    if (!db) return res.status(503).json({ error: 'Database not configured' });
+
+    const video = await db.video.findUnique({ where: { id: videoId } });
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+
+    const viewable = ['ready', 'processing'].includes(video.status) && video.file_url;
+    if (!viewable) return res.status(404).json({ error: 'Video not found or not yet available' });
+
+    res.json({ success: true, data: toPublicVideo(video) });
+  } catch (error) {
+    console.error('Get public video error:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
+// POST /api/v1/videos/:id/track-view - Track view (no auth)
+router.post('/:id/track-view', async (req, res) => {
+  try {
+    const db = getPrisma();
+    const videoId = req.params.id;
+    const { watchDuration = 0 } = req.body;
+    if (!db) return res.status(503).json({ error: 'Database not configured' });
+
+    const video = await db.video.findUnique({ where: { id: videoId } });
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+
+    await db.video.update({
+      where: { id: videoId },
+      data: { view_count: { increment: 1 } }
+    });
+
+    const watchSeconds = typeof watchDuration === 'number' ? watchDuration : parseInt(watchDuration, 10) || 0;
+    res.json({ success: true, data: { tracked: true, watchSeconds } });
+  } catch (error) {
+    console.error('Track view error:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
+// ---- AUTH REQUIRED ----
+// All other routes require authentication and video feature (Tier 4+)
 router.use(authenticate);
 router.use(requireFeature('video'));
 

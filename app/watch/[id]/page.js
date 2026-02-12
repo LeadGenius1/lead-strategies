@@ -80,29 +80,31 @@ export default function WatchVideoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="max-w-4xl mx-auto p-6">
+    <div className="min-h-screen bg-black flex flex-col">
+      {/* Full-page video area - immersive viewer experience */}
+      <div className="relative flex-1 flex items-center justify-center w-full px-4 py-4">
         <Link
           href="/videos"
-          className="inline-flex items-center gap-2 text-neutral-400 hover:text-white mb-6 text-sm transition-colors"
+          className="absolute top-4 left-4 z-10 inline-flex items-center gap-2 text-neutral-400 hover:text-white text-sm transition-colors bg-black/50 hover:bg-black/70 px-3 py-2 rounded-lg"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Videos
+          Back
         </Link>
 
-        <div className="mb-6">
+        <div className="w-full max-w-6xl aspect-video">
           <VideoPlayer
             videoUrl={video.videoUrl}
             thumbnailUrl={video.thumbnailUrl}
             title={video.title}
           />
         </div>
+      </div>
 
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{video.title}</h1>
-            {video.description && <p className="text-neutral-400">{video.description}</p>}
-          </div>
+      {/* Metadata below player - full width */}
+      <div className="border-t border-white/10 px-4 py-6">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <h1 className="text-2xl font-bold text-white">{video.title}</h1>
+          {video.description && <p className="text-neutral-400">{video.description}</p>}
           <div className="flex items-center gap-6 text-sm">
             <div className="flex items-center gap-2 text-neutral-400">
               <Eye className="w-4 h-4" />

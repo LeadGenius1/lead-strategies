@@ -228,7 +228,7 @@ app.use('/api/forms', formRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/channels', channelRoutes);
 app.use('/api/videos', videoRoutes);
-app.use('/api/v1/videos', videoRoutes);  // Also mount at v1 path
+app.use('/api/v1/videos', videoRoutes);
 app.use('/api/canned-responses', cannedResponseRoutes);
 app.use('/api/auto-responses', autoResponseRoutes);
 app.use('/api/conversation-notes', conversationNoteRoutes);

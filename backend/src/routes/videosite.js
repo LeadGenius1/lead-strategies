@@ -5,6 +5,8 @@ const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const { authenticate } = require('../middleware/auth');
 const crypto = require('crypto');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -14,6 +16,19 @@ const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const R2_ACCESS_KEY = process.env.CLOUDFLARE_R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.CLOUDFLARE_R2_SECRET_KEY;
 const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
+
+// R2 S3 client (R2 is S3-compatible)
+let s3Client = null;
+if (R2_ACCOUNT_ID && R2_ACCESS_KEY && R2_SECRET_KEY) {
+  s3Client = new S3Client({
+    region: 'auto',
+    endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId: R2_ACCESS_KEY,
+      secretAccessKey: R2_SECRET_KEY
+    }
+  });
+}
 
 // Stripe config
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
@@ -43,13 +58,13 @@ router.get('/videos', async (req, res) => {
     if (status) where.status = status;
 
     const [videos, total] = await Promise.all([
-      prisma.creatorVideo.findMany({
+      prisma.video.findMany({
         where,
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' }
       }),
-      prisma.creatorVideo.count({ where })
+      prisma.video.count({ where })
     ]);
 
     res.json({
@@ -65,7 +80,7 @@ router.get('/videos', async (req, res) => {
 // GET /api/v1/videosite/videos/:id - Get video details
 router.get('/videos/:id', async (req, res) => {
   try {
-    const video = await prisma.creatorVideo.findFirst({
+    const video = await prisma.video.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -97,19 +112,30 @@ router.post('/upload/presign', async (req, res) => {
     // Generate unique key
     const key = `${req.user.id}/${Date.now()}-${crypto.randomBytes(8).toString('hex')}-${filename}`;
 
-    // In production, generate actual presigned URL from Cloudflare R2
-    // For now, return mock presigned URL structure
-    const presignedUrl = `https://${R2_BUCKET}.${R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${key}`;
+    // Real R2 presigned URL
+    if (!s3Client) {
+      return res.status(503).json({
+        success: false,
+        error: 'Storage not configured. Contact support.'
+      });
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: R2_BUCKET,
+      Key: key,
+      ContentType: contentType || 'video/mp4'
+    });
+    const presignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
 
     // Create pending video record
-    const video = await prisma.creatorVideo.create({
+    const video = await prisma.video.create({
       data: {
         userId: req.user.id,
         title: filename.replace(/\.[^/.]+$/, ''),
-        storageKey: key,
+        filename,
+        file_url: key,
         status: 'uploading',
-        fileSize: fileSize || 0,
-        contentType: contentType || 'video/mp4'
+        fileSize: fileSize || 0
       }
     });
 
@@ -139,7 +165,7 @@ router.post('/upload/complete', async (req, res) => {
   try {
     const { videoId, title, description, thumbnail } = req.body;
 
-    const video = await prisma.creatorVideo.findFirst({
+    const video = await prisma.video.findFirst({
       where: { id: videoId, userId: req.user.id }
     });
 
@@ -148,21 +174,20 @@ router.post('/upload/complete', async (req, res) => {
     }
 
     // Update video record
-    const updated = await prisma.creatorVideo.update({
+    const updated = await prisma.video.update({
       where: { id: videoId },
       data: {
         title: title || video.title,
         description,
         thumbnailUrl: thumbnail,
-        status: 'processing',
-        uploadedAt: new Date()
+        status: 'processing'
       }
     });
 
     // In production, trigger video processing (transcoding, thumbnail generation)
     // For now, mark as ready after short delay
     setTimeout(async () => {
-      await prisma.creatorVideo.update({
+      await prisma.video.update({
         where: { id: videoId },
         data: { status: 'ready' }
       }).catch(() => {});
@@ -182,7 +207,7 @@ router.post('/upload/complete', async (req, res) => {
 // DELETE /api/v1/videosite/videos/:id - Delete video
 router.delete('/videos/:id', async (req, res) => {
   try {
-    const video = await prisma.creatorVideo.findFirst({
+    const video = await prisma.video.findFirst({
       where: { id: req.params.id, userId: req.user.id }
     });
 
@@ -191,7 +216,7 @@ router.delete('/videos/:id', async (req, res) => {
     }
 
     // In production, also delete from R2 storage
-    await prisma.creatorVideo.delete({ where: { id: req.params.id } });
+    await prisma.video.delete({ where: { id: req.params.id } });
 
     res.json({ success: true, message: 'Video deleted' });
   } catch (error) {
@@ -209,7 +234,7 @@ router.post('/videos/:id/view', async (req, res) => {
   try {
     const { watchTime, sessionId, referrer } = req.body;
 
-    const video = await prisma.creatorVideo.findUnique({
+    const video = await prisma.video.findUnique({
       where: { id: req.params.id }
     });
 
@@ -273,11 +298,11 @@ router.post('/videos/:id/view', async (req, res) => {
       });
 
       // Update video stats
-      await prisma.creatorVideo.update({
+      await prisma.video.update({
         where: { id: video.id },
         data: {
-          qualifiedViews: { increment: 1 },
-          totalEarnings: { increment: EARNINGS_PER_VIEW }
+          view_count: { increment: 1 },
+          earnings: { increment: EARNINGS_PER_VIEW }
         }
       });
     }
@@ -312,9 +337,9 @@ router.get('/earnings', async (req, res) => {
         where: { userId: req.user.id, status: 'paid' },
         _sum: { amount: true }
       }),
-      prisma.creatorVideo.aggregate({
+      prisma.video.aggregate({
         where: { userId: req.user.id },
-        _sum: { qualifiedViews: true }
+        _sum: { view_count: true }
       })
     ]);
 
@@ -324,7 +349,7 @@ router.get('/earnings', async (req, res) => {
         totalEarnings: totalEarnings._sum.amount || 0,
         pendingEarnings: pendingEarnings._sum.amount || 0,
         paidEarnings: paidEarnings._sum.amount || 0,
-        totalQualifiedViews: videos._sum.qualifiedViews || 0,
+        totalQualifiedViews: videos._sum.view_count || 0,
         earningsPerView: EARNINGS_PER_VIEW,
         minPayout: MIN_PAYOUT_AMOUNT
       }
@@ -620,13 +645,13 @@ router.get('/analytics', async (req, res) => {
     const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
     const [videos, views, earnings] = await Promise.all([
-      prisma.creatorVideo.findMany({
+      prisma.video.findMany({
         where: { userId: req.user.id },
         select: {
           id: true,
           title: true,
-          qualifiedViews: true,
-          totalEarnings: true,
+          view_count: true,
+          earnings: true,
           createdAt: true
         }
       }),
@@ -651,10 +676,10 @@ router.get('/analytics', async (req, res) => {
       success: true,
       data: {
         totalVideos: videos.length,
-        totalViews: videos.reduce((sum, v) => sum + (v.qualifiedViews || 0), 0),
+        totalViews: videos.reduce((sum, v) => sum + (v.view_count || 0), 0),
         periodEarnings: earnings._sum.amount || 0,
         topVideos: videos
-          .sort((a, b) => (b.totalEarnings || 0) - (a.totalEarnings || 0))
+          .sort((a, b) => Number(b.earnings || 0) - Number(a.earnings || 0))
           .slice(0, 5),
         viewsOverTime: views
       }

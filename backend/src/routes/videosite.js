@@ -49,6 +49,7 @@ router.use(authenticate);
 
 // Normalize user ID (JWT may use id or sub)
 router.use((req, res, next) => {
+  console.log('[VideoSite Auth Debug]', JSON.stringify(req.user));
   req.userId = req.user?.id ?? req.user?.sub;
   next();
 });

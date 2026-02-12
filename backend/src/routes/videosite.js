@@ -16,8 +16,22 @@ const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const R2_ACCESS_KEY = process.env.CLOUDFLARE_R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.CLOUDFLARE_R2_SECRET_KEY;
 const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
-const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL ||
-  (R2_ACCOUNT_ID && R2_BUCKET ? `https://${R2_BUCKET}.${R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : null);
+const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
+
+function convertToPublicUrl(internalUrl) {
+  if (!internalUrl) return internalUrl;
+  if (internalUrl.includes('r2.cloudflarestorage.com')) {
+    try {
+      const urlObj = new URL(internalUrl);
+      const path = urlObj.pathname.replace(/^\//, '');
+      return path ? `${R2_PUBLIC_URL}/${path}` : internalUrl;
+    } catch {
+      const filename = internalUrl.split('/').pop();
+      return `${R2_PUBLIC_URL}/${filename}`;
+    }
+  }
+  return internalUrl;
+}
 
 // R2 S3 client (R2 is S3-compatible)
 // Disable automatic checksums - R2 does not support x-amz-checksum-crc32 for browser PUT uploads
@@ -52,7 +66,6 @@ router.use(authenticate);
 
 // Normalize user ID (JWT may use id, sub, or userId)
 router.use((req, res, next) => {
-  console.log('[VideoSite Auth Debug]', JSON.stringify(req.user));
   req.userId = req.user?.id ?? req.user?.sub ?? req.user?.userId;
   next();
 });
@@ -79,9 +92,14 @@ router.get('/videos', async (req, res) => {
       prisma.video.count({ where })
     ]);
 
+    const videosWithPublicUrls = videos.map(video => ({
+      ...video,
+      file_url: convertToPublicUrl(video.file_url)
+    }));
+
     res.json({
       success: true,
-      data: { videos, total, limit: parseInt(limit), offset: parseInt(offset) }
+      data: { videos: videosWithPublicUrls, total, limit: parseInt(limit), offset: parseInt(offset) }
     });
   } catch (error) {
     console.error('Get videos error:', error);
@@ -100,7 +118,12 @@ router.get('/videos/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Video not found' });
     }
 
-    res.json({ success: true, data: video });
+    const videoWithPublicUrl = {
+      ...video,
+      file_url: convertToPublicUrl(video.file_url)
+    };
+
+    res.json({ success: true, data: videoWithPublicUrl });
   } catch (error) {
     console.error('Get video error:', error);
     res.status(500).json({ success: false, error: error.message });
@@ -212,9 +235,14 @@ router.post('/upload/complete', async (req, res) => {
       }).catch(() => {});
     }, 2000);
 
+    const updatedWithPublicUrl = {
+      ...updated,
+      file_url: convertToPublicUrl(updated.file_url)
+    };
+
     res.json({
       success: true,
-      data: updated,
+      data: updatedWithPublicUrl,
       message: 'Upload complete. Video is being processed.'
     });
   } catch (error) {

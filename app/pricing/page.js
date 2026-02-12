@@ -25,7 +25,7 @@ const pricingPlans = [
   },
   {
     name: 'ClientContact.IO',
-    price: '$79',
+    price: '$99',
     period: '/mo',
     description: '22+ Channel Unified Inbox',
     features: ['22+ Channels', 'AI Auto-Responder', 'Team Collaboration', '3 Seats Included'],
@@ -34,7 +34,7 @@ const pricingPlans = [
   },
   {
     name: 'UltraLead',
-    price: '$99',
+    price: '$499',
     period: '/mo',
     description: 'Full CRM + 7 AI Agents',
     featured: true,

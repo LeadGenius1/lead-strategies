@@ -578,7 +578,7 @@ export default function LeadSiteIOPage() {
             <p className="text-neutral-400 font-geist mt-4">1 website on all plans. Scale your lead generation as you grow.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {/* Starter Tier */}
             <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll">
               <h3 className="text-xl font-space-grotesk text-white mb-2">Starter</h3>
@@ -631,24 +631,6 @@ export default function LeadSiteIOPage() {
               </ul>
               <div className="text-center">
                 <ShinyButton href="/signup?product=leadsite_io&tier=business">Start Trial</ShinyButton>
-              </div>
-            </div>
-
-            {/* Enterprise Tier */}
-            <div className="bg-gradient-to-br from-purple-950/20 to-[#050505] border border-purple-500/30 p-6 relative overflow-hidden [animation:animationIn_0.8s_ease-out_0.45s_both] animate-on-scroll">
-              <h3 className="text-xl font-space-grotesk text-white mb-2">Enterprise</h3>
-              <div className="text-3xl font-space-grotesk font-light text-white mb-4">
-                $799<span className="text-sm text-neutral-500">/mo</span>
-              </div>
-              <ul className="space-y-2 font-geist text-xs text-neutral-300 mb-6">
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>1 website</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>50,000 lead credits/mo</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full white-label</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Full API access</li>
-                <li className="flex items-start gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full mt-1.5"></div>Dedicated manager</li>
-              </ul>
-              <div className="text-center">
-                <ShinyButton href="/signup?product=leadsite_io&tier=enterprise">Contact Sales</ShinyButton>
               </div>
             </div>
           </div>

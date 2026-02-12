@@ -9,8 +9,8 @@ import toast from 'react-hot-toast'
 const TIERS = [
   { id: 'leadsite-ai', name: 'LeadSite.AI', price: '$49/mo', description: 'AI email lead generation' },
   { id: 'leadsite-io', name: 'LeadSite.IO', price: '$49/mo', description: '1 free website • AI website builder', highlight: true },
-  { id: 'clientcontact', name: 'ClientContact.IO', price: '$79/mo', description: '22+ channel unified inbox' },
-  { id: 'ultralead', name: 'UltraLead', price: '$99/mo', description: 'Full CRM • 7 AI agents • Voice + pipeline', flagship: true },
+  { id: 'clientcontact', name: 'ClientContact.IO', price: '$99/mo', description: '22+ channel unified inbox' },
+  { id: 'ultralead', name: 'UltraLead', price: '$499/mo', description: 'Full CRM • 7 AI agents • Voice + pipeline', flagship: true },
   { id: 'videosite', name: 'VideoSite.AI', price: 'FREE', description: 'Earn $1/viewer • Content creators', free: true },
 ]
 

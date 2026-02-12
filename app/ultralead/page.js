@@ -12,12 +12,12 @@ function UltraLeadSEO() {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: 'UltraLead',
-    description: 'Your Complete AI Sales Command Center. Full CRM, 7 self-healing AI agents, 22+ channel unified inbox, voice calling with AI transcription. $99/mo.',
+    description: 'Your Complete AI Sales Command Center. Full CRM, 7 self-healing AI agents, 22+ channel unified inbox, voice calling with AI transcription. $499/mo.',
     brand: { '@type': 'Brand', name: 'AI Lead Strategies' },
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/ultralead',
-      price: '99',
+      price: '499',
       priceCurrency: 'USD',
       priceValidUntil: '2026-12-31',
       availability: 'https://schema.org/InStock'
@@ -28,7 +28,7 @@ function UltraLeadSEO() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
       <div className="sr-only" aria-hidden="true">
-        <h1>UltraLead - Your Complete AI Sales Command Center | $99/mo</h1>
+        <h1>UltraLead - Your Complete AI Sales Command Center | $499/mo</h1>
         <p>Full CRM and pipeline management. 7 self-healing AI agents. 22+ channel unified inbox. Voice calling with AI transcription. 2,000 leads/month. Unlimited team seats. Enterprise sales automation. Contact: support@aileadstrategies.com | (855) 506-8886</p>
       </div>
     </>
@@ -134,7 +134,7 @@ export default function UltraLeadPage() {
                 </p>
 
                 <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-4xl sm:text-5xl font-space-grotesk font-light text-white mb-2">
-                  $99<span className="text-lg sm:text-xl text-neutral-500">/mo</span>
+                  $499<span className="text-lg sm:text-xl text-neutral-500">/mo</span>
                 </div>
                 <p className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll text-xs text-neutral-500 font-geist mb-8">Everything included. Unlimited team seats.</p>
               </div>

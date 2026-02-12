@@ -70,7 +70,8 @@ export default function TermsPage() {
         <ul>
           <li><strong>LeadSite.AI:</strong> $49/month for AI-powered lead generation</li>
           <li><strong>LeadSite.IO:</strong> $49/month for AI website builder + Free Website included</li>
-          <li><strong>ClientContact.IO:</strong> $79/month for 22+ channel unified inbox</li>
+          <li><strong>ClientContact.IO:</strong> $99/month for 22+ channel unified inbox</li>
+          <li><strong>UltraLead:</strong> $499/month for full CRM + 7 AI agents</li>
           <li><strong>VideoSite.AI:</strong> FREE for content creators (earn $1.00 per video viewer)</li>
         </ul>
 

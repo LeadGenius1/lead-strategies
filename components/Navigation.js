@@ -7,8 +7,8 @@ import { useState } from 'react'
 const platforms = [
   { name: 'LeadSite.AI', href: '/leadsite-ai', price: '$49/mo', description: 'AI Email Lead Generation' },
   { name: 'LeadSite.IO', href: '/leadsite-io', price: '$49/mo', description: 'AI Website Builder' },
-  { name: 'ClientContact.IO', href: '/clientcontact-io', price: '$79/mo', description: '22+ Channel Inbox' },
-  { name: 'UltraLead', href: '/ultralead', price: '$99/mo', description: 'Full CRM + 7 AI Agents', featured: true },
+  { name: 'ClientContact.IO', href: '/clientcontact-io', price: '$99/mo', description: '22+ Channel Inbox' },
+  { name: 'UltraLead', href: '/ultralead', price: '$499/mo', description: 'Full CRM + 7 AI Agents', featured: true },
   { name: 'VideoSite.AI', href: '/videosite-ai', price: 'FREE', description: 'Earn $1/Viewer' },
 ]
 

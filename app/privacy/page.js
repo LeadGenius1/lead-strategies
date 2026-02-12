@@ -62,7 +62,7 @@ export default function PrivacyPage() {
         <h3>Core Business Operations</h3>
         <ul>
           <li>Providing and maintaining our AI-powered lead generation and marketing automation services</li>
-          <li>Processing payments and managing subscriptions across all platform tiers ($49-$99/month, VideoSite.AI is FREE)</li>
+          <li>Processing payments and managing subscriptions across all platform tiers ($49-$499/month, VideoSite.AI is FREE)</li>
           <li>Delivering personalized recommendations and optimizing platform performance</li>
           <li>Facilitating communication between users and prospects through our multi-channel outreach</li>
         </ul>

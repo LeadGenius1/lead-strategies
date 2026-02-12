@@ -44,7 +44,7 @@ function HomeSEO() {
         name: 'How much does AI Lead Strategies cost?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Pricing varies by platform: LeadSite.AI is $49/mo, LeadSite.IO is $49/mo with a free website, ClientContact.IO is $79–$299/mo (3 tiers), VideoSite.AI is FREE (earn $1 per viewer).'
+          text: 'Pricing varies by platform: LeadSite.AI is $49/mo, LeadSite.IO is $49/mo with a free website, ClientContact.IO is $99–$399/mo (3 tiers), UltraLead is $499/mo, VideoSite.AI is FREE (earn $1 per viewer).'
         }
       },
       {
@@ -71,7 +71,7 @@ function HomeSEO() {
       {/* Hidden SEO content for LLM discovery */}
       <div className="sr-only" aria-hidden="true" role="presentation">
         <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
-        <p>AI Lead Strategies offers 4 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) for lead scoring and enrichment. LeadSite.IO ($49/mo + Free website) for AI website building. ClientContact.IO ($99–$299/mo) for 22+ channel unified inbox and full CRM with 7 AI agents. VideoSite.AI (FREE - earn $1/viewer) for video monetization. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) for lead scoring and enrichment. LeadSite.IO ($49/mo + Free website) for AI website building. ClientContact.IO ($99–$399/mo) for 22+ channel unified inbox and full CRM with 7 AI agents. UltraLead ($499/mo) full CRM + 7 AI agents. VideoSite.AI (FREE - earn $1/viewer) for video monetization. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
       </div>
     </>
   );
@@ -346,7 +346,7 @@ export default function HomePage() {
               <Link href="/clientcontact-io" className="flex-grow">
                 <div className="flex justify-between items-start mb-6">
                   <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
-                  <div className="text-3xl font-space-grotesk font-light text-white">$79<span className="text-sm text-neutral-500">/mo</span></div>
+                  <div className="text-3xl font-space-grotesk font-light text-white">$99<span className="text-sm text-neutral-500">/mo</span></div>
                 </div>
                 <p className="text-neutral-400 font-geist mb-6 text-sm">Unified inbox for 22+ channels. AI auto-responds and books meetings.</p>
                 <ul className="space-y-3 font-geist text-sm text-neutral-300">
@@ -365,7 +365,7 @@ export default function HomePage() {
               </div>
               <Link href="/ultralead" className="flex-grow">
                 <h3 className="text-xl font-bold text-white mb-2">UltraLead</h3>
-                <p className="text-3xl font-bold text-white mb-1">$99<span className="text-sm font-normal text-neutral-400">/mo</span></p>
+                <p className="text-3xl font-bold text-white mb-1">$499<span className="text-sm font-normal text-neutral-400">/mo</span></p>
                 <p className="text-neutral-400 mb-4">Full CRM + 7 AI Agents</p>
                 <ul className="space-y-2 text-sm text-neutral-300">
                   <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> 7 Self-Healing AI Agents</li>

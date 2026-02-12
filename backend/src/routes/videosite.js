@@ -16,6 +16,8 @@ const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const R2_ACCESS_KEY = process.env.CLOUDFLARE_R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.CLOUDFLARE_R2_SECRET_KEY;
 const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
+const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL ||
+  (R2_ACCOUNT_ID && R2_BUCKET ? `https://${R2_BUCKET}.${R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : null);
 
 // R2 S3 client (R2 is S3-compatible)
 let s3Client = null;
@@ -45,6 +47,12 @@ const MIN_PAYOUT_AMOUNT = 10.00;
 // All routes require authentication
 router.use(authenticate);
 
+// Normalize user ID (JWT may use id or sub)
+router.use((req, res, next) => {
+  req.userId = req.user?.id ?? req.user?.sub;
+  next();
+});
+
 // =====================
 // VIDEO MANAGEMENT
 // =====================
@@ -54,7 +62,7 @@ router.get('/videos', async (req, res) => {
   try {
     const { status, limit = 50, offset = 0 } = req.query;
 
-    const where = { userId: req.user.id };
+    const where = { userId: req.userId };
     if (status) where.status = status;
 
     const [videos, total] = await Promise.all([
@@ -81,7 +89,7 @@ router.get('/videos', async (req, res) => {
 router.get('/videos/:id', async (req, res) => {
   try {
     const video = await prisma.video.findFirst({
-      where: { id: req.params.id, userId: req.user.id }
+      where: { id: req.params.id, userId: req.userId }
     });
 
     if (!video) {
@@ -100,6 +108,10 @@ router.post('/upload/presign', async (req, res) => {
   try {
     const { filename, contentType, fileSize } = req.body;
 
+    if (!req.userId) {
+      return res.status(401).json({ success: false, error: 'User not authenticated' });
+    }
+
     if (!filename) {
       return res.status(400).json({ success: false, error: 'Filename is required' });
     }
@@ -110,7 +122,7 @@ router.post('/upload/presign', async (req, res) => {
     }
 
     // Generate unique key
-    const key = `${req.user.id}/${Date.now()}-${crypto.randomBytes(8).toString('hex')}-${filename}`;
+    const key = `${req.userId}/${Date.now()}-${crypto.randomBytes(8).toString('hex')}-${filename}`;
 
     // Real R2 presigned URL
     if (!s3Client) {
@@ -127,13 +139,16 @@ router.post('/upload/presign', async (req, res) => {
     });
     const presignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
 
-    // Create pending video record
+    // Construct file_url (full R2 URL for playback, or key if no public URL configured)
+    const fileUrl = R2_PUBLIC_URL ? `${R2_PUBLIC_URL}/${key}` : key;
+
+    // Create pending video record (use connect for user relation)
     const video = await prisma.video.create({
       data: {
-        userId: req.user.id,
+        user: { connect: { id: req.userId } },
         title: filename.replace(/\.[^/.]+$/, ''),
         filename,
-        file_url: key,
+        file_url: fileUrl,
         status: 'uploading',
         fileSize: fileSize || 0
       }
@@ -166,7 +181,7 @@ router.post('/upload/complete', async (req, res) => {
     const { videoId, title, description, thumbnail } = req.body;
 
     const video = await prisma.video.findFirst({
-      where: { id: videoId, userId: req.user.id }
+      where: { id: videoId, userId: req.userId }
     });
 
     if (!video) {
@@ -208,7 +223,7 @@ router.post('/upload/complete', async (req, res) => {
 router.delete('/videos/:id', async (req, res) => {
   try {
     const video = await prisma.video.findFirst({
-      where: { id: req.params.id, userId: req.user.id }
+      where: { id: req.params.id, userId: req.userId }
     });
 
     if (!video) {
@@ -275,7 +290,7 @@ router.post('/videos/:id/view', async (req, res) => {
       data: {
         videoId: video.id,
         creatorId: video.userId,
-        viewerId: req.user?.id || null,
+        viewerId: req.userId || null,
         sessionId: sessionId || req.ip,
         watchTime: watchTime || 0,
         isQualified,
@@ -326,19 +341,19 @@ router.get('/earnings', async (req, res) => {
   try {
     const [totalEarnings, pendingEarnings, paidEarnings, videos] = await Promise.all([
       prisma.creatorEarning.aggregate({
-        where: { userId: req.user.id },
+        where: { userId: req.userId },
         _sum: { amount: true }
       }),
       prisma.creatorEarning.aggregate({
-        where: { userId: req.user.id, status: 'pending' },
+        where: { userId: req.userId, status: 'pending' },
         _sum: { amount: true }
       }),
       prisma.creatorEarning.aggregate({
-        where: { userId: req.user.id, status: 'paid' },
+        where: { userId: req.userId, status: 'paid' },
         _sum: { amount: true }
       }),
       prisma.video.aggregate({
-        where: { userId: req.user.id },
+        where: { userId: req.userId },
         _sum: { view_count: true }
       })
     ]);
@@ -367,13 +382,13 @@ router.get('/earnings/history', async (req, res) => {
 
     const [earnings, total] = await Promise.all([
       prisma.creatorEarning.findMany({
-        where: { userId: req.user.id },
+        where: { userId: req.userId },
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' },
         include: { video: { select: { title: true } } }
       }),
-      prisma.creatorEarning.count({ where: { userId: req.user.id } })
+      prisma.creatorEarning.count({ where: { userId: req.userId } })
     ]);
 
     res.json({
@@ -402,7 +417,7 @@ router.post('/stripe/connect', async (req, res) => {
 
     // Check if user already has Stripe account
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
+      where: { id: req.userId },
       select: { stripeAccountId: true }
     });
 
@@ -424,7 +439,7 @@ router.post('/stripe/connect', async (req, res) => {
 
       // Save account ID
       await prisma.user.update({
-        where: { id: req.user.id },
+        where: { id: req.userId },
         data: { stripeAccountId: accountId }
       });
     }
@@ -454,7 +469,7 @@ router.post('/stripe/connect', async (req, res) => {
 router.get('/stripe/status', async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
+      where: { id: req.userId },
       select: { stripeAccountId: true }
     });
 
@@ -498,12 +513,12 @@ router.get('/stripe/status', async (req, res) => {
 router.get('/payouts', async (req, res) => {
   try {
     const pendingEarnings = await prisma.creatorEarning.aggregate({
-      where: { userId: req.user.id, status: 'pending' },
+      where: { userId: req.userId, status: 'pending' },
       _sum: { amount: true }
     });
 
     const payouts = await prisma.payout.findMany({
-      where: { userId: req.user.id },
+      where: { userId: req.userId },
       orderBy: { createdAt: 'desc' },
       take: 10
     });
@@ -526,7 +541,7 @@ router.get('/payouts', async (req, res) => {
 router.post('/payouts/request', async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
+      where: { id: req.userId },
       select: { stripeAccountId: true }
     });
 
@@ -538,7 +553,7 @@ router.post('/payouts/request', async (req, res) => {
     }
 
     const pendingEarnings = await prisma.creatorEarning.aggregate({
-      where: { userId: req.user.id, status: 'pending' },
+      where: { userId: req.userId, status: 'pending' },
       _sum: { amount: true }
     });
 
@@ -554,7 +569,7 @@ router.post('/payouts/request', async (req, res) => {
     // Create payout record
     const payout = await prisma.payout.create({
       data: {
-        userId: req.user.id,
+        userId: req.userId,
         amount,
         status: 'pending',
         stripeAccountId: user.stripeAccountId
@@ -580,7 +595,7 @@ router.post('/payouts/request', async (req, res) => {
 
         // Mark earnings as paid
         await prisma.creatorEarning.updateMany({
-          where: { userId: req.user.id, status: 'pending' },
+          where: { userId: req.userId, status: 'pending' },
           data: { status: 'paid', payoutId: payout.id }
         });
       } catch (stripeError) {
@@ -614,12 +629,12 @@ router.get('/payouts/history', async (req, res) => {
 
     const [payouts, total] = await Promise.all([
       prisma.payout.findMany({
-        where: { userId: req.user.id },
+        where: { userId: req.userId },
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { createdAt: 'desc' }
       }),
-      prisma.payout.count({ where: { userId: req.user.id } })
+      prisma.payout.count({ where: { userId: req.userId } })
     ]);
 
     res.json({
@@ -646,7 +661,7 @@ router.get('/analytics', async (req, res) => {
 
     const [videos, views, earnings] = await Promise.all([
       prisma.video.findMany({
-        where: { userId: req.user.id },
+        where: { userId: req.userId },
         select: {
           id: true,
           title: true,
@@ -658,14 +673,14 @@ router.get('/analytics', async (req, res) => {
       prisma.videoView.groupBy({
         by: ['createdAt'],
         where: {
-          creatorId: req.user.id,
+          creatorId: req.userId,
           createdAt: { gte: startDate }
         },
         _count: true
       }),
       prisma.creatorEarning.aggregate({
         where: {
-          userId: req.user.id,
+          userId: req.userId,
           createdAt: { gte: startDate }
         },
         _sum: { amount: true }

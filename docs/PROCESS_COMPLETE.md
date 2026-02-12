@@ -88,6 +88,13 @@
 | `META_APP_ID`, `META_APP_SECRET` | Backend | Facebook channel OAuth |
 | `TWITTER_CLIENT_ID`, `TWITTER_CLIENT_SECRET` | Backend | Twitter channel OAuth |
 | `BACKEND_URL` | Backend | OAuth callback base URL |
+| `RATE_LIMIT_MAX` | Backend | Max requests/15min (default 300; increase for scale) |
+
+---
+
+## Scaling (1M+ Users)
+
+See [SCALING_1M_USERS.md](./SCALING_1M_USERS.md) for database pooling, tiered rate limits, caching, monitoring, and phased roadmap.
 
 ---
 

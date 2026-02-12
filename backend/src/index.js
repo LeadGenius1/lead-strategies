@@ -122,9 +122,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 // Rate limiting - start with in-memory, upgrade to Redis if available
+// At 1M+ users: consider RATE_LIMIT_MAX=500-1000, tiered limits per user
 const limiterConfig = {
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per window
+  max: parseInt(process.env.RATE_LIMIT_MAX || '300', 10), // configurable for scale
   message: { error: 'Too many requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,

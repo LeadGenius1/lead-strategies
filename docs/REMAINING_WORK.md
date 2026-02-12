@@ -32,5 +32,6 @@
 
 ### 3. References
 - [PROCESS_COMPLETE.md](./PROCESS_COMPLETE.md) - Run order, env vars
+- [SCALING_1M_USERS.md](./SCALING_1M_USERS.md) - 1M+ user scaling roadmap
 - [VERIFICATION_PROMPT.md](./VERIFICATION_PROMPT.md) - Post-deploy checklist
 - [CHANGES_VERIFICATION.md](./CHANGES_VERIFICATION.md) - Auth confirmation

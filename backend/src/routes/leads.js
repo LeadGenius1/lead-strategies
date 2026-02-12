@@ -39,10 +39,13 @@ const mockLeads = [
 // All routes require authentication
 router.use(authenticate);
 
-// Get all leads
+// Get all leads (max limit 100 for scale)
 router.get('/', async (req, res) => {
   try {
-    const { status, source, search, limit = 100, offset = 0 } = req.query;
+    const rawLimit = parseInt(req.query.limit, 10) || 100;
+    const limit = Math.min(Math.max(1, rawLimit), 100);
+    const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+    const { status, source, search } = req.query;
     const db = getPrisma();
 
     // Return mock data if no database
@@ -67,8 +70,8 @@ router.get('/', async (req, res) => {
             lastName: l.name?.split(' ').slice(1).join(' ') || ''
           })),
           total: filteredLeads.length,
-          limit: parseInt(limit),
-          offset: parseInt(offset)
+          limit,
+          offset
         }
       });
     }
@@ -88,8 +91,8 @@ router.get('/', async (req, res) => {
     const [leads, total] = await Promise.all([
       db.lead.findMany({
         where,
-        take: parseInt(limit),
-        skip: parseInt(offset),
+        take: limit,
+        skip: offset,
         orderBy: { createdAt: 'desc' }
       }),
       db.lead.count({ where })

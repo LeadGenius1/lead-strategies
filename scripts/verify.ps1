@@ -2,7 +2,7 @@
 # Usage: .\scripts\verify.ps1
 # With auth: $env:TOKEN = "your_jwt"; .\scripts\verify.ps1
 
-$backend = "http://localhost:3001"
+$backend = if ($env:BACKEND) { $env:BACKEND } else { "http://localhost:3001" }
 $healthOk = $false
 
 Write-Host "==========================================" -ForegroundColor Cyan

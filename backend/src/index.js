@@ -32,6 +32,7 @@ const websitePublicRoutes = websiteRoutesModule.publicRouter;
 const formRoutes = require('./routes/forms');
 const conversationRoutes = require('./routes/conversations');
 const channelRoutes = require('./routes/channels');
+const oauthChannelsRoutes = require('./routes/oauth-channels');
 const cannedResponseRoutes = require('./routes/cannedResponses');
 const autoResponseRoutes = require('./routes/autoResponses');
 const conversationNoteRoutes = require('./routes/conversationNotes');
@@ -48,6 +49,7 @@ const agentRoutes = require('./routes/agents');
 const videositeRoutes = require('./routes/videosite');
 const videoRoutes = require('./routes/videos');
 const payoutsRoutes = require('./routes/payouts');
+const aiAgentRoutes = require('./routes/ai-agents');
 const clipsRoutes = require('./routes/clips');
 const publishRoutes = require('./routes/publish');
 const emailSentinelRoutes = require('./routes/emailSentinel');
@@ -203,9 +205,11 @@ app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
 app.use('/api/v1/copilot', copilotRoutes);         // LeadSite.AI AI Email Generation
 app.use('/api/v1/templates', templateRoutes);       // LeadSite.IO 60 Templates
 app.use('/api/v1/crm', crmRoutes);                  // UltraLead CRM (Contacts, Companies, Deals)
-app.use('/api/v1/agents', agentRoutes);             // UltraLead 7 AI Agents Control
+app.use('/api/v1/agents', agentRoutes);
+app.use('/api/v1/ai', aiAgentRoutes);             // UltraLead 7 AI Agents Control
 app.use('/api/v1/videosite', videositeRoutes);      // VideoSite.AI Monetization
-app.use('/api/v1/channels', channelRoutes);         // ClientContact.IO Channels
+app.use('/api/v1/channels', channelRoutes);
+app.use('/api/v1/oauth/channels', oauthChannelsRoutes);         // ClientContact.IO Channels
 app.use('/api/v1/email-sentinel', emailSentinelRoutes);  // Email Sentinel (Redis backend only)
 
 // Admin Routes (Internal AI Lead Strategies staff only)
@@ -227,6 +231,7 @@ app.use('/api/websites', websiteRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/channels', channelRoutes);
+app.use('/api/oauth/channels', oauthChannelsRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/v1/videos', videoRoutes);
 app.use('/api/canned-responses', cannedResponseRoutes);

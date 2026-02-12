@@ -348,7 +348,7 @@ router.post('/:id/publish', async (req, res) => {
   try {
     const db = getPrisma();
     if (!db) {
-      return res.status(503).json({ error: 'Database not available' });
+      return res.status(503).json({ success: false, error: 'Database not available' });
     }
     const website = await db.website.findFirst({
       where: {
@@ -358,12 +358,27 @@ router.post('/:id/publish', async (req, res) => {
     });
 
     if (!website) {
-      return res.status(404).json({ error: 'Website not found' });
+      return res.status(404).json({ success: false, error: 'Website not found' });
+    }
+
+    // Generate subdomain if not set
+    let subdomain = website.subdomain;
+    if (!subdomain || !subdomain.trim()) {
+      subdomain = `${req.user.id.slice(0, 8)}-${req.params.id.slice(0, 8)}`.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      // Ensure uniqueness
+      const existing = await db.website.findUnique({ where: { subdomain } });
+      if (existing && existing.id !== req.params.id) {
+        subdomain = `${subdomain}-${Date.now().toString(36).slice(-6)}`;
+      }
     }
 
     const updatedWebsite = await db.website.update({
       where: { id: req.params.id },
-      data: { isPublished: true }
+      data: {
+        isPublished: true,
+        subdomain,
+        updatedAt: new Date()
+      }
     });
 
     res.json({

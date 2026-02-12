@@ -61,10 +61,10 @@ async function initializeRedis() {
     // Connect to Redis
     await redisClient.connect();
 
-    // Create Redis store for rate limiting
-    const RedisStore = require('rate-limit-redis');
+    // Create Redis store for rate limiting (rate-limit-redis v4+ uses named export and sendCommand API)
+    const { RedisStore } = require('rate-limit-redis');
     redisStore = new RedisStore({
-      client: redisClient,
+      sendCommand: (...args) => redisClient.sendCommand(args),
       prefix: 'rl:', // Rate limit prefix
     });
 

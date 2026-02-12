@@ -208,12 +208,92 @@ router.post('/logout', (req, res) => {
   res.json({ success: true, message: 'Logged out' });
 });
 
-// GET /api/v1/auth/me
-router.get('/me', (req, res) => {
-  res.json({
-    success: true,
-    data: { id: 'user_1', email: 'user@example.com' }
-  });
+// GET /api/auth/me or /api/v1/auth/me - Get current authenticated user from JWT
+router.get('/me', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '') ||
+      req.cookies?.token ||
+      (req.body && req.body.token);
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        error: 'Not authenticated',
+        data: { user: null }
+      });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = decoded.id || decoded.userId;
+
+    const db = getPrisma();
+    if (!db) {
+      return res.json({
+        success: true,
+        data: {
+          user: {
+            id: decoded.id,
+            email: decoded.email,
+            name: decoded.name,
+            subscription_tier: decoded.tier || 'leadsite-ai',
+            avatar_url: decoded.picture
+          }
+        }
+      });
+    }
+
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        profile_picture: true,
+        avatar_url: true,
+        subscription_tier: true,
+        plan_tier: true,
+        tier: true,
+        company: true
+      }
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: 'User not found',
+        data: { user: null }
+      });
+    }
+
+    const userData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      subscription_tier: user.subscription_tier || user.plan_tier || 'leadsite-ai',
+      avatar_url: user.avatar_url || user.profile_picture,
+      company: user.company,
+      tier: user.tier
+    };
+
+    res.json({
+      success: true,
+      data: { user: userData }
+    });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid or expired token',
+        data: { user: null }
+      });
+    }
+    console.error('Auth /me error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Authentication check failed',
+      data: { user: null }
+    });
+  }
 });
 
 module.exports = router;

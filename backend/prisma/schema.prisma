@@ -15,6 +15,7 @@ model User {
   company                 String?
   tier                    Int                @default(1)
   stripeCustomerId        String?            @map("stripe_customer_id")
+  stripeAccountId         String?            @map("stripe_account_id")
   stripeSubscriptionId    String?            @map("stripe_subscription_id")
   subscriptionStatus      String?            @default("trial") @map("subscription_status")
   trialEndsAt             DateTime?          @map("trial_ends_at")
@@ -61,6 +62,11 @@ model User {
   websites                Website[]
   emailAccounts           UserEmailAccount[]
   emailPoolSubscription   EmailPoolSubscription?
+  videoViewsAsCreator     VideoView[]       @relation("UserAsCreator")
+  videoViewsAsViewer      VideoView[]       @relation("UserAsViewer")
+  creatorEarnings         CreatorEarning[]
+  payouts                 Payout[]
+  channels                Channel[]
 
   @@index([metadata], type: Gin)
   @@map("users")
@@ -206,8 +212,71 @@ model Video {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  views        VideoView[]
+  creatorEarnings CreatorEarning[]
 
   @@map("videos")
+}
+
+model VideoView {
+  id        String   @id @default(uuid())
+  videoId   String   @map("video_id")
+  creatorId String   @map("creator_id")
+  viewerId  String?  @map("viewer_id")
+  sessionId String   @map("session_id")
+  watchTime Int      @default(0) @map("watch_time")
+  isQualified Boolean @default(false) @map("is_qualified")
+  referrer  String?
+  userAgent String?  @map("user_agent")
+  ipAddress String?  @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  creator   User     @relation("UserAsCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  viewer    User?    @relation("UserAsViewer", fields: [viewerId], references: [id], onDelete: SetNull)
+
+  @@index([videoId])
+  @@index([creatorId])
+  @@index([viewerId])
+  @@index([createdAt])
+  @@index([videoId, sessionId, createdAt])
+  @@map("video_views")
+}
+
+model CreatorEarning {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  videoId   String   @map("video_id")
+  viewId    String   @map("view_id")
+  amount    Decimal  @db.Decimal(10, 4)
+  status    String   @default("pending")
+  payoutId  String?  @map("payout_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  creator   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  payout    Payout?  @relation(fields: [payoutId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([videoId])
+  @@index([status])
+  @@index([payoutId])
+  @@map("creator_earnings")
+}
+
+model Payout {
+  id               String   @id @default(uuid())
+  userId           String   @map("user_id")
+  amount           Decimal  @db.Decimal(10, 2)
+  status           String   @default("pending")
+  stripeAccountId  String?  @map("stripe_account_id")
+  stripeTransferId String?  @map("stripe_transfer_id")
+  error            String?  @db.Text
+  createdAt        DateTime @default(now()) @map("created_at")
+  creator          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creatorEarnings  CreatorEarning[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("payouts")
 }
 
 model ApiKey {
@@ -278,6 +347,24 @@ model Message {
   @@index([conversationId, createdAt])
   @@index([userId, createdAt])
   @@map("messages")
+}
+
+model Channel {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  type        String
+  name        String
+  credentials Json?
+  settings    Json?
+  status      String    @default("connected")
+  lastSyncAt  DateTime? @map("last_sync_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@map("channels")
 }
 
 model CannedResponse {

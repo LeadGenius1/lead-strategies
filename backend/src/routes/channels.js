@@ -2,7 +2,9 @@
 // OAuth connections for email, social media, etc.
 
 const express = require('express');
+const crypto = require('crypto');
 const { authenticate, requireFeature } = require('../middleware/auth');
+const pkceStore = require('../lib/pkce-store');
 
 const router = express.Router();
 
@@ -18,77 +20,157 @@ function getPrisma() {
   return prisma;
 }
 
-// Mock data for development
-const mockChannels = [
-  { id: '1', type: 'email', name: 'Business Email', status: 'active', connected: true },
-  { id: '2', type: 'sms', name: 'Twilio SMS', status: 'active', connected: true },
-  { id: '3', type: 'whatsapp', name: 'WhatsApp Business', status: 'pending', connected: false },
-];
-
-const mockConnections = [
-  { id: '1', channelId: '1', provider: 'gmail', status: 'connected', email: 'business@example.com' },
-  { id: '2', channelId: '2', provider: 'twilio', status: 'connected', phone: '+1555123456' },
+// Available channel types (all platforms can connect these)
+const AVAILABLE_CHANNELS = [
+  { id: 'email', name: 'Email', provider: 'Internal', description: 'Connect your business email' },
+  { id: 'facebook', name: 'Facebook Messenger', provider: 'Meta', description: 'Connect Facebook Page for Messenger' },
+  { id: 'twitter', name: 'Twitter/X DM', provider: 'Twitter', description: 'Connect Twitter for direct messages' },
+  { id: 'sms', name: 'SMS', provider: 'Twilio', description: 'Connect Twilio for SMS' },
+  { id: 'whatsapp', name: 'WhatsApp Business', provider: 'Meta', description: 'Connect WhatsApp Business' },
 ];
 
 // All routes require authentication and inbox feature (Tier 3+)
 router.use(authenticate);
 router.use(requireFeature('inbox'));
 
-// Get all connected channels
+// Get available channel types (same for all users)
 router.get('/', async (req, res) => {
   try {
+    res.json({
+      success: true,
+      data: {
+        channels: AVAILABLE_CHANNELS,
+        enabled: AVAILABLE_CHANNELS.map((c) => c.id)
+      }
+    });
+  } catch (error) {
+    console.error('Get channels error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch channels' });
+  }
+});
+
+// Get user's connected channels (from DB)
+router.get('/connections', async (req, res) => {
+  try {
     const db = getPrisma();
-
     if (!db) {
-      return res.json({
-        success: true,
-        data: {
-          channels: mockChannels,
-          enabled: ['email', 'sms', 'whatsapp', 'webchat', 'voice']
-        }
-      });
+      return res.json({ success: true, data: { connections: [] } });
     }
-
     const channels = await db.channel.findMany({
       where: { userId: req.user.id },
       orderBy: { createdAt: 'desc' }
     });
-
-    res.json({
-      success: true,
-      data: { channels }
-    });
+    const connections = channels.map((c) => ({
+      id: c.id,
+      channel: c.type,
+      channelId: c.id,
+      provider: c.type,
+      status: c.status,
+      isActive: c.status === 'connected',
+      name: c.name
+    }));
+    res.json({ success: true, data: { connections } });
   } catch (error) {
-    console.error('Get channels error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch channels',
-    });
+    console.error('Get connections error:', error);
+    res.json({ success: true, data: { connections: [] } });
   }
 });
 
-// Get channel connections
-router.get('/connections', async (req, res) => {
+// OAuth authorize endpoint - delegates to facebook/twitter auth or returns mock for others
+router.get('/oauth/:channelId/authorize', async (req, res) => {
+  const { channelId } = req.params;
+  const id = (channelId || '').toLowerCase();
+
+  if (id === 'facebook') {
+    const META_APP_ID = process.env.META_APP_ID;
+    const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    if (!META_APP_ID) {
+      return res.status(503).json({ success: false, error: 'Facebook app not configured', data: null });
+    }
+    const state = Buffer.from(req.user.id).toString('base64');
+    const scope = 'pages_messaging,pages_manage_metadata,pages_read_engagement';
+    const url = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${META_APP_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/facebook/callback`)}&scope=${scope}&state=${state}`;
+    return res.json({ success: true, data: { authUrl: url } });
+  }
+
+  if (id === 'twitter') {
+    const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID;
+    const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    if (!TWITTER_CLIENT_ID) {
+      return res.status(503).json({ success: false, error: 'Twitter app not configured', data: null });
+    }
+    const codeVerifier = crypto.randomBytes(32).toString('base64url');
+    const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
+    const state = crypto.randomBytes(16).toString('hex');
+    pkceStore.set(state, { codeVerifier, userId: req.user.id });
+    const scope = 'dm.read dm.write users.read tweet.read offline.access';
+    const url = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/twitter/callback`)}&scope=${encodeURIComponent(scope)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    return res.json({ success: true, data: { authUrl: url } });
+  }
+
+  // Other channels - mock or 503
   res.json({
     success: true,
-    data: { connections: mockConnections }
+    data: { authUrl: `https://example.com/oauth/${channelId}/authorize` }
   });
 });
 
-// OAuth authorize endpoint
-router.get('/oauth/:channelId/authorize', async (req, res) => {
-  const { channelId } = req.params;
-  res.json({
-    success: true,
-    data: {
-      authUrl: `https://example.com/oauth/${channelId}/authorize?redirect=http://localhost:3000/dashboard/inbox/settings/channels`
+// DELETE /oauth/:channelId/disconnect - Disconnect by channel type (facebook, twitter, etc)
+router.delete('/oauth/:channelId/disconnect', async (req, res) => {
+  try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not available' });
+    const channelType = (req.params.channelId || '').toLowerCase();
+    const channel = await db.channel.findFirst({
+      where: { userId: req.user.id, type: channelType }
+    });
+    if (!channel) {
+      return res.status(404).json({ success: false, error: 'Channel not found' });
     }
-  });
+    await db.channel.delete({ where: { id: channel.id } });
+    res.json({ success: true, message: 'Channel disconnected' });
+  } catch (error) {
+    console.error('OAuth disconnect error:', error);
+    res.status(500).json({ success: false, error: 'Failed to disconnect' });
+  }
+});
+
+// GET /facebook/auth - Get Meta OAuth URL (requires META_APP_ID, META_APP_SECRET)
+router.get('/facebook/auth', async (req, res) => {
+  const META_APP_ID = process.env.META_APP_ID;
+  const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  if (!META_APP_ID) {
+    return res.status(503).json({ success: false, error: 'Facebook app not configured', data: null });
+  }
+  const state = Buffer.from(req.user.id).toString('base64');
+  const scope = 'pages_messaging,pages_manage_metadata,pages_read_engagement';
+  const url = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${META_APP_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/facebook/callback`)}&scope=${scope}&state=${state}`;
+  res.json({ success: true, data: { url } });
+});
+
+// GET /twitter/auth - Get Twitter OAuth URL (requires TWITTER_CLIENT_ID, TWITTER_CLIENT_SECRET)
+router.get('/twitter/auth', async (req, res) => {
+  const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID;
+  const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  if (!TWITTER_CLIENT_ID) {
+    return res.status(503).json({ success: false, error: 'Twitter app not configured', data: null });
+  }
+  const codeVerifier = crypto.randomBytes(32).toString('base64url');
+  const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
+  const state = crypto.randomBytes(16).toString('hex');
+  pkceStore.set(state, { codeVerifier, userId: req.user.id });
+  const scope = 'dm.read dm.write users.read tweet.read offline.access';
+  const url = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/twitter/callback`)}&scope=${encodeURIComponent(scope)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+  res.json({ success: true, data: { url } });
 });
 
 // Connect a channel (OAuth or manual)
 router.post('/connect', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) {
+      return res.status(503).json({ success: false, error: 'Database not available' });
+    }
     const {
       type, // 'email', 'sms', 'whatsapp', 'linkedin', 'twitter', etc.
       name,
@@ -170,6 +252,8 @@ router.post('/connect', async (req, res) => {
 // Update channel
 router.put('/:id', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not available' });
     const { id } = req.params;
     const { name, credentials, settings, status } = req.body;
 
@@ -222,6 +306,8 @@ router.put('/:id', async (req, res) => {
 // Disconnect channel
 router.delete('/:id', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not available' });
     const { id } = req.params;
 
     const channel = await db.channel.findFirst({
@@ -258,6 +344,8 @@ router.delete('/:id', async (req, res) => {
 // Test channel connection
 router.post('/:id/test', async (req, res) => {
   try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not available' });
     const { id } = req.params;
 
     const channel = await db.channel.findFirst({

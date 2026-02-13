@@ -1,6 +1,6 @@
 // Website Builder Routes (LeadSite.IO)
 const express = require('express');
-const { authenticate, requireFeature } = require('../middleware/auth');
+const { authenticate, requireFeature, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -488,9 +488,9 @@ router.post('/:id/domain', async (req, res) => {
   }
 });
 
-// Public router: GET /subdomain/:subdomain (no auth - for sites renderer)
+// Public router: GET /subdomain/:subdomain (no auth - for sites renderer. Draft preview for owner.)
 const publicRouter = express.Router();
-publicRouter.get('/subdomain/:subdomain', async (req, res) => {
+publicRouter.get('/subdomain/:subdomain', optionalAuth, async (req, res) => {
   try {
     const db = getPrisma();
     const { subdomain } = req.params;
@@ -508,7 +508,8 @@ publicRouter.get('/subdomain/:subdomain', async (req, res) => {
     if (!website) {
       return res.status(404).json({ error: 'Website not found' });
     }
-    if (!website.isPublished) {
+    const isOwner = req.user && website.userId === req.user.id;
+    if (!website.isPublished && !isOwner) {
       return res.status(404).json({ error: 'Website not found' });
     }
     res.json({ success: true, data: website });

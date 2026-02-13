@@ -55,6 +55,7 @@ const publishRoutes = require('./routes/publish');
 const emailSentinelRoutes = require('./routes/emailSentinel');
 const masterValidationRoutes = require('./routes/master-validation');
 const statusRoutes = require('./routes/status');
+const usersRoutes = require('./routes/users');
 
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
@@ -267,6 +268,7 @@ app.get('/api/health', async (req, res) => {
 // API Routes (v1)
 app.use('/api/v1/status', statusRoutes);   // Integration status (public)
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/users', usersRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/campaigns', campaignRoutes);

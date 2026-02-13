@@ -126,10 +126,10 @@ export default function WebsitesPage() {
                 </div>
                 <h3 className="font-medium text-white mb-1">{site.name || site.title || 'Untitled Site'}</h3>
                 <p className="text-xs text-neutral-500 mb-4 truncate">
-                  {site.subdomain ? `${site.subdomain}.aileadstrategies.com` : '—'}
+                  {site.subdomain ? `aileadstrategies.com/sites/${site.subdomain}` : '—'}
                 </p>
                 <a
-                  href={site.subdomain ? `https://${site.subdomain}.aileadstrategies.com` : '#'}
+                  href={site.subdomain ? `https://aileadstrategies.com/sites/${site.subdomain}` : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300"

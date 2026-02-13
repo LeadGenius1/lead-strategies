@@ -26,7 +26,7 @@ export default function PublishedWebsitePage() {
       const response = await api.get(`/api/v1/websites/subdomain/${subdomain}`);
       const websiteData = response.data?.data || response.data;
       
-      if (websiteData && websiteData.isPublished) {
+      if (websiteData) {
         setWebsite(websiteData);
       } else {
         setWebsite(null);
@@ -73,13 +73,14 @@ export default function PublishedWebsitePage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Website Not Found</h1>
-          <p className="text-gray-600">This website doesn't exist or hasn't been published yet.</p>
+          <p className="text-gray-600">This website doesn&apos;t exist or hasn&apos;t been published yet.</p>
         </div>
       </div>
     );
   }
 
   const pages = website.pages || [];
+  const isDraft = !website.isPublished;
   const settings = website.settings || {};
   const colors = settings.colors || { primary: '#3b82f6', secondary: '#8b5cf6', accent: '#06b6d4' };
 
@@ -87,6 +88,9 @@ export default function PublishedWebsitePage() {
   // This is a simplified renderer - in production, you'd use a proper template engine
   return (
     <div className="min-h-screen bg-white" style={{ '--primary': colors.primary, '--secondary': colors.secondary, '--accent': colors.accent }}>
+      {isDraft && (
+        <div className="bg-amber-500 text-amber-900 text-center py-2 text-sm font-medium">Draft Preview — Not visible to the public until published</div>
+      )}
       {/* Simple Website Renderer */}
       {pages.map((page, idx) => (
         <div key={idx} className="page">

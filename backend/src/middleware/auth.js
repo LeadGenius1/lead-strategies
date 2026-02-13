@@ -46,9 +46,9 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Feature access by tier
+// Feature access by tier - Website Builder available on ALL tiers (tier difference = email volume only)
 const TIER_FEATURES = {
-  1: ['leads', 'campaigns', 'email'],                                    // LeadSite.AI
+  1: ['leads', 'campaigns', 'email', 'website_builder', 'forms'],        // LeadSite.AI / Free
   2: ['leads', 'campaigns', 'email', 'website_builder', 'forms'],        // LeadSite.IO
   3: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder'], // ClientContact.IO
   4: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video'], // VideoSite.IO

@@ -60,6 +60,33 @@ $r = Test-Endpoint "Auth /me unauthenticated" "$backend/api/auth/me" "GET" 401
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
+# 5b. Auth signup route exists (POST with invalid body = 400, NOT 404)
+Write-Host "5b. Auth POST /api/v1/auth/signup (route exists, expect 400)..." -ForegroundColor Yellow
+$code = "ERR"
+try {
+    $resp = Invoke-WebRequest -Uri "$backend/api/v1/auth/signup" -Method POST -ContentType "application/json" -Body '{}' -UseBasicParsing -TimeoutSec 10
+    $code = $resp.StatusCode
+} catch {
+    $code = if ($_.Exception.Response) { $_.Exception.Response.StatusCode.Value__ } else { "ERR" }
+}
+# 400 = validation failed (route exists). 404 = route missing. Both are numeric.
+$signupPass = ($code -eq 400) -or ($code -eq 422)
+$results += @{ Name = "Auth signup route exists"; Status = if ($signupPass) { "PASS" } else { "FAIL" }; Code = $code; Expected = "400 or 422" }
+Write-Host "   $(if ($signupPass) { "PASS" } else { "FAIL" }) ($code) - route must return 400/422, not 404" -ForegroundColor $(if ($signupPass) { "Green" } else { "Red" })
+
+# 5c. Auth login route exists (POST with invalid body = 400)
+Write-Host "5c. Auth POST /api/v1/auth/login (route exists, expect 400)..." -ForegroundColor Yellow
+$code = "ERR"
+try {
+    $resp = Invoke-WebRequest -Uri "$backend/api/v1/auth/login" -Method POST -ContentType "application/json" -Body '{}' -UseBasicParsing -TimeoutSec 10
+    $code = $resp.StatusCode
+} catch {
+    $code = if ($_.Exception.Response) { $_.Exception.Response.StatusCode.Value__ } else { "ERR" }
+}
+$loginPass = ($code -eq 400) -or ($code -eq 401) -or ($code -eq 422)
+$results += @{ Name = "Auth login route exists"; Status = if ($loginPass) { "PASS" } else { "FAIL" }; Code = $code; Expected = "400 or 401" }
+Write-Host "   $(if ($loginPass) { "PASS" } else { "FAIL" }) ($code)" -ForegroundColor $(if ($loginPass) { "Green" } else { "Red" })
+
 # 6. Frontend Health
 Write-Host "6. Frontend /api/health..." -ForegroundColor Yellow
 $r = Test-Endpoint "Frontend Health" "$frontend/api/health" "GET" 200

@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signup } from '@/lib/auth'
+import { AUTH_ENDPOINTS } from '@/lib/auth-endpoints'
 import toast from 'react-hot-toast'
 
 const TIERS = [
@@ -96,8 +97,20 @@ function SignupForm() {
       const dashboardPath = tierDashboardMap[selectedTier] || '/dashboard'
       router.push(dashboardPath)
     } catch (error) {
-      const msg = error.response?.data?.message || error.response?.data?.error || error.message
-      toast.error(msg || 'Signup failed')
+      const status = error.response?.status
+      const data = error.response?.data || {}
+      const msg = data.error || data.message || error.message
+
+      if (status === 404) {
+        toast.error('Signup service is temporarily unavailable. Please try "Continue with Google" or try again later.', { duration: 6000 })
+        console.error('[Signup] 404 - Auth route missing. Endpoint:', AUTH_ENDPOINTS.SIGNUP)
+      } else if (status === 400 || status === 422) {
+        toast.error(msg || 'Please check your form and try again.')
+      } else if (error.code === 'ERR_NETWORK' || !status) {
+        toast.error('Network error. Please check your connection and try again.', { duration: 5000 })
+      } else {
+        toast.error(msg || 'Signup failed. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

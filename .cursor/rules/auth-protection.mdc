@@ -1,0 +1,37 @@
+---
+description: Protect auth routes from breaking - signup, login, OAuth
+globs: backend/src/routes/auth.js,backend/src/index.js,lib/auth.js,lib/auth-endpoints.js,app/(auth)/signup/page.js
+alwaysApply: false
+---
+
+# Auth Protection Rule
+
+When editing auth-related files, follow these rules to prevent auth from breaking.
+
+## Do NOT
+
+- Remove or rename `POST /api/v1/auth/signup` – the frontend uses `lib/auth-endpoints.js` which defines this path
+- Change auth route registration order – auth must be registered before protected routes
+- Change the response shape `{ success, token, data: { user } }` without updating `lib/auth.js`
+- Merge or refactor auth routes without running `.\scripts\system-diagnostics.ps1` after
+
+## Required
+
+- All auth paths live in `lib/auth-endpoints.js` – change there, nowhere else
+- Before deploying backend changes: run `.\scripts\system-diagnostics.ps1`
+- Auth tests (5, 5b, 5c) must PASS – if any fail, do not deploy
+- Reference `docs/AUTH-API-CONTRACT.md` when changing auth endpoints
+
+## Route Registration (index.js)
+
+Auth routes must exist and be registered:
+
+```javascript
+app.use('/api/v1/auth', authRoutes);
+```
+
+## If Auth Breaks Again
+
+1. Check `backend/src/routes/auth.js` has `router.post('/signup', ...)`
+2. Check `backend/src/index.js` has `app.use('/api/v1/auth', authRoutes)`
+3. Run diagnostics – signup test returning 404 means route is missing

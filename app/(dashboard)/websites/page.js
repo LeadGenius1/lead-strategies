@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
-import { Globe, Loader2, ExternalLink, ArrowRight, Sparkles } from 'lucide-react'
+import { Globe, Loader2, ExternalLink, ArrowRight, Sparkles, Eye, Upload } from 'lucide-react'
 import WebsiteBuilderChat from '@/components/WebsiteBuilderChat'
 
 export default function WebsitesPage() {
@@ -13,6 +13,7 @@ export default function WebsitesPage() {
   const [featureBlocked, setFeatureBlocked] = useState(false)
   const [upgradeMessage, setUpgradeMessage] = useState('')
   const [showBuilder, setShowBuilder] = useState(false)
+  const [publishingId, setPublishingId] = useState(null)
 
   useEffect(() => {
     loadWebsites()
@@ -21,6 +22,19 @@ export default function WebsitesPage() {
   function handleWebsiteCreated() {
     setShowBuilder(false)
     loadWebsites()
+  }
+
+  async function handlePublish(site) {
+    setPublishingId(site.id)
+    try {
+      await api.post(`/api/v1/websites/${site.id}/publish`)
+      toast.success('Website published! It\'s now live.')
+      loadWebsites()
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to publish')
+    } finally {
+      setPublishingId(null)
+    }
   }
 
   async function loadWebsites() {
@@ -128,15 +142,31 @@ export default function WebsitesPage() {
                 <p className="text-xs text-neutral-500 mb-4 truncate">
                   {site.subdomain ? `aileadstrategies.com/sites/${site.subdomain}` : '—'}
                 </p>
-                <a
-                  href={site.subdomain ? `https://aileadstrategies.com/sites/${site.subdomain}` : '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300"
-                >
-                  View site
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={site.subdomain ? `https://aileadstrategies.com/sites/${site.subdomain}` : '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-500/50 rounded-lg transition-all"
+                  >
+                    <Eye className="w-4 h-4" />
+                    {site.isPublished ? 'View site' : 'Preview'}
+                  </a>
+                  {!site.isPublished && (
+                    <button
+                      onClick={() => handlePublish(site)}
+                      disabled={publishingId === site.id}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 hover:bg-emerald-500/10 rounded-lg transition-all disabled:opacity-50"
+                    >
+                      {publishingId === site.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
+                      Publish
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

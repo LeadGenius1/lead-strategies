@@ -172,18 +172,18 @@ export default function DashboardLayout({ children }) {
       </div>
 
       <div className="relative flex">
-        {/* Sidebar - clean & simple */}
-        <aside className="w-64 h-screen bg-black/50 backdrop-blur-md border-r border-white/5 fixed left-0 top-0 flex flex-col">
-          <div className="p-6 border-b border-white/5">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center border border-white/10">
+        {/* Sidebar - responsive: narrow on mobile, full on md+ */}
+        <aside className="w-16 sm:w-52 md:w-64 h-screen bg-black/50 backdrop-blur-md border-r border-white/5 fixed left-0 top-0 flex flex-col z-20">
+          <div className="p-3 sm:p-6 border-b border-white/5 flex flex-col items-center sm:items-stretch">
+            <div className="flex items-center justify-center sm:justify-start space-x-0 sm:space-x-3">
+              <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center border border-white/10 flex-shrink-0">
                 <span className="text-white font-semibold text-sm">{platform.name.charAt(0)}</span>
               </div>
-              <h1 className="text-base font-medium text-white">{platform.name}</h1>
+              <h1 className="hidden sm:block text-base font-medium text-white truncate">{platform.name}</h1>
             </div>
           </div>
 
-          <nav className="px-3 py-4 space-y-1 flex-1">
+          <nav className="px-2 sm:px-3 py-4 space-y-1 flex-1 overflow-y-auto">
             {platform.nav.map((item) => {
               const Icon = ICON_MAP[item.icon] || BrainCircuit;
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -193,20 +193,21 @@ export default function DashboardLayout({ children }) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-2.5 text-sm font-light rounded-lg transition-all ${
+                  title={item.name}
+                  className={`group flex items-center justify-center sm:justify-start px-2 sm:px-3 py-2.5 text-sm font-light rounded-lg transition-all ${
                     isActive
                       ? 'bg-indigo-500/10 text-white border border-indigo-500/30'
                       : 'text-neutral-400 hover:bg-white/5 hover:text-white border border-transparent'
                   } ${isSuggested ? 'nav-pulsate border-indigo-500/30' : ''}`}
                 >
                   <Icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 ${
+                    className={`h-5 w-5 flex-shrink-0 sm:mr-3 ${
                       isActive ? 'text-indigo-400' : 'text-neutral-500 group-hover:text-neutral-300'
                     }`}
                   />
-                  {item.name}
+                  <span className="hidden sm:inline truncate">{item.name}</span>
                   {item.unique && (
-                    <span className="ml-auto text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30">
+                    <span className="hidden sm:inline-flex ml-auto text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30">
                       Pro
                     </span>
                   )}
@@ -215,9 +216,9 @@ export default function DashboardLayout({ children }) {
             })}
           </nav>
 
-          <div className="p-4 border-t border-white/5 bg-black/30">
+          <div className="p-2 sm:p-4 border-t border-white/5 bg-black/30">
             {user && (
-              <div className="mb-3 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
+              <div className="hidden sm:block mb-3 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
                 <p className="text-[10px] text-neutral-500 uppercase tracking-wide">Signed in as</p>
                 <p className="text-sm text-white font-light truncate">
                   {user.email || user.data?.email}
@@ -240,15 +241,16 @@ export default function DashboardLayout({ children }) {
                 document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                 router.push('/login');
               }}
-              className="w-full flex items-center px-3 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10 transition-all group"
+              title="Logout"
+              className="w-full flex items-center justify-center sm:justify-start px-2 sm:px-3 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10 transition-all group"
             >
-              <LogOut className="mr-3 h-5 w-5 text-neutral-500 group-hover:text-red-400" />
-              Logout
+              <LogOut className="h-5 w-5 flex-shrink-0 sm:mr-3 text-neutral-500 group-hover:text-red-400" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </aside>
 
-        <main className="ml-64 flex-1 min-h-screen overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
+        <main className="ml-16 sm:ml-52 md:ml-64 flex-1 min-h-screen overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10">
           {children}
         </main>
       </div>

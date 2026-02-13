@@ -166,41 +166,158 @@ router.post('/oauth/callback', async (req, res) => {
   }
 });
 
-// POST /api/v1/auth/login
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // In production, validate against database
-    // For now, return mock token
+// Signup handler (shared by /signup and /register)
+async function handleSignup(req, res) {
+  const { email, password, name, company, tier, businessInfo } = req.body || {};
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    return res.status(400).json({ success: false, error: 'Valid email is required' });
+  }
+  if (!password || typeof password !== 'string' || password.length < 8) {
+    return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+  }
+  const tierStr = (tier || 'leadsite-ai').toString().toLowerCase().replace(/_/g, '-');
+  const subscriptionTier = tierStr || 'leadsite-ai';
+  const db = getPrisma();
+  if (!db) {
+    const id = 'user_' + crypto.randomBytes(12).toString('hex');
     const token = jwt.sign(
-      { id: 'user_1', email, role: 'user' },
+      { id, email, name: name || email.split('@')[0], role: 'user', tier: subscriptionTier },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
+    return res.status(201).json({
+      success: true,
+      token,
+      data: { user: { id, email, name: name || email.split('@')[0], subscription_tier: subscriptionTier } },
+    });
+  }
+  const existing = await db.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+  if (existing) {
+    return res.status(400).json({ success: false, error: 'An account with this email already exists' });
+  }
+  const salt = crypto.randomBytes(16).toString('hex');
+  const passwordHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+  const storedHash = `${salt}:${passwordHash}`;
+  const user = await db.user.create({
+    data: {
+      email: email.toLowerCase().trim(),
+      passwordHash: storedHash,
+      name: name || email.split('@')[0],
+      company: company || null,
+      auth_provider: 'email',
+      subscription_tier: subscriptionTier,
+      plan_tier: subscriptionTier,
+      metadata: businessInfo ? { businessInfo } : null,
+    },
+  });
+  const token = jwt.sign(
+    { id: user.id, email: user.email, role: 'user', tier: user.subscription_tier || subscriptionTier },
+    JWT_SECRET,
+    { expiresIn: '7d' }
+  );
+  res.status(201).json({
+    success: true,
+    token,
+    data: {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        subscription_tier: user.subscription_tier || subscriptionTier,
+        company: user.company,
+      },
+    },
+  });
+}
 
+// POST /api/v1/auth/signup - Primary registration endpoint (frontend calls this)
+router.post('/signup', async (req, res) => {
+  try {
+    await handleSignup(req, res);
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Registration failed' });
+  }
+});
+
+// POST /api/v1/auth/register - Alias for /signup
+router.post('/register', async (req, res) => {
+  try {
+    await handleSignup(req, res);
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Registration failed' });
+  }
+});
+
+// Helper: verify pbkdf2 password
+function verifyPassword(plainPassword, storedHash) {
+  if (!storedHash || !storedHash.includes(':')) return false;
+  const [salt, hash] = storedHash.split(':');
+  const derived = crypto.pbkdf2Sync(plainPassword, salt, 100000, 64, 'sha512').toString('hex');
+  return derived === hash;
+}
+
+// POST /api/v1/auth/login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body || {};
+    if (!email || !password) {
+      return res.status(400).json({ success: false, error: 'Email and password required' });
+    }
+
+    const db = getPrisma();
+    if (!db) {
+      const token = jwt.sign(
+        { id: 'user_1', email, role: 'user' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      return res.json({ success: true, token, data: { user: { id: 'user_1', email } } });
+    }
+
+    const user = await db.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+    }
+    if (user.auth_provider === 'google') {
+      return res.status(400).json({ success: false, error: 'Please sign in with Google' });
+    }
+    if (!verifyPassword(password, user.passwordHash)) {
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+    }
+
+    await db.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: 'user', tier: user.subscription_tier || 'leadsite-ai' },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
     res.json({
       success: true,
-      data: { token, user: { id: 'user_1', email } }
+      token,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          subscription_tier: user.subscription_tier || 'leadsite-ai',
+          company: user.company,
+        },
+      },
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// POST /api/v1/auth/register
-router.post('/register', async (req, res) => {
-  try {
-    const { email, password, name } = req.body;
-
-    // In production, create user in database
-    res.status(201).json({
-      success: true,
-      message: 'User registered successfully'
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+// POST /api/v1/auth/register - Alias for /signup
+router.post('/register', (req, res, next) => {
+  const signupRoute = router.stack.find(r => r.route?.path === '/signup' && r.route?.methods?.post);
+  if (signupRoute) signupRoute.route.stack[0].handle(req, res, next);
+  else next();
 });
 
 // POST /api/v1/auth/logout

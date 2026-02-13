@@ -42,50 +42,56 @@ $r = Test-Endpoint "Backend API Health" "$backend/api/v1/health" "GET" 200
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 3. Status Integrations
-Write-Host "3. Status /api/v1/status/integrations..." -ForegroundColor Yellow
+# 3. Comprehensive /api/health
+Write-Host "3. Comprehensive /api/health..." -ForegroundColor Yellow
+$r = Test-Endpoint "Comprehensive Health" "$backend/api/health" "GET" 200
+$results += $r
+Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
+
+# 4. Status Integrations
+Write-Host "4. Status /api/v1/status/integrations..." -ForegroundColor Yellow
 $r = Test-Endpoint "Integration Status" "$backend/api/v1/status/integrations" "GET" 200
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 4. Auth /me (expect 401)
-Write-Host "4. Auth /api/auth/me (no token, expect 401)..." -ForegroundColor Yellow
+# 5. Auth /me (expect 401)
+Write-Host "5. Auth /api/auth/me (no token, expect 401)..." -ForegroundColor Yellow
 $r = Test-Endpoint "Auth /me unauthenticated" "$backend/api/auth/me" "GET" 401
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 5. Frontend Health
-Write-Host "5. Frontend /api/health..." -ForegroundColor Yellow
+# 6. Frontend Health
+Write-Host "6. Frontend /api/health..." -ForegroundColor Yellow
 $r = Test-Endpoint "Frontend Health" "$frontend/api/health" "GET" 200
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 6. Protected routes (expect 401)
-Write-Host "6. Protected /api/v1/leads (expect 401)..." -ForegroundColor Yellow
+# 7. Protected /api/v1/leads (expect 401)
+Write-Host "7. Protected /api/v1/leads (expect 401)..." -ForegroundColor Yellow
 $r = Test-Endpoint "Leads API (auth required)" "$backend/api/v1/leads" "GET" 401
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 7. Channels (expect 401)
-Write-Host "7. Protected /api/v1/channels (expect 401)..." -ForegroundColor Yellow
+# 8. Channels (expect 401)
+Write-Host "8. Protected /api/v1/channels (expect 401)..." -ForegroundColor Yellow
 $r = Test-Endpoint "Channels API (auth required)" "$backend/api/v1/channels" "GET" 401
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 8. Payouts (expect 401)
-Write-Host "8. Protected /api/v1/payouts/balance (expect 401)..." -ForegroundColor Yellow
+# 9. Payouts (expect 401)
+Write-Host "9. Protected /api/v1/payouts/balance (expect 401)..." -ForegroundColor Yellow
 $r = Test-Endpoint "Payouts API (auth required)" "$backend/api/v1/payouts/balance" "GET" 401
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 9. Dashboard (expect 401)
-Write-Host "9. Protected /api/v1/dashboard (expect 401)..." -ForegroundColor Yellow
+# 10. Dashboard (expect 401)
+Write-Host "10. Protected /api/v1/dashboard (expect 401)..." -ForegroundColor Yellow
 $r = Test-Endpoint "Dashboard API (auth required)" "$backend/api/v1/dashboard" "GET" 401
 $results += $r
 Write-Host "   $($r.Status) ($($r.Code))" -ForegroundColor $(if ($r.Status -eq "PASS") { "Green" } else { "Red" })
 
-# 10. AI endpoint (expect 401)
-Write-Host "10. Protected /api/v1/ai/score-lead (expect 401)..." -ForegroundColor Yellow
+# 11. AI endpoint (expect 401)
+Write-Host "11. Protected /api/v1/ai/score-lead (expect 401)..." -ForegroundColor Yellow
 $code = "ERR"
 try {
     $resp = Invoke-WebRequest -Uri "$backend/api/v1/ai/score-lead" -Method POST -ContentType "application/json" -Body '{}' -UseBasicParsing -TimeoutSec 5

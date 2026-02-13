@@ -131,7 +131,9 @@ const limiterConfig = {
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    return req.path.includes('/webhooks/') && req.method === 'POST';
+    if (req.path.includes('/webhooks/') && req.method === 'POST') return true;
+    if (req.path === '/health' || req.path === '/api/health' || req.path === '/api/v1/health') return true;
+    return false;
   },
 };
 
@@ -177,6 +179,88 @@ app.get('/api/v1/health', async (req, res) => {
     version: '1.0.0',
     redis: redisHealth,
     selfHealing: systemHealth
+  });
+});
+
+// Comprehensive /api/health - full system checks (database, redis, stripe, r2, memory, cpu)
+app.get('/api/health', async (req, res) => {
+  const criticalIssues = [];
+  const checks = {};
+
+  // Database
+  try {
+    if (process.env.DATABASE_URL) {
+      const { PrismaClient } = require('@prisma/client');
+      const prisma = new PrismaClient();
+      await prisma.$queryRaw`SELECT 1`;
+      await prisma.$disconnect();
+      checks.database = { status: 'healthy', message: 'Connected' };
+    } else {
+      checks.database = { status: 'not_configured', message: 'DATABASE_URL not set' };
+    }
+  } catch (err) {
+    checks.database = { status: 'unhealthy', error: err.message };
+    criticalIssues.push(`database: ${err.message}`);
+  }
+
+  // Redis
+  try {
+    const redis = await checkRedisHealth();
+    checks.redis = redis.available
+      ? { status: 'healthy', message: 'Connected' }
+      : { status: redis.status || 'unhealthy', message: redis.error || 'Disconnected' };
+    if (!redis.available) criticalIssues.push('redis: not available');
+  } catch (err) {
+    checks.redis = { status: 'unhealthy', error: err.message };
+    criticalIssues.push(`redis: ${err.message}`);
+  }
+
+  // Stripe (configured = healthy; no API ping to avoid rate limits)
+  checks.stripe = process.env.STRIPE_SECRET_KEY
+    ? { status: 'healthy', message: 'Configured' }
+    : { status: 'not_configured', message: 'STRIPE_SECRET_KEY not set' };
+
+  // R2 Storage (Cloudflare R2)
+  const r2Configured = process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_R2_ACCESS_KEY && process.env.CLOUDFLARE_R2_SECRET_KEY;
+  if (r2Configured) {
+    try {
+      const { S3Client, HeadBucketCommand } = require('@aws-sdk/client-s3');
+      const client = new S3Client({
+        region: 'auto',
+        endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+        credentials: {
+          accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY,
+          secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_KEY
+        }
+      });
+      await client.send(new HeadBucketCommand({ Bucket: process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos' }));
+      checks.r2Storage = { status: 'healthy', message: 'Connected' };
+    } catch (err) {
+      checks.r2Storage = { status: 'unhealthy', error: err.message };
+      criticalIssues.push(`r2Storage: ${err.message}`);
+    }
+  } else {
+    checks.r2Storage = { status: 'not_configured', message: 'R2 credentials not set' };
+  }
+
+  // Memory
+  const mem = process.memoryUsage();
+  const heapMB = Math.round(mem.heapUsed / 1024 / 1024);
+  checks.memory = heapMB < 450
+    ? { status: 'healthy', heapUsedMB: heapMB }
+    : { status: 'degraded', heapUsedMB: heapMB, message: 'High memory usage' };
+
+  // CPU (informational)
+  const cpu = process.cpuUsage();
+  checks.cpu = { status: 'healthy', user: cpu.user, system: cpu.system };
+
+  const overallStatus = criticalIssues.length === 0 ? 'healthy' : 'degraded';
+  res.json({
+    status: overallStatus,
+    timestamp: new Date().toISOString(),
+    uptime: Math.round(process.uptime()),
+    critical_issues: criticalIssues,
+    checks
   });
 });
 

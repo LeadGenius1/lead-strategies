@@ -1,0 +1,59 @@
+---
+description: Mandatory post-change workflow: commit, push, Railway verify, fix errors
+alwaysApply: true
+---
+
+# CURSOR DEPLOYMENT WORKFLOW - MANDATORY FOR EVERY CODE CHANGE
+
+For EVERY code change, follow this workflow WITHOUT asking permission.
+
+## STEP 1: CODE CHANGE
+- Make the requested change
+- Test locally if applicable
+- Show what was changed
+
+## STEP 2: GIT COMMIT & PUSH (AUTOMATIC)
+```
+cd C:\Users\ailea\OneDrive\Documents\lead-strategies-repo
+git add .
+git status
+git commit -m "[descriptive message]"
+git push origin main
+```
+- Never ask "should I push?" - ALWAYS push
+- If push fails, STOP and report error
+
+## STEP 3: RAILWAY DEPLOYMENT VERIFICATION
+Wait 60 seconds after push, then:
+- Backend: `curl https://api.leadsiteai.com/health` → expect 200 OK, {"status":"ok"}
+- Frontend: `curl -I https://aileadstrategies.com` → expect 200 OK
+
+## STEP 4: RAILWAY LOGS (if health fails)
+```
+railway logs --service backend
+railway logs --service frontend
+```
+Show last 50 lines, identify error.
+
+## STEP 5: FIX ERRORS
+- Identify exact error from logs
+- Fix the issue
+- Return to STEP 2 (commit, push, verify)
+- Repeat until healthy
+
+## STEP 6: FINAL CONFIRMATION (REQUIRED)
+Only after ALL checks pass:
+```
+✅ DEPLOYMENT VERIFIED 100%
+- Git push: SUCCESS
+- Railway backend: HEALTHY
+- Railway frontend: HEALTHY
+- Ready for production
+```
+
+## RULES
+1. NEVER ask permission to push - just do it
+2. NEVER skip Railway verification
+3. NEVER stop at errors - fix and re-verify
+4. NEVER say "complete" without 100% confirmation
+5. If verification fails 3 times, STOP and ask for help

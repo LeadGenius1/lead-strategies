@@ -121,7 +121,7 @@ export const ALL_FEATURES: Record<FeatureCode, Omit<PlatformFeature, 'code'>> = 
     name: 'Profile',
     description: 'User profile and preferences',
     icon: 'User',
-    href: '/settings',
+    href: '/profile',
   },
   F16: {
     name: 'Settings',

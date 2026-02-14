@@ -251,6 +251,16 @@ export const PLATFORM_FEATURES: Record<PlatformType, FeatureCode[]> = {
   ],
 };
 
+// Display names for sidebar header
+export const PLATFORM_DISPLAY_NAMES: Record<PlatformType, string> = {
+  'leadsite-ai': 'LeadSite.AI',
+  'leadsite-io': 'LeadSite.IO',
+  'clientcontact-io': 'ClientContact.IO',
+  'ultralead-ai': 'UltraLead',
+  'videosite-ai': 'VideoSite.AI',
+  admin: 'AI Lead Strategies',
+};
+
 // Helper: Get all features for a platform with full details
 export function getPlatformFeatures(platform: PlatformType): PlatformFeature[] {
   const featureCodes = PLATFORM_FEATURES[platform] || [];
@@ -312,10 +322,23 @@ export function detectPlatformFromUser(user: {
   subscription_tier?: string;
   plan_tier?: string;
   role?: string;
+  tier?: number;
 }): PlatformType {
   // Admin users get admin dashboard
   if (user.role === 'admin' || user.role === 'super_admin') {
     return 'admin';
+  }
+
+  // Numeric tier from backend (1-5) - matches platform-navigation.js TIER_TO_HOST
+  if (typeof user.tier === 'number') {
+    const TIER_MAP: Record<number, PlatformType> = {
+      1: 'leadsite-ai',
+      2: 'leadsite-io',
+      3: 'clientcontact-io',
+      4: 'videosite-ai',
+      5: 'ultralead-ai',
+    };
+    return TIER_MAP[user.tier] || 'ultralead-ai';
   }
 
   const tier = (user.subscription_tier || user.plan_tier || '').toLowerCase();

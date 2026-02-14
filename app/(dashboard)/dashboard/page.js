@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { getNavigation } from '@/lib/platform-navigation'
+import { PLATFORM_DISPLAY_NAMES, detectPlatformFromUser, detectPlatformFromDomain } from '@/lib/platformFeatures'
 
 const DEFAULT_STATS = {
   totalLeads: 0,
@@ -53,11 +53,10 @@ export default function DashboardPage() {
           const meJson = await meRes.json()
           const u = meJson.data?.user || meJson.user || meJson
           setUser(u)
-          const platform = getNavigation(
-            typeof window !== 'undefined' ? window.location.hostname : '',
-            u?.tier
-          )
-          setPlatformName(platform.name)
+          const host = typeof window !== 'undefined' ? window.location.hostname.replace(/^www\./, '').split(':')[0] : ''
+          const isMain = host === 'aileadstrategies.com' || host === 'localhost' || host === '127.0.0.1'
+          const platformType = (isMain && u) ? detectPlatformFromUser(u) : (typeof window !== 'undefined' ? detectPlatformFromDomain() : 'ultralead-ai')
+          setPlatformName(PLATFORM_DISPLAY_NAMES[platformType])
         }
 
         if (!statsRes.ok) throw new Error(`Stats API failed: ${statsRes.status}`)

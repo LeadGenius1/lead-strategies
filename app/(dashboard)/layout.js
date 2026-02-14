@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { getNavigation } from '@/lib/platform-navigation';
+import {
+  getPlatformFeatures,
+  PLATFORM_DISPLAY_NAMES,
+  detectPlatformFromDomain,
+  detectPlatformFromUser,
+} from '@/lib/platformFeatures';
 import {
   BrainCircuit,
   MessageSquare,
@@ -19,30 +24,48 @@ import {
   DollarSign,
   PlayCircle,
   Upload,
-  Wallet,
-  ShieldCheck,
+  Hash,
+  Building,
+  TrendingUp,
+  Phone,
+  Sparkles,
+  Shield,
   Zap,
 } from 'lucide-react';
 
 const ICON_MAP = {
+  Search: BrainCircuit,
   MagnifyingGlass: BrainCircuit,
   Target,
   Inbox: MessageSquare,
-  User: User,
+  User,
   UserCircle: User,
   Cog: Settings,
   Users,
   Envelope: Mail,
+  Mail,
+  MessageSquare,
   ChatBubbleLeft: MessageSquare,
   ChartBar: BarChart3,
+  BarChart3,
   Globe,
+  Hash,
   Squares2X2: LayoutGrid,
   UserGroup: Users,
+  Building,
   CurrencyDollar: DollarSign,
+  TrendingUp,
   PlayCircle,
+  Video: PlayCircle,
   ArrowUpTray: Upload,
-  BankNotes: Wallet,
-  ShieldCheck,
+  Upload,
+  BankNotes: DollarSign,
+  DollarSign,
+  ShieldCheck: Shield,
+  Shield,
+  Sparkles,
+  Phone,
+  Grid: LayoutGrid,
   Zap,
 };
 
@@ -53,10 +76,26 @@ export default function DashboardLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const [suggestedHrefs, setSuggestedHrefs] = useState([]);
 
-  const platform =
-    typeof window !== 'undefined'
-      ? getNavigation(window.location.hostname, user?.tier)
-      : getNavigation('localhost', user?.tier);
+  // Detect platform: use user tier on main domain, else domain-based
+  const getPlatform = () => {
+    if (typeof window === 'undefined') return 'ultralead-ai';
+    const host = window.location.hostname.replace(/^www\./, '').split(':')[0];
+    const isMainDomain = host === 'aileadstrategies.com' || host === 'localhost' || host === '127.0.0.1';
+    if (isMainDomain && user != null) {
+      return detectPlatformFromUser(user);
+    }
+    return detectPlatformFromDomain();
+  };
+  const platformType = getPlatform();
+  const platform = {
+    name: PLATFORM_DISPLAY_NAMES[platformType],
+    nav: getPlatformFeatures(platformType).map((f) => ({
+      name: f.name,
+      href: f.href,
+      icon: f.icon,
+      unique: f.tier === 'pro',
+    })),
+  };
 
   useEffect(() => {
     async function loadUser() {

@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import api from '@/lib/api'
 import Cookies from 'js-cookie'
-import { Monitor, Bot, AlertTriangle, BarChart3 } from 'lucide-react'
+import { Monitor, BarChart3 } from 'lucide-react'
+import { getPlatformFeatures } from '@/lib/platformFeatures'
 
 export default function AdminDashboardPage() {
   const [health, setHealth] = useState(null)
@@ -258,15 +260,33 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className="mt-4">
-            <a 
+            <Link
               href="/admin/stats"
               className="text-purple-400 hover:text-purple-300 text-sm"
             >
               View Detailed Stats →
-            </a>
+            </Link>
           </div>
         </div>
       )}
+
+      {/* All 20 Features - Quick Access Grid */}
+      <div className="aether-card p-6 bg-neutral-900/30">
+        <h2 className="text-xl font-medium text-white mb-2 tracking-tight">All Features (F01-F20)</h2>
+        <p className="text-sm text-neutral-400 mb-6">Admin super-dashboard — quick access to every platform feature</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {getPlatformFeatures('admin').map((feature) => (
+            <Link
+              key={feature.code}
+              href={feature.href}
+              className="flex items-center gap-2 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-indigo-500/10 hover:border-indigo-500/30 transition-colors group"
+            >
+              <span className="text-xs font-mono text-neutral-500 group-hover:text-indigo-400">{feature.code}</span>
+              <span className="text-sm text-white truncate group-hover:text-indigo-300">{feature.name}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

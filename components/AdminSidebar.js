@@ -4,6 +4,55 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
+import {
+  Monitor,
+  Users,
+  BarChart3,
+  Shield,
+  FileText,
+  LogOut,
+  Search,
+  Zap,
+  Mail,
+  MessageSquare,
+  Globe,
+  Inbox,
+  Hash,
+  Video,
+  Upload,
+  DollarSign,
+  Building,
+  TrendingUp,
+  User,
+  Settings,
+  Phone,
+  Sparkles,
+  LayoutGrid,
+} from 'lucide-react'
+import { getPlatformFeatures } from '@/lib/platformFeatures'
+
+const FEATURE_ICON_MAP = {
+  Search,
+  Zap,
+  Users,
+  Mail,
+  MessageSquare,
+  Globe,
+  Inbox,
+  Hash,
+  Video,
+  Upload,
+  DollarSign,
+  Building,
+  TrendingUp,
+  BarChart: BarChart3,
+  User,
+  Settings,
+  Phone,
+  Sparkles,
+  Grid: LayoutGrid,
+  Shield,
+}
 
 export default function AdminSidebar({ admin }) {
   const pathname = usePathname()
@@ -16,32 +65,21 @@ export default function AdminSidebar({ admin }) {
     router.push('/admin/login')
   }
 
-  const navigation = [
-    { name: 'System Health', href: '/admin/dashboard', icon: '🖥️' },
-    { name: 'Users', href: '/admin/users', icon: '👥' },
-    { name: 'Platform Stats', href: '/admin/stats', icon: '📊' },
+  // Admin Panel - role-protected
+  const adminNav = [
+    { name: 'System Health', href: '/admin/dashboard', icon: Monitor },
+    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Platform Stats', href: '/admin/stats', icon: BarChart3 },
   ]
-
-  // Add admin-only routes for super_admin
   if (admin?.role === 'super_admin') {
-    navigation.push(
-      { name: 'Admin Users', href: '/admin/admins', icon: '🔐' },
-      { name: 'Audit Logs', href: '/admin/audit', icon: '📋' }
+    adminNav.push(
+      { name: 'Admin Users', href: '/admin/admins', icon: Shield },
+      { name: 'Audit Logs', href: '/admin/audit', icon: FileText }
     )
   }
 
-  const productDashboards = [
-    { name: 'Overview', href: '/dashboard', icon: '📋' },
-    { name: 'Prospects (LeadSite.AI)', href: '/dashboard/prospects', icon: '🎯' },
-    { name: 'Websites (LeadSite.IO)', href: '/dashboard/websites', icon: '🌐' },
-    { name: 'Inbox (ClientContact.IO)', href: '/dashboard/inbox', icon: '💬' },
-    { name: 'CRM (UltraLead)', href: '/dashboard/crm', icon: '📊' },
-    { name: 'Videos (VideoSite.AI)', href: '/dashboard/videos', icon: '🎬' },
-    { name: 'Campaigns', href: '/dashboard/campaigns', icon: '📧' },
-    { name: 'Analytics', href: '/dashboard/analytics', icon: '📈' },
-    { name: 'Automation', href: '/dashboard/automation', icon: '⚡' },
-    { name: 'Settings', href: '/dashboard/settings', icon: '⚙️' },
-  ]
+  // All 20 features (F01-F20) from platform config - admin super-dashboard
+  const allFeatures = getPlatformFeatures('admin')
 
   return (
     <div className="w-64 bg-[#050505] border-r border-white/10 h-screen flex flex-col">
@@ -64,8 +102,9 @@ export default function AdminSidebar({ admin }) {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         <p className="px-4 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Admin Panel</p>
-        {navigation.map((item) => {
+        {adminNav.map((item) => {
           const isActive = pathname === item.href
+          const Icon = item.icon
           return (
             <Link
               key={item.href}
@@ -76,28 +115,29 @@ export default function AdminSidebar({ admin }) {
                   : 'text-neutral-400 hover:bg-white/5 hover:text-white'
               }`}
             >
-              <span className="text-xl">{item.icon}</span>
+              <Icon className="w-5 h-5 flex-shrink-0" />
               <span className="font-medium">{item.name}</span>
             </Link>
           )
         })}
 
-        <p className="px-4 py-2 mt-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Product Dashboards</p>
-        <p className="px-4 pb-2 text-[11px] text-neutral-600">Inspect, upgrade, system checks</p>
-        {productDashboards.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
+        <p className="px-4 py-2 mt-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">All Features (F01-F20)</p>
+        <p className="px-4 pb-2 text-[11px] text-neutral-600">Platform feature access — admin super-dashboard</p>
+        {allFeatures.map((feature) => {
+          const isActive = pathname === feature.href || (feature.href !== '/' && pathname.startsWith(feature.href + '/'))
+          const Icon = FEATURE_ICON_MAP[feature.icon] || Search
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={feature.code}
+              href={feature.href}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors text-sm ${
                 isActive
                   ? 'bg-indigo-500/30 text-indigo-300 border border-indigo-500/40'
                   : 'text-neutral-400 hover:bg-white/5 hover:text-white'
               }`}
             >
-              <span className="text-base">{item.icon}</span>
-              <span>{item.name}</span>
+              <Icon className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{feature.name}</span>
             </Link>
           )
         })}
@@ -109,7 +149,7 @@ export default function AdminSidebar({ admin }) {
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-neutral-400 hover:bg-white/5 hover:text-white transition-colors"
         >
-          <span>🚪</span>
+          <LogOut className="w-5 h-5 flex-shrink-0" />
           <span>Logout</span>
         </button>
       </div>

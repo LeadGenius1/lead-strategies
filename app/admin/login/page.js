@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import api from '@/lib/api'
 import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 
@@ -25,12 +24,19 @@ export default function AdminLoginPage() {
 
     setLoading(true)
     try {
-      // Use admin login endpoint (backend: /admin/login, not /api/admin/login)
-      const response = await api.post('/admin/login', formData)
-      
-      // Store admin token (backend returns { success, data: { token, admin } })
-      const token = response.data?.data?.token || response.data?.token
-      const admin = response.data?.data?.admin || response.data?.admin
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed')
+      }
+
+      const token = data.token || data.data?.token
+      const admin = data.admin || data.data?.admin
       if (token) {
         Cookies.set('admin_token', token, { expires: 7 }) // 7 days
         Cookies.set('admin_user', JSON.stringify(admin || {}), { expires: 7 })
@@ -41,7 +47,7 @@ export default function AdminLoginPage() {
       }
     } catch (error) {
       console.error('Admin login error:', error)
-      const msg = error.response?.data?.message || error.response?.data?.error || 'Invalid email or password'
+      const msg = error.message || error.response?.data?.message || error.response?.data?.error || 'Invalid email or password'
       toast.error(msg)
     } finally {
       setLoading(false)
@@ -104,9 +110,9 @@ export default function AdminLoginPage() {
           {/* Default Credentials Info */}
           <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
             <p className="text-xs text-yellow-400">
-              <strong>Credentials (from Railway):</strong><br />
+              <strong>Default credentials:</strong><br />
               Email: admin@aileadstrategies.com<br />
-              Password: AILeadAdmin2026!
+              Password: YourSecurePassword123!
             </p>
             <p className="text-xs text-yellow-400 mt-2">
               ⚠️ Change this password after first login for security.

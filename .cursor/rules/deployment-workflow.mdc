@@ -25,7 +25,7 @@ git push origin main
 
 ## STEP 3: RAILWAY DEPLOYMENT VERIFICATION
 Wait 60 seconds after push, then:
-- Backend: `curl https://api.leadsiteai.com/health` → expect 200 OK, {"status":"ok"}
+- Backend: `https://api.aileadstrategies.com/health` → expect 200 OK, {"status":"ok"}
 - Frontend: `curl -I https://aileadstrategies.com` → expect 200 OK
 
 ## STEP 4: RAILWAY LOGS (if health fails)

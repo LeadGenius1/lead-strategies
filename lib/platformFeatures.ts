@@ -145,13 +145,13 @@ export const ALL_FEATURES: Record<FeatureCode, Omit<PlatformFeature, 'code'>> = 
     name: 'Platforms',
     description: 'Platform switcher and overview',
     icon: 'Grid',
-    href: '/platforms',
+    href: '/admin/platforms',
   },
   F20: {
     name: 'Admin',
     description: 'Admin panel and user management',
     icon: 'Shield',
-    href: '/admin',
+    href: '/admin/users',
   },
 };
 

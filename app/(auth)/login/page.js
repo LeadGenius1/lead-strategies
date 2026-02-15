@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { login } from '@/lib/auth'
+import { loginWithErrorHandling } from '@/lib/auth'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const { user } = await login(formData.email, formData.password)
+      const { user } = await loginWithErrorHandling(formData.email, formData.password)
       toast.success('Welcome back!')
       // Redirect to user's platform dashboard (tier: 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact, 4=VideoSite, 5=UltraLead)
     const tierDashboardMap = {
@@ -33,7 +33,12 @@ export default function LoginPage() {
       const dashboardPath = tierDashboardMap[tier] || '/dashboard'
       router.push(dashboardPath)
     } catch (error) {
-      toast.error(error.message || 'Login failed')
+      const msg = error?.message || 'Login failed'
+      toast.error(msg)
+      // If user signed up with Google, prompt them to use it
+      if (msg.toLowerCase().includes('google')) {
+        toast('Use the "Continue with Google" button above', { icon: '🔐', duration: 5000 })
+      }
     } finally {
       setLoading(false)
     }

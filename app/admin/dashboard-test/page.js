@@ -5,11 +5,17 @@ import Link from 'next/link'
 import Cookies from 'js-cookie'
 import { getPlatformFeatures } from '@/lib/platformFeatures'
 
-export default function AdminDashboardPage() {
+export default function AdminDashboardTestPage() {
   const [health, setHealth] = useState(null)
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [alerts, setAlerts] = useState([])
+
+  useEffect(() => {
+    loadDashboardData()
+    const interval = setInterval(loadDashboardData, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   const defaultHealth = {
     status: 'operational',
@@ -24,12 +30,6 @@ export default function AdminDashboardPage() {
     campaigns: { total: 0, active: 0 },
     emails: { sent: 0, today: 0 }
   }
-
-  useEffect(() => {
-    loadDashboardData()
-    const interval = setInterval(loadDashboardData, 30000)
-    return () => clearInterval(interval)
-  }, [])
 
   async function loadDashboardData() {
     const adminToken = Cookies.get('admin_token')
@@ -70,8 +70,11 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="p-8 space-y-8">
-      {/* Header */}
+      {/* Header - Test badge */}
       <div>
+        <span className="inline-block px-2 py-1 mb-2 text-xs font-mono bg-amber-500/20 text-amber-400 rounded border border-amber-500/30">
+          TEST PAGE - /admin/dashboard-test
+        </span>
         <h1 className="text-3xl font-bold text-white">System Health</h1>
         <p className="text-neutral-400 mt-1">Monitor platform status and performance</p>
       </div>
@@ -137,10 +140,10 @@ export default function AdminDashboardPage() {
                 <span className="text-sm text-white">{health.metrics.cpu}%</span>
               </div>
               <div className="w-full bg-white/5 rounded-full h-2">
-                <div 
+                <div
                   className="bg-purple-500 h-2 rounded-full transition-all"
                   style={{ width: `${health.metrics.cpu}%` }}
-                ></div>
+                />
               </div>
             </div>
             <div>
@@ -149,10 +152,10 @@ export default function AdminDashboardPage() {
                 <span className="text-sm text-white">{health.metrics.memory}%</span>
               </div>
               <div className="w-full bg-white/5 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-500 h-2 rounded-full transition-all"
                   style={{ width: `${health.metrics.memory}%` }}
-                ></div>
+                />
               </div>
             </div>
             <div>
@@ -161,10 +164,10 @@ export default function AdminDashboardPage() {
                 <span className="text-sm text-white">{health.metrics.disk}%</span>
               </div>
               <div className="w-full bg-white/5 rounded-full h-2">
-                <div 
+                <div
                   className="bg-green-500 h-2 rounded-full transition-all"
                   style={{ width: `${health.metrics.disk}%` }}
-                ></div>
+                />
               </div>
             </div>
             <div>
@@ -173,7 +176,7 @@ export default function AdminDashboardPage() {
                 <span className="text-sm text-white capitalize">{health.metrics.network || 'Normal'}</span>
               </div>
               <div className="w-full bg-white/5 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full w-full"></div>
+                <div className="bg-green-500 h-2 rounded-full w-full" />
               </div>
             </div>
           </div>
@@ -186,7 +189,7 @@ export default function AdminDashboardPage() {
           <h2 className="text-xl font-semibold text-white mb-4">Recent Alerts</h2>
           <div className="space-y-3">
             {alerts.slice(0, 5).map((alert, index) => (
-              <div 
+              <div
                 key={index}
                 className={`p-4 rounded-lg border ${
                   alert.level === 'critical' ? 'bg-red-500/10 border-red-500/20' :

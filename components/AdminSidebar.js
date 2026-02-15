@@ -58,6 +58,7 @@ export default function AdminSidebar({ admin }) {
   function handleLogout() {
     Cookies.remove('admin_token')
     Cookies.remove('admin_user')
+    Cookies.remove('token') // Clear user token (shared with admin for /api/v1/*)
     toast.success('Logged out successfully')
     window.location.href = '/admin/login'
   }

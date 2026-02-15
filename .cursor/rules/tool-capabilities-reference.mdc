@@ -1,0 +1,9 @@
+﻿---
+description: Tool capabilities - Claude for planning, Cursor for implementation
+alwaysApply: false
+---
+
+# TOOL CAPABILITIES REFERENCE
+- **Claude:** docs/CLAUDE-CAPABILITIES.md
+- **Cursor:** docs/CURSOR-CAPABILITIES.md (if present)
+- **Quick Ref:** docs/QUICK-REFERENCE.md

@@ -22,7 +22,8 @@ export default function AdminUsersPage() {
       const response = await api.get(`/api/admin/users${params}`, {
         headers: { Authorization: `Bearer ${adminToken}` }
       })
-      setUsers(response.data?.users || response.data || [])
+      const raw = response.data?.data?.users ?? response.data?.users ?? response.data
+      setUsers(Array.isArray(raw) ? raw : [])
     } catch (error) {
       console.error('Error loading users:', error)
       toast.error('Failed to load users')
@@ -60,7 +61,7 @@ export default function AdminUsersPage() {
     }
   }
 
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = (Array.isArray(users) ? users : []).filter(user => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       return (

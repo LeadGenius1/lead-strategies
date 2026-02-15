@@ -1,0 +1,12 @@
+﻿{
+  "sourceOfTruth": true,
+  "repository": "LeadGenius1/lead-strategies",
+  "branch": "main",
+  "verifiedDate": "2026-02-15T00:14:00Z",
+  "verifiedCommit": "361a09e74afce3283cbeded4593079645dc79566",
+  "railwayProject": "ai-lead-strategies",
+  "productionUrls": {
+    "backend": "https://api.aileadstrategies.com",
+    "frontend": "https://aileadstrategies.com"
+  }
+}

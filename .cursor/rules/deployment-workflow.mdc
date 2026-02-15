@@ -1,4 +1,4 @@
----
+﻿---
 description: Mandatory post-change workflow: commit, push, Railway verify, fix errors
 alwaysApply: true
 ---
@@ -25,8 +25,8 @@ git push origin main
 
 ## STEP 3: RAILWAY DEPLOYMENT VERIFICATION
 Wait 60 seconds after push, then:
-- Backend: `https://api.aileadstrategies.com/health` → expect 200 OK, {"status":"ok"}
-- Frontend: `curl -I https://aileadstrategies.com` → expect 200 OK
+- Backend: `https://api.aileadstrategies.com/health` -> expect 200 OK, {"status":"ok"}
+- Frontend: `curl -I https://aileadstrategies.com` -> expect 200 OK
 
 ## STEP 4: RAILWAY LOGS (if health fails)
 ```
@@ -44,7 +44,7 @@ Show last 50 lines, identify error.
 ## STEP 6: FINAL CONFIRMATION (REQUIRED)
 Only after ALL checks pass:
 ```
-✅ DEPLOYMENT VERIFIED 100%
+DEPLOYMENT VERIFIED 100%
 - Git push: SUCCESS
 - Railway backend: HEALTHY
 - Railway frontend: HEALTHY

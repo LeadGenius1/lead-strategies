@@ -10,11 +10,12 @@ export async function GET() {
     const cookieStore = await cookies()
     const token = cookieStore.get('token')?.value
 
+    // No token = not logged in. Return 200 + null user (never 401 - prevents "same error" on auth check)
     if (!token) {
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated', data: { user: null } },
-        { status: 401 }
-      )
+      return NextResponse.json({
+        success: true,
+        data: { user: null },
+      })
     }
 
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'https://api.aileadstrategies.com'

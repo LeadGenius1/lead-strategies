@@ -1,9 +1,10 @@
 // Dynamic Sitemap Generation for SEO
+// Generated: 2026-02-13 - Multi-Domain SEO Optimization
 export default function sitemap() {
   const baseUrl = 'https://aileadstrategies.com';
   const currentDate = new Date().toISOString();
-  
-  // Main pages with high priority
+
+  // Main pages with high priority (public marketing pages only - no auth)
   const mainPages = [
     {
       url: baseUrl,
@@ -30,36 +31,26 @@ export default function sitemap() {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/ultralead`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/videosite-ai`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
-  ];
-  
-  // Auth and utility pages
-  const authPages = [
     {
-      url: `${baseUrl}/signup`,
+      url: `${baseUrl}/pricing`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/forgot-password`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
   ];
-  
-  // Legal pages
+
+  // Legal and policy pages
   const legalPages = [
     {
       url: `${baseUrl}/privacy`,
@@ -73,7 +64,20 @@ export default function sitemap() {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    {
+      url: `${baseUrl}/gdpr`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/cookie-policy`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ];
-  
-  return [...mainPages, ...authPages, ...legalPages];
+
+  // Note: /login, /signup, /auth/ excluded per SEO best practice (noindex)
+  return [...mainPages, ...legalPages];
 }

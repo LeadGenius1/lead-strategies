@@ -1,9 +1,31 @@
-// Admin Routes
+// Admin Routes - FULL admin access for live execution and monitoring
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { JWT_SECRET } = require('../middleware/auth');
+
+const ADMIN_EMAIL = 'admin@aileadstrategies.com';
+const ADMIN_DEFAULT_PASSWORD = 'YourSecurePassword123!';
+
+function getPrisma() {
+  try {
+    const { PrismaClient } = require('@prisma/client');
+    return new PrismaClient();
+  } catch (_) {
+    return null;
+  }
+}
+
+function hashPassword(plain) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(plain, salt, 100000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+}
 
 // POST /admin/login or /api/admin/login - Admin authentication
-router.post('/login', (req, res) => {
+// Returns real JWT so admin can execute all /api/v1/* features (Lead Hunter, Campaigns, CRM, etc.)
+router.post('/login', async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
     return res.status(400).json({
@@ -11,23 +33,84 @@ router.post('/login', (req, res) => {
       message: 'Email and password are required',
     });
   }
-  // Default admin fallback (change password after first login)
-  if (email === 'admin@aileadstrategies.com' && password === 'YourSecurePassword123!') {
+  // Validate admin credentials
+  if (email !== ADMIN_EMAIL || password !== ADMIN_DEFAULT_PASSWORD) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid email or password',
+    });
+  }
+
+  const adminPayload = {
+    id: 'admin-1',
+    email: ADMIN_EMAIL,
+    role: 'super_admin',
+    name: 'Admin User',
+  };
+
+  const db = getPrisma();
+  if (!db) {
+    // No DB: return JWT with synthetic admin user id (works for mock mode)
+    const token = jwt.sign(
+      { id: 'admin-1', email: ADMIN_EMAIL, role: 'super_admin', tier: 5 },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    return res.json({
+      success: true,
+      admin: adminPayload,
+      token,
+    });
+  }
+
+  try {
+    // Find or create admin User for full /api/v1/* access (leads, campaigns, CRM, etc.)
+    let user = await db.user.findUnique({ where: { email: ADMIN_EMAIL } });
+    if (!user) {
+      user = await db.user.create({
+        data: {
+          email: ADMIN_EMAIL,
+          passwordHash: hashPassword(ADMIN_DEFAULT_PASSWORD),
+          name: 'Admin User',
+          auth_provider: 'email',
+          tier: 5,
+          subscription_tier: 'ultralead',
+          plan_tier: 'ultralead',
+          is_admin: true,
+        },
+      });
+    } else {
+      // Ensure admin user has tier 5 and is_admin
+      await db.user.update({
+        where: { id: user.id },
+        data: { tier: 5, is_admin: true, lastLoginAt: new Date() },
+      });
+      user = await db.user.findUnique({ where: { id: user.id } });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: 'super_admin', tier: 5 },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
     return res.json({
       success: true,
       admin: {
-        id: 'admin-1',
-        email: 'admin@aileadstrategies.com',
+        id: user.id,
+        email: user.email,
         role: 'super_admin',
-        name: 'Admin User',
+        name: user.name || 'Admin User',
       },
-      token: 'admin-token-placeholder-' + Date.now(),
+      token,
+    });
+  } catch (err) {
+    console.error('Admin login DB error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Admin setup failed. Check database connection.',
     });
   }
-  return res.status(401).json({
-    success: false,
-    message: 'Invalid email or password',
-  });
 });
 
 // GET /admin/health

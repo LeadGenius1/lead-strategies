@@ -1,0 +1,16 @@
+---
+description: Reference Claude capabilities for higher-accuracy task building
+globs: 
+alwaysApply: false
+---
+
+# Claude Task Accuracy
+
+When building tasks for Claude (claude.ai or Claude API), reference **@docs/CLAUDE-CAPABILITIES.md** for:
+
+- **Prompt patterns** – Clear instructions, context, examples, structured output
+- **Best practices** – Specify requirements, use XML tags for complex data
+- **Model selection** – Opus 4.6 (mission-critical), Sonnet 4.5 (daily dev), Haiku 4.5 (high-volume)
+- **Limitations** – No image gen, Jan 2025 cutoff, use web search for current events
+
+**For complex tasks:** Paste relevant Best Practices sections into your Claude prompt for higher accuracy.

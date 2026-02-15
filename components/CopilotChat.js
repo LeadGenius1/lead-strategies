@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import api from '@/lib/api';
 import { 
   Send, 
@@ -47,6 +48,19 @@ export default function CopilotChat({ selectedLead }) {
     scrollToBottom();
   }, [messages]);
 
+  const getAuthToken = async () => {
+    const fromCookie = Cookies.get('token') || Cookies.get('admin_token');
+    if (fromCookie) return fromCookie;
+    try {
+      const res = await fetch('/api/backend-token', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        return data.token;
+      }
+    } catch (_) {}
+    return null;
+  };
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
@@ -61,10 +75,15 @@ export default function CopilotChat({ selectedLead }) {
     setError(null);
 
     try {
-      const response = await api.post('/api/v1/copilot', {
-        message: userMessage.content,
-        context: selectedLead ? { lead: { email: selectedLead.email, name: selectedLead.name, company: selectedLead.company } } : {},
-      });
+      const token = await getAuthToken();
+      const response = await api.post(
+        '/api/v1/copilot',
+        {
+          message: userMessage.content,
+          context: selectedLead ? { lead: { email: selectedLead.email, name: selectedLead.name, company: selectedLead.company } } : {},
+        },
+        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+      );
 
       const responseData = response.data?.data || response.data || {};
       const assistantMessage = {

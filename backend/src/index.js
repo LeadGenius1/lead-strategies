@@ -70,6 +70,9 @@ const { startAgents, getSystem } = require('./system-agents');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy when behind Railway/load balancer (fixes X-Forwarded-For / express-rate-limit)
+app.set('trust proxy', 1);
+
 // ===========================================
 // MIDDLEWARE
 // ===========================================

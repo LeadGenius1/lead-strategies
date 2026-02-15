@@ -40,6 +40,8 @@ export default function AdminLoginPage() {
       if (token) {
         Cookies.set('admin_token', token, { expires: 7 }) // 7 days
         Cookies.set('admin_user', JSON.stringify(admin || {}), { expires: 7 })
+        // Also set user token so admin can execute /api/v1/* (Lead Hunter, Campaigns, CRM, etc.)
+        Cookies.set('token', token, { expires: 7 })
         toast.success('Admin login successful!')
         router.push('/admin/dashboard')
       } else {

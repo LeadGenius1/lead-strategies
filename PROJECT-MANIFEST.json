@@ -1,0 +1,313 @@
+{
+  "projectName": "AI Lead Strategies Platform",
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-15T06:00:00Z",
+  
+  "sourceOfTruth": {
+    "repository": "LeadGenius1/lead-strategies",
+    "branch": "main",
+    "localPath": "C:\\Users\\ailea\\OneDrive\\Documents\\lead-strategies-repo",
+    "verifiedCommit": "361a09e74afce3283cbeded4593079645dc79566",
+    "verifiedDate": "2026-02-15T00:14:00Z"
+  },
+  
+  "deployment": {
+    "provider": "Railway",
+    "project": "ai-lead-strategies",
+    "environment": "production",
+    "autoDeploy": true,
+    "deployBranch": "main",
+    "healthCheckTimeout": 90,
+    "services": {
+      "backend": {
+        "name": "Backend API",
+        "url": "https://api.aileadstrategies.com",
+        "health": "https://api.aileadstrategies.com/health",
+        "repository": "LeadGenius1/lead-strategies",
+        "rootDirectory": "/backend"
+      },
+      "frontend": {
+        "name": "Frontend Application",
+        "url": "https://aileadstrategies.com",
+        "repository": "LeadGenius1/lead-strategies",
+        "rootDirectory": "/"
+      },
+      "database": {
+        "type": "PostgreSQL",
+        "provider": "Railway",
+        "connection": "Railway public URL",
+        "note": "DO NOT use postgres.railway.internal (broken)"
+      },
+      "cache": {
+        "type": "Redis",
+        "provider": "Railway",
+        "purpose": "Session caching, rate limiting"
+      },
+      "storage": {
+        "type": "Cloudflare R2",
+        "bucket": "videosite",
+        "accountId": "91d1bdf46216e74b24964ea0139e09de",
+        "publicUrl": "https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev"
+      }
+    }
+  },
+  
+  "platforms": [
+    {
+      "name": "LeadSite.AI",
+      "domain": "leadsiteai.com",
+      "description": "Email lead generation and marketing",
+      "features": ["F01", "F02", "F03", "F04", "F05"],
+      "pricing": {
+        "starter": 49,
+        "pro": 149,
+        "enterprise": 349
+      }
+    },
+    {
+      "name": "LeadSite.IO",
+      "domain": "leadsiteio.com",
+      "description": "AI-powered website builder",
+      "features": ["F06"],
+      "pricing": {
+        "starter": 49,
+        "pro": 149,
+        "enterprise": 349
+      }
+    },
+    {
+      "name": "VideoSite.AI",
+      "domain": "videositeai.com",
+      "description": "Video monetization with creator earnings",
+      "features": ["F09", "F10", "F11"],
+      "pricing": {
+        "all": 0,
+        "note": "Free for all users"
+      }
+    },
+    {
+      "name": "ClientContact.IO",
+      "domain": "clientcontactio.com",
+      "description": "Unified inbox across 22+ channels",
+      "features": ["F07", "F08", "F17"],
+      "pricing": {
+        "starter": 99,
+        "pro": 149,
+        "enterprise": 399
+      }
+    },
+    {
+      "name": "UltraLead.AI",
+      "domain": "ultraleadai.com",
+      "description": "All-in-one dashboard and analytics",
+      "features": ["F12", "F13", "F14", "F15", "F16", "F18", "F19", "F20"],
+      "pricing": {
+        "pro": 499,
+        "note": "All-in-one platform"
+      }
+    }
+  ],
+  
+  "features": {
+    "F01": { "name": "Lead Hunter", "platforms": ["LeadSite.AI"] },
+    "F02": { "name": "Proactive Hunter", "platforms": ["LeadSite.AI"] },
+    "F03": { "name": "Prospects", "platforms": ["LeadSite.AI"] },
+    "F04": { "name": "Campaigns", "platforms": ["LeadSite.AI"] },
+    "F05": { "name": "Replies", "platforms": ["LeadSite.AI"] },
+    "F06": { "name": "Websites", "platforms": ["LeadSite.IO"] },
+    "F07": { "name": "Inbox", "platforms": ["ClientContact.IO"] },
+    "F08": { "name": "Channels", "platforms": ["ClientContact.IO"] },
+    "F09": { "name": "Videos", "platforms": ["VideoSite.AI"] },
+    "F10": { "name": "Upload", "platforms": ["VideoSite.AI"] },
+    "F11": { "name": "Earnings", "platforms": ["VideoSite.AI"] },
+    "F12": { "name": "CRM", "platforms": ["UltraLead.AI"] },
+    "F13": { "name": "Deals", "platforms": ["UltraLead.AI"] },
+    "F14": { "name": "Analytics", "platforms": ["UltraLead.AI"] },
+    "F15": { "name": "Profile", "platforms": ["UltraLead.AI"] },
+    "F16": { "name": "Settings", "platforms": ["UltraLead.AI"] },
+    "F17": { "name": "SMS Outreach", "platforms": ["ClientContact.IO"] },
+    "F18": { "name": "AI Copywriter", "platforms": ["UltraLead.AI"] },
+    "F19": { "name": "Platforms", "platforms": ["UltraLead.AI"] },
+    "F20": { "name": "Admin", "platforms": ["UltraLead.AI"] }
+  },
+  
+  "tools": {
+    "ide": {
+      "name": "Cursor",
+      "purpose": "Code implementation, multi-file editing, git operations",
+      "capabilities": "docs/CURSOR-CAPABILITIES.md",
+      "rules": [
+        ".cursor/rules/source-of-truth.mdc",
+        ".cursor/rules/deployment-workflow.mdc",
+        ".cursor/rules/tool-capabilities-reference.mdc"
+      ]
+    },
+    "ai": {
+      "name": "Claude",
+      "provider": "Anthropic",
+      "model": "Claude Sonnet 4.5",
+      "purpose": "Architecture, planning, analysis, complex problem solving",
+      "capabilities": "docs/CLAUDE-CAPABILITIES.md",
+      "contextFiles": [
+        "PROJECT-MANIFEST.json",
+        ".source-of-truth.json",
+        "AI-Lead-Strategies-Platform-Status.md",
+        "Claude-Master-Developer-Rules.md",
+        "docs/CLAUDE-CAPABILITIES.md",
+        "docs/CURSOR-CAPABILITIES.md"
+      ]
+    },
+    "versionControl": {
+      "name": "GitHub",
+      "repository": "LeadGenius1/lead-strategies",
+      "owner": "LeadGenius1",
+      "defaultBranch": "main"
+    },
+    "deployment": {
+      "name": "Railway",
+      "project": "ai-lead-strategies",
+      "environment": "production",
+      "autoDeploy": true
+    },
+    "monitoring": {
+      "planned": "Sentry",
+      "status": "Not yet implemented"
+    }
+  },
+  
+  "invalidPaths": [
+    "C:\\Users\\ailea\\Documents\\lead-strategies",
+    "C:\\Users\\ailea\\lead-strategies-build",
+    "C:\\Users\\ailea\\.cursor\\worktrees\\leadsite.ai",
+    "C:\\Users\\ailea\\.cursor\\worktrees\\PROJECT_1",
+    "C:\\Users\\ailea\\.cursor\\worktrees\\PROJECT_2"
+  ],
+  
+  "fileStructure": {
+    "backend": {
+      "framework": "Express.js",
+      "language": "Node.js",
+      "database": "PostgreSQL via Prisma ORM",
+      "cache": "Redis",
+      "structure": {
+        "src": "Application source code",
+        "routes": "API route handlers",
+        "middleware": "Express middleware",
+        "models": "Prisma models",
+        "utils": "Utility functions"
+      }
+    },
+    "frontend": {
+      "framework": "Next.js 14",
+      "language": "JavaScript/React",
+      "styling": "AETHER UI Design System",
+      "structure": {
+        "app": "Next.js app directory (route groups)",
+        "(dashboard)": "Dashboard route group",
+        "api": "API routes",
+        "components": "React components",
+        "lib": "Utilities and helpers"
+      }
+    },
+    "database": {
+      "orm": "Prisma",
+      "provider": "PostgreSQL",
+      "migrations": "prisma/migrations",
+      "schema": "prisma/schema.prisma"
+    },
+    "storage": {
+      "provider": "Cloudflare R2",
+      "method": "Presigned URLs",
+      "public": true
+    },
+    "email": {
+      "provider": "Mailgun",
+      "dns": "SPF, DKIM, DMARC configured"
+    }
+  },
+  
+  "documentation": {
+    "toolCapabilities": {
+      "claude": "docs/CLAUDE-CAPABILITIES.md",
+      "cursor": "docs/CURSOR-CAPABILITIES.md",
+      "integration": "docs/CLAUDE-CURSOR-INTEGRATION.md",
+      "quickReference": "docs/QUICK-REFERENCE.md"
+    },
+    "projectDocs": {
+      "platformStatus": "AI-Lead-Strategies-Platform-Status.md",
+      "masterRules": "Claude-Master-Developer-Rules.md",
+      "filingSystem": "docs/FILING-SYSTEM.md",
+      "workflows": "docs/WORKFLOW-TEMPLATES.md"
+    },
+    "masterRules": {
+      "sourceOfTruth": ".cursor/rules/source-of-truth.mdc",
+      "deploymentWorkflow": ".cursor/rules/deployment-workflow.mdc",
+      "toolReference": ".cursor/rules/tool-capabilities-reference.mdc"
+    }
+  },
+  
+  "workflows": {
+    "development": {
+      "planning": "Claude analyzes and creates plan",
+      "implementation": "Cursor implements with Composer",
+      "testing": "Local verification before deploy",
+      "deployment": "Git push → Railway auto-deploy",
+      "verification": "Health checks + logs review"
+    },
+    "bugFix": {
+      "diagnosis": "Claude analyzes error logs",
+      "solution": "Claude proposes fix strategy",
+      "implementation": "Cursor applies fixes",
+      "testing": "Verify fix works",
+      "deployment": "Deploy and monitor"
+    },
+    "refactoring": {
+      "analysis": "Claude reviews code quality",
+      "planning": "Claude creates refactor plan",
+      "execution": "Cursor multi-file refactor",
+      "verification": "Ensure no breaking changes"
+    }
+  },
+  
+  "standards": {
+    "code": {
+      "style": "ESLint + Prettier",
+      "testing": "Jest for unit tests",
+      "documentation": "JSDoc for functions",
+      "commits": "Conventional commits format"
+    },
+    "security": {
+      "secrets": "Environment variables only",
+      "cors": "Properly configured",
+      "rateLimiting": "Redis-based",
+      "inputValidation": "All endpoints"
+    },
+    "performance": {
+      "targetUsers": "1M+ concurrent",
+      "caching": "Redis for sessions and data",
+      "cdn": "Cloudflare for static assets",
+      "database": "Connection pooling via Prisma"
+    }
+  },
+  
+  "completionStatus": {
+    "infrastructure": 100,
+    "authentication": 100,
+    "adminDashboard": 100,
+    "videoSiteAI": 90,
+    "leadSiteAI": 85,
+    "leadSiteIO": 50,
+    "clientContactIO": 50,
+    "ultraLeadAI": 50,
+    "stripeIntegration": 0,
+    "overall": 75
+  },
+  
+  "nextSteps": {
+    "phase1": "Complete VideoSite.AI (URL conversion, Prisma models)",
+    "phase2": "Verify all platforms functionality",
+    "phase3": "Stripe payment integration",
+    "phase4": "Performance optimization for 1M+ users",
+    "phase5": "Production monitoring (Sentry)"
+  }
+}

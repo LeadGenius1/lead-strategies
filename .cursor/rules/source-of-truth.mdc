@@ -1,0 +1,10 @@
+﻿---
+description: Source of truth - use only lead-strategies-repo
+alwaysApply: true
+---
+
+# SOURCE OF TRUTH
+- **Path:** C:\Users\ailea\OneDrive\Documents\lead-strategies-repo
+- **Repo:** LeadGenius1/lead-strategies
+- **Branch:** main
+- **DO NOT use:** C:\Users\ailea\Documents\lead-strategies, lead-strategies-build

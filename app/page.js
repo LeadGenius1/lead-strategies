@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
 import ShinyButton from '@/components/ShinyButton';

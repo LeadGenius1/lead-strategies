@@ -1,0 +1,11 @@
+﻿{
+  "project": "ai-lead-strategies",
+  "sourceOfTruth": {
+    "path": "C:\\Users\\ailea\\OneDrive\\Documents\\lead-strategies-repo",
+    "manifest": "PROJECT-MANIFEST.json"
+  },
+  "invalidPaths": [
+    "C:\\Users\\ailea\\Documents\\lead-strategies",
+    "C:\\Users\\ailea\\lead-strategies-build"
+  ]
+}

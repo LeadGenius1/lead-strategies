@@ -17,7 +17,7 @@ function VideoSiteAISEO() {
     offers: {
       '@type': 'Offer',
       url: 'https://aileadstrategies.com/videosite-ai',
-      price: '99',
+      price: '0',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock'
     },

@@ -98,6 +98,19 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     inputRef.current?.focus();
   }, [currentQuestionIndex]);
 
+  const getAuthToken = async () => {
+    const fromCookie = Cookies.get('token') || Cookies.get('admin_token');
+    if (fromCookie) return fromCookie;
+    try {
+      const res = await fetch('/api/backend-token', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        return data.token;
+      }
+    } catch (_) {}
+    return null;
+  };
+
   const handleAnswer = async () => {
     if (!input.trim() || loading) return;
 
@@ -128,23 +141,33 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     setLoading(true);
 
     try {
+      const token = await getAuthToken();
+      if (!token) {
+        toast.error('Please sign in to generate a website.');
+        setGenerating(false);
+        setLoading(false);
+        return;
+      }
+
       const formData = answersToFormData(allAnswers);
       const templateNum = parseInt(allAnswers.template) || 1;
       const templateId = TEMPLATE_SLUGS[templateNum - 1] || TEMPLATE_SLUGS[0];
 
-      const token = Cookies.get('token') || Cookies.get('admin_token');
       const res = await fetch('/api/websites/generate', {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ templateId, formData }),
       });
 
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Generation failed');
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('Session expired. Please sign in again.');
+        throw new Error(json.error || 'Generation failed');
+      }
 
       const website = json.data;
       setCreatedWebsite(website);

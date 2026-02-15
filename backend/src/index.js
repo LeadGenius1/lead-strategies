@@ -77,7 +77,7 @@ const PORT = process.env.PORT || 3001;
 // Security headers
 app.use(helmet());
 
-// CORS configuration - aileadstrategies.com and leadsite always allowed (CORS_ORIGINS adds, never overrides)
+// CORS configuration - all platform domains (Scenario A: single app serving multiple domains)
 const defaultOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
@@ -88,7 +88,12 @@ const defaultOrigins = [
   'https://app.leadsite.ai',
   'https://leadsite.io',
   'https://clientcontact.io',
+  'https://www.clientcontact.io',
   'https://videosite.io',
+  'https://videosite.ai',
+  'https://www.videosite.ai',
+  'https://ultralead.ai',
+  'https://www.ultralead.ai',
 ];
 const envOrigins = process.env.CORS_ORIGINS?.split(',').map(o => o.trim()).filter(Boolean) || [];
 const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
@@ -303,6 +308,7 @@ app.use('/api/v1/email-sentinel', emailSentinelRoutes);  // Email Sentinel (Redi
 
 // Admin Routes (Internal AI Lead Strategies staff only)
 app.use('/admin', adminRoutes);
+app.use('/api/admin', adminRoutes);  // Also at /api/admin for frontend fetch('/api/admin/login')
 
 // Master Orchestrator Routes (Agent 6)
 app.use('/api/master', masterValidationRoutes);

@@ -2,6 +2,34 @@
 const express = require('express');
 const router = express.Router();
 
+// POST /admin/login or /api/admin/login - Admin authentication
+router.post('/login', (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email and password are required',
+    });
+  }
+  // Default admin fallback (change password after first login)
+  if (email === 'admin@aileadstrategies.com' && password === 'YourSecurePassword123!') {
+    return res.json({
+      success: true,
+      admin: {
+        id: 'admin-1',
+        email: 'admin@aileadstrategies.com',
+        role: 'super_admin',
+        name: 'Admin User',
+      },
+      token: 'admin-token-placeholder-' + Date.now(),
+    });
+  }
+  return res.status(401).json({
+    success: false,
+    message: 'Invalid email or password',
+  });
+});
+
 // GET /admin/health
 router.get('/health', (req, res) => {
   res.json({ status: 'ok', admin: true });

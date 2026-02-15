@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{business_name}}</title>
+  <style>
+    :root { --accent: {{accent_color}}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Georgia, serif; background: #fef7ed; color: #292524; line-height: 1.7; }
+    .hero { min-height: 50vh; display: flex; align-items: center; padding: 3rem; background: #fff7ed; border-bottom: 3px solid var(--accent); }
+    .hero h1 { font-size: 2.2rem; color: #1c1917; }
+    .hero .tagline { font-size: 1.2rem; color: var(--accent); margin: 0.5rem 0 1rem; }
+    .hero p { max-width: 500px; color: #57534e; }
+    .content { max-width: 800px; margin: 0 auto; padding: 3rem 2rem; }
+    .content h2 { color: #1c1917; margin-bottom: 1rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; display: inline-block; }
+    .service { margin: 2rem 0; }
+    .service h3 { color: var(--accent); }
+    .contact { background: #1c1917; color: #fafaf9; padding: 3rem 2rem; text-align: center; }
+    .contact a { color: var(--accent); }
+    .footer { padding: 2rem; text-align: center; color: #78716c; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div>
+      <h1>{{hero_title_line1}}</h1>
+      <p class="tagline">{{tagline}}</p>
+      <p>{{hero_description}}</p>
+      <p style="margin-top: 1rem;">{{contact_email}} | {{contact_phone}}</p>
+      <p>{{contact_address}}</p>
+    </div>
+  </section>
+  <main class="content">
+    <h2>{{about_headline}}</h2>
+    <p>{{about_description}}</p>
+    <div class="service">
+      <h3>{{service1_title}}</h3>
+      <p>{{service1_description}}</p>
+    </div>
+    <div class="service">
+      <h3>{{service2_title}}</h3>
+      <p>{{service2_description}}</p>
+    </div>
+    <div class="service">
+      <h3>{{service3_title}}</h3>
+      <p>{{service3_description}}</p>
+    </div>
+  </main>
+  <section class="contact">
+    <h2 style="color: #fafaf9; border-color: var(--accent);">Get in Touch</h2>
+    <p><a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
+    <p>{{contact_phone}}</p>
+    <p style="margin-top: 2rem;">
+      <a href="{{cta_destination}}" style="background: var(--accent); color: white; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 6px;">{{cta_primary}}</a>
+    </p>
+  </section>
+  <footer class="footer">
+    &copy; {{current_year}} {{business_name}}
+    <p><a href="{{social_link1}}" style="color: var(--accent);">LinkedIn</a> | <a href="{{social_link2}}" style="color: var(--accent);">Facebook</a> | <a href="{{social_link3}}" style="color: var(--accent);">Instagram</a></p>
+  </footer>
+</body>
+</html>

@@ -40,10 +40,21 @@ export default function WebsitesPage() {
   async function loadWebsites() {
     try {
       setFeatureBlocked(false)
-      const response = await api.get('/api/v1/websites')
-      const data = response.data?.data || response.data
-      const list = Array.isArray(data?.websites) ? data.websites : []
-      setWebsites(list)
+      const [backendRes, localRes] = await Promise.allSettled([
+        api.get('/api/v1/websites'),
+        fetch('/api/websites', { credentials: 'include' }),
+      ])
+      const backendData = backendRes.status === 'fulfilled' ? (backendRes.value?.data?.data || backendRes.value?.data) : null
+      const backendList = Array.isArray(backendData?.websites) ? backendData.websites : []
+      let aiList = []
+      if (localRes.status === 'fulfilled' && localRes.value?.ok) {
+        const localJson = await localRes.value.json()
+        aiList = Array.isArray(localJson?.data?.aiBuilderSites) ? localJson.data.aiBuilderSites : []
+      }
+      const list = [
+        ...backendList.map((s) => ({ ...s, _source: 'backend' })),
+        ...aiList.map((s) => ({ ...s, id: s.id, name: s.name, isPublished: s.status === 'published', subdomain: s.subdomain, _source: 'ai' })),
+      ]
     } catch (error) {
       const status = error.response?.status
       const errData = error.response?.data
@@ -82,13 +93,21 @@ export default function WebsitesPage() {
             <p className="text-neutral-500 mt-1 text-sm">AI-built websites that generate leads 24/7</p>
           </div>
           {!featureBlocked && (
-            <button
-              onClick={() => setShowBuilder(true)}
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              New Website
-            </button>
+            <div className="flex gap-2">
+              <Link
+                href="/websites/builder"
+                className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                7-Step Builder
+              </Link>
+              <button
+                onClick={() => setShowBuilder(true)}
+                className="px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+              >
+                Chat Wizard
+              </button>
+            </div>
           )}
         </div>
 
@@ -112,14 +131,14 @@ export default function WebsitesPage() {
             <Globe className="w-16 h-16 text-neutral-600 mx-auto mb-4" />
             <h2 className="text-xl font-medium text-white mb-2">No websites yet</h2>
             <p className="text-neutral-500 mb-6">Build your first AI-powered website in minutes with our chat wizard.</p>
-            <button
-              onClick={() => setShowBuilder(true)}
+            <Link
+              href="/websites/builder"
               className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 rounded-xl font-medium transition-all"
             >
               <Sparkles className="w-4 h-4" />
-              Build with AI
+              Build with 7-Step Wizard
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -144,7 +163,7 @@ export default function WebsitesPage() {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href={site.subdomain ? `https://aileadstrategies.com/sites/${site.subdomain}` : '#'}
+                    href={site._source === 'ai' ? `/preview/${site.id}` : (site.subdomain ? `https://aileadstrategies.com/sites/${site.subdomain}` : `/preview/${site.id}`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-500/50 rounded-lg transition-all"
@@ -152,7 +171,7 @@ export default function WebsitesPage() {
                     <Eye className="w-4 h-4" />
                     {site.isPublished ? 'View site' : 'Preview'}
                   </a>
-                  {!site.isPublished && (
+                  {!site.isPublished && site._source !== 'ai' && (
                     <button
                       onClick={() => handlePublish(site)}
                       disabled={publishingId === site.id}

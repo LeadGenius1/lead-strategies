@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{business_name}}</title>
+  <style>
+    :root { --accent: {{accent_color}}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: #f0f0f5; }
+    .hero { text-align: center; padding: 5rem 2rem; }
+    .hero h1 { font-size: 2.75rem; font-weight: 700; background: linear-gradient(90deg, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero .sub { font-size: 1.2rem; color: #a78bfa; margin: 0.5rem 0 1rem; }
+    .hero p { max-width: 600px; margin: 0 auto; opacity: 0.9; }
+    .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; max-width: 960px; margin: 0 auto; padding: 3rem 2rem; }
+    .card { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 2rem; border: 1px solid rgba(167, 139, 250, 0.2); }
+    .card h3 { color: var(--accent); margin-bottom: 0.5rem; }
+    .about { padding: 3rem 2rem; text-align: center; }
+    .cta { padding: 3rem 2rem; text-align: center; }
+    .cta a { display: inline-block; padding: 1rem 2rem; background: var(--accent); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 0.5rem; }
+    .footer { padding: 2rem; text-align: center; color: #64748b; }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1>{{hero_title_line1}}</h1>
+    <p class="sub">{{hero_title_line2}}</p>
+    <p>{{hero_description}}</p>
+    <p style="margin-top: 1.5rem;">{{contact_email}} · {{contact_phone}}</p>
+  </section>
+  <section class="services">
+    <div class="card">
+      <h3>{{service1_title}}</h3>
+      <p>{{service1_description}}</p>
+    </div>
+    <div class="card">
+      <h3>{{service2_title}}</h3>
+      <p>{{service2_description}}</p>
+    </div>
+    <div class="card">
+      <h3>{{service3_title}}</h3>
+      <p>{{service3_description}}</p>
+    </div>
+  </section>
+  <section class="about">
+    <h2 style="color: var(--accent); margin-bottom: 0.5rem;">{{about_headline}}</h2>
+    <p>{{about_description}}</p>
+    <p style="margin-top: 1rem;">{{stat1_value}} yrs · {{stat2_value}} clients</p>
+  </section>
+  <section class="cta">
+    <a href="{{cta_destination}}">{{cta_primary}}</a>
+    <a href="{{cta_destination}}" style="background: transparent; border: 2px solid var(--accent);">{{cta_secondary}}</a>
+  </section>
+  <footer class="footer">
+    &copy; {{current_year}} {{business_name}} | <a href="{{social_link1}}" style="color: var(--accent);">LinkedIn</a> <a href="{{social_link2}}" style="color: var(--accent);">Facebook</a> <a href="{{social_link3}}" style="color: var(--accent);">Instagram</a>
+  </footer>
+</body>
+</html>

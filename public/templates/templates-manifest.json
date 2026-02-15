@@ -1,0 +1,49 @@
+{
+  "templates": [
+    {
+      "id": "1a",
+      "slug": "executive-dark",
+      "name": "Executive Dark",
+      "file": "template-1a-executive-dark.html",
+      "category": "business",
+      "style": "dark",
+      "description": "Professional dark theme for executives and B2B"
+    },
+    {
+      "id": "2b",
+      "slug": "warm-professional",
+      "name": "Warm Professional",
+      "file": "template-2b-warm-professional.html",
+      "category": "business",
+      "style": "warm",
+      "description": "Friendly and approachable professional design"
+    },
+    {
+      "id": "3c",
+      "slug": "tech-premium",
+      "name": "Tech Premium",
+      "file": "template-3c-tech-premium.html",
+      "category": "saas",
+      "style": "tech",
+      "description": "Modern tech and SaaS aesthetic"
+    },
+    {
+      "id": "4d",
+      "slug": "minimal-portfolio",
+      "name": "Minimal Portfolio",
+      "file": "template-4d-minimal-portfolio.html",
+      "category": "portfolio",
+      "style": "minimal",
+      "description": "Clean minimalist portfolio layout"
+    },
+    {
+      "id": "5e",
+      "slug": "ai-agency",
+      "name": "AI Agency",
+      "file": "template-5e-ai-agency.html",
+      "category": "agency",
+      "style": "ai",
+      "description": "Bold AI and agency branding"
+    }
+  ]
+}

@@ -60,6 +60,7 @@ model User {
   teamMemberships         TeamMember[]
   videos                  Video[]
   websites                Website[]
+  aiBuilderSites          AiBuilderSite[]
   emailAccounts           UserEmailAccount[]
   emailPoolSubscription   EmailPoolSubscription?
   videoViewsAsCreator     VideoView[]       @relation("UserAsCreator")
@@ -193,6 +194,90 @@ model Website {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("websites")
+}
+
+// AI Website Builder models (separate from existing Website)
+model WebsiteTemplate {
+  id           String   @id @default(uuid())
+  name         String
+  slug         String   @unique
+  previewImage String?  @map("preview_image")
+  html         String   @db.Text
+  css          String   @db.Text
+  formSchema   Json?    @map("form_schema")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  sites        AiBuilderSite[]
+
+  @@map("website_templates")
+}
+
+model AiBuilderSite {
+  id           String         @id @default(uuid())
+  userId       String         @map("user_id")
+  templateId   String         @map("template_id")
+  name         String
+  html         String         @db.Text
+  css          String         @db.Text
+  formData     Json?          @map("form_data")
+  status       WebsiteStatus  @default(draft)
+  subdomain    String?        @unique
+  customDomain String?        @map("custom_domain")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template     WebsiteTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  versions     AiBuilderSiteVersion[]
+  leads        AiBuilderSiteLead[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("ai_builder_sites")
+}
+
+model AiBuilderSiteVersion {
+  id        String       @id @default(uuid())
+  siteId    String       @map("site_id")
+  html      String       @db.Text
+  css       String       @db.Text
+  formData  Json?        @map("form_data")
+  version   Int
+  createdAt DateTime     @default(now()) @map("created_at")
+  site      AiBuilderSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+  @@map("ai_builder_site_versions")
+}
+
+model AiBuilderSiteLead {
+  id        String       @id @default(uuid())
+  siteId    String       @map("site_id")
+  name      String?
+  email     String
+  phone     String?
+  message   String?      @db.Text
+  formData  Json?        @map("form_data")
+  status    LeadStatus   @default(new)
+  leadId    String?      @map("lead_id")
+  createdAt DateTime     @default(now()) @map("created_at")
+  site      AiBuilderSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+  @@index([status])
+  @@map("ai_builder_site_leads")
+}
+
+enum WebsiteStatus {
+  draft
+  published
+  archived
+}
+
+enum LeadStatus {
+  new
+  contacted
+  qualified
+  converted
 }
 
 model Video {

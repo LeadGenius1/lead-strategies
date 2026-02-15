@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{business_name}}</title>
+  <style>
+    :root { --accent: {{accent_color}}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #ffffff; color: #171717; line-height: 1.7; max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+    h1 { font-size: 2rem; font-weight: 400; margin-top: 4rem; margin-bottom: 0.25rem; }
+    .tagline { color: #737373; margin-bottom: 3rem; }
+    p { margin-bottom: 1.5rem; }
+    h2 { font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-top: 3rem; margin-bottom: 0.5rem; }
+    a { color: var(--accent); }
+    .cta { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid #e5e5e5; }
+    .cta a { display: inline-block; margin-right: 1rem; text-decoration: none; }
+    .footer { margin-top: 4rem; padding-bottom: 4rem; font-size: 0.875rem; color: #a3a3a3; }
+  </style>
+</head>
+<body>
+  <h1>{{hero_title_line1}}</h1>
+  <p class="tagline">{{tagline}}</p>
+  <p>{{hero_description}}</p>
+  <h2>Services</h2>
+  <p><strong>{{service1_title}}</strong> — {{service1_description}}</p>
+  <p><strong>{{service2_title}}</strong> — {{service2_description}}</p>
+  <p><strong>{{service3_title}}</strong> — {{service3_description}}</p>
+  <h2>{{about_headline}}</h2>
+  <p>{{about_description}}</p>
+  <p>{{stat1_value}} years · {{stat2_value}} clients</p>
+  <div class="cta">
+    <a href="{{cta_destination}}">{{cta_primary}}</a>
+    <a href="mailto:{{contact_email}}">{{contact_email}}</a>
+    <a href="tel:{{contact_phone}}">{{contact_phone}}</a>
+  </div>
+  <footer class="footer">
+    &copy; {{current_year}} {{business_name}} · <a href="{{social_link1}}">LinkedIn</a> <a href="{{social_link2}}">Facebook</a> <a href="{{social_link3}}">Instagram</a>
+  </footer>
+</body>
+</html>

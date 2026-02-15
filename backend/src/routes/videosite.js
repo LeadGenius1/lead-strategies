@@ -18,6 +18,17 @@ const R2_SECRET_KEY = process.env.CLOUDFLARE_R2_SECRET_KEY;
 const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
 const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
 
+// Convert private R2 URL to public R2.dev URL for browser playback
+function toPublicVideoUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const m = url.match(/https:\/\/[^.]+\.r2\.cloudflarestorage\.com\/[^/]+\/(.+)/);
+  if (m) {
+    const key = m[1];
+    return `${R2_PUBLIC_URL}/${key}`;
+  }
+  return url;
+}
+
 // R2 S3 client (R2 is S3-compatible)
 // Disable automatic checksums - R2 does not support x-amz-checksum-crc32 for browser PUT uploads
 let s3Client = null;
@@ -67,7 +78,7 @@ router.get('/videos', async (req, res) => {
     const where = { userId: req.userId };
     if (status) where.status = status;
 
-    const [videos, total] = await Promise.all([
+    const [rawVideos, total] = await Promise.all([
       prisma.video.findMany({
         where,
         take: parseInt(limit),
@@ -76,6 +87,11 @@ router.get('/videos', async (req, res) => {
       }),
       prisma.video.count({ where })
     ]);
+
+    const videos = rawVideos.map((v) => ({
+      ...v,
+      file_url: toPublicVideoUrl(v.file_url) || v.file_url
+    }));
 
     res.json({
       success: true,
@@ -98,7 +114,11 @@ router.get('/videos/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Video not found' });
     }
 
-    res.json({ success: true, data: video });
+    const data = {
+      ...video,
+      file_url: toPublicVideoUrl(video.file_url) || video.file_url
+    };
+    res.json({ success: true, data });
   } catch (error) {
     console.error('Get video error:', error);
     res.status(500).json({ success: false, error: error.message });

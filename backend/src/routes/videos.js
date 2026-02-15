@@ -25,14 +25,30 @@ const mockVideos = [
   { id: '3', title: 'How-To Tutorial', status: 'draft', visibility: 'private', viewCount: 0, totalEarnings: 0, duration: 300, thumbnail: null, createdAt: new Date() },
 ];
 
+// Convert private R2 URL to public R2.dev URL for browser playback
+// Private: https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/key
+// Public:   https://pub-XXX.r2.dev/key
+function toPublicVideoUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const m = url.match(/https:\/\/[^.]+\.r2\.cloudflarestorage\.com\/[^/]+\/(.+)/);
+  if (m) {
+    const key = m[1];
+    const base = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
+    return `${base}/${key}`;
+  }
+  return url;
+}
+
 // ---- PUBLIC ROUTES (no auth) - for /watch/[id] full-page viewing ----
 function toPublicVideo(v) {
   if (!v) return null;
+  const rawUrl = v.file_url || v.fileUrl || v.videoUrl;
+  const videoUrl = toPublicVideoUrl(rawUrl) || rawUrl;
   return {
     id: v.id,
     title: v.title,
     description: v.description,
-    videoUrl: v.file_url || v.videoUrl,
+    videoUrl,
     thumbnailUrl: v.thumbnailUrl || v.thumbnail_url,
     duration: v.duration,
     viewCount: v.view_count ?? 0,

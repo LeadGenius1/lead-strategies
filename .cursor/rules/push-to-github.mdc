@@ -1,0 +1,26 @@
+---
+description: ALWAYS push changes to GitHub - changes won't take effect until pushed
+alwaysApply: true
+---
+
+# Mandatory: Push All Changes to GitHub
+
+**RULE:** After making ANY code changes, you MUST commit and push to GitHub.
+
+## Why
+- Deployments (Railway, Vercel, etc.) pull from GitHub
+- Unpushed changes never reach production
+- The user will not see fixes or new features until they are pushed
+
+## Workflow
+1. After completing edits: `git add` the changed files
+2. `git commit -m "descriptive message"`
+3. `git push`
+
+## Do NOT
+- Leave changes uncommitted
+- Assume the user will push manually
+- Skip pushing "small" changes
+
+## Apply
+Every session that modifies code must end with a successful `git push` to the remote repository.

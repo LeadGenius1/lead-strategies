@@ -252,4 +252,66 @@ class ApolloService {
   }
 }
 
-module.exports = new ApolloService();
+// Standalone functions for Lead Hunter - throw on failure (no mock)
+async function searchLeads(query, options = {}) {
+  if (!APOLLO_API_KEY) {
+    throw new Error('APOLLO_API_KEY not configured. Add it to Railway Variables.');
+  }
+
+  try {
+    const response = await axios.post(
+      `${APOLLO_BASE_URL}/mixed_people/search`,
+      {
+        q_keywords: query,
+        person_titles: options.titles || [],
+        person_locations: options.locations || [],
+        organization_industry_tag_ids: options.industries || [],
+        page: options.page || 1,
+        per_page: options.perPage || 10,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+          'X-Api-Key': APOLLO_API_KEY,
+        },
+        timeout: 15000,
+      }
+    );
+
+    return response.data.people || [];
+  } catch (error) {
+    console.error('Apollo searchLeads error:', error.response?.data || error.message);
+    throw new Error(`Lead search failed: ${error.response?.data?.error || error.message}`);
+  }
+}
+
+async function getCompanyInfo(domain) {
+  if (!APOLLO_API_KEY) {
+    throw new Error('APOLLO_API_KEY not configured. Add it to Railway Variables.');
+  }
+
+  try {
+    const response = await axios.post(
+      `${APOLLO_BASE_URL}/organizations/enrich`,
+      { domain },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Api-Key': APOLLO_API_KEY,
+        },
+        timeout: 10000,
+      }
+    );
+
+    return response.data.organization || null;
+  } catch (error) {
+    console.error('Apollo getCompanyInfo error:', error.response?.data || error.message);
+    throw new Error(`Company lookup failed: ${error.response?.data?.error || error.message}`);
+  }
+}
+
+const apolloService = new ApolloService();
+apolloService.searchLeads = searchLeads;
+apolloService.getCompanyInfo = getCompanyInfo;
+module.exports = apolloService;

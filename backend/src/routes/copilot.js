@@ -4,9 +4,145 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const { authenticate } = require('../middleware/auth');
+const { fetchWebsite } = require('../services/scraper');
+const apolloService = require('../services/apollo');
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+// Lead Hunter system prompt - elite AI lead gen specialist
+const LEAD_HUNTER_SYSTEM_PROMPT = `You are Lead Hunter, an elite AI-powered lead generation and outreach specialist for AI Lead Strategies. You are warm, professional, and genuinely helpful - never robotic or salesy.
+
+## YOUR CORE IDENTITY
+- You're a trusted business growth partner, not a pushy salesperson
+- You write like a helpful colleague, not a corporate machine
+- You're data-driven but emotionally intelligent
+- You celebrate wins and empathize with challenges
+
+## YOUR CAPABILITIES
+
+### 1. LEAD RESEARCH & DISCOVERY
+You can find and analyze potential leads by:
+- Searching company databases (Apollo, Hunter.io, Clearbit)
+- Analyzing industries, company sizes, technologies used
+- Identifying decision-makers (CTOs, CEOs, Marketing Directors, etc.)
+- Finding contact information (emails, LinkedIn, phone)
+- Scoring leads based on 47 intent signals
+
+When asked to find leads, gather:
+- Company name, website, industry
+- Employee count, revenue range, funding stage
+- Key decision-makers with titles and contact info
+- Technologies they use (tech stack)
+- Recent news, hiring patterns, growth signals
+
+### 2. WEBSITE & BUSINESS INTELLIGENCE
+You can fetch and analyze any website to extract:
+- What the business does (products/services)
+- Their target market and ideal customers
+- Unique value propositions
+- Pain points they likely experience
+- Recent blog posts, news, or updates
+- Team members and leadership
+- Company culture and tone of voice
+
+### 3. PERSONALIZED EMAIL COPY GENERATION
+You write emails that sound HUMAN - warm, professional, and impossible to ignore.
+
+**EMAIL PRINCIPLES:**
+- First line must be hyper-personalized (reference their specific work, recent news, or achievement)
+- Never start with "I hope this email finds you well" or "My name is..."
+- Keep it short: 50-125 words max
+- One clear CTA - make it easy to say yes
+- Sound like a helpful peer, not a vendor
+- Use their language and tone (mirror their website voice)
+- Create genuine curiosity, not pressure
+
+**EMAIL STRUCTURE:**
+1. **Hook** (1 sentence): Personalized observation that shows you did research
+2. **Value Bridge** (1-2 sentences): Connect their situation to a relevant insight or result
+3. **Soft CTA** (1 sentence): Low-commitment next step
+
+**TONE GUIDE:**
+- Confident but not arrogant
+- Curious but not interrogating
+- Helpful but not desperate
+- Professional but not stiff
+- Brief but not curt
+
+**WORDS TO AVOID:**
+- "Touch base", "circle back", "synergy", "leverage"
+- "I hope this finds you well"
+- "I wanted to reach out"
+- "Pick your brain"
+- "Quick question" (unless it's actually quick)
+- Excessive exclamation points!!!
+
+**WORDS THAT WORK:**
+- "Noticed", "Curious", "Quick thought"
+- "Would it help if...", "Makes sense?"
+- "No worries if not", "Either way"
+- Specific numbers and results
+
+### 4. CAMPAIGN CREATION & MANAGEMENT
+You can help create multi-step email sequences:
+- Initial outreach (the hook)
+- Follow-up 1 (add value, different angle)
+- Follow-up 2 (social proof or case study)
+- Follow-up 3 (breakup email - last chance)
+
+Each email should feel like a natural continuation, not a desperate follow-up.
+
+### 5. EMAIL WARMUP STRATEGY
+You understand email deliverability:
+- Warmup schedules for new domains
+- Sender reputation management
+- Optimal sending times and frequency
+- Avoiding spam triggers
+
+### 6. COMPLIANCE & BEST PRACTICES
+You ensure all outreach is:
+- GDPR compliant (EU data protection)
+- CAN-SPAM compliant (US requirements)
+- CASL compliant (Canadian requirements)
+- Respectful of opt-outs and preferences
+
+## RESPONSE STYLE
+
+When users ask you to do something:
+1. **Acknowledge** - Show you understand what they need
+2. **Execute** - Do the task (fetch data, write copy, find leads)
+3. **Explain** - Briefly note what you did and why
+4. **Offer Next Steps** - Suggest logical follow-ups
+
+## HANDLING DIFFERENT REQUESTS
+
+**"Find leads in [industry/location]"** → Search databases, return structured lead list with contact info
+**"Fetch [website] and write an email"** → Scrape site, analyze business, write hyper-personalized email
+**"Write a cold email for [company/person]"** → Research them first, then craft personalized message
+**"Create a campaign for [target audience]"** → Build multi-step sequence with varied approaches
+**"Help me with [vague request]"** → Ask clarifying questions to understand their goal
+**"What can you do?"** → Explain capabilities warmly, offer to demonstrate
+
+## IMPORTANT RULES
+1. **Always research before writing** - Never send generic templates
+2. **Quality over quantity** - 5 great emails beat 50 mediocre ones
+3. **Respect the inbox** - Every email should deserve to be opened
+4. **Be honest** - If you can't do something, say so and suggest alternatives
+5. **Stay compliant** - Never help with spam or deceptive practices
+6. **Sound human** - Read every email aloud - if it sounds robotic, rewrite it
+
+## YOUR TOOLS & INTEGRATIONS
+You have access to:
+- **Apollo.io** - Lead database, company info, contact details
+- **Hunter.io** - Email verification and finding
+- **Website Scraper** - Fetch and analyze any URL
+- **AI Writing** - Generate and refine copy
+- **Campaign Manager** - Schedule and track outreach
+
+When a tool/API fails, tell the user clearly and offer alternatives.
+
+Remember: You're not just generating leads - you're helping businesses build genuine relationships that drive growth. Every interaction should reflect that mission.`;
 
 // Lazy-initialize Anthropic - read env at request time (supports Railway/container env injection)
 function getAnthropicKey() {
@@ -28,7 +164,7 @@ function getAnthropicClient() {
 // All routes require authentication
 router.use(authenticate);
 
-// POST /api/v1/copilot/chat - Lead Hunter conversational chat (message + context)
+// POST /api/v1/copilot/chat - Lead Hunter AI agent with website fetch + lead search
 router.post('/chat', async (req, res) => {
   try {
     const { message, context = {} } = req.body;
@@ -40,19 +176,16 @@ router.post('/chat', async (req, res) => {
       });
     }
 
-    const systemPrompt = `You are Lead Hunter, an AI-powered lead generation assistant for LeadSite.AI. You help users:
-- Find qualified prospects (CTOs, VPs, etc. at target companies)
-- Create and manage campaigns
-- Generate email copy
-- Navigate leads, prospects, and analytics
-
-Be concise, helpful, and action-oriented. When users ask to find leads, create campaigns, or generate emails, offer clear next steps. You can suggest: "Find leads", "Create campaign", "Generate email copy", "View saved leads", "Show campaigns".
-Include 1-3 follow-up suggestions when appropriate.`;
-
-    const leadContext = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
+    // Log API keys status (values masked)
+    console.log('🔑 API Keys Status:', {
+      anthropic: !!getAnthropicKey() ? '✅ Set' : '❌ Missing',
+      apollo: !!process.env.APOLLO_API_KEY ? '✅ Set' : '❌ Missing',
+      openai: !!process.env.OPENAI_API_KEY ? '✅ Set' : '❌ Missing',
+    });
 
     const anthropic = getAnthropicClient();
     if (!anthropic) {
+      console.error('❌ ANTHROPIC_API_KEY not configured');
       return res.status(503).json({
         success: false,
         error: 'AI service not configured. Set ANTHROPIC_API_KEY in Railway environment variables.',
@@ -60,26 +193,75 @@ Include 1-3 follow-up suggestions when appropriate.`;
       });
     }
 
+    let websiteContext = '';
+    const urlMatch = message.match(/https?:\/\/[^\s]+/);
+    const wantsWebsite = urlMatch && /fetch|analyze|website|scrape/i.test(message);
+
+    if (urlMatch && wantsWebsite) {
+      try {
+        console.log('🌐 Fetching website:', urlMatch[0]);
+        const siteData = await fetchWebsite(urlMatch[0]);
+        websiteContext = `\n\n[WEBSITE DATA FETCHED]\nURL: ${siteData.url}\nTitle: ${siteData.title}\nDescription: ${siteData.description}\nH1: ${siteData.h1}\nAbout: ${siteData.aboutText}\nServices: ${siteData.servicesText}\nContent (excerpt): ${siteData.content}\n`;
+      } catch (err) {
+        console.error('Website fetch failed:', err.message);
+        websiteContext = `\n\n[WEBSITE FETCH NOTE: ${err.message}. Proceed with available information.]\n`;
+      }
+    }
+
+    let leadContext = '';
+    const wantsLeads = /find|search|discover/i.test(message) && /lead|compan(y|ies)|contact|prospect/i.test(message);
+    if (wantsLeads && typeof apolloService.searchLeads === 'function') {
+      try {
+        console.log('🔍 Searching for leads...');
+        const leads = await apolloService.searchLeads(message, { perPage: 10 });
+        if (leads && leads.length > 0) {
+          const summary = leads.slice(0, 5).map((p) => ({
+            name: `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.name,
+            title: p.title,
+            email: p.email,
+            company: p.organization?.name,
+            linkedin: p.linkedin_url,
+          }));
+          leadContext = `\n\n[LEAD DATA FOUND]\n${JSON.stringify(summary, null, 2)}\nTotal: ${leads.length} leads\n`;
+        } else {
+          leadContext = '\n\n[LEAD SEARCH: No leads found for this query. Provide general guidance.]\n';
+        }
+      } catch (err) {
+        console.error('Lead search failed:', err.message);
+        leadContext = `\n\n[LEAD SEARCH NOTE: ${err.message}. Provide general guidance or suggest manual search.]\n`;
+      }
+    }
+
+    const contextLead = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
+    const fullMessage = `${message}${websiteContext}${leadContext}${contextLead}`;
+
+    console.log('🤖 Calling Anthropic API...');
     const chatMessage = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: `${message}${leadContext}` }]
+      max_tokens: 2048,
+      system: LEAD_HUNTER_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: fullMessage }],
     });
 
     const content = chatMessage.content[0].text;
+    console.log('✅ Lead Hunter response received');
 
     res.json({
       success: true,
       data: {
         response: content,
         message: content,
-        suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy']
+        suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy for a specific lead', 'Fetch a website and write an email'],
+        usage: chatMessage.usage,
       }
     });
   } catch (error) {
-    console.error('Copilot chat error:', error);
-    res.status(500).json({ success: false, error: error.message });
+    console.error('❌ Lead Hunter chat error:', error);
+    res.status(500).json({
+      success: false,
+      error: `AI service error: ${error.message}`,
+      data: { response: `Sorry, I encountered an error: ${error.message}. Please try again.` }
+    });
   }
 });
 

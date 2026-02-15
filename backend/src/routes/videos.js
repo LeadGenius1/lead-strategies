@@ -28,13 +28,19 @@ const mockVideos = [
 // Convert private R2 URL to public R2.dev URL for browser playback
 // Private: https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/key
 // Public:   https://pub-XXX.r2.dev/key
+// Also handles: relative keys (userId/file.mp4), path-style URLs
 function toPublicVideoUrl(url) {
   if (!url || typeof url !== 'string') return url;
-  const m = url.match(/https:\/\/[^.]+\.r2\.cloudflarestorage\.com\/[^/]+\/(.+)/);
-  if (m) {
-    const key = m[1];
-    const base = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
+  const base = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
+  // Private R2 path-style: https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/objectKey
+  const privateMatch = url.match(/https:\/\/[^/]+\.r2\.cloudflarestorage\.com\/[^/]+\/(.+)/);
+  if (privateMatch) {
+    const key = privateMatch[1].replace(/\/$/, '');
     return `${base}/${key}`;
+  }
+  // Relative key (e.g. "userId/file.mp4" stored without base URL)
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return `${base}/${url.replace(/^\//, '')}`;
   }
   return url;
 }

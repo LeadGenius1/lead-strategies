@@ -21,10 +21,15 @@ const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUB
 // Convert private R2 URL to public R2.dev URL for browser playback
 function toPublicVideoUrl(url) {
   if (!url || typeof url !== 'string') return url;
-  const m = url.match(/https:\/\/[^.]+\.r2\.cloudflarestorage\.com\/[^/]+\/(.+)/);
+  // Private R2 path-style: https://ACCOUNT.r2.cloudflarestorage.com/BUCKET/objectKey
+  const m = url.match(/https:\/\/[^/]+\.r2\.cloudflarestorage\.com\/[^/]+\/(.+)/);
   if (m) {
-    const key = m[1];
+    const key = m[1].replace(/\/$/, '');
     return `${R2_PUBLIC_URL}/${key}`;
+  }
+  // Relative key (e.g. "userId/file.mp4")
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return `${R2_PUBLIC_URL}/${url.replace(/^\//, '')}`;
   }
   return url;
 }
@@ -88,10 +93,10 @@ router.get('/videos', async (req, res) => {
       prisma.video.count({ where })
     ]);
 
-    const videos = rawVideos.map((v) => ({
-      ...v,
-      file_url: toPublicVideoUrl(v.file_url) || v.file_url
-    }));
+    const videos = rawVideos.map((v) => {
+      const publicUrl = toPublicVideoUrl(v.file_url) || v.file_url;
+      return { ...v, file_url: publicUrl, videoUrl: publicUrl };
+    });
 
     res.json({
       success: true,
@@ -114,9 +119,11 @@ router.get('/videos/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Video not found' });
     }
 
+    const publicFileUrl = toPublicVideoUrl(video.file_url) || video.file_url;
     const data = {
       ...video,
-      file_url: toPublicVideoUrl(video.file_url) || video.file_url
+      file_url: publicFileUrl,
+      videoUrl: publicFileUrl
     };
     res.json({ success: true, data });
   } catch (error) {

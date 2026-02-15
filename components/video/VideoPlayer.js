@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Loader2 } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Loader2, AlertCircle } from 'lucide-react';
 
 export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = false }) {
   const videoRef = useRef(null);
@@ -10,6 +10,7 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
   const [volume, setVolume] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
@@ -26,8 +27,9 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
         setBuffered((bufferedEnd / video.duration) * 100);
       }
     };
-    const handleLoadStart = () => setLoading(true);
-    const handleCanPlay = () => setLoading(false);
+    const handleLoadStart = () => { setLoading(true); setLoadError(false); };
+    const handleCanPlay = () => { setLoading(false); setLoadError(false); };
+    const handleError = () => { setLoading(false); setLoadError(true); };
     const handlePlay = () => setPlaying(true);
     const handlePause = () => setPlaying(false);
 
@@ -36,6 +38,7 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
     video.addEventListener('progress', updateBuffered);
     video.addEventListener('loadstart', handleLoadStart);
     video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
 
@@ -49,6 +52,7 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
       video.removeEventListener('progress', updateBuffered);
       video.removeEventListener('loadstart', handleLoadStart);
       video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
     };
@@ -127,8 +131,19 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
         playsInline
       />
 
+      {/* Load Error Overlay - URL may be private R2, check CLOUDFLARE_R2_PUBLIC_URL */}
+      {loadError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+          <div className="text-center p-6 max-w-md">
+            <AlertCircle className="w-12 h-12 text-amber-400 mx-auto mb-3" />
+            <p className="text-white font-medium mb-1">Video failed to load</p>
+            <p className="text-neutral-400 text-sm">The video URL may be incorrect. Ensure R2 public URL is configured.</p>
+          </div>
+        </div>
+      )}
+
       {/* Loading Overlay */}
-      {loading && (
+      {loading && !loadError && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
           <Loader2 className="w-12 h-12 text-white animate-spin" />
         </div>

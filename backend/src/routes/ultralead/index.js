@@ -1,9 +1,9 @@
 /**
- * ClientContact.IO CRM API Routes
+ * UltraLead.AI API Routes
  * AI Lead Strategies LLC
  *
  * Enterprise CRM & Sales Automation Platform
- * Tier 5 - $599/mo - All features + API access
+ * Tier 5 - $499/mo - All-in-one bundle
  */
 
 const express = require('express');
@@ -32,11 +32,11 @@ const requireTier5 = (req, res, next) => {
     return res.status(401).json({ success: false, error: 'Authentication required' });
   }
 
-  // Tier 5 is ClientContact CRM - full enterprise access
+  // Tier 5 is UltraLead.AI - full enterprise access
   if (req.user.tier < 5) {
     return res.status(403).json({
       success: false,
-      error: 'ClientContact.IO CRM features require Tier 5 subscription',
+      error: 'UltraLead.AI features require Tier 5 subscription',
       upgrade: {
         currentTier: req.user.tier,
         requiredTier: 5,
@@ -48,7 +48,7 @@ const requireTier5 = (req, res, next) => {
   next();
 };
 
-// Apply tier check to all ClientContact CRM routes
+// Apply tier check to all UltraLead.AI routes
 router.use(requireTier5);
 
 // Mount routes

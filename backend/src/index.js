@@ -1,5 +1,5 @@
 // LeadSite.AI Backend - Main Entry Point
-// Unified API for 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO
+// Unified API for 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, UltraLead.AI
 
 // Polyfill for undici/fetch compatibility (Node < 20 or undici webidl expects File)
 if (typeof globalThis.File === 'undefined') {
@@ -59,7 +59,7 @@ const autoResponseRoutes = require('./routes/autoResponses');
 const conversationNoteRoutes = require('./routes/conversationNotes');
 const emailRoutes = require('./routes/emails');
 
-// UltraLead / ClientContact CRM Routes (Tier 5)
+// UltraLead.AI Routes (Tier 5)
 const clientcontactCrmRoutes = require('./routes/ultralead');
 
 // New Platform Routes
@@ -188,7 +188,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     version: '1.0.0',
     service: 'leadsite-backend',
-    platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.io'],
+    platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.ai', 'ultralead.ai'],
     selfHealing: {
       enabled: selfHealingSystem?.running || false,
       agents: selfHealingSystem?.running ? Object.keys(selfHealingSystem.getAgentStatus()).length : 0
@@ -321,7 +321,7 @@ app.use('/api/v1/canned-responses', cannedResponseRoutes);
 app.use('/api/v1/auto-responses', autoResponseRoutes);
 app.use('/api/v1/conversation-notes', conversationNoteRoutes);
 
-// ClientContact CRM Routes (Tier 5)
+// UltraLead.AI Routes (Tier 5)
 app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
 
 // New Platform Routes (Multi-Agent Build)
@@ -439,8 +439,8 @@ app.listen(PORT, '0.0.0.0', async () => {
 ║   • LeadSite.AI (Tier 1)                          ║
 ║   • LeadSite.IO (Tier 2)                          ║
 ║   • ClientContact.IO (Tier 3)                     ║
-║   • VideoSite.IO (Tier 4)                         ║
-║   • ClientContact CRM (Tier 5)                    ║
+║   • VideoSite.AI (Tier 4)                         ║
+║   • UltraLead.AI (Tier 5)                        ║
 ║                                                   ║
 ║   Health: http://localhost:${PORT}/health            ║
 ║   API:    http://localhost:${PORT}/api/v1            ║
@@ -452,11 +452,11 @@ app.listen(PORT, '0.0.0.0', async () => {
   // ===========================================
   // SELF-HEALING SYSTEM STARTUP
   // ===========================================
-  // Monitors all 4 platforms from single system
+  // Monitors all 5 platforms from single system
   if (process.env.ENABLE_SELF_HEALING === 'true') {
     try {
       console.log('\n🔧 Starting Self-Healing System...');
-      console.log('   Monitoring all 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO\n');
+      console.log('   Monitoring all 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, UltraLead.AI\n');
 
       // Start all 7 agents
       await startAgents({

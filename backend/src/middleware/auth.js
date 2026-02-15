@@ -51,7 +51,7 @@ const TIER_FEATURES = {
   1: ['leads', 'campaigns', 'email', 'website_builder', 'forms'],        // LeadSite.AI / Free
   2: ['leads', 'campaigns', 'email', 'website_builder', 'forms'],        // LeadSite.IO
   3: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder'], // ClientContact.IO
-  4: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video'], // VideoSite.IO
+  4: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video'], // VideoSite.AI
   5: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video', 'crm', 'api', 'teams'] // UltraLead
 };
 
@@ -93,7 +93,7 @@ const LEAD_LIMITS = {
   1: 50,    // LeadSite.AI
   2: 100,   // LeadSite.IO
   3: 500,   // ClientContact.IO
-  4: 1000,  // VideoSite.IO
+  4: 1000,  // VideoSite.AI
   5: 10000  // UltraLead
 };
 

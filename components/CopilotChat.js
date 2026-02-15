@@ -111,7 +111,7 @@ export default function CopilotChat({ selectedLead }) {
       let errorText = 'Failed to process request. Please try again.';
       
       if (errorStatus === 503) {
-        errorText = 'AI service is not configured. Please contact support.';
+        errorText = errorData?.error || 'AI service is not configured. Set ANTHROPIC_API_KEY in Railway.';
       } else if (errorStatus === 401) {
         errorText = 'Session expired. Please log in again.';
       } else if (errorStatus === 500) {
@@ -120,7 +120,7 @@ export default function CopilotChat({ selectedLead }) {
         errorText = err.message;
       }
       
-      const assistantContent = errorData?.data?.response || 'Sorry, I encountered an error. Please try again.';
+      const assistantContent = errorData?.error || errorData?.data?.response || 'Sorry, I encountered an error. Please try again.';
       setError(errorStatus === 500 ? 'AI service temporarily unavailable. Please try again.' : `Request failed (${errorStatus || 'unknown'})`);
       
       const errorMessage = {

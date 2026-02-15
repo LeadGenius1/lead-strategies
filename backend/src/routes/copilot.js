@@ -8,16 +8,20 @@ const { authenticate } = require('../middleware/auth');
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Initialize Anthropic client
-let anthropic = null;
-if (process.env.ANTHROPIC_API_KEY) {
+// Lazy-initialize Anthropic - read env at request time (supports Railway/container env injection)
+function getAnthropicKey() {
+  return process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY || null;
+}
+
+function getAnthropicClient() {
+  const key = getAnthropicKey();
+  if (!key) return null;
   try {
     const Anthropic = require('@anthropic-ai/sdk');
-    anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY
-    });
+    return new Anthropic({ apiKey: key });
   } catch (error) {
-    console.warn('Failed to initialize Anthropic client:', error.message);
+    console.error('Failed to create Anthropic client:', error.message);
+    return null;
   }
 }
 
@@ -47,14 +51,12 @@ Include 1-3 follow-up suggestions when appropriate.`;
 
     const leadContext = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
 
+    const anthropic = getAnthropicClient();
     if (!anthropic) {
-      return res.json({
-        success: true,
-        data: {
-          response: "I'm Lead Hunter. I can help you find leads, create campaigns, and generate email copy. Try: 'Find 100 CTOs at SaaS companies' or 'Create a warmup campaign'.",
-          suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy for healthcare leads'],
-          _mock: true
-        }
+      return res.status(503).json({
+        success: false,
+        error: 'AI service not configured. Set ANTHROPIC_API_KEY in Railway environment variables.',
+        code: 'ANTHROPIC_NOT_CONFIGURED'
       });
     }
 
@@ -93,15 +95,12 @@ router.post('/', async (req, res) => {
       });
     }
 
+    const anthropic = getAnthropicClient();
     if (!anthropic) {
-      // Return mock response if Anthropic not configured
-      return res.json({
-        success: true,
-        data: {
-          subject: `Quick question about ${leadInfo.company || 'your business'}`,
-          body: `Hi ${leadInfo.name?.split(' ')[0] || 'there'},\n\nI noticed ${leadInfo.company || 'your company'} has been doing great work in ${leadInfo.industry || 'your industry'}. I wanted to reach out because I think we could help you achieve even better results.\n\nWould you be open to a quick 15-minute call this week?\n\nBest,\n[Your Name]`,
-          _mock: true
-        }
+      return res.status(503).json({
+        success: false,
+        error: 'AI service not configured. Set ANTHROPIC_API_KEY in Railway environment variables.',
+        code: 'ANTHROPIC_NOT_CONFIGURED'
       });
     }
 
@@ -180,33 +179,12 @@ router.post('/sequence', async (req, res) => {
       });
     }
 
+    const anthropic = getAnthropicClient();
     if (!anthropic) {
-      // Return mock sequence
-      return res.json({
-        success: true,
-        data: {
-          sequence: [
-            {
-              step: 1,
-              delay: 0,
-              subject: `Quick question about ${leadInfo.company || 'your business'}`,
-              body: `Hi ${leadInfo.name?.split(' ')[0]},\n\nI noticed ${leadInfo.company || 'your company'} in ${leadInfo.industry || 'your industry'}. Would love to chat.\n\nBest`
-            },
-            {
-              step: 2,
-              delay: daysBetween,
-              subject: `Following up`,
-              body: `Hi ${leadInfo.name?.split(' ')[0]},\n\nJust wanted to follow up on my previous email.\n\nBest`
-            },
-            {
-              step: 3,
-              delay: daysBetween * 2,
-              subject: `Last try`,
-              body: `Hi ${leadInfo.name?.split(' ')[0]},\n\nI'll keep this short - is this something you'd be interested in?\n\nBest`
-            }
-          ],
-          _mock: true
-        }
+      return res.status(503).json({
+        success: false,
+        error: 'AI service not configured. Set ANTHROPIC_API_KEY in Railway environment variables.',
+        code: 'ANTHROPIC_NOT_CONFIGURED'
       });
     }
 
@@ -268,15 +246,12 @@ router.post('/improve', async (req, res) => {
       });
     }
 
+    const anthropic = getAnthropicClient();
     if (!anthropic) {
-      return res.json({
-        success: true,
-        data: {
-          subject: subject || 'Improved subject',
-          body: body,
-          suggestions: ['Add personalization', 'Make CTA clearer'],
-          _mock: true
-        }
+      return res.status(503).json({
+        success: false,
+        error: 'AI service not configured. Set ANTHROPIC_API_KEY in Railway environment variables.',
+        code: 'ANTHROPIC_NOT_CONFIGURED'
       });
     }
 

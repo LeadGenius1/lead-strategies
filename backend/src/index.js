@@ -252,6 +252,11 @@ app.get('/api/health', async (req, res) => {
     checks.r2Storage = { status: 'not_configured', message: 'R2 credentials not set' };
   }
 
+  // Anthropic (Lead Hunter / Copilot AI)
+  checks.anthropic = (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY)
+    ? { status: 'configured', message: 'ANTHROPIC_API_KEY set' }
+    : { status: 'not_configured', message: 'ANTHROPIC_API_KEY required for Lead Hunter AI' };
+
   // Memory
   const mem = process.memoryUsage();
   const heapMB = Math.round(mem.heapUsed / 1024 / 1024);
@@ -372,6 +377,35 @@ initializeRedis().then((redisConfig) => {
 // Start server immediately (routes are already registered)
 // Bind to 0.0.0.0 to accept connections from all network interfaces (required for Railway/Docker)
 app.listen(PORT, '0.0.0.0', async () => {
+  // API Keys Status - log which services are configured (values masked)
+  const apiKeysStatus = {
+    anthropic: !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY),
+    apollo: !!process.env.APOLLO_API_KEY,
+    openai: !!process.env.OPENAI_API_KEY,
+    stripe: !!process.env.STRIPE_SECRET_KEY,
+    mailgun: !!process.env.MAILGUN_API_KEY,
+  };
+  console.log('API Keys Status:', apiKeysStatus);
+
+  // Test Anthropic connection on startup (non-blocking)
+  if (apiKeysStatus.anthropic) {
+    const key = process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY;
+    try {
+      const Anthropic = require('@anthropic-ai/sdk');
+      const anthropic = new Anthropic({ apiKey: key });
+      const testResp = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 20,
+        messages: [{ role: 'user', content: 'Say "API Connected" in 2 words only.' }],
+      });
+      console.log('✅ Anthropic API connected:', testResp.content[0]?.text?.trim() || 'OK');
+    } catch (err) {
+      console.error('❌ Anthropic API FAILED:', err.message);
+    }
+  } else {
+    console.warn('⚠️  ANTHROPIC_API_KEY not set - Lead Hunter will return 503 until configured');
+  }
+
   console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║

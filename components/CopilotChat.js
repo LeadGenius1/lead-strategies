@@ -76,13 +76,22 @@ export default function CopilotChat({ selectedLead }) {
 
     try {
       const token = await getAuthToken();
+      if (!token) {
+        setError('Please sign in to use Lead Hunter.');
+        setMessages((prev) => [...prev, {
+          role: 'assistant',
+          content: 'Please sign in to use Lead Hunter.',
+          error: true,
+        }]);
+        return;
+      }
       const response = await api.post(
-        '/api/v1/copilot',
+        '/api/v1/copilot/chat',
         {
           message: userMessage.content,
           context: selectedLead ? { lead: { email: selectedLead.email, name: selectedLead.name, company: selectedLead.company } } : {},
         },
-        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const responseData = response.data?.data || response.data || {};

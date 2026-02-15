@@ -24,6 +24,63 @@ if (process.env.ANTHROPIC_API_KEY) {
 // All routes require authentication
 router.use(authenticate);
 
+// POST /api/v1/copilot/chat - Lead Hunter conversational chat (message + context)
+router.post('/chat', async (req, res) => {
+  try {
+    const { message, context = {} } = req.body;
+
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'Message is required'
+      });
+    }
+
+    const systemPrompt = `You are Lead Hunter, an AI-powered lead generation assistant for LeadSite.AI. You help users:
+- Find qualified prospects (CTOs, VPs, etc. at target companies)
+- Create and manage campaigns
+- Generate email copy
+- Navigate leads, prospects, and analytics
+
+Be concise, helpful, and action-oriented. When users ask to find leads, create campaigns, or generate emails, offer clear next steps. You can suggest: "Find leads", "Create campaign", "Generate email copy", "View saved leads", "Show campaigns".
+Include 1-3 follow-up suggestions when appropriate.`;
+
+    const leadContext = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
+
+    if (!anthropic) {
+      return res.json({
+        success: true,
+        data: {
+          response: "I'm Lead Hunter. I can help you find leads, create campaigns, and generate email copy. Try: 'Find 100 CTOs at SaaS companies' or 'Create a warmup campaign'.",
+          suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy for healthcare leads'],
+          _mock: true
+        }
+      });
+    }
+
+    const chatMessage = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: `${message}${leadContext}` }]
+    });
+
+    const content = chatMessage.content[0].text;
+
+    res.json({
+      success: true,
+      data: {
+        response: content,
+        message: content,
+        suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy']
+      }
+    });
+  } catch (error) {
+    console.error('Copilot chat error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // POST /api/v1/copilot - Generate AI email
 router.post('/', async (req, res) => {
   try {

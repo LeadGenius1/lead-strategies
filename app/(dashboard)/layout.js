@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
 import {
   getPlatformFeatures,
   PLATFORM_DISPLAY_NAMES,
@@ -99,11 +100,42 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     async function loadUser() {
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('token='))
-        ?.split('=')[1];
+      // Use same cookie reading as app/admin/layout.js (working reference)
+      const adminToken = Cookies.get('admin_token');
+      const adminUser = Cookies.get('admin_user');
+      const token = Cookies.get('token');
 
+      // DEBUG: log cookie presence when admin clicks F01-F18 (remove after fix verified)
+      console.log('DASHBOARD AUTH:', {
+        admin_token: !!adminToken,
+        admin_user: !!adminUser,
+        token: !!token,
+        pathname: pathname,
+      });
+
+      // 1. Admin session first: if admin_token AND admin_user exist, allow access (skip auth/me)
+      if (adminToken && adminUser) {
+        try {
+          const adminData = JSON.parse(adminUser);
+          setUser({
+            id: adminData.id,
+            email: adminData.email,
+            name: adminData.name,
+            role: adminData.role || 'super_admin',
+            tier: 5,
+            plan_tier: 'UltraLead',
+            planTier: 'UltraLead',
+          });
+          setLoading(false);
+          return;
+        } catch (e) {
+          console.error('Admin session parse error:', e);
+          router.push('/admin/login');
+          return;
+        }
+      }
+
+      // 2. User session: token exists → call auth/me
       if (!token) {
         router.push('/login');
         return;
@@ -277,8 +309,14 @@ export default function DashboardLayout({ children }) {
 
             <button
               onClick={() => {
-                document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                router.push('/login');
+                Cookies.remove('token');
+                if (Cookies.get('admin_token')) {
+                  Cookies.remove('admin_token');
+                  Cookies.remove('admin_user');
+                  router.push('/admin/login');
+                } else {
+                  router.push('/login');
+                }
               }}
               title="Logout"
               className="w-full flex items-center justify-center sm:justify-start px-2 sm:px-3 py-2 text-sm text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10 transition-all group"

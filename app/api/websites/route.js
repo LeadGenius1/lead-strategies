@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
+import { getSession } from '@/lib/auth-session';
 import { prisma } from '@/lib/prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
@@ -17,13 +18,17 @@ async function getUserId(request) {
     const cookieStore = await cookies();
     token = cookieStore.get('token')?.value || cookieStore.get('admin_token')?.value;
   }
-  if (!token) return null;
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    return decoded.id || decoded.userId || decoded.sub || null;
-  } catch {
-    return null;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const id = decoded.id || decoded.userId || decoded.sub;
+      if (id) return id;
+    } catch {
+      /* fall through */
+    }
   }
+  const session = await getSession();
+  return session?.user?.id || null;
 }
 
 export async function GET(request) {

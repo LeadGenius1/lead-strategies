@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
+import { getSession } from '@/lib/auth-session';
 import { prisma } from '@/lib/prisma';
 import { readFile } from 'fs/promises';
 import path from 'path';
@@ -36,19 +37,25 @@ const SLUG_MAP = {
 };
 
 async function getUserId(request) {
+  // 1. Try Authorization header
   const authHeader = request.headers.get('authorization');
   let token = authHeader?.replace('Bearer ', '');
   if (!token) {
     const cookieStore = await cookies();
     token = cookieStore.get('token')?.value || cookieStore.get('admin_token')?.value;
   }
-  if (!token) return null;
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    return decoded.id || decoded.userId || decoded.sub || null;
-  } catch {
-    return null;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const id = decoded.id || decoded.userId || decoded.sub;
+      if (id) return id;
+    } catch {
+      // JWT invalid/expired - fall through to NextAuth
+    }
   }
+  // 2. Fallback: NextAuth session (OAuth logins)
+  const session = await getSession();
+  return session?.user?.id || null;
 }
 
 function replacePlaceholders(html, formData) {

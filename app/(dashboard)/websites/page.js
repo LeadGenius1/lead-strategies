@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Cookies from 'js-cookie'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import { Globe, Loader2, ExternalLink, ArrowRight, Sparkles, Eye, Upload } from 'lucide-react'
@@ -40,9 +41,13 @@ export default function WebsitesPage() {
   async function loadWebsites() {
     try {
       setFeatureBlocked(false)
+      const token = Cookies.get('token') || Cookies.get('admin_token')
       const [backendRes, localRes] = await Promise.allSettled([
         api.get('/api/v1/websites'),
-        fetch('/api/websites', { credentials: 'include' }),
+        fetch('/api/websites', {
+          credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }),
       ])
       const backendData = backendRes.status === 'fulfilled' ? (backendRes.value?.data?.data || backendRes.value?.data) : null
       const backendList = Array.isArray(backendData?.websites) ? backendData.websites : []

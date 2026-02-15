@@ -79,6 +79,7 @@ export default function WebsiteBuilderPage() {
       const token = Cookies.get('token') || Cookies.get('admin_token');
       const res = await fetch('/api/websites/generate', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),

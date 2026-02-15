@@ -1,5 +1,26 @@
 // LeadSite.AI Backend - Main Entry Point
 // Unified API for 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.IO
+
+// Polyfill for undici/fetch compatibility (Node < 20 or undici webidl expects File)
+if (typeof globalThis.File === 'undefined') {
+  globalThis.File = class File {
+    constructor(bits, name, options = {}) {
+      this._bits = bits;
+      this.name = name;
+      this.type = options.type || '';
+      this.lastModified = options.lastModified || Date.now();
+    }
+  };
+}
+if (typeof globalThis.Blob === 'undefined') {
+  globalThis.Blob = class Blob {
+    constructor(parts = [], options = {}) {
+      this._parts = parts;
+      this.type = options.type || '';
+    }
+  };
+}
+
 require('dotenv').config();
 
 // Railway Postgres fix: use public URL when internal (*.railway.internal) unreachable

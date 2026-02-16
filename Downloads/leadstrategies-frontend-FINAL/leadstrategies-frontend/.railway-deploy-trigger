@@ -1,3 +1,0 @@
-Deployment trigger: 2026-01-17 15:00:00
-Latest commit: d50412b9
-This file is used to force Railway deployments when auto-deploy doesn't trigger.

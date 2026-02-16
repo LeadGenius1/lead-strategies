@@ -161,6 +161,9 @@ const limiterConfig = {
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
+    // NEVER rate limit auth — users must always be able to log in
+    if (req.path.includes('/auth/login') || req.path.includes('/auth/signup') || req.path.includes('/auth/register') ||
+        req.path.includes('/auth/oauth') || req.path.includes('/auth/me') || req.path.includes('/auth/logout')) return true;
     if (req.path.includes('/webhooks/') && req.method === 'POST') return true;
     if (req.path === '/health' || req.path === '/api/health' || req.path === '/api/v1/health') return true;
     return false;

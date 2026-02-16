@@ -12,20 +12,14 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-// Chat questions map to formData for /api/websites/generate (5 templates, placeholder replacement)
+// 6 questions to build a solid website - simple chat flow
 const QUESTIONS = [
   { key: 'business_basics', question: "What's your business name and tagline? (e.g., Acme Corp | We deliver results)", parse: (a) => { const [n, t] = a.split(/[|–-]/).map((s) => s.trim()); return { business_name: n || a, tagline: t || '' }; } },
-  { key: 'industry_type', question: "What industry and who do you serve? (e.g., Technology, B2B - or: Healthcare, B2C - or: Consulting, Both)", parse: (a) => { const m = a.match(/([^,]+),?\s*(B2B|B2C|Both)/i); return { industry: m ? m[1].trim() : a, business_type: m ? m[2] : 'Both' }; } },
-  { key: 'contact', question: "Primary contact: name, email, phone (e.g., John Smith | john@acme.com | 555-1234)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); return { owner_name: p[0] || '', email: p[1] || '', phone: p[2] || '' }; } },
-  { key: 'address_hours', question: "Address and hours? (e.g., 123 Main St | Mon-Fri 9-5) or type 'skip'", parse: (a) => { if (/skip|none|n\/a/i.test(a)) return { address: '', hours: '' }; const [addr, hrs] = a.split(/[|]/).map((s) => s.trim()); return { address: addr || '', hours: hrs || '' }; } },
-  { key: 'services', question: "Top 3 services. One per line: Name - Description (e.g., Consulting - Strategy and analysis)", parse: (a) => { const lines = a.split(/\n/).map((s) => s.trim()).filter(Boolean).slice(0, 3); const parseLine = (l) => (l?.includes(' - ') ? l.split(' - ').map((x) => x.trim()) : [l || '', l || '']); const s1 = parseLine(lines[0]); const s2 = parseLine(lines[1]); const s3 = parseLine(lines[2]); return { service1_name: s1[0], service1_description: s1[1] || s1[0], service2_name: s2[0], service2_description: s2[1] || s2[0], service3_name: s3[0], service3_description: s3[1] || s3[0] }; } },
-  { key: 'about', question: "About: headline and your story (1-2 sentences)", parse: (a) => ({ about_headline: a.split(/[.!?]/)[0]?.trim() || 'About Us', about_story: a }) },
-  { key: 'stats', question: "Years in business and clients served? (e.g., 5+ years, 100+ clients) or 'skip'", parse: (a) => { if (/skip|none/i.test(a)) return { years_experience: '5+', clients_served: '100+' }; const y = a.match(/(\d+\+?)\s*(years?|yrs?)?/i); const c = a.match(/(\d+\+?)\s*(clients?|customers?)?/i); return { years_experience: y ? y[1] : '5+', clients_served: c ? c[1] : '100+' }; } },
-  { key: 'unique_value', question: "What makes you unique? Your value proposition in one sentence.", parse: (a) => ({ unique_value: a }) },
-  { key: 'social', question: "Social links: LinkedIn, Facebook, Instagram (paste URLs or 'skip')", parse: (a) => { if (/skip|none/i.test(a)) return { linkedin: '#', facebook: '#', instagram: '#' }; const urls = a.split(/\s+/).filter((u) => u.startsWith('http')); return { linkedin: urls[0] || '#', facebook: urls[1] || '#', instagram: urls[2] || '#' }; } },
-  { key: 'branding', question: "Brand tone and target audience? (e.g., Professional, Small business owners) or (Friendly, Consumers)", parse: (a) => { const p = a.split(/[,]/).map((s) => s.trim()); return { tone: p[0] || 'Professional', target_audience: p[1] || p[0] || 'Business professionals' }; } },
-  { key: 'cta', question: "Call-to-action: primary button text, secondary text, link URL (e.g., Get Started | Learn More | #contact)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); return { primary_cta: p[0] || 'Get Started', secondary_cta: p[1] || 'Learn More', cta_destination: p[2] || '#contact' }; } },
-  { key: 'template', question: "Choose template (1-5): 1=Executive Dark, 2=Warm Professional, 3=Tech Premium, 4=Minimal Portfolio, 5=AI Agency", parse: (a) => ({ template: a }) },
+  { key: 'contact', question: "Contact email and phone (e.g., john@acme.com | 555-1234)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); const email = p.find((x) => x?.includes('@')) || ''; const phone = p.find((x) => x && !x.includes('@') && /\d/.test(x)) || p[1] || ''; return { email, phone }; } },
+  { key: 'services', question: "Top 3 services or offerings. One per line: Name - Brief description", parse: (a) => { const lines = a.split(/\n/).map((s) => s.trim()).filter(Boolean).slice(0, 3); const parseLine = (l) => (l?.includes(' - ') ? l.split(' - ').map((x) => x.trim()) : [l || '', l || '']); const s1 = parseLine(lines[0]); const s2 = parseLine(lines[1]); const s3 = parseLine(lines[2]); return { service1_name: s1[0], service1_description: s1[1] || s1[0], service2_name: s2[0], service2_description: s2[1] || s2[0], service3_name: s3[0], service3_description: s3[1] || s3[0] }; } },
+  { key: 'about', question: "About your business in 1–2 sentences (what you do, who you serve)", parse: (a) => ({ about_headline: a.split(/[.!?]/)[0]?.trim() || 'About Us', about_story: a }) },
+  { key: 'cta', question: "Main call-to-action? (e.g., Get Started, Contact Us, Request Demo)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); return { primary_cta: p[0] || 'Get Started', secondary_cta: p[1] || 'Learn More', cta_destination: p[2] || '#contact' }; } },
+  { key: 'template', question: "Pick a style (1–5): 1=Executive Dark, 2=Warm Professional, 3=Tech Premium, 4=Minimal Portfolio, 5=AI Agency", parse: (a) => ({ template: a }) },
 ];
 
 const TEMPLATE_SLUGS = ['executive-dark', 'warm-professional', 'tech-premium', 'minimal-portfolio', 'ai-agency'];
@@ -118,9 +112,12 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     const answer = input.trim();
 
     if (currentQuestion.key === 'template') {
-      const n = parseInt(answer);
-      if (isNaN(n) || n < 1 || n > 5) {
-        toast.error('Enter 1, 2, 3, 4, or 5');
+      const n = parseInt(answer, 10);
+      const nameMap = { 'executive': 1, 'warm': 2, 'tech': 3, 'minimal': 4, 'agency': 5 };
+      const byName = nameMap[answer.toLowerCase().split(/\s+/)[0]];
+      const valid = (!isNaN(n) && n >= 1 && n <= 5) || (byName && byName >= 1 && byName <= 5);
+      if (!valid) {
+        toast.error('Enter 1, 2, 3, 4, or 5 (or a template name)');
         return;
       }
     }
@@ -150,7 +147,10 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
       }
 
       const formData = answersToFormData(allAnswers);
-      const templateNum = parseInt(allAnswers.template) || 1;
+      const t = String(allAnswers.template || '1');
+      const n = parseInt(t, 10);
+      const nameMap = { executive: 1, warm: 2, tech: 3, minimal: 4, agency: 5 };
+      const templateNum = (!isNaN(n) && n >= 1 && n <= 5) ? n : (nameMap[t.toLowerCase().split(/\s+/)[0]] || 1);
       const templateId = TEMPLATE_SLUGS[templateNum - 1] || TEMPLATE_SLUGS[0];
 
       const res = await fetch('/api/websites/generate', {
@@ -185,7 +185,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleAnswer();
@@ -308,12 +308,13 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             placeholder="Type your answer..."
             disabled={loading || generating}
             className="flex-1 px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50"
           />
           <button
+            type="button"
             onClick={handleAnswer}
             disabled={!input.trim() || loading || generating}
             className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-all flex items-center gap-2"

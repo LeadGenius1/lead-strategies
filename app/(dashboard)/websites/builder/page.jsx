@@ -5,8 +5,8 @@ import { ArrowLeft, Sparkles } from 'lucide-react';
 import WebsiteBuilderChat from '@/components/WebsiteBuilderChat';
 
 /**
- * AI Website Builder - Chat-only experience.
- * 12 conversational questions replace the 7-step form.
+ * AI Website Builder - Simple 6-question chat
+ * Answer a few questions, pick a template, get a professional site.
  */
 export default function WebsiteBuilderPage() {
   return (
@@ -28,7 +28,7 @@ export default function WebsiteBuilderPage() {
           <Sparkles className="w-6 h-6 text-cyan-400" />
           <div>
             <h1 className="text-2xl font-medium text-white">AI Website Builder</h1>
-            <p className="text-neutral-500 text-sm">Answer a few questions and your site is ready</p>
+            <p className="text-neutral-500 text-sm">6 questions. Pick a template. Done.</p>
           </div>
         </div>
 

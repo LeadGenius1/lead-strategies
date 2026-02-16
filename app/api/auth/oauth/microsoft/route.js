@@ -8,10 +8,20 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const tier = searchParams.get('tier') || 'leadsite-ai'
     
-    // Get frontend URL from request headers or env
-    const host = request.headers.get('host') || ''
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://${host}`
+    // Get frontend URL - prefer env vars to avoid 0.0.0.0 / Railway internal host
+    const prodFallback = 'https://aileadstrategies.com'
+    const frontendUrl = (
+      process.env.BASE_URL ||
+      process.env.NEXT_PUBLIC_FRONTEND_URL ||
+      (() => {
+        const host = request.headers.get('host') || ''
+        if (!host || host.startsWith('0.0.0.0') || host === 'localhost' || host.startsWith('localhost:')) {
+          return prodFallback
+        }
+        const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+        return `${protocol}://${host}`
+      })()
+    ).replace(/\/$/, '')
     const redirectUri = `${frontendUrl}/api/auth/oauth/callback?provider=microsoft`
     
     // Microsoft OAuth 2.0 configuration
@@ -41,9 +51,7 @@ export async function GET(request) {
     return NextResponse.redirect(authUrl)
   } catch (error) {
     console.error('Microsoft OAuth error:', error)
-    const host = request.headers.get('host') || ''
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://${host}`
+    const frontendUrl = (process.env.BASE_URL || process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://aileadstrategies.com').replace(/\/$/, '')
     return NextResponse.redirect(`${frontendUrl}/signup?error=${encodeURIComponent('OAuth initiation failed. Please try again.')}`)
   }
 }

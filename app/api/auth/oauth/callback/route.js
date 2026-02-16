@@ -4,8 +4,13 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 function getBaseUrl(request) {
+  const prodFallback = 'https://aileadstrategies.com'
+  if (process.env.BASE_URL) return process.env.BASE_URL.replace(/\/$/, '')
   if (process.env.NEXT_PUBLIC_FRONTEND_URL) return process.env.NEXT_PUBLIC_FRONTEND_URL.replace(/\/$/, '')
-  const host = request.headers.get('host') || 'aileadstrategies.com'
+  const host = request.headers.get('host') || ''
+  if (!host || host.startsWith('0.0.0.0') || host === 'localhost' || host.startsWith('localhost:')) {
+    return prodFallback
+  }
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
   return `${protocol}://${host}`
 }
@@ -95,7 +100,7 @@ export async function GET(request) {
     }
   } catch (error) {
     console.error('OAuth callback error:', error)
-    const fallbackUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://aileadstrategies.com'
+    const fallbackUrl = process.env.BASE_URL || process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://aileadstrategies.com'
     return NextResponse.redirect(`${fallbackUrl.replace(/\/$/, '')}/signup?error=${encodeURIComponent('Authentication error occurred. Please try again.')}`)
   }
 }

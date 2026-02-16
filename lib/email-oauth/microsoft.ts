@@ -14,7 +14,7 @@ const CLIENT_SECRET = process.env.EMAIL_MICROSOFT_CLIENT_SECRET || process.env.M
 const REDIRECT_URI =
   process.env.EMAIL_MICROSOFT_REDIRECT_URI ||
   process.env.MICROSOFT_REDIRECT_URI ||
-  `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/user/email-accounts/oauth/microsoft/callback`;
+  `${process.env.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://aileadstrategies.com' : 'http://localhost:3000')}/api/user/email-accounts/oauth/microsoft/callback`;
 
 const msalConfig = {
   auth: {

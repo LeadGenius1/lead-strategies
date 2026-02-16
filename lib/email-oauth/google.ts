@@ -13,7 +13,7 @@ const CLIENT_SECRET = process.env.EMAIL_GOOGLE_CLIENT_SECRET || process.env.GOOG
 const REDIRECT_URI =
   process.env.EMAIL_GOOGLE_REDIRECT_URI ||
   process.env.GOOGLE_REDIRECT_URI ||
-  `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/user/email-accounts/oauth/google/callback`;
+  `${process.env.BASE_URL || process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://aileadstrategies.com' : 'http://localhost:3000')}/api/user/email-accounts/oauth/google/callback`;
 
 export function getGoogleEmailOAuthClient() {
   return new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);

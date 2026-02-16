@@ -1,7 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
+import { getToken } from '@/lib/auth';
+import api from '@/lib/api';
 
 const pricingPlans = [
   {
@@ -10,7 +14,8 @@ const pricingPlans = [
     period: '/mo',
     description: 'AI Email Lead Generation',
     features: ['1,000 Leads/Month', 'AI-Generated Emails', 'Campaign Analytics', 'A/B Testing'],
-    href: '/signup?tier=leadsite-ai',
+    tier: 'leadsite-ai',
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_LEADSITE_AI || null,
     cta: 'Start Free Trial',
   },
   {
@@ -20,7 +25,8 @@ const pricingPlans = [
     description: 'AI Website Builder + Lead Gen',
     badge: '+FREE SITE',
     features: ['1 Free AI Website', 'Lead Capture Forms', 'Visitor Analytics', 'Custom Domains'],
-    href: '/signup?tier=leadsite-io',
+    tier: 'leadsite-io',
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_LEADSITE_IO || null,
     cta: 'Start Free Trial',
   },
   {
@@ -29,7 +35,8 @@ const pricingPlans = [
     period: '/mo',
     description: '22+ Channel Unified Inbox',
     features: ['22+ Channels', 'AI Auto-Responder', 'Team Collaboration', '3 Seats Included'],
-    href: '/signup?tier=clientcontact',
+    tier: 'clientcontact',
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_CLIENTCONTACT || null,
     cta: 'Start Free Trial',
   },
   {
@@ -40,7 +47,8 @@ const pricingPlans = [
     featured: true,
     badge: 'FLAGSHIP',
     features: ['7 Self-Healing AI Agents', 'Full CRM Pipeline', 'Voice + Transcription', '2,000 Leads/Month', 'Unlimited Seats'],
-    href: '/signup?tier=ultralead',
+    tier: 'ultralead',
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ULTRALEAD || null,
     cta: 'Start Free Trial',
   },
   {
@@ -49,12 +57,58 @@ const pricingPlans = [
     period: '',
     description: 'Creator Monetization',
     features: ['$1/Qualified View', 'Instant Stripe Payouts', 'Unlimited Hosting', '0% Platform Fees'],
-    href: '/signup?tier=videosite',
+    tier: 'videosite',
+    priceId: null,
     cta: 'Get Started Free',
   },
 ];
 
 export default function PricingPage() {
+  const router = useRouter();
+  const [loadingTier, setLoadingTier] = useState(null);
+  const [error, setError] = useState(null);
+
+  async function handleSubscribe(plan) {
+    setError(null);
+
+    // Free plan or no price ID configured — go to signup
+    if (!plan.priceId) {
+      router.push(`/signup?tier=${plan.tier}`);
+      return;
+    }
+
+    // Not logged in — go to signup first
+    const token = getToken();
+    if (!token) {
+      router.push(`/signup?tier=${plan.tier}`);
+      return;
+    }
+
+    // Logged in + paid plan — create Stripe checkout
+    setLoadingTier(plan.tier);
+    try {
+      const res = await api.post('/api/v1/stripe/create-checkout', {
+        priceId: plan.priceId,
+      });
+
+      const url = res.data?.data?.url;
+      if (url) {
+        window.location.href = url;
+      } else {
+        setError('Failed to create checkout session. Please try again.');
+      }
+    } catch (err) {
+      const msg = err.response?.data?.error || err.message;
+      if (err.response?.status === 401) {
+        router.push(`/signup?tier=${plan.tier}`);
+      } else {
+        setError(msg || 'Something went wrong. Please try again.');
+      }
+    } finally {
+      setLoadingTier(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black relative overflow-x-hidden">
       {/* Navigation */}
@@ -87,6 +141,15 @@ export default function PricingPage() {
           </p>
         </div>
       </section>
+
+      {/* Error banner */}
+      {error && (
+        <div className="container mx-auto px-4 max-w-7xl mb-6">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 text-sm text-center rounded-lg">
+            {error}
+          </div>
+        </div>
+      )}
 
       {/* Pricing Cards */}
       <section className="pb-24">
@@ -121,14 +184,15 @@ export default function PricingPage() {
                 <ul className="space-y-2 text-sm text-neutral-300 mb-8 flex-grow">
                   {plan.features.map((f, i) => (
                     <li key={i} className="flex items-center gap-2">
-                      <span className={plan.featured ? 'text-purple-400' : 'text-green-400'}>✓</span>
+                      <span className={plan.featured ? 'text-purple-400' : 'text-green-400'}>&#10003;</span>
                       {f}
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={plan.href}
-                  className={`block w-full text-center py-3 text-sm font-bold tracking-widest uppercase transition-colors ${
+                <button
+                  onClick={() => handleSubscribe(plan)}
+                  disabled={loadingTier === plan.tier}
+                  className={`block w-full text-center py-3 text-sm font-bold tracking-widest uppercase transition-colors disabled:opacity-50 disabled:cursor-wait ${
                     plan.featured
                       ? 'bg-white text-black hover:bg-neutral-200'
                       : plan.price === 'FREE'
@@ -136,8 +200,8 @@ export default function PricingPage() {
                       : 'bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30'
                   }`}
                 >
-                  {plan.cta}
-                </Link>
+                  {loadingTier === plan.tier ? 'Redirecting...' : plan.cta}
+                </button>
               </div>
             ))}
           </div>

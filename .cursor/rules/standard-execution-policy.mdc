@@ -1,0 +1,60 @@
+---
+description: AI Lead Strategies — Mandatory development process (overrides other instructions)
+alwaysApply: true
+---
+
+# STANDARD EXECUTION POLICY
+**Authority:** This policy OVERRIDES all other development instructions. Violation = immediate revert.
+
+## THE 7 RULES (Non-Negotiable)
+
+### RULE 1: ONE FILE AT A TIME
+Every prompt targets ONE file or ONE route. Never "fix all auth" or "update all platforms."
+
+### RULE 2: BRANCH FIRST, NEVER MAIN
+```bash
+git checkout -b fix/scope-description
+# Work, verify, then merge
+```
+
+### RULE 3: READ THE DIFF BEFORE COMMITTING
+Always run `git diff`. If ANY unexpected changes exist → `git checkout .` and re-prompt with narrower scope.
+
+### RULE 4: TEST AUTH AFTER EVERY CHANGE
+```bash
+curl https://api.aileadstrategies.com/health
+curl -X POST https://api.aileadstrategies.com/api/auth/signup -H "Content-Type: application/json" -d '{}'
+curl https://api.aileadstrategies.com/api/v1/leads  # expect 401 without token
+```
+
+### RULE 5: LOCK CRITICAL FILES
+**DO NOT modify unless prompt is specifically about them:**
+- `backend/src/routes/auth.js`
+- `backend/src/middleware/auth.js`
+- `backend/src/index.js`
+- `backend/prisma/schema.prisma`
+- `lib/auth.js` (frontend)
+
+### RULE 6: PROMPT TEMPLATE
+```
+SCOPE: [ONE file or ONE route]
+OBJECTIVE: [Specific fix/add]
+DO NOT TOUCH: auth.js, middleware/auth.js, index.js, schema.prisma
+BEFORE: Show current contents, explain plan, wait for approval
+AFTER: Show diff, run auth tests
+```
+
+### RULE 7: DEPLOYMENT GATE
+Before `git push origin main`: verify branch, run local tests, review diff, merge, wait 90s, verify production.
+
+## EMERGENCY ROLLBACK
+```bash
+git revert HEAD && git push origin main
+# Or: Railway → Deployments → Rollback
+```
+
+## COMMIT FORMAT
+```
+fix(auth): correct signup password hashing
+feat(videos): add view count endpoint
+```

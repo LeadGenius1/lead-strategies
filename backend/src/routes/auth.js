@@ -177,6 +177,13 @@ async function handleSignup(req, res) {
   }
   const tierStr = (tier || 'leadsite-ai').toString().toLowerCase().replace(/_/g, '-');
   const subscriptionTier = tierStr || 'leadsite-ai';
+  // Map tier string to numeric (1-5) for User.tier
+  let tierNum = 1;
+  if (subscriptionTier.includes('leadsite-ai')) tierNum = 1;
+  else if (subscriptionTier.includes('leadsite-io')) tierNum = 2;
+  else if (subscriptionTier.includes('clientcontact')) tierNum = 3;
+  else if (subscriptionTier.includes('videosite')) tierNum = 4;
+  else if (subscriptionTier.includes('ultralead')) tierNum = 5;
   const db = getPrisma();
   if (!db) {
     const id = 'user_' + crypto.randomBytes(12).toString('hex');
@@ -213,6 +220,7 @@ async function handleSignup(req, res) {
       name: (name && typeof name === 'string') ? name.trim() : email.split('@')[0],
       company: (company && typeof company === 'string') ? company.trim() || null : null,
       auth_provider: 'email',
+      tier: tierNum,
       subscription_tier: subscriptionTier,
       plan_tier: subscriptionTier,
       metadata: metadataVal,
@@ -403,6 +411,7 @@ router.get('/me', async (req, res) => {
       email: user.email,
       name: user.name,
       subscription_tier: user.subscription_tier || user.plan_tier || 'leadsite-ai',
+      plan_tier: user.plan_tier || user.subscription_tier || 'leadsite-ai',
       avatar_url: user.avatar_url || user.profile_picture,
       company: user.company,
       tier: user.tier

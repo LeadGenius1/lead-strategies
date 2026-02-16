@@ -22,7 +22,7 @@ function SignupForm() {
   const [selectedTier, setSelectedTier] = useState('leadsite-ai')
 
   useEffect(() => {
-    // Read tier from URL query params
+    // Read tier from URL query params (run once on mount only - don't overwrite user's card selection)
     // Support ?tier=leadsite-io, ?tier=ultralead, and ?product=leadsite_io&tier=starter
     const tierFromUrl = searchParams.get('tier')
     const productFromUrl = searchParams.get('product')
@@ -42,7 +42,7 @@ function SignupForm() {
       // Clean URL
       router.replace('/signup', undefined, { shallow: true })
     }
-  }, [searchParams, router])
+  }, [])
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -200,8 +200,8 @@ function SignupForm() {
                     className={`p-4 border text-left transition-all relative overflow-hidden ${
                       selectedTier === tier.id
                         ? 'border-purple-500 bg-purple-500/10'
-                        : 'border-subtle hover:border-purple-500/30 bg-[#080808]'
-                    } ${tier.free ? 'border-green-500/30' : ''}`}
+                        : `border-subtle hover:border-purple-500/30 bg-[#080808] ${tier.free ? 'border-green-500/30' : ''}`
+                    }`}
                   >
                     {tier.highlight && (
                       <div className="absolute top-0 right-0 px-1.5 py-0.5 bg-green-500/20 border-l border-b border-green-500/30 text-green-400 text-[8px] uppercase tracking-wider font-geist">

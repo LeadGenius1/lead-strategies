@@ -213,6 +213,7 @@ async function handleSignup(req, res) {
       metadataVal = null;
     }
   }
+  const trialEndDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
   const user = await db.user.create({
     data: {
       email: email.toLowerCase().trim(),
@@ -224,6 +225,10 @@ async function handleSignup(req, res) {
       subscription_tier: subscriptionTier,
       plan_tier: subscriptionTier,
       metadata: metadataVal,
+      trialEndsAt: trialEndDate,
+      trial_start_date: new Date(),
+      trial_end_date: trialEndDate,
+      subscriptionStatus: 'trial',
     },
   });
   const token = jwt.sign(
@@ -394,7 +399,9 @@ router.get('/me', async (req, res) => {
         subscription_tier: true,
         plan_tier: true,
         tier: true,
-        company: true
+        company: true,
+        trialEndsAt: true,
+        subscriptionStatus: true,
       }
     });
 
@@ -414,7 +421,9 @@ router.get('/me', async (req, res) => {
       plan_tier: user.plan_tier || user.subscription_tier || 'leadsite-ai',
       avatar_url: user.avatar_url || user.profile_picture,
       company: user.company,
-      tier: user.tier
+      tier: user.tier,
+      trialEndsAt: user.trialEndsAt,
+      subscriptionStatus: user.subscriptionStatus,
     };
 
     res.json({

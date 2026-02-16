@@ -198,16 +198,24 @@ async function handleSignup(req, res) {
   const salt = crypto.randomBytes(16).toString('hex');
   const passwordHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
   const storedHash = `${salt}:${passwordHash}`;
+  let metadataVal = null;
+  if (businessInfo && typeof businessInfo === 'object') {
+    try {
+      metadataVal = JSON.parse(JSON.stringify({ businessInfo }));
+    } catch (_) {
+      metadataVal = null;
+    }
+  }
   const user = await db.user.create({
     data: {
       email: email.toLowerCase().trim(),
       passwordHash: storedHash,
-      name: name || email.split('@')[0],
-      company: company || null,
+      name: (name && typeof name === 'string') ? name.trim() : email.split('@')[0],
+      company: (company && typeof company === 'string') ? company.trim() || null : null,
       auth_provider: 'email',
       subscription_tier: subscriptionTier,
       plan_tier: subscriptionTier,
-      metadata: businessInfo ? { businessInfo } : null,
+      metadata: metadataVal,
     },
   });
   const token = jwt.sign(
@@ -235,8 +243,16 @@ router.post('/signup', async (req, res) => {
   try {
     await handleSignup(req, res);
   } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ success: false, error: error.message || 'Registration failed' });
+    console.error('Signup error:', error?.code || error?.name, error?.message);
+    // Prisma P2002 = unique constraint (email exists) - return 400, not 500
+    if (error?.code === 'P2002') {
+      return res.status(400).json({ success: false, error: 'An account with this email already exists' });
+    }
+    // Prisma P2003 = foreign key - schema/data issue
+    if (error?.code === 'P2003' || error?.code === 'P2011') {
+      return res.status(400).json({ success: false, error: 'Invalid data. Please check your form and try again.' });
+    }
+    res.status(500).json({ success: false, error: 'Registration failed. Please try again.' });
   }
 });
 

@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import api from '@/lib/api';
 import VideoPlayer from '@/components/video/VideoPlayer';
-import { Eye, DollarSign, Calendar, ArrowLeft, Clock, Play, User } from 'lucide-react';
+import { Eye, DollarSign, Calendar, ArrowLeft, Clock, Play, User, Share2 } from 'lucide-react';
 import Link from 'next/link';
+import ShareModal from '@/components/videosite/ShareModal';
 
 /** Public video watch page - /watch/[id] — AETHER UI styled */
 export default function WatchVideoPage() {
@@ -15,6 +16,7 @@ export default function WatchVideoPage() {
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewTracked, setViewTracked] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const watchStartRef = useRef(null);
 
   useEffect(() => {
@@ -243,9 +245,18 @@ export default function WatchVideoPage() {
                 )}
               </div>
 
+              {/* Share button */}
+              <button
+                onClick={() => setShowShare(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-xl text-sm font-medium hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </button>
+
               {/* Description */}
               {video.description && (
-                <p className="text-neutral-400 text-sm leading-relaxed">{video.description}</p>
+                <p className="text-neutral-400 text-sm leading-relaxed mt-4">{video.description}</p>
               )}
             </div>
 
@@ -329,6 +340,16 @@ export default function WatchVideoPage() {
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      {showShare && (
+        <ShareModal
+          videoId={videoId}
+          videoTitle={video.title}
+          videoDescription={video.description}
+          onClose={() => setShowShare(false)}
+        />
+      )}
     </div>
   );
 }

@@ -77,6 +77,43 @@ function toPublicVideo(v, creator = null) {
   return result;
 }
 
+// GET /api/v1/videos/browse - Public video listing for /watch page (no auth)
+router.get('/browse', async (req, res) => {
+  try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ error: 'Database not configured' });
+
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 12));
+    const sort = req.query.sort === 'oldest' ? 'asc' : 'desc';
+    const skip = (page - 1) * limit;
+
+    const where = { status: 'ready', file_url: { not: null } };
+
+    const [videos, total] = await Promise.all([
+      db.video.findMany({
+        where,
+        include: { user: { select: { name: true, profile_picture: true } } },
+        orderBy: { createdAt: sort },
+        skip,
+        take: limit,
+      }),
+      db.video.count({ where }),
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        videos: videos.map(v => toPublicVideo(v, v.user)),
+        pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+      },
+    });
+  } catch (error) {
+    console.error('Browse videos error:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
 // GET /api/v1/videos/:id/public - Public video for playback (no auth)
 router.get('/:id/public', async (req, res) => {
   try {

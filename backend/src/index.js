@@ -69,6 +69,8 @@ const crmRoutes = require('./routes/crm');
 const agentRoutes = require('./routes/agents');
 const videositeRoutes = require('./routes/videosite');
 const videoRoutes = require('./routes/videos');
+const advertiserRoutes = require('./routes/advertiser');
+const adsRoutes = require('./routes/ads');
 const payoutsRoutes = require('./routes/payouts');
 const aiAgentRoutes = require('./routes/ai-agents');
 const clipsRoutes = require('./routes/clips');
@@ -334,6 +336,8 @@ app.use('/api/v1/crm', crmRoutes);                  // UltraLead CRM (Contacts, 
 app.use('/api/v1/agents', agentRoutes);
 app.use('/api/v1/ai', aiAgentRoutes);             // UltraLead 7 AI Agents Control
 app.use('/api/v1/videosite', videositeRoutes);      // VideoSite.AI Monetization
+app.use('/api/v1/advertiser', advertiserRoutes);   // VideoSite.AI Advertiser Platform
+app.use('/api/v1/ads', adsRoutes);                 // VideoSite.AI Ad Serving (public)
 app.use('/api/v1/channels', channelRoutes);
 app.use('/api/v1/oauth/channels', oauthChannelsRoutes);         // ClientContact.IO Channels
 app.use('/api/v1/email-sentinel', emailSentinelRoutes);  // Email Sentinel (Redis backend only)

@@ -68,6 +68,7 @@ model User {
   creatorEarnings         CreatorEarning[]
   payouts                 Payout[]
   channels                Channel[]
+  advertiser              Advertiser?
 
   @@index([metadata], type: Gin)
   @@map("users")
@@ -1240,4 +1241,71 @@ enum PoolSubscriptionStatus {
   PAST_DUE
   CANCELED
   EXPIRED
+}
+
+// ============================================
+// ADVERTISER PLATFORM
+// ============================================
+
+model Advertiser {
+  id               String       @id @default(uuid())
+  userId           String       @unique @map("user_id")
+  companyName      String       @map("company_name")
+  contactEmail     String       @map("contact_email")
+  contactPhone     String?      @map("contact_phone")
+  website          String?
+  stripeCustomerId String?      @unique @map("stripe_customer_id")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns        AdCampaign[]
+
+  @@index([userId])
+  @@map("advertisers")
+}
+
+model AdCampaign {
+  id               String    @id @default(uuid())
+  advertiserId     String    @map("advertiser_id")
+  name             String
+  status           AdStatus  @default(PENDING)
+  videoUrl         String    @map("video_url")
+  thumbnailUrl     String?   @map("thumbnail_url")
+  title            String
+  description      String?
+  callToAction     String    @default("Learn More") @map("call_to_action")
+  clickUrl         String    @map("click_url")
+  tier             AdTier    @default(PROFESSIONAL)
+  costPerView      Float     @map("cost_per_view")
+  budgetTotal      Float     @map("budget_total")
+  budgetSpent      Float     @default(0) @map("budget_spent")
+  targetCategories String[]  @default([]) @map("target_categories")
+  targetAudience   Json?     @map("target_audience")
+  startDate        DateTime  @map("start_date")
+  endDate          DateTime? @map("end_date")
+  impressions      Int       @default(0)
+  views            Int       @default(0)
+  clicks           Int       @default(0)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  advertiser       Advertiser @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+
+  @@index([advertiserId])
+  @@index([status])
+  @@index([startDate, endDate])
+  @@map("ad_campaigns")
+}
+
+enum AdStatus {
+  PENDING
+  APPROVED
+  PAUSED
+  COMPLETED
+  REJECTED
+}
+
+enum AdTier {
+  STARTER
+  PROFESSIONAL
+  PREMIUM
 }

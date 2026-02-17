@@ -300,96 +300,163 @@ export default function HomePage() {
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
               Choose Your <span className="text-neutral-600">Stack</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Unified SaaS ecosystem. Start with one tier, scale to enterprise.</p>
+            <p className="text-neutral-400 font-geist">Unified SaaS ecosystem. Start with one, scale as you grow.</p>
           </div>
-
-          <p className="text-neutral-500 font-geist text-sm mb-10 max-w-2xl mx-auto">5 platforms, 5 separate dashboards. Choose one — after signup you go straight to that product&apos;s dashboard.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* 1: LeadSite.AI */}
-            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
-              <Link href="/leadsite-ai" className="flex-grow">
-                <div className="flex justify-between items-start mb-6">
-                  <h3 className="text-2xl font-space-grotesk text-white">LeadSite.AI</h3>
-                  <div className="text-3xl font-space-grotesk font-light text-white">$49<span className="text-sm text-neutral-500">/mo</span></div>
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">LeadSite.AI</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Email lead generation on autopilot. AI scrapes prospects, writes emails, manages follow-ups.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <span>1,000 Leads/Month</span>
                 </div>
-                <p className="text-neutral-400 font-geist mb-6 text-sm">Email lead generation on autopilot. AI scrapes prospects, writes emails, manages follow-ups.</p>
-                <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>1,000 Leads/Month</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Email Campaigns</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Lead Scoring & Analytics</li>
-                </ul>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <span>Email Campaigns</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <span>Lead Scoring & Analytics</span>
+                </div>
+              </div>
+              <Link href="/leadsite-ai" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                Explore LeadSite.AI
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </Link>
-              <Link href="/signup?tier=leadsite-ai" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → LeadSite.AI dashboard</Link>
             </div>
 
             {/* 2: LeadSite.IO */}
-            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
-              <Link href="/leadsite-io" className="flex-grow">
-                <div className="flex justify-between items-start mb-6">
-                  <h3 className="text-2xl font-space-grotesk text-white">LeadSite.IO</h3>
-                  <div className="text-3xl font-space-grotesk font-light text-white">$49<span className="text-sm text-neutral-500">/mo</span></div>
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.264.26-2.466.733-3.559" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">LeadSite.IO</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                AI website builder + lead generation. Includes 1 free AI-built website.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                  <span>1 Free Website Included</span>
                 </div>
-                <p className="text-neutral-400 font-geist mb-6 text-sm">AI website builder + lead generation. Includes 1 free AI-built website.</p>
-                <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>1 Free Website Included</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI Site Generator</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>Lead Forms + Analytics</li>
-                </ul>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                  <span>AI Site Generator</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                  <span>Lead Forms + Analytics</span>
+                </div>
+              </div>
+              <Link href="/leadsite-io" className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium transition-colors">
+                Explore LeadSite.IO
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </Link>
-              <Link href="/signup?tier=leadsite-io" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → LeadSite.IO dashboard</Link>
             </div>
 
             {/* 3: ClientContact.IO */}
-            <div className="group bg-[#050505] border border-subtle p-8 hover:border-purple-500/30 transition-all flex flex-col">
-              <Link href="/clientcontact-io" className="flex-grow">
-                <div className="flex justify-between items-start mb-6">
-                  <h3 className="text-2xl font-space-grotesk text-white">ClientContact.IO</h3>
-                  <div className="text-3xl font-space-grotesk font-light text-white">$99<span className="text-sm text-neutral-500">/mo</span></div>
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">ClientContact.IO</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Unified inbox for 22+ channels. AI auto-responds and books meetings.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                  <span>22+ Channels Unified</span>
                 </div>
-                <p className="text-neutral-400 font-geist mb-6 text-sm">Unified inbox for 22+ channels. AI auto-responds and books meetings.</p>
-                <ul className="space-y-3 font-geist text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>22+ Channels Unified</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>AI Auto-Responder</li>
-                  <li className="flex items-center gap-2"><div className="w-1 h-1 bg-purple-500 rounded-full"></div>3 Team Seats</li>
-                </ul>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                  <span>AI Auto-Responder</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                  <span>3 Team Seats</span>
+                </div>
+              </div>
+              <Link href="/clientcontact-io" className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+                Explore ClientContact.IO
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </Link>
-              <Link href="/signup?tier=clientcontact-io" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → ClientContact dashboard</Link>
             </div>
 
-            {/* 4: UltraLead - FLAGSHIP */}
-            <div className="group relative bg-gradient-to-br from-purple-900/50 to-purple-800/30 border border-purple-500/30 rounded-2xl p-6 hover:border-purple-400/50 transition-all flex flex-col">
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-1 text-xs font-bold bg-purple-500 text-white rounded">FLAGSHIP</span>
+            {/* 4: UltraLead.AI */}
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
               </div>
-              <Link href="/ultralead" className="flex-grow">
-                <h3 className="text-xl font-bold text-white mb-2">UltraLead</h3>
-                <p className="text-3xl font-bold text-white mb-1">$499<span className="text-sm font-normal text-neutral-400">/mo</span></p>
-                <p className="text-neutral-400 mb-4">Full CRM + 7 AI Agents</p>
-                <ul className="space-y-2 text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> 7 Self-Healing AI Agents</li>
-                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> Full CRM Pipeline</li>
-                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> Voice + AI Transcription</li>
-                  <li className="flex items-center gap-2"><span className="text-purple-400">✓</span> 2,000 Leads/Month</li>
-                </ul>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">UltraLead.AI</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Full CRM with 7 self-healing AI agents working around the clock to close deals for you.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                  <span>7 Self-Healing AI Agents</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                  <span>Full CRM Pipeline</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                  <span>Voice + AI Transcription</span>
+                </div>
+              </div>
+              <Link href="/ultralead" className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 font-medium transition-colors">
+                Explore UltraLead.AI
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </Link>
-              <Link href="/signup?tier=ultralead" className="mt-6 inline-block w-full text-center bg-purple-500/20 border border-purple-500/30 text-purple-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-purple-500/30 transition-colors">Get started → UltraLead CRM dashboard</Link>
             </div>
 
             {/* 5: VideoSite.AI */}
-            <div className="group relative bg-gradient-to-br from-green-900/50 to-green-800/30 border border-green-500/30 rounded-2xl p-6 hover:border-green-400/50 transition-all flex flex-col">
-              <Link href="/videosite-ai" className="flex-grow">
-                <h3 className="text-xl font-bold text-white mb-2">VideoSite.AI</h3>
-                <p className="text-3xl font-bold text-green-400 mb-1">FREE</p>
-                <p className="text-neutral-400 mb-4">Earn $1 per viewer</p>
-                <ul className="space-y-2 text-sm text-neutral-300">
-                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> $1/Qualified View (30s+)</li>
-                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Instant Stripe Payouts</li>
-                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> Unlimited Video Hosting</li>
-                  <li className="flex items-center gap-2"><span className="text-green-400">✓</span> 0% Platform Fees</li>
-                </ul>
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">VideoSite.AI</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Monetize your video content. Earn per qualified view with instant Stripe payouts.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                  <span>Earn Per Qualified View</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                  <span>Instant Stripe Payouts</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                  <span>Unlimited Video Hosting</span>
+                </div>
+              </div>
+              <Link href="/videosite-ai" className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-medium transition-colors">
+                Explore VideoSite.AI
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
               </Link>
-              <Link href="/signup?tier=videosite" className="mt-6 inline-block w-full text-center bg-green-500/20 border border-green-500/30 text-green-300 py-3 text-xs uppercase tracking-widest font-geist hover:bg-green-500/30 transition-colors">Get started → VideoSite dashboard</Link>
             </div>
           </div>
 

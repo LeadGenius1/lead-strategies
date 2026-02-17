@@ -46,11 +46,11 @@ function toPublicVideoUrl(url) {
 }
 
 // ---- PUBLIC ROUTES (no auth) - for /watch/[id] full-page viewing ----
-function toPublicVideo(v) {
+function toPublicVideo(v, creator = null) {
   if (!v) return null;
   const rawUrl = v.file_url || v.fileUrl || v.videoUrl;
   const videoUrl = toPublicVideoUrl(rawUrl) || rawUrl;
-  return {
+  const result = {
     id: v.id,
     title: v.title,
     description: v.description,
@@ -68,6 +68,13 @@ function toPublicVideo(v) {
     visibility: 'public',
     status: v.status
   };
+  if (creator) {
+    result.creator = {
+      name: creator.name || 'Creator',
+      avatar: creator.profile_picture || null,
+    };
+  }
+  return result;
 }
 
 // GET /api/v1/videos/:id/public - Public video for playback (no auth)
@@ -77,13 +84,16 @@ router.get('/:id/public', async (req, res) => {
     const videoId = req.params.id;
     if (!db) return res.status(503).json({ error: 'Database not configured' });
 
-    const video = await db.video.findUnique({ where: { id: videoId } });
+    const video = await db.video.findUnique({
+      where: { id: videoId },
+      include: { user: { select: { name: true, profile_picture: true } } }
+    });
     if (!video) return res.status(404).json({ error: 'Video not found' });
 
     const viewable = ['ready', 'processing'].includes(video.status) && video.file_url;
     if (!viewable) return res.status(404).json({ error: 'Video not found or not yet available' });
 
-    res.json({ success: true, data: toPublicVideo(video) });
+    res.json({ success: true, data: toPublicVideo(video, video.user) });
   } catch (error) {
     console.error('Get public video error:', error);
     res.status(500).json({ error: 'Internal server error', message: error.message });
@@ -110,6 +120,37 @@ router.post('/:id/track-view', async (req, res) => {
     res.json({ success: true, data: { tracked: true, watchSeconds } });
   } catch (error) {
     console.error('Track view error:', error);
+    res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
+
+// GET /api/v1/videos/:id/related - Related videos from same creator (no auth)
+router.get('/:id/related', async (req, res) => {
+  try {
+    const db = getPrisma();
+    const videoId = req.params.id;
+    if (!db) return res.status(503).json({ error: 'Database not configured' });
+
+    const video = await db.video.findUnique({
+      where: { id: videoId },
+      select: { userId: true }
+    });
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+
+    const related = await db.video.findMany({
+      where: {
+        userId: video.userId,
+        id: { not: videoId },
+        status: 'ready',
+        file_url: { not: null }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 6
+    });
+
+    res.json({ success: true, data: related.map(v => toPublicVideo(v)) });
+  } catch (error) {
+    console.error('Get related videos error:', error);
     res.status(500).json({ error: 'Internal server error', message: error.message });
   }
 });

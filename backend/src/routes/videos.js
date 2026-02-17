@@ -78,23 +78,42 @@ function toPublicVideo(v, creator = null) {
 }
 
 // GET /api/v1/videos/browse - Public video listing for /watch page (no auth)
-router.get('/browse', async (req, res) => {
+// Also aliased as /api/v1/videos/public/all
+router.get(['/browse', '/public/all'], async (req, res) => {
   try {
     const db = getPrisma();
     if (!db) return res.status(503).json({ error: 'Database not configured' });
 
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 12));
-    const sort = req.query.sort === 'oldest' ? 'asc' : 'desc';
     const skip = (page - 1) * limit;
 
+    // Sort: 'popular' sorts by view_count DESC, default is 'recent' (createdAt DESC)
+    const sortBy = req.query.sort === 'popular'
+      ? { view_count: 'desc' }
+      : req.query.sort === 'oldest'
+        ? { createdAt: 'asc' }
+        : { createdAt: 'desc' };
+
     const where = { status: 'ready', file_url: { not: null } };
+
+    // Server-side search by title
+    const search = req.query.search?.trim();
+    if (search) {
+      where.title = { contains: search, mode: 'insensitive' };
+    }
+
+    // Category filter
+    const category = req.query.category?.trim();
+    if (category) {
+      where.description = { contains: category, mode: 'insensitive' };
+    }
 
     const [videos, total] = await Promise.all([
       db.video.findMany({
         where,
         include: { user: { select: { name: true, profile_picture: true } } },
-        orderBy: { createdAt: sort },
+        orderBy: sortBy,
         skip,
         take: limit,
       }),

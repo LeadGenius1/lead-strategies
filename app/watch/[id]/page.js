@@ -17,12 +17,14 @@ export default function WatchVideoPage() {
   const [loading, setLoading] = useState(true);
   const [viewTracked, setViewTracked] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [sidebarAd, setSidebarAd] = useState(null);
   const watchStartRef = useRef(null);
 
   useEffect(() => {
     if (videoId) {
       fetchVideo();
       fetchRelated();
+      fetchAd();
     }
   }, [videoId]);
 
@@ -75,6 +77,25 @@ export default function WatchVideoPage() {
     } catch (err) {
       console.error('Fetch related error:', err);
     }
+  };
+
+  const fetchAd = async () => {
+    try {
+      const res = await api.get(`/api/v1/ads/serve?videoId=${videoId}`);
+      const ad = res.data?.ad || null;
+      setSidebarAd(ad);
+    } catch (err) {
+      // Ads are optional — fail silently
+    }
+  };
+
+  const handleAdClick = async (ad) => {
+    try {
+      await api.post(`/api/v1/ads/${ad.id}/track-click`);
+    } catch (err) {
+      // best-effort
+    }
+    window.open(ad.clickUrl, '_blank', 'noopener,noreferrer');
   };
 
   const trackView = async (viewData = {}) => {
@@ -322,20 +343,50 @@ export default function WatchVideoPage() {
               </div>
             </div>
 
-            {/* Ad placeholder 1 */}
-            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6">
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-              <div className="flex items-center justify-center h-48 text-neutral-600 text-xs uppercase tracking-wider">
-                Advertisement
+            {/* Sponsored Ad */}
+            {sidebarAd ? (
+              <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+                <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+                  <span className="text-[10px] text-neutral-600 uppercase tracking-wider">Sponsored</span>
+                </div>
+                {sidebarAd.thumbnailUrl && (
+                  <div className="aspect-video bg-neutral-800/50 overflow-hidden">
+                    <img src={sidebarAd.thumbnailUrl} alt={sidebarAd.title} className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="p-4">
+                  <h4 className="text-sm font-medium text-neutral-200 mb-1">{sidebarAd.title}</h4>
+                  {sidebarAd.description && (
+                    <p className="text-xs text-neutral-500 mb-3 line-clamp-2">{sidebarAd.description}</p>
+                  )}
+                  <button
+                    onClick={() => handleAdClick(sidebarAd)}
+                    className="w-full px-4 py-2 bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-500/30 transition-all"
+                  >
+                    {sidebarAd.callToAction || 'Learn More'}
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+                <div className="flex items-center justify-center h-48 text-neutral-600 text-xs uppercase tracking-wider">
+                  Advertisement
+                </div>
+              </div>
+            )}
 
-            {/* Ad placeholder 2 */}
-            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6">
+            {/* Advertise CTA */}
+            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-5">
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-              <div className="flex items-center justify-center h-48 text-neutral-600 text-xs uppercase tracking-wider">
-                Advertisement
-              </div>
+              <p className="text-sm text-neutral-400 mb-3">Want to advertise here?</p>
+              <Link
+                href="/ads"
+                className="block w-full text-center px-4 py-2 bg-neutral-800/50 border border-white/10 text-neutral-300 rounded-lg text-sm hover:border-indigo-500/30 hover:text-white transition-all"
+              >
+                Learn More
+              </Link>
             </div>
           </div>
         </div>

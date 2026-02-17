@@ -24,6 +24,14 @@ const PLAN_LABELS = {
   videosite: 'VideoSite.AI',
 };
 
+// Map plan tier → default Stripe price ID (Starter tier for multi-tier platforms)
+const PLAN_PRICE_IDS = {
+  'leadsite-ai': process.env.NEXT_PUBLIC_STRIPE_PRICE_LEADSITE_AI_STARTER || null,
+  'leadsite-io': process.env.NEXT_PUBLIC_STRIPE_PRICE_LEADSITE_IO_STARTER || null,
+  clientcontact: process.env.NEXT_PUBLIC_STRIPE_PRICE_CLIENTCONTACT_STARTER || null,
+  ultralead: process.env.NEXT_PUBLIC_STRIPE_PRICE_ULTRALEAD || null,
+};
+
 export default function SettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -68,7 +76,27 @@ export default function SettingsPage() {
   }
 
   async function handleSubscribe() {
-    router.push('/pricing');
+    const priceId = PLAN_PRICE_IDS[subscription.planTier];
+    if (!priceId) {
+      router.push('/pricing');
+      return;
+    }
+
+    setBillingLoading('subscribe');
+    try {
+      const res = await api.post('/api/v1/stripe/create-checkout', { priceId });
+      const url = res.data?.data?.url;
+      if (url) {
+        window.location.href = url;
+      } else {
+        toast.error('Could not create checkout session');
+      }
+    } catch (err) {
+      const msg = err.response?.data?.error || err.message;
+      toast.error(msg || 'Could not create checkout session');
+    } finally {
+      setBillingLoading(null);
+    }
   }
 
   async function handleManageBilling() {
@@ -155,10 +183,15 @@ export default function SettingsPage() {
               {!isActive && (
                 <button
                   onClick={handleSubscribe}
-                  className="px-4 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                  disabled={billingLoading === 'subscribe'}
+                  className="px-4 py-2.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 rounded-lg text-sm font-medium transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait"
                 >
-                  <CreditCard className="w-4 h-4" />
-                  Subscribe Now
+                  {billingLoading === 'subscribe' ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <CreditCard className="w-4 h-4" />
+                  )}
+                  {billingLoading === 'subscribe' ? 'Redirecting...' : 'Subscribe Now'}
                 </button>
               )}
               <button

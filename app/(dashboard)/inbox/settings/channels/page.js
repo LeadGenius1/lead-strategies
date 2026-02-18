@@ -25,6 +25,32 @@ const CHANNEL_ICONS = {
   telegram: MessageSquare
 };
 
+const CHANNEL_META = {
+  gmail:      { name: 'Gmail',              desc: 'Send and receive emails from your Gmail inbox' },
+  outlook:    { name: 'Outlook',            desc: 'Connect Microsoft 365 or Outlook email' },
+  imap:       { name: 'IMAP Email',         desc: 'Connect any custom email account via IMAP' },
+  linkedin:   { name: 'LinkedIn',           desc: 'Manage messages and connection requests' },
+  instagram:  { name: 'Instagram',          desc: 'Handle Instagram DMs and comments' },
+  facebook:   { name: 'Facebook Messenger', desc: 'Respond to Facebook Page messages' },
+  twitter:    { name: 'Twitter / X',        desc: 'Manage DMs and mentions' },
+  tiktok:     { name: 'TikTok',             desc: 'Monitor TikTok comments and DMs' },
+  youtube:    { name: 'YouTube',            desc: 'Manage YouTube video comments' },
+  whatsapp:   { name: 'WhatsApp Business',  desc: 'Two-way WhatsApp messaging via Twilio' },
+  sms:        { name: 'SMS',                desc: 'Send and receive text messages via Twilio' },
+  telegram:   { name: 'Telegram',           desc: 'Connect a Telegram bot to your inbox' },
+  slack:      { name: 'Slack',              desc: 'Receive Slack messages as inbox threads' },
+  discord:    { name: 'Discord',            desc: 'Monitor Discord server messages' },
+  intercom:   { name: 'Intercom',           desc: 'Pull in Intercom conversations' },
+  zendesk:    { name: 'Zendesk',            desc: 'Sync Zendesk support tickets' },
+  hubspot:    { name: 'HubSpot',            desc: 'Sync HubSpot contact conversations' },
+  salesforce: { name: 'Salesforce',         desc: 'Pull Salesforce case and email activity' },
+  pipedrive:  { name: 'Pipedrive',          desc: 'Sync Pipedrive deal communications' },
+  livechat:   { name: 'Website Live Chat',  desc: 'Embed a live chat widget on your website' },
+  zapier:     { name: 'Zapier',             desc: 'Trigger inbox actions from Zapier workflows' },
+  webhook:    { name: 'Custom Webhook',     desc: 'Receive messages from any external source' },
+  internal:   { name: 'Internal',           desc: 'Internal team communication channel' },
+};
+
 export default function ChannelsSettingsPage() {
   const [channels, setChannels] = useState([]);
   const [connections, setConnections] = useState([]);
@@ -149,8 +175,8 @@ export default function ChannelsSettingsPage() {
                       <Icon className={`w-5 h-5 ${channel.textClass || 'text-neutral-400'}`} />
                     </div>
                     <div>
-                      <h3 className="text-white font-medium">{channel.name}</h3>
-                      <p className="text-neutral-400 text-xs">{channel.provider || 'Internal'}</p>
+                      <h3 className="text-white font-medium">{CHANNEL_META[channel.id]?.name || channel.name || channel.id}</h3>
+                      <p className="text-neutral-400 text-xs">{CHANNEL_META[channel.id]?.desc || channel.provider || channel.id}</p>
                     </div>
                   </div>
                   {connected && (

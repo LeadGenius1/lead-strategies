@@ -16,16 +16,6 @@ import toast from 'react-hot-toast';
 // Allowed platforms for website builder
 const ALLOWED_PLATFORMS = ['leadsiteio.com', 'ultraleadai.com', 'localhost'];
 
-const checkPlatformAccess = () => {
-  if (typeof window === 'undefined') return false;
-  const hostname = window.location.hostname;
-  return ALLOWED_PLATFORMS.some(domain =>
-    hostname === domain ||
-    hostname.endsWith('.' + domain) ||
-    hostname === 'localhost'
-  );
-};
-
 // 7 questions: 6 content + template picker
 const QUESTIONS = [
   {
@@ -163,7 +153,11 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    setHasAccess(checkPlatformAccess());
+    const hostname = window.location.hostname;
+    const allowed = ALLOWED_PLATFORMS.some(domain =>
+      hostname === domain || hostname.endsWith('.' + domain) || hostname.includes('localhost')
+    );
+    setHasAccess(allowed);
   }, []);
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -295,7 +289,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
 
   if (!hasAccess) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-8">
         <div className="max-w-md text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center">
             <Lock className="w-8 h-8 text-red-400" />
@@ -305,22 +299,21 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
             The AI Website Builder is exclusively available on <strong className="text-cyan-400">LeadSite.IO</strong> and <strong className="text-cyan-400">UltraLead.AI</strong>.
           </p>
           <div className="bg-black/30 rounded-xl p-4 mb-6">
-            <p className="text-sm text-slate-500 mb-2">Included with:</p>
-            <div className="flex gap-4 justify-center">
+            <p className="text-sm text-slate-500 mb-3">Included with:</p>
+            <div className="flex gap-6 justify-center">
               <div className="text-center">
                 <p className="text-white font-medium">LeadSite.IO</p>
                 <p className="text-xs text-cyan-400">$49/mo</p>
+                <p className="text-xs text-slate-500">1 Free Website</p>
               </div>
               <div className="text-center">
                 <p className="text-white font-medium">UltraLead.AI</p>
                 <p className="text-xs text-cyan-400">$99/mo</p>
+                <p className="text-xs text-slate-500">1 Free Website</p>
               </div>
             </div>
           </div>
-          <a
-            href="https://leadsiteio.com"
-            className="inline-block px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 text-white rounded-xl font-medium hover:from-cyan-600 hover:to-indigo-600 transition-all"
-          >
+          <a href="https://leadsiteio.com" className="inline-block px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 text-white rounded-xl font-medium hover:from-cyan-600 hover:to-indigo-600 transition-all">
             Get LeadSite.IO →
           </a>
         </div>

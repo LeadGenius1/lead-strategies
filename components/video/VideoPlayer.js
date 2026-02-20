@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, Loader2, AlertCircle } from 'lucide-react';
+import ProductBar from './ProductBar';
 
-export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = false }) {
+export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = false, products = [] }) {
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -147,6 +148,11 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
           <Loader2 className="w-12 h-12 text-white animate-spin" />
         </div>
+      )}
+
+      {/* Product Promotion Bar */}
+      {products.length > 0 && (
+        <ProductBar products={products} currentTime={currentTime} />
       )}
 
       {/* Controls Overlay */}

@@ -11,7 +11,9 @@ import {
   Eye,
   Lock,
   CreditCard,
+  AlertCircle,
 } from 'lucide-react';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 // Allowed platforms for website builder
@@ -144,6 +146,10 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
   const [hasAccess, setHasAccess] = useState(true);
   const [paymentRequired, setPaymentRequired] = useState(false);
   const [websiteCount, setWebsiteCount] = useState(0);
+  const [profileData, setProfileData] = useState(null);
+  const [profileComplete, setProfileComplete] = useState(false);
+  const [showProfilePrompt, setShowProfilePrompt] = useState(false);
+  const [missingFields, setMissingFields] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [input, setInput] = useState('');
@@ -162,6 +168,52 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     );
     setHasAccess(allowed);
   }, []);
+
+  // Check profile on mount — skip questions if complete
+  useEffect(() => {
+    async function checkProfile() {
+      try {
+        const token = Cookies.get('token') || Cookies.get('admin_token');
+        if (!token) return;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
+        const res = await fetch(`${apiUrl}/api/v1/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        const profile = json.data || json;
+        setProfileData(profile);
+
+        const missing = [];
+        if (!profile.companyName && !profile.company) missing.push('Business Name');
+        if (!profile.industry) missing.push('Industry');
+        if (!profile.productsServices) missing.push('Services');
+        if (!profile.email && !profile.phone) missing.push('Contact Info');
+
+        if (missing.length === 0) {
+          setProfileComplete(true);
+          setAnswers({
+            business_name: profile.companyName || profile.company || '',
+            industry: profile.industry || '',
+            description: profile.uniqueValueProposition || profile.productsServices || '',
+            services: profile.productsServices || '',
+            differentiators: [
+              profile.competitorDifferentiation,
+              profile.keyBenefits,
+            ].filter(Boolean).join('. ') || '',
+            contact: [profile.email, profile.phone, profile.location].filter(Boolean).join('\n'),
+          });
+          setCurrentQuestionIndex(QUESTIONS.length - 1);
+        } else {
+          setMissingFields(missing);
+          setShowProfilePrompt(true);
+        }
+      } catch (error) {
+        console.log('Profile check skipped:', error);
+      }
+    }
+    if (hasAccess) checkProfile();
+  }, [hasAccess]);
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
 
@@ -428,6 +480,45 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
             className="mt-3 text-sm text-slate-500 hover:text-slate-300 transition-colors"
           >
             Go back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (showProfilePrompt && !paymentRequired) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-8">
+        <div className="max-w-md text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+            <AlertCircle className="w-8 h-8 text-amber-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-3">Complete Your Profile First</h2>
+          <p className="text-slate-400 mb-6">
+            Your profile is missing some info we need to build your website. Fill it in once and we&apos;ll skip the questions next time!
+          </p>
+          <div className="bg-black/30 rounded-xl p-4 mb-6 text-left">
+            <p className="text-sm text-slate-500 mb-3">Missing fields:</p>
+            <ul className="space-y-2">
+              {missingFields.map((field) => (
+                <li key={field} className="flex items-center gap-2 text-sm text-amber-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                  {field}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <Link
+            href="/profile"
+            className="inline-block w-full px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all mb-3"
+          >
+            Complete Profile →
+          </Link>
+          <button
+            onClick={() => setShowProfilePrompt(false)}
+            className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            Answer questions instead
           </button>
         </div>
       </div>

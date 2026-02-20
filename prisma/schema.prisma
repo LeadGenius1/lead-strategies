@@ -181,19 +181,33 @@ model EmailEvent {
 }
 
 model Website {
-  id          String   @id @default(uuid())
-  userId      String   @map("user_id")
-  name        String
-  domain      String?
-  subdomain   String?  @unique
-  pages       Json?    @default("[]")
-  settings    Json?    @default("{}")
-  theme       String?  @default("default")
-  isPublished Boolean  @default(false) @map("is_published")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String    @id @default(uuid())
+  userId        String    @map("user_id")
 
+  // Website content
+  name          String
+  slug          String    @unique
+  template      String    @default("aether")
+  content       Json      @default("{}")
+  htmlContent   String?   @map("html_content") @db.Text
+
+  // Status
+  status        String    @default("draft")
+  isPublished   Boolean   @default(false) @map("is_published")
+  publishedAt   DateTime? @map("published_at")
+
+  // Billing
+  isFreeWebsite Boolean   @default(false) @map("is_free_website")
+  purchaseId    String?   @map("purchase_id")
+
+  // Timestamps
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([slug])
   @@map("websites")
 }
 

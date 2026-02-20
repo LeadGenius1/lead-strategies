@@ -2,48 +2,93 @@
   "templates": [
     {
       "id": "1a",
-      "slug": "executive-dark",
-      "name": "Executive Dark",
-      "file": "template-1a-executive-dark.html",
-      "category": "business",
-      "style": "dark",
-      "description": "Professional dark theme for executives and B2B"
+      "slug": "aether",
+      "name": "Aether",
+      "file": "template-aether.html",
+      "category": "tech",
+      "style": "dark-futuristic",
+      "description": "Dark space theme with animated stars, gradient text — ideal for AI, tech, and SaaS"
     },
     {
       "id": "2b",
-      "slug": "warm-professional",
-      "name": "Warm Professional",
-      "file": "template-2b-warm-professional.html",
-      "category": "business",
-      "style": "warm",
-      "description": "Friendly and approachable professional design"
+      "slug": "uslu",
+      "name": "USLU",
+      "file": "template-uslu.html",
+      "category": "luxury",
+      "style": "dark-elegant",
+      "description": "Sophisticated dark theme with bronze/gold accents — ideal for real estate and premium services"
     },
     {
       "id": "3c",
-      "slug": "tech-premium",
-      "name": "Tech Premium",
-      "file": "template-3c-tech-premium.html",
-      "category": "saas",
-      "style": "tech",
-      "description": "Modern tech and SaaS aesthetic"
+      "slug": "vitalis",
+      "name": "Vitalis",
+      "file": "template-vitalis.html",
+      "category": "wellness",
+      "style": "warm-organic",
+      "description": "Warm bone/cream with green accents and GSAP animations — ideal for health, food, and lifestyle"
     },
     {
       "id": "4d",
-      "slug": "minimal-portfolio",
-      "name": "Minimal Portfolio",
-      "file": "template-4d-minimal-portfolio.html",
-      "category": "portfolio",
-      "style": "minimal",
-      "description": "Clean minimalist portfolio layout"
+      "slug": "sourcing-sense",
+      "name": "Sourcing Sense",
+      "file": "template-sourcing-sense.html",
+      "category": "consulting",
+      "style": "dark-classical",
+      "description": "Classical influence with gold accents and timeline — ideal for consulting and B2B services"
     },
     {
       "id": "5e",
+      "slug": "svrn",
+      "name": "SVRN",
+      "file": "template-svrn.html",
+      "category": "luxury",
+      "style": "ultra-minimal",
+      "description": "Ultra-minimal dark with mix-blend navigation — ideal for luxury marketplaces and high-end products"
+    },
+    {
+      "id": "1a-legacy",
+      "slug": "executive-dark",
+      "name": "Executive Dark (Legacy)",
+      "file": "template-1a-executive-dark.html",
+      "category": "business",
+      "style": "dark",
+      "description": "Legacy: Professional dark theme for executives and B2B"
+    },
+    {
+      "id": "2b-legacy",
+      "slug": "warm-professional",
+      "name": "Warm Professional (Legacy)",
+      "file": "template-2b-warm-professional.html",
+      "category": "business",
+      "style": "warm",
+      "description": "Legacy: Friendly and approachable professional design"
+    },
+    {
+      "id": "3c-legacy",
+      "slug": "tech-premium",
+      "name": "Tech Premium (Legacy)",
+      "file": "template-3c-tech-premium.html",
+      "category": "saas",
+      "style": "tech",
+      "description": "Legacy: Modern tech and SaaS aesthetic"
+    },
+    {
+      "id": "4d-legacy",
+      "slug": "minimal-portfolio",
+      "name": "Minimal Portfolio (Legacy)",
+      "file": "template-4d-minimal-portfolio.html",
+      "category": "portfolio",
+      "style": "minimal",
+      "description": "Legacy: Clean minimalist portfolio layout"
+    },
+    {
+      "id": "5e-legacy",
       "slug": "ai-agency",
-      "name": "AI Agency",
+      "name": "AI Agency (Legacy)",
       "file": "template-5e-ai-agency.html",
       "category": "agency",
       "style": "ai",
-      "description": "Bold AI and agency branding"
+      "description": "Legacy: Bold AI and agency branding"
     }
   ]
 }

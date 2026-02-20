@@ -77,12 +77,14 @@ router.put('/profile', async (req, res) => {
     const {
       name, email, phone, jobTitle, companyName, companyWebsite, companySize, industry, location,
       productsServices, uniqueValueProposition, targetAudience, idealCustomerProfile, keyBenefits,
-      painPointsSolved, competitorDifferentiation, preferredTone, callToAction, testimonialHighlight,
+      painPointsSolved, competitorDifferentiation, tagline, yearsExperience, clientsServed,
+      preferredTone, callToAction, testimonialHighlight,
     } = body;
     const metadataFields = {
       phone, jobTitle, companyWebsite, companySize, industry, location,
       productsServices, uniqueValueProposition, targetAudience, idealCustomerProfile, keyBenefits,
-      painPointsSolved, competitorDifferentiation, preferredTone, callToAction, testimonialHighlight,
+      painPointsSolved, competitorDifferentiation, tagline, yearsExperience, clientsServed,
+      preferredTone, callToAction, testimonialHighlight,
     };
     const user = await db.user.findUnique({
       where: { id: req.user.id },

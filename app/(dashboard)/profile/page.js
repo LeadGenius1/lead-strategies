@@ -34,6 +34,9 @@ export default function ProfilePage() {
     keyBenefits: '',
     painPointsSolved: '',
     competitorDifferentiation: '',
+    tagline: '',
+    yearsExperience: '',
+    clientsServed: '',
     preferredTone: 'professional',
     callToAction: '',
     testimonialHighlight: '',
@@ -64,6 +67,9 @@ export default function ProfilePage() {
         keyBenefits: data.keyBenefits ?? '',
         painPointsSolved: data.painPointsSolved ?? '',
         competitorDifferentiation: data.competitorDifferentiation ?? '',
+        tagline: data.tagline ?? '',
+        yearsExperience: data.yearsExperience ?? '',
+        clientsServed: data.clientsServed ?? '',
         preferredTone: data.preferredTone ?? 'professional',
         callToAction: data.callToAction ?? '',
         testimonialHighlight: data.testimonialHighlight ?? '',
@@ -97,6 +103,9 @@ export default function ProfilePage() {
         keyBenefits: profile.keyBenefits,
         painPointsSolved: profile.painPointsSolved,
         competitorDifferentiation: profile.competitorDifferentiation,
+        tagline: profile.tagline,
+        yearsExperience: profile.yearsExperience,
+        clientsServed: profile.clientsServed,
         preferredTone: profile.preferredTone,
         callToAction: profile.callToAction,
         testimonialHighlight: profile.testimonialHighlight,
@@ -317,6 +326,38 @@ export default function ProfilePage() {
                   className={CHAT_STYLE.input}
                   placeholder="How you stand out vs competitors"
                 />
+              </div>
+              <div>
+                <label className={CHAT_STYLE.label}>Tagline</label>
+                <input
+                  type="text"
+                  value={profile.tagline}
+                  onChange={(e) => setProfile((p) => ({ ...p, tagline: e.target.value }))}
+                  className={CHAT_STYLE.input}
+                  placeholder="e.g., AI-Powered Sales Automation"
+                />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={CHAT_STYLE.label}>Years in business</label>
+                  <input
+                    type="text"
+                    value={profile.yearsExperience}
+                    onChange={(e) => setProfile((p) => ({ ...p, yearsExperience: e.target.value }))}
+                    className={CHAT_STYLE.input}
+                    placeholder="e.g., 10+"
+                  />
+                </div>
+                <div>
+                  <label className={CHAT_STYLE.label}>Clients served</label>
+                  <input
+                    type="text"
+                    value={profile.clientsServed}
+                    onChange={(e) => setProfile((p) => ({ ...p, clientsServed: e.target.value }))}
+                    className={CHAT_STYLE.input}
+                    placeholder="e.g., 500+"
+                  />
+                </div>
               </div>
               <div>
                 <label className={CHAT_STYLE.label}>Preferred tone</label>

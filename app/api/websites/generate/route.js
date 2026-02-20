@@ -1960,7 +1960,7 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { formData } = body;
+    const { formData, purchaseId } = body;
     // Support explicit templateId or auto-select from businessType
     const templateId = body.templateId || selectTemplate(formData?.businessType);
 
@@ -1970,6 +1970,25 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'formData is required' },
         { status: 400 }
+      );
+    }
+
+    // --- Website limit check: 1 free, then $19.99 each ---
+    const existingWebsites = await prisma.website.count({ where: { userId } });
+    const hasFreeWebsite = await prisma.website.findFirst({
+      where: { userId, isFreeWebsite: true },
+    });
+
+    if (hasFreeWebsite && !purchaseId) {
+      return NextResponse.json(
+        {
+          error: 'payment_required',
+          message: 'Additional websites are $19.99 each (includes hosting)',
+          existingCount: existingWebsites,
+          price: 19.99,
+          currency: 'usd',
+        },
+        { status: 402 }
       );
     }
 
@@ -2016,6 +2035,22 @@ export async function POST(request) {
       },
     });
 
+    // 6. Save Website record for billing tracking
+    const isFree = existingWebsites === 0;
+    const savedWebsite = await prisma.website.create({
+      data: {
+        userId,
+        name,
+        slug: subdomain,
+        template: templateId,
+        content: formData,
+        htmlContent: html,
+        status: 'draft',
+        isFreeWebsite: isFree,
+        purchaseId: purchaseId || null,
+      },
+    });
+
     return NextResponse.json({
       success: true,
       data: {
@@ -2026,6 +2061,11 @@ export async function POST(request) {
         subdomain: site.subdomain,
         templateUsed: templateId,
         aiGenerated: !!aiContent,
+      },
+      billing: {
+        isFree,
+        totalWebsites: existingWebsites + 1,
+        nextWebsitePrice: 19.99,
       },
     });
   } catch (error) {

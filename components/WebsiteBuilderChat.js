@@ -12,14 +12,82 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-// 6 questions to build a solid website - simple chat flow
+// 7 questions: 6 content + template picker
 const QUESTIONS = [
-  { key: 'business_basics', question: "What's your business name and tagline? (e.g., Acme Corp | We deliver results)", parse: (a) => { const [n, t] = a.split(/[|–-]/).map((s) => s.trim()); return { business_name: n || a, tagline: t || '' }; } },
-  { key: 'contact', question: "Contact email and phone (e.g., john@acme.com | 555-1234)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); const email = p.find((x) => x?.includes('@')) || ''; const phone = p.find((x) => x && !x.includes('@') && /\d/.test(x)) || p[1] || ''; return { email, phone }; } },
-  { key: 'services', question: "Top 3 services or offerings. One per line: Name - Brief description", parse: (a) => { const lines = a.split(/\n/).map((s) => s.trim()).filter(Boolean).slice(0, 3); const parseLine = (l) => (l?.includes(' - ') ? l.split(' - ').map((x) => x.trim()) : [l || '', l || '']); const s1 = parseLine(lines[0]); const s2 = parseLine(lines[1]); const s3 = parseLine(lines[2]); return { service1_name: s1[0], service1_description: s1[1] || s1[0], service2_name: s2[0], service2_description: s2[1] || s2[0], service3_name: s3[0], service3_description: s3[1] || s3[0] }; } },
-  { key: 'about', question: "About your business in 1–2 sentences (what you do, who you serve)", parse: (a) => ({ about_headline: a.split(/[.!?]/)[0]?.trim() || 'About Us', about_story: a }) },
-  { key: 'cta', question: "Main call-to-action? (e.g., Get Started, Contact Us, Request Demo)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); return { primary_cta: p[0] || 'Get Started', secondary_cta: p[1] || 'Learn More', cta_destination: p[2] || '#contact' }; } },
-  { key: 'template', question: "Pick a template style:", parse: (a) => ({ template: a }) },
+  {
+    key: 'business_name',
+    question: "What's your business name?",
+    placeholder: 'e.g., Acme Solutions, Prestige Properties',
+    parse: (a) => ({ business_name: a.trim() }),
+  },
+  {
+    key: 'industry',
+    question: 'What industry or category best describes your business?',
+    placeholder: 'e.g., AI/Tech, Real Estate, Health & Wellness, Consulting, Luxury Products',
+    hint: 'This helps us pick the perfect design style',
+    parse: (a) => ({ businessType: a.trim(), industry: a.trim() }),
+  },
+  {
+    key: 'description',
+    question: 'Describe your business in 2–3 sentences. What do you do and who do you help?',
+    placeholder: 'e.g., We help small businesses automate their marketing with AI-powered tools...',
+    parse: (a) => ({
+      about_story: a.trim(),
+      description: a.trim(),
+      about_headline: (a.split(/[.!?]/)[0]?.trim() || 'About Us'),
+    }),
+  },
+  {
+    key: 'services',
+    question: 'List your TOP 3 services or products (one per line)',
+    placeholder: '1. Lead Generation\n2. Email Automation\n3. Analytics Dashboard',
+    hint: 'Be specific — these become your service cards',
+    multiline: true,
+    parse: (a) => {
+      const lines = a.split(/\n/).map((s) => s.replace(/^\d+[.)]\s*/, '').trim()).filter(Boolean).slice(0, 3);
+      const p = (l) => (l?.includes(' - ') ? l.split(' - ').map((x) => x.trim()) : [l || '', l || '']);
+      const s1 = p(lines[0]); const s2 = p(lines[1]); const s3 = p(lines[2]);
+      return {
+        service1_name: s1[0], service1_description: s1[1] || s1[0],
+        service2_name: s2?.[0] || '', service2_description: s2?.[1] || s2?.[0] || '',
+        service3_name: s3?.[0] || '', service3_description: s3?.[1] || s3?.[0] || '',
+      };
+    },
+  },
+  {
+    key: 'differentiators',
+    question: 'What makes you unique? Include any impressive stats!',
+    placeholder: 'e.g., 10+ years experience, 500+ clients served, 98% satisfaction rate, Award-winning team',
+    hint: 'Stats and proof points build trust',
+    parse: (a) => {
+      const yrs = a.match(/(\d+\+?)\s*(?:years?|yrs?)/i);
+      const clients = a.match(/(\d+\+?)\s*(?:clients?|customers?|projects?)/i);
+      return {
+        years_experience: yrs?.[1] || '5+',
+        clients_served: clients?.[1] || '100+',
+        unique_value: a.trim(),
+      };
+    },
+  },
+  {
+    key: 'contact',
+    question: 'How can customers reach you?',
+    placeholder: 'Email: hello@company.com\nPhone: (555) 123-4567\nLocation: New York, NY',
+    multiline: true,
+    parse: (a) => {
+      const email = a.match(/[\w.-]+@[\w.-]+\.\w+/)?.[0] || '';
+      const phone = a.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/)?.[0] || '';
+      const remaining = a.replace(email, '').replace(phone, '')
+        .replace(/email:?|phone:?|location:?|address:?/gi, '').trim()
+        .replace(/^[\n,|]+|[\n,|]+$/g, '').trim();
+      return { email, phone, address: remaining };
+    },
+  },
+  {
+    key: 'template',
+    question: 'Pick a template style:',
+    parse: (a) => ({ template: a }),
+  },
 ];
 
 const TEMPLATE_OPTIONS = [
@@ -33,14 +101,12 @@ const TEMPLATE_OPTIONS = [
 function answersToFormData(answers) {
   const formData = {
     business_name: '',
-    tagline: '',
-    industry: 'Other',
-    business_type: 'Both',
-    owner_name: '',
+    businessType: '',
+    industry: '',
+    description: '',
     email: '',
     phone: '',
     address: '',
-    hours: '',
     service1_name: '',
     service1_description: '',
     service2_name: '',
@@ -52,20 +118,13 @@ function answersToFormData(answers) {
     years_experience: '5+',
     clients_served: '100+',
     unique_value: '',
-    website_url: '',
     linkedin: '#',
     facebook: '#',
     instagram: '#',
-    twitter: '#',
-    accent_color: '#3b82f6',
-    logo_url: '',
-    hero_image_url: '',
-    tone: 'Professional',
-    target_audience: '',
+    accent_color: '#6366f1',
     primary_cta: 'Get Started',
     secondary_cta: 'Learn More',
     cta_destination: '#contact',
-    lead_magnet: '',
   };
   for (const q of QUESTIONS) {
     const ans = answers[q.key];
@@ -286,6 +345,9 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
           <div className="flex-1">
             <div className="bg-neutral-900/50 border border-white/10 rounded-2xl p-4">
               <p className="text-white text-sm leading-relaxed">{currentQuestion.question}</p>
+              {currentQuestion.hint && (
+                <p className="text-xs text-cyan-400/70 mt-2">{currentQuestion.hint}</p>
+              )}
             </div>
             {currentQuestion.key === 'template' && (
               <div className="mt-3 grid gap-2">
@@ -341,21 +403,36 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
 
       <div className="px-6 pb-6 pt-4 border-t border-white/10">
         <div className="flex gap-3">
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your answer..."
-            disabled={loading || generating}
-            className="flex-1 px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50"
-          />
+          {currentQuestion.multiline ? (
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAnswer(); }
+              }}
+              placeholder={currentQuestion.placeholder || 'Type your answer...'}
+              disabled={loading || generating}
+              rows={3}
+              className="flex-1 px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50 resize-none"
+            />
+          ) : (
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={currentQuestion.placeholder || 'Type your answer...'}
+              disabled={loading || generating}
+              className="flex-1 px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white placeholder-neutral-600 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all disabled:opacity-50"
+            />
+          )}
           <button
             type="button"
             onClick={handleAnswer}
             disabled={!input.trim() || loading || generating}
-            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 text-white rounded-xl text-sm font-medium disabled:opacity-50 transition-all flex items-center gap-2 self-end"
           >
             {loading || generating ? (
               <Loader2 className="w-4 h-4 animate-spin" />

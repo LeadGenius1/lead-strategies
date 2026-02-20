@@ -75,6 +75,7 @@ const payoutsRoutes = require('./routes/payouts');
 const aiAgentRoutes = require('./routes/ai-agents');
 const clipsRoutes = require('./routes/clips');
 const publishRoutes = require('./routes/publish');
+const productRoutes = require('./routes/products');
 const emailSentinelRoutes = require('./routes/emailSentinel');
 const masterValidationRoutes = require('./routes/master-validation');
 const statusRoutes = require('./routes/status');
@@ -372,6 +373,7 @@ app.use('/api/v1/payouts', payoutsRoutes);  // VideoSite earnings payouts
 app.use('/api/status', statusRoutes);       // Backward compat
 app.use('/api/v1/clips', clipsRoutes);      // Video clips management
 app.use('/api/v1/publish', publishRoutes);  // Social media publishing
+app.use('/api/v1/products', productRoutes); // VideoSite.AI Product Promotions
 
 // 404 handler
 app.use((req, res) => {

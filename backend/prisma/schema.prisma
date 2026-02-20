@@ -186,7 +186,7 @@ model Website {
 
   // Website content
   name          String
-  slug          String    @unique
+  slug          String?   @unique
   template      String    @default("aether")
   content       Json      @default("{}")
   htmlContent   String?   @map("html_content") @db.Text

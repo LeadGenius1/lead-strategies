@@ -136,7 +136,7 @@ function SignupForm() {
           {/* Header */}
           <div className="text-center mb-10">
             <Link href="/" className="inline-flex items-center gap-2 text-2xl text-white uppercase tracking-tighter font-space-grotesk font-light mb-2">
-              <div className="w-2 h-2 bg-purple-500 animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
+              <img src="/favicon.svg" alt="AI Lead Strategies" className="w-8 h-8" />
               AI LEAD STRATEGIES
             </Link>
             <p className="text-neutral-500 font-geist text-xs mb-6">aileadstrategies.com</p>

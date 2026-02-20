@@ -10,6 +10,7 @@ import {
   Globe,
   Eye,
   Lock,
+  CreditCard,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -141,6 +142,8 @@ function answersToFormData(answers) {
 
 export default function WebsiteBuilderChat({ onWebsiteCreated }) {
   const [hasAccess, setHasAccess] = useState(true);
+  const [paymentRequired, setPaymentRequired] = useState(false);
+  const [websiteCount, setWebsiteCount] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [input, setInput] = useState('');
@@ -169,6 +172,57 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
   useEffect(() => {
     inputRef.current?.focus();
   }, [currentQuestionIndex]);
+
+  // Check for ?purchased=true after Stripe redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const purchased = params.get('purchased');
+    const sessionId = params.get('session_id');
+    if (purchased === 'true' && sessionId && Object.keys(answers).length > 0) {
+      // Clean up URL params
+      const url = new URL(window.location.href);
+      url.searchParams.delete('purchased');
+      url.searchParams.delete('session_id');
+      window.history.replaceState({}, '', url.pathname);
+      // Retry generation with purchaseId
+      setPaymentRequired(false);
+      generateWebsite(answers, sessionId);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handlePurchaseWebsite = async () => {
+    try {
+      setLoading(true);
+      const token = await getAuthToken();
+      if (!token) {
+        toast.error('Please sign in first.');
+        setLoading(false);
+        return;
+      }
+      const currentUrl = window.location.href.split('?')[0];
+      const res = await fetch('/api/stripe/create-website-checkout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          successUrl: `${currentUrl}?purchased=true&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: currentUrl,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to start checkout');
+      if (json.url) {
+        window.location.href = json.url;
+      }
+    } catch (error) {
+      console.error('Purchase error:', error);
+      toast.error(error.message || 'Failed to start checkout');
+      setLoading(false);
+    }
+  };
 
   const getAuthToken = async () => {
     const fromCookie = Cookies.get('token') || Cookies.get('admin_token');
@@ -211,7 +265,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     }
   };
 
-  const generateWebsite = async (allAnswers) => {
+  const generateWebsite = async (allAnswers, purchaseId = null) => {
     setGenerating(true);
     setLoading(true);
 
@@ -231,6 +285,9 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
       const templateNum = (!isNaN(n) && n >= 1 && n <= 5) ? n : (nameMap[t.toLowerCase().split(/\s+/)[0]] || 1);
       const templateId = TEMPLATE_OPTIONS[templateNum - 1]?.slug || TEMPLATE_OPTIONS[0].slug;
 
+      const reqBody = { templateId, formData };
+      if (purchaseId) reqBody.purchaseId = purchaseId;
+
       const res = await fetch('/api/websites/generate', {
         method: 'POST',
         credentials: 'include',
@@ -238,11 +295,18 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ templateId, formData }),
+        body: JSON.stringify(reqBody),
       });
 
       const json = await res.json();
       if (!res.ok) {
+        if (res.status === 402) {
+          setPaymentRequired(true);
+          setWebsiteCount(json.existingCount || 1);
+          setGenerating(false);
+          setLoading(false);
+          return;
+        }
         if (res.status === 401) throw new Error('Session expired. Please sign in again.');
         throw new Error(json.error || 'Generation failed');
       }
@@ -251,6 +315,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
       setCreatedWebsite(website);
       setPreviewHtml(website?.html);
       setWebsiteCreated(true);
+      setPaymentRequired(false);
       toast.success('Website generated successfully!');
 
       if (onWebsiteCreated) onWebsiteCreated(website);
@@ -316,6 +381,54 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
           <a href="https://leadsiteio.com" className="inline-block px-6 py-3 bg-gradient-to-r from-cyan-500 to-indigo-500 text-white rounded-xl font-medium hover:from-cyan-600 hover:to-indigo-600 transition-all">
             Get LeadSite.IO →
           </a>
+        </div>
+      </div>
+    );
+  }
+
+  if (paymentRequired) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-8">
+        <div className="max-w-md text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+            <CreditCard className="w-8 h-8 text-indigo-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-3">Additional Website</h2>
+          <p className="text-slate-400 mb-6">
+            You&apos;ve used your free website. Additional websites are just <strong className="text-white">$19.99</strong> each, including hosting.
+          </p>
+          <div className="bg-black/30 rounded-xl p-4 mb-6">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-500">Current websites</span>
+              <span className="text-white font-medium">{websiteCount}</span>
+            </div>
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-500">Additional website</span>
+              <span className="text-white font-medium">$19.99</span>
+            </div>
+            <div className="border-t border-white/10 mt-2 pt-2 flex justify-between text-sm">
+              <span className="text-slate-400">Includes</span>
+              <span className="text-cyan-400">Hosting included</span>
+            </div>
+          </div>
+          <button
+            onClick={handlePurchaseWebsite}
+            disabled={loading}
+            className="w-full px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl font-medium hover:from-indigo-600 hover:to-purple-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <CreditCard className="w-4 h-4" />
+            )}
+            Purchase Website — $19.99
+          </button>
+          <button
+            onClick={() => { setPaymentRequired(false); setCurrentQuestionIndex(0); setAnswers({}); }}
+            className="mt-3 text-sm text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            Go back
+          </button>
         </div>
       </div>
     );

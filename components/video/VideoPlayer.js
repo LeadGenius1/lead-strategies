@@ -15,6 +15,16 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
+  const [productBarVisible, setProductBarVisible] = useState(false);
+  const [productBarDismissed, setProductBarDismissed] = useState(false);
+
+  // Show product bar after 5 seconds of playback
+  useEffect(() => {
+    if (productBarDismissed || products.length === 0) return;
+    if (currentTime >= 5) {
+      setProductBarVisible(true);
+    }
+  }, [currentTime, productBarDismissed, products.length]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -152,7 +162,11 @@ export default function VideoPlayer({ videoUrl, thumbnailUrl, title, autoPlay = 
 
       {/* Product Promotion Bar */}
       {products.length > 0 && (
-        <ProductBar products={products} currentTime={currentTime} />
+        <ProductBar
+          products={products}
+          visible={productBarVisible && !productBarDismissed}
+          onDismiss={() => { setProductBarDismissed(true); setProductBarVisible(false); }}
+        />
       )}
 
       {/* Controls Overlay */}

@@ -310,66 +310,6 @@ export default function VideoDetailPage() {
               </div>
             )}
 
-            {/* Featured Products */}
-            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-medium text-neutral-500 uppercase tracking-wide flex items-center gap-2">
-                  <ShoppingBagIcon className="w-4 h-4 text-indigo-400" />
-                  Featured Products
-                </h3>
-                <button
-                  type="button"
-                  onClick={openProductModal}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/20 hover:border-indigo-500/40 transition-all text-xs font-medium"
-                >
-                  <PlusIcon className="w-3.5 h-3.5" />
-                  Add Product
-                </button>
-              </div>
-
-              {products.length === 0 ? (
-                <p className="text-neutral-600 text-sm text-center py-6">
-                  No products attached. Add products to promote them on this video.
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {products.map((product) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center gap-3 p-3 bg-black/50 rounded-lg border border-white/5 group"
-                    >
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.title}
-                          className="w-12 h-12 rounded-lg object-cover border border-white/10 flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                          <ShoppingBagIcon className="w-5 h-5 text-indigo-400" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{product.title}</p>
-                        {product.price && (
-                          <span className="inline-block mt-0.5 px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs rounded-full font-mono">
-                            {product.price}
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => detachProduct(product.id)}
-                        className="p-1.5 text-neutral-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                      >
-                        <XMarkIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Stats Sidebar */}
@@ -457,6 +397,67 @@ export default function VideoDetailPage() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Featured Products */}
+            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-medium text-neutral-500 uppercase tracking-wide flex items-center gap-2">
+                  <ShoppingBagIcon className="w-4 h-4 text-indigo-400" />
+                  Featured Products
+                </h3>
+                <button
+                  type="button"
+                  onClick={openProductModal}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/20 hover:border-indigo-500/40 transition-all text-xs font-medium"
+                >
+                  <PlusIcon className="w-3.5 h-3.5" />
+                  Add Product
+                </button>
+              </div>
+
+              {products.length === 0 ? (
+                <p className="text-neutral-600 text-sm text-center py-4">
+                  No products attached.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {products.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex items-center gap-3 p-2.5 bg-black/50 rounded-lg border border-white/5 group"
+                    >
+                      {product.imageUrl ? (
+                        <img
+                          src={product.imageUrl}
+                          alt={product.title}
+                          className="w-10 h-10 rounded-lg object-cover border border-white/10 flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                          <ShoppingBagIcon className="w-4 h-4 text-indigo-400" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">{product.title}</p>
+                        {product.price && (
+                          <span className="inline-block mt-0.5 px-1.5 py-0.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] rounded-full font-mono">
+                            {product.price}
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => detachProduct(product.id)}
+                        className="p-1 text-neutral-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <XMarkIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Actions */}

@@ -20,7 +20,7 @@ export default function Navigation() {
     <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full"></div>
+          <img src="/favicon.svg" alt="AI Lead Strategies" className="w-8 h-8" />
           <span className="text-sm font-medium tracking-widest uppercase text-white">AI LEAD STRATEGIES</span>
           <span className="text-[10px] text-neutral-500 font-geist normal-case hidden sm:inline">aileadstrategies.com</span>
         </Link>

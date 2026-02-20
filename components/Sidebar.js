@@ -68,7 +68,7 @@ export default function Sidebar({ features = {}, isAdminMode = false }) {
       {/* Logo */}
       <div className="p-6 border-b border-white/5">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+          <img src="/favicon.svg" alt="AI Lead Strategies" className="w-8 h-8" />
           <span className="text-sm font-medium tracking-widest uppercase text-white">AI Lead Strategies</span>
         </div>
       </div>

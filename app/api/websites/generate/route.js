@@ -110,58 +110,68 @@ async function getUserId(request) {
 
 const COPYWRITER_SYSTEM_PROMPT = `You are a world-class conversion-focused copywriter for website landing pages. Your job is to take basic business information and transform it into compelling, benefit-focused marketing copy that SELLS.
 
-RULES:
-- NEVER repeat the user's input verbatim. Transform everything into polished marketing copy.
-- Write headlines that grab attention and communicate a clear benefit or transformation.
-- Write descriptions that focus on OUTCOMES and BENEFITS, not just features.
-- CTAs should create urgency and be action-oriented.
-- About sections should tell a story and build trust, not just list facts.
-- Service descriptions should lead with the problem solved and the result delivered.
-- Keep all copy concise — headlines under 8 words, descriptions under 40 words.
-- Match the tone to the business type (tech = bold/innovative, luxury = refined/exclusive, wellness = warm/caring, consulting = authoritative/trustworthy).
+CRITICAL RULES:
+- NEVER repeat the user's input verbatim. Rewrite EVERYTHING into polished marketing copy.
+- Write headlines that communicate a clear BENEFIT or TRANSFORMATION, not just the business name.
+- Focus on OUTCOMES: what the customer GETS, not what the business DOES.
+- CTAs should create urgency — "Start Your Free Trial", "Book a Strategy Call", "Get Your Quote".
+- About sections should tell a STORY and build TRUST — not just repeat the description.
+- You MUST generate ALL 3 services even if the user only described 1. Infer logical services from the business type and description.
+- Service descriptions should lead with the PROBLEM SOLVED and the RESULT DELIVERED.
+- Keep copy concise — headlines under 8 words, descriptions under 40 words.
+- Match tone to business type (tech = bold/innovative, luxury = refined/exclusive, wellness = warm/caring, consulting = authoritative/trustworthy).
 
 You MUST respond with ONLY a valid JSON object. No markdown, no code fences, no extra text.`;
 
 function buildUserPrompt(formData) {
-  return `Generate website marketing copy for this business. Transform the raw input into compelling, benefit-focused content.
+  const biz = formData.business_name || 'My Business';
+  const type = formData.businessType || 'general';
+  const desc = formData.about_story || formData.description || '';
+  const svc1 = formData.service1_name || '';
+  const svc1d = formData.service1_description || '';
+
+  return `Generate COMPLETE website marketing copy for this business. Transform all input into compelling copy. DO NOT leave any field empty. If only 1 service is provided, INVENT 2 more that are logical for this business type.
 
 BUSINESS INFO:
-- Name: ${formData.business_name || 'My Business'}
-- Type: ${formData.businessType || 'general'}
-- Tagline: ${formData.tagline || 'none provided'}
-- Description: ${formData.about_story || formData.description || 'none provided'}
-- Service 1: ${formData.service1_name || 'none'} — ${formData.service1_description || 'none'}
-- Service 2: ${formData.service2_name || 'none'} — ${formData.service2_description || 'none'}
-- Service 3: ${formData.service3_name || 'none'} — ${formData.service3_description || 'none'}
+- Name: ${biz}
+- Type/Industry: ${type}
+- Their tagline: ${formData.tagline || 'none — create one'}
+- Their description: ${desc || 'none — infer from name and type'}
+- Service 1: ${svc1 || 'none'} — ${svc1d || 'none'}
+- Service 2: ${formData.service2_name || 'not provided — invent one'} — ${formData.service2_description || ''}
+- Service 3: ${formData.service3_name || 'not provided — invent one'} — ${formData.service3_description || ''}
 - Years in business: ${formData.years_experience || 'not specified'}
 - Clients served: ${formData.clients_served || 'not specified'}
 
-Generate a JSON object with these EXACT keys:
+Generate a JSON object with ALL of these keys (every field MUST have a value):
 {
-  "hero_title_line1": "A powerful 3-5 word headline (NOT the business name)",
+  "hero_title_line1": "A powerful 3-5 word headline about the TRANSFORMATION (NOT the business name)",
   "hero_title_line2": "A benefit-focused second line, 3-5 words",
   "tagline": "A compelling one-line value proposition (max 10 words)",
-  "hero_description": "2-3 sentences that hook the reader and communicate the core transformation (max 50 words)",
-  "service1_title": "Benefit-focused service name (3-5 words)",
-  "service1_description": "What problem this solves and the outcome delivered (max 30 words)",
-  "service2_title": "Benefit-focused service name (3-5 words)",
-  "service2_description": "What problem this solves and the outcome delivered (max 30 words)",
-  "service3_title": "Benefit-focused service name (3-5 words)",
-  "service3_description": "What problem this solves and the outcome delivered (max 30 words)",
-  "about_headline": "An engaging about section headline (4-7 words)",
-  "about_description": "A trust-building about paragraph that tells a story (max 60 words)",
-  "cta_primary": "Action-oriented primary button text (2-4 words)",
-  "cta_secondary": "Softer secondary button text (2-4 words)"
+  "hero_description": "2-3 sentences that hook the reader. Focus on what they GAIN. Max 50 words.",
+  "service1_title": "Benefit-focused service name (3-5 words, rewritten from input)",
+  "service1_description": "Problem solved → outcome delivered. Max 30 words.",
+  "service2_title": "Second service name (3-5 words — MUST be filled even if not in input)",
+  "service2_description": "Problem solved → outcome delivered. Max 30 words.",
+  "service3_title": "Third service name (3-5 words — MUST be filled even if not in input)",
+  "service3_description": "Problem solved → outcome delivered. Max 30 words.",
+  "about_headline": "Engaging about headline (4-7 words, NOT just 'About Us')",
+  "about_description": "Trust-building paragraph — tell a STORY about why this business exists and what makes them different. Max 60 words. MUST differ from hero_description.",
+  "cta_primary": "Action-oriented primary button (2-4 words, e.g. 'Start Free Trial')",
+  "cta_secondary": "Softer secondary button (2-4 words, e.g. 'See How It Works')",
+  "stat1_label": "What the first stat measures (e.g. 'Years Experience')",
+  "stat2_label": "What the second stat measures (e.g. 'Clients Served')"
 }`;
 }
 
 async function generateAIContent(formData) {
   if (!ANTHROPIC_API_KEY) {
-    console.warn('[websites/generate] ANTHROPIC_API_KEY not set — using fallback copy');
+    console.warn('[websites/generate] ANTHROPIC_API_KEY not set — using smart fallback');
     return null;
   }
 
   try {
+    console.log('[websites/generate] Calling Anthropic API...');
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -195,12 +205,98 @@ async function generateAIContent(formData) {
     // Parse JSON — strip markdown fences if present
     const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     const parsed = JSON.parse(cleaned);
-    console.log('[websites/generate] AI content generated successfully');
+    console.log('[websites/generate] ✅ AI content generated:', Object.keys(parsed).join(', '));
     return parsed;
   } catch (error) {
-    console.error('[websites/generate] AI generation failed, using fallback:', error.message);
+    console.error('[websites/generate] AI generation failed:', error.message);
     return null;
   }
+}
+
+// ============================================
+// SMART FALLBACK (when AI is unavailable)
+// ============================================
+
+function generateSmartFallback(formData) {
+  const biz = formData.business_name || 'Our Company';
+  const type = (formData.businessType || '').toLowerCase();
+  const desc = formData.about_story || formData.description || '';
+  const svc1 = formData.service1_name || '';
+
+  // Generate a headline that's NOT just the business name
+  let heroLine1 = 'Elevate Your Business';
+  let heroLine2 = 'To The Next Level';
+  let ctaPrimary = 'Get Started Today';
+  let ctaSecondary = 'Learn More';
+
+  if (type.includes('tech') || type.includes('ai') || type.includes('saas') || type.includes('software')) {
+    heroLine1 = 'Innovation That Drives';
+    heroLine2 = 'Real Results';
+    ctaPrimary = 'Start Free Trial';
+    ctaSecondary = 'See How It Works';
+  } else if (type.includes('real') || type.includes('architect') || type.includes('luxury')) {
+    heroLine1 = 'Exceptional Quality';
+    heroLine2 = 'Unmatched Excellence';
+    ctaPrimary = 'Schedule Consultation';
+    ctaSecondary = 'View Portfolio';
+  } else if (type.includes('health') || type.includes('well') || type.includes('food') || type.includes('fit')) {
+    heroLine1 = 'Transform Your Life';
+    heroLine2 = 'Starting Today';
+    ctaPrimary = 'Begin Your Journey';
+    ctaSecondary = 'Explore Programs';
+  } else if (type.includes('consult') || type.includes('b2b') || type.includes('finance') || type.includes('legal')) {
+    heroLine1 = 'Strategic Solutions';
+    heroLine2 = 'That Deliver Results';
+    ctaPrimary = 'Book a Strategy Call';
+    ctaSecondary = 'See Case Studies';
+  } else if (type.includes('market') || type.includes('ecom') || type.includes('fashion')) {
+    heroLine1 = 'Discover Something';
+    heroLine2 = 'Extraordinary';
+    ctaPrimary = 'Shop Now';
+    ctaSecondary = 'Browse Collection';
+  }
+
+  // Build tagline from input or generate
+  const tagline = formData.tagline || `${biz} — ${heroLine1} ${heroLine2}`;
+
+  // Hero description — rewrite, don't repeat
+  let heroDesc = desc
+    ? `Discover how ${biz} is helping businesses achieve their goals. ${desc.split('.')[0]}.`
+    : `${biz} delivers proven solutions that transform the way you work. Experience the difference that expertise and dedication make.`;
+  if (heroDesc.length > 200) heroDesc = heroDesc.substring(0, 197) + '...';
+
+  // Generate services — always fill all 3
+  const service1Title = svc1 || 'Strategic Solutions';
+  const service1Desc = formData.service1_description || `Tailored strategies designed to help your business grow and succeed in today's competitive landscape.`;
+  const service2Title = formData.service2_name || 'Dedicated Support';
+  const service2Desc = formData.service2_description || `Our expert team is committed to providing personalized guidance every step of the way.`;
+  const service3Title = formData.service3_name || 'Proven Results';
+  const service3Desc = formData.service3_description || `Data-driven approaches that consistently deliver measurable outcomes for our clients.`;
+
+  // About — different from hero
+  const aboutHeadline = formData.about_headline || `Why ${biz}?`;
+  const aboutDesc = desc
+    ? `At ${biz}, we believe in delivering excellence. ${desc.split('.').slice(0, 2).join('.')}. That commitment drives everything we do.`
+    : `Founded with a passion for excellence, ${biz} has built a reputation for delivering outstanding results. We combine deep expertise with a client-first approach to help you achieve your goals.`;
+
+  console.log('[websites/generate] Using smart fallback content (no AI API key)');
+
+  return {
+    hero_title_line1: heroLine1,
+    hero_title_line2: heroLine2,
+    tagline,
+    hero_description: heroDesc,
+    service1_title: service1Title,
+    service1_description: service1Desc,
+    service2_title: service2Title,
+    service2_description: service2Desc,
+    service3_title: service3Title,
+    service3_description: service3Desc,
+    about_headline: aboutHeadline,
+    about_description: aboutDesc,
+    cta_primary: ctaPrimary,
+    cta_secondary: ctaSecondary,
+  };
 }
 
 // ============================================
@@ -208,15 +304,15 @@ async function generateAIContent(formData) {
 // ============================================
 
 function buildPlaceholders(formData, aiContent) {
-  // AI-generated fields (with fallbacks to raw input)
-  const ai = aiContent || {};
+  // Use AI content if available, otherwise smart fallback (never empty strings)
+  const content = aiContent || generateSmartFallback(formData);
 
   return {
-    // Literal fields — never AI-generated
-    business_name: formData.business_name || '',
-    accent_color: formData.accent_color || '#3b82f6',
+    // Literal fields — always from user input
+    business_name: formData.business_name || 'My Business',
+    accent_color: formData.accent_color || '#6366f1',
     email: formData.email || '',
-    contact_email: formData.email || '',
+    contact_email: formData.email || 'hello@example.com',
     contact_phone: formData.phone || '',
     contact_address: formData.address || '',
     stat1_value: formData.years_experience || '5+',
@@ -227,22 +323,22 @@ function buildPlaceholders(formData, aiContent) {
     social_link3: formData.instagram || '#',
     current_year: String(new Date().getFullYear()),
 
-    // AI-generated fields (fallback to raw input if AI unavailable)
-    tagline: ai.tagline || formData.tagline || '',
-    hero_title_line1: ai.hero_title_line1 || formData.business_name || '',
-    hero_title_line2: ai.hero_title_line2 || formData.tagline || '',
-    hero_description: ai.hero_description || formData.about_story || formData.tagline || '',
-    service1_title: ai.service1_title || formData.service1_name || '',
-    service1_description: ai.service1_description || formData.service1_description || '',
-    service2_title: ai.service2_title || formData.service2_name || '',
-    service2_description: ai.service2_description || formData.service2_description || '',
-    service3_title: ai.service3_title || formData.service3_name || '',
-    service3_description: ai.service3_description || formData.service3_description || '',
-    about_headline: ai.about_headline || formData.about_headline || '',
-    about_description: ai.about_description || formData.about_story || '',
-    about_story: ai.about_description || formData.about_story || '',
-    cta_primary: ai.cta_primary || formData.primary_cta || 'Get Started',
-    cta_secondary: ai.cta_secondary || formData.secondary_cta || 'Learn More',
+    // Content fields — AI-generated or smart fallback (never empty)
+    tagline: content.tagline,
+    hero_title_line1: content.hero_title_line1,
+    hero_title_line2: content.hero_title_line2,
+    hero_description: content.hero_description,
+    service1_title: content.service1_title,
+    service1_description: content.service1_description,
+    service2_title: content.service2_title,
+    service2_description: content.service2_description,
+    service3_title: content.service3_title,
+    service3_description: content.service3_description,
+    about_headline: content.about_headline,
+    about_description: content.about_description,
+    about_story: content.about_description,
+    cta_primary: content.cta_primary,
+    cta_secondary: content.cta_secondary,
   };
 }
 

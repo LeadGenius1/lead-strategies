@@ -5,7 +5,13 @@ import { getSession } from '@/lib/auth-session';
 import Stripe from 'stripe';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY);
+}
 
 async function getUserId(request) {
   const authHeader = request.headers.get('authorization');
@@ -38,6 +44,7 @@ export async function POST(request) {
     }
 
     const { successUrl, cancelUrl } = await request.json();
+    const stripe = getStripe();
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'payment',

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{business_name}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    :root {
+      --accent: {{accent_color}};
+      --aether-bg: #0f0f23;
+      --aether-primary: #6366f1;
+      --aether-secondary: #a855f7;
+    }
+    body { font-family: 'Inter', sans-serif; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-delay { animation: float 8s ease-in-out 2s infinite; }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body class="bg-[#0f0f23] text-white antialiased">
+
+  <!-- ============================================ -->
+  <!-- STARS BACKGROUND -->
+  <!-- ============================================ -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none" id="stars-container"></div>
+
+  <!-- Gradient orbs -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-float"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float-delay"></div>
+    <div class="absolute top-3/4 left-2/3 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float"></div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- NAVIGATION -->
+  <!-- ============================================ -->
+  <nav class="relative z-50 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="font-display text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+        {{business_name}}
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#services" class="text-sm text-slate-300 hover:text-white transition-colors">Services</a>
+        <a href="#about" class="text-sm text-slate-300 hover:text-white transition-colors">About</a>
+        <a href="#contact" class="text-sm text-slate-300 hover:text-white transition-colors">Contact</a>
+        <a href="{{cta_destination}}" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40">
+          {{cta_primary}}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================ -->
+  <!-- HERO SECTION -->
+  <!-- ============================================ -->
+  <section class="relative z-10 max-w-7xl mx-auto px-6 py-24 lg:py-36 text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-8">
+      <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+      <span class="text-sm text-indigo-300">{{tagline}}</span>
+    </div>
+    <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+      <span class="bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+        {{hero_title_line1}}
+      </span>
+      <br>
+      <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        {{hero_title_line2}}
+      </span>
+    </h1>
+    <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+      {{hero_description}}
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="{{cta_destination}}" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1">
+        {{cta_primary}}
+      </a>
+      <a href="#about" class="px-8 py-4 border border-slate-600 hover:border-indigo-500 text-slate-300 hover:text-white rounded-xl transition-all duration-300">
+        {{cta_secondary}}
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SERVICES SECTION -->
+  <!-- ============================================ -->
+  <section id="services" class="relative z-10 max-w-7xl mx-auto px-6 py-20">
+    <div class="text-center mb-16">
+      <p class="text-sm font-medium text-indigo-400 uppercase tracking-widest mb-3">What We Do</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold">Our Services</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Service 1 -->
+      <div class="p-8 rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-300 group">
+        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <i data-lucide="cpu" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-display text-xl font-semibold text-white mb-3">{{service1_title}}</h3>
+        <p class="text-slate-400 leading-relaxed">{{service1_description}}</p>
+      </div>
+      <!-- Service 2 -->
+      <div class="p-8 rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-300 group">
+        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <i data-lucide="zap" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-display text-xl font-semibold text-white mb-3">{{service2_title}}</h3>
+        <p class="text-slate-400 leading-relaxed">{{service2_description}}</p>
+      </div>
+      <!-- Service 3 -->
+      <div class="p-8 rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 hover:border-indigo-500/50 transition-all duration-300 group">
+        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <i data-lucide="rocket" class="w-7 h-7 text-white"></i>
+        </div>
+        <h3 class="font-display text-xl font-semibold text-white mb-3">{{service3_title}}</h3>
+        <p class="text-slate-400 leading-relaxed">{{service3_description}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- STATS BAR -->
+  <!-- ============================================ -->
+  <section class="relative z-10 border-y border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <p class="font-display text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">{{stat1_value}}</p>
+        <p class="text-sm text-slate-400 mt-1">Years Experience</p>
+      </div>
+      <div>
+        <p class="font-display text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{{stat2_value}}</p>
+        <p class="text-sm text-slate-400 mt-1">Clients Served</p>
+      </div>
+      <div>
+        <p class="font-display text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">99%</p>
+        <p class="text-sm text-slate-400 mt-1">Satisfaction Rate</p>
+      </div>
+      <div>
+        <p class="font-display text-4xl font-bold bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">24/7</p>
+        <p class="text-sm text-slate-400 mt-1">Support Available</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ABOUT SECTION -->
+  <!-- ============================================ -->
+  <section id="about" class="relative z-10 max-w-7xl mx-auto px-6 py-24">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <p class="text-sm font-medium text-indigo-400 uppercase tracking-widest mb-3">About Us</p>
+        <h2 class="font-display text-3xl md:text-5xl font-bold mb-6">{{about_headline}}</h2>
+        <p class="text-slate-300 leading-relaxed text-lg">{{about_description}}</p>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/20 p-12 backdrop-blur">
+          <div class="space-y-6">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-5 h-5 text-indigo-400"></i>
+              </div>
+              <span class="text-slate-200">Industry-Leading Solutions</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-5 h-5 text-purple-400"></i>
+              </div>
+              <span class="text-slate-200">Dedicated Expert Team</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-400"></i>
+              </div>
+              <span class="text-slate-200">Proven Track Record</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-5 h-5 text-pink-400"></i>
+              </div>
+              <span class="text-slate-200">Results-Driven Approach</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- CTA SECTION -->
+  <!-- ============================================ -->
+  <section class="relative z-10 py-24">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <div class="rounded-3xl bg-gradient-to-br from-indigo-600/20 via-purple-600/20 to-pink-600/20 border border-indigo-500/20 backdrop-blur p-16">
+        <h2 class="font-display text-3xl md:text-5xl font-bold mb-6">Ready to Get Started?</h2>
+        <p class="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">
+          Take the first step toward transforming your business. Let's build something extraordinary together.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="{{cta_destination}}" class="px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-1">
+            {{cta_primary}}
+          </a>
+          <a href="mailto:{{contact_email}}" class="px-10 py-4 border border-slate-600 hover:border-indigo-500 text-slate-300 hover:text-white rounded-xl transition-all duration-300">
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- CONTACT SECTION -->
+  <!-- ============================================ -->
+  <section id="contact" class="relative z-10 max-w-7xl mx-auto px-6 py-24">
+    <div class="text-center mb-16">
+      <p class="text-sm font-medium text-indigo-400 uppercase tracking-widest mb-3">Get In Touch</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold">Contact Us</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      <div class="p-8 rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 text-center">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="mail" class="w-6 h-6 text-indigo-400"></i>
+        </div>
+        <p class="text-sm text-slate-400 mb-1">Email</p>
+        <a href="mailto:{{contact_email}}" class="text-white hover:text-indigo-400 transition-colors">{{contact_email}}</a>
+      </div>
+      <div class="p-8 rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 text-center">
+        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="phone" class="w-6 h-6 text-purple-400"></i>
+        </div>
+        <p class="text-sm text-slate-400 mb-1">Phone</p>
+        <a href="tel:{{contact_phone}}" class="text-white hover:text-purple-400 transition-colors">{{contact_phone}}</a>
+      </div>
+      <div class="p-8 rounded-2xl bg-slate-800/50 backdrop-blur border border-slate-700/50 text-center">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="map-pin" class="w-6 h-6 text-blue-400"></i>
+        </div>
+        <p class="text-sm text-slate-400 mb-1">Location</p>
+        <p class="text-white">{{contact_address}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- FOOTER -->
+  <!-- ============================================ -->
+  <footer class="relative z-10 border-t border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+          <a href="#" class="font-display text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            {{business_name}}
+          </a>
+          <p class="text-sm text-slate-500 mt-1">{{tagline}}</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="{{social_link1}}" target="_blank" class="w-10 h-10 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center hover:border-indigo-500/50 transition-colors">
+            <i data-lucide="linkedin" class="w-4 h-4 text-slate-400"></i>
+          </a>
+          <a href="{{social_link2}}" target="_blank" class="w-10 h-10 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center hover:border-indigo-500/50 transition-colors">
+            <i data-lucide="facebook" class="w-4 h-4 text-slate-400"></i>
+          </a>
+          <a href="{{social_link3}}" target="_blank" class="w-10 h-10 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center hover:border-indigo-500/50 transition-colors">
+            <i data-lucide="instagram" class="w-4 h-4 text-slate-400"></i>
+          </a>
+        </div>
+      </div>
+      <div class="mt-8 pt-8 border-t border-white/5 text-center">
+        <p class="text-sm text-slate-500">&copy; {{current_year}} {{business_name}}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS -->
+  <!-- ============================================ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Generate animated stars
+    (function() {
+      const container = document.getElementById('stars-container');
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationName = 'twinkle';
+        star.style.animationDuration = (2 + Math.random() * 4) + 's';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationIterationCount = 'infinite';
+        container.appendChild(star);
+      }
+    })();
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>

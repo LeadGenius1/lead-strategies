@@ -1,7 +1,7 @@
 /**
  * POST /api/websites/generate
- * AI Website Builder: generate site from template + form data
- * Replaces {{placeholders}} in template HTML and saves to AiBuilderSite
+ * AI Website Builder: reads template from disk, calls Anthropic to generate
+ * compelling marketing copy, replaces {{placeholders}}, saves to AiBuilderSite
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,6 +13,8 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
 
 // Template slug → file mapping
 const TEMPLATE_FILES = {
@@ -99,37 +101,149 @@ async function getUserId(request) {
   return session?.user?.id || null;
 }
 
-function replacePlaceholders(html, formData) {
-  const placeholders = {
+// ============================================
+// AI CONTENT GENERATION (Anthropic API)
+// ============================================
+
+const COPYWRITER_SYSTEM_PROMPT = `You are a world-class conversion-focused copywriter for website landing pages. Your job is to take basic business information and transform it into compelling, benefit-focused marketing copy that SELLS.
+
+RULES:
+- NEVER repeat the user's input verbatim. Transform everything into polished marketing copy.
+- Write headlines that grab attention and communicate a clear benefit or transformation.
+- Write descriptions that focus on OUTCOMES and BENEFITS, not just features.
+- CTAs should create urgency and be action-oriented.
+- About sections should tell a story and build trust, not just list facts.
+- Service descriptions should lead with the problem solved and the result delivered.
+- Keep all copy concise — headlines under 8 words, descriptions under 40 words.
+- Match the tone to the business type (tech = bold/innovative, luxury = refined/exclusive, wellness = warm/caring, consulting = authoritative/trustworthy).
+
+You MUST respond with ONLY a valid JSON object. No markdown, no code fences, no extra text.`;
+
+function buildUserPrompt(formData) {
+  return `Generate website marketing copy for this business. Transform the raw input into compelling, benefit-focused content.
+
+BUSINESS INFO:
+- Name: ${formData.business_name || 'My Business'}
+- Type: ${formData.businessType || 'general'}
+- Tagline: ${formData.tagline || 'none provided'}
+- Description: ${formData.about_story || formData.description || 'none provided'}
+- Service 1: ${formData.service1_name || 'none'} — ${formData.service1_description || 'none'}
+- Service 2: ${formData.service2_name || 'none'} — ${formData.service2_description || 'none'}
+- Service 3: ${formData.service3_name || 'none'} — ${formData.service3_description || 'none'}
+- Years in business: ${formData.years_experience || 'not specified'}
+- Clients served: ${formData.clients_served || 'not specified'}
+
+Generate a JSON object with these EXACT keys:
+{
+  "hero_title_line1": "A powerful 3-5 word headline (NOT the business name)",
+  "hero_title_line2": "A benefit-focused second line, 3-5 words",
+  "tagline": "A compelling one-line value proposition (max 10 words)",
+  "hero_description": "2-3 sentences that hook the reader and communicate the core transformation (max 50 words)",
+  "service1_title": "Benefit-focused service name (3-5 words)",
+  "service1_description": "What problem this solves and the outcome delivered (max 30 words)",
+  "service2_title": "Benefit-focused service name (3-5 words)",
+  "service2_description": "What problem this solves and the outcome delivered (max 30 words)",
+  "service3_title": "Benefit-focused service name (3-5 words)",
+  "service3_description": "What problem this solves and the outcome delivered (max 30 words)",
+  "about_headline": "An engaging about section headline (4-7 words)",
+  "about_description": "A trust-building about paragraph that tells a story (max 60 words)",
+  "cta_primary": "Action-oriented primary button text (2-4 words)",
+  "cta_secondary": "Softer secondary button text (2-4 words)"
+}`;
+}
+
+async function generateAIContent(formData) {
+  if (!ANTHROPIC_API_KEY) {
+    console.warn('[websites/generate] ANTHROPIC_API_KEY not set — using fallback copy');
+    return null;
+  }
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 1024,
+        system: COPYWRITER_SYSTEM_PROMPT,
+        messages: [
+          { role: 'user', content: buildUserPrompt(formData) }
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('[websites/generate] Anthropic API error:', response.status, errText);
+      return null;
+    }
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text;
+    if (!text) {
+      console.error('[websites/generate] Empty Anthropic response');
+      return null;
+    }
+
+    // Parse JSON — strip markdown fences if present
+    const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const parsed = JSON.parse(cleaned);
+    console.log('[websites/generate] AI content generated successfully');
+    return parsed;
+  } catch (error) {
+    console.error('[websites/generate] AI generation failed, using fallback:', error.message);
+    return null;
+  }
+}
+
+// ============================================
+// PLACEHOLDER REPLACEMENT
+// ============================================
+
+function buildPlaceholders(formData, aiContent) {
+  // AI-generated fields (with fallbacks to raw input)
+  const ai = aiContent || {};
+
+  return {
+    // Literal fields — never AI-generated
     business_name: formData.business_name || '',
-    tagline: formData.tagline || '',
     accent_color: formData.accent_color || '#3b82f6',
     email: formData.email || '',
     contact_email: formData.email || '',
     contact_phone: formData.phone || '',
     contact_address: formData.address || '',
-    hero_title_line1: formData.business_name || '',
-    hero_title_line2: (formData.tagline || '').split(/\s+/).slice(0, 3).join(' ') || formData.tagline || '',
-    hero_description: (formData.about_story || '').substring(0, 200) || formData.tagline || '',
-    service1_title: formData.service1_name || '',
-    service1_description: formData.service1_description || '',
-    service2_title: formData.service2_name || '',
-    service2_description: formData.service2_description || '',
-    service3_title: formData.service3_name || '',
-    service3_description: formData.service3_description || '',
-    about_headline: formData.about_headline || '',
-    about_description: formData.about_story || '',
-    about_story: formData.about_story || '',
     stat1_value: formData.years_experience || '5+',
     stat2_value: formData.clients_served || '100+',
-    cta_primary: formData.primary_cta || 'Get Started',
-    cta_secondary: formData.secondary_cta || 'Learn More',
     cta_destination: formData.cta_destination || '#contact',
     social_link1: formData.linkedin || '#',
     social_link2: formData.facebook || '#',
     social_link3: formData.instagram || '#',
     current_year: String(new Date().getFullYear()),
+
+    // AI-generated fields (fallback to raw input if AI unavailable)
+    tagline: ai.tagline || formData.tagline || '',
+    hero_title_line1: ai.hero_title_line1 || formData.business_name || '',
+    hero_title_line2: ai.hero_title_line2 || formData.tagline || '',
+    hero_description: ai.hero_description || formData.about_story || formData.tagline || '',
+    service1_title: ai.service1_title || formData.service1_name || '',
+    service1_description: ai.service1_description || formData.service1_description || '',
+    service2_title: ai.service2_title || formData.service2_name || '',
+    service2_description: ai.service2_description || formData.service2_description || '',
+    service3_title: ai.service3_title || formData.service3_name || '',
+    service3_description: ai.service3_description || formData.service3_description || '',
+    about_headline: ai.about_headline || formData.about_headline || '',
+    about_description: ai.about_description || formData.about_story || '',
+    about_story: ai.about_description || formData.about_story || '',
+    cta_primary: ai.cta_primary || formData.primary_cta || 'Get Started',
+    cta_secondary: ai.cta_secondary || formData.secondary_cta || 'Learn More',
   };
+}
+
+function replacePlaceholders(html, placeholders) {
   let out = html;
   for (const [key, value] of Object.entries(placeholders)) {
     out = out.replace(new RegExp(`{{${key}}}`, 'g'), String(value ?? ''));
@@ -137,25 +251,32 @@ function replacePlaceholders(html, formData) {
   return out;
 }
 
-async function ensureTemplate(slug) {
+// ============================================
+// TEMPLATE LOADING (always reads from disk)
+// ============================================
+
+async function loadTemplate(slug) {
   const s = SLUG_MAP[slug] || slug;
-  let t = await prisma.websiteTemplate.findUnique({ where: { slug: s } });
-  if (t) return t;
   const file = TEMPLATE_FILES[s] || TEMPLATE_FILES[slug];
   if (!file) return null;
+
   const publicDir = path.join(process.cwd(), 'public', 'templates');
   const html = await readFile(path.join(publicDir, file), 'utf-8');
-  const css = ''; // templates embed styles
-  t = await prisma.websiteTemplate.create({
-    data: {
-      name: s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-      slug: s,
-      html,
-      css,
-    },
+
+  // Upsert DB record so we have a templateId for AiBuilderSite
+  const name = s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const t = await prisma.websiteTemplate.upsert({
+    where: { slug: s },
+    update: { html },
+    create: { name, slug: s, html, css: '' },
   });
+
   return t;
 }
+
+// ============================================
+// POST HANDLER
+// ============================================
 
 export async function POST(request) {
   try {
@@ -176,7 +297,8 @@ export async function POST(request) {
       );
     }
 
-    const template = await ensureTemplate(templateId);
+    // 1. Load template HTML from disk (always fresh)
+    const template = await loadTemplate(templateId);
     if (!template) {
       return NextResponse.json(
         { error: `Template not found: ${templateId}` },
@@ -184,9 +306,15 @@ export async function POST(request) {
       );
     }
 
-    const html = replacePlaceholders(template.html, formData);
+    // 2. Generate AI content (falls back to raw input if API unavailable)
+    const aiContent = await generateAIContent(formData);
+
+    // 3. Build placeholders and replace in template
+    const placeholders = buildPlaceholders(formData, aiContent);
+    const html = replacePlaceholders(template.html, placeholders);
     const css = template.css || '';
 
+    // 4. Generate unique subdomain
     const name = formData.business_name || 'My Website';
     const subdomainBase = name.toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 30);
     let subdomain = subdomainBase;
@@ -198,6 +326,7 @@ export async function POST(request) {
       n++;
     }
 
+    // 5. Save to database
     const site = await prisma.aiBuilderSite.create({
       data: {
         userId,
@@ -219,6 +348,8 @@ export async function POST(request) {
         websiteId: site.id,
         name: site.name,
         subdomain: site.subdomain,
+        templateUsed: templateId,
+        aiGenerated: !!aiContent,
       },
     });
   } catch (error) {

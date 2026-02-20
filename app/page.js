@@ -22,7 +22,7 @@ function HomeSEO() {
     publisher: {
       '@type': 'Organization',
       name: 'AI Lead Strategies LLC',
-      logo: 'https://aileadstrategies.com/logo.png'
+      logo: 'https://aileadstrategies.com/icon-512.png'
     }
   };
 

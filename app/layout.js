@@ -97,7 +97,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'AI Lead Strategies LLC',
   url: 'https://aileadstrategies.com',
-  logo: 'https://aileadstrategies.com/logo.png',
+  logo: 'https://aileadstrategies.com/icon-512.png',
   description: 'AI-powered B2B lead generation and sales automation platform',
   address: {
     '@type': 'PostalAddress',

@@ -9,7 +9,7 @@ export const organizationSchema = {
   '@type': 'Organization',
   name: 'AI Lead Strategies LLC',
   url: 'https://aileadstrategies.com',
-  logo: 'https://aileadstrategies.com/logo.png',
+  logo: 'https://aileadstrategies.com/icon-512.png',
   description: 'AI-powered lead generation and sales automation platform for B2B businesses',
   foundingDate: '2025',
   address: {
@@ -51,7 +51,7 @@ export const websiteSchema = {
   publisher: {
     '@type': 'Organization',
     name: 'AI Lead Strategies LLC',
-    logo: 'https://aileadstrategies.com/logo.png',
+    logo: 'https://aileadstrategies.com/icon-512.png',
   },
 };
 

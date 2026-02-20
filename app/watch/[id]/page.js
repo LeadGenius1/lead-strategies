@@ -18,6 +18,7 @@ export default function WatchVideoPage() {
   const [viewTracked, setViewTracked] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [sidebarAd, setSidebarAd] = useState(null);
+  const [products, setProducts] = useState([]);
   const watchStartRef = useRef(null);
 
   useEffect(() => {
@@ -25,6 +26,7 @@ export default function WatchVideoPage() {
       fetchVideo();
       fetchRelated();
       fetchAd();
+      fetchProducts();
     }
   }, [videoId]);
 
@@ -86,6 +88,16 @@ export default function WatchVideoPage() {
       setSidebarAd(ad);
     } catch (err) {
       // Ads are optional — fail silently
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const res = await api.get(`/api/v1/products/video/${videoId}`);
+      const data = res.data?.data || [];
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      // Products are optional — fail silently
     }
   };
 
@@ -211,6 +223,7 @@ export default function WatchVideoPage() {
                   videoUrl={video.videoUrl}
                   thumbnailUrl={video.thumbnailUrl}
                   title={video.title}
+                  products={products}
                 />
               </div>
             </div>

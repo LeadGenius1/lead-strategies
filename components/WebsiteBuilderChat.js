@@ -19,10 +19,16 @@ const QUESTIONS = [
   { key: 'services', question: "Top 3 services or offerings. One per line: Name - Brief description", parse: (a) => { const lines = a.split(/\n/).map((s) => s.trim()).filter(Boolean).slice(0, 3); const parseLine = (l) => (l?.includes(' - ') ? l.split(' - ').map((x) => x.trim()) : [l || '', l || '']); const s1 = parseLine(lines[0]); const s2 = parseLine(lines[1]); const s3 = parseLine(lines[2]); return { service1_name: s1[0], service1_description: s1[1] || s1[0], service2_name: s2[0], service2_description: s2[1] || s2[0], service3_name: s3[0], service3_description: s3[1] || s3[0] }; } },
   { key: 'about', question: "About your business in 1–2 sentences (what you do, who you serve)", parse: (a) => ({ about_headline: a.split(/[.!?]/)[0]?.trim() || 'About Us', about_story: a }) },
   { key: 'cta', question: "Main call-to-action? (e.g., Get Started, Contact Us, Request Demo)", parse: (a) => { const p = a.split(/[|,]/).map((s) => s.trim()); return { primary_cta: p[0] || 'Get Started', secondary_cta: p[1] || 'Learn More', cta_destination: p[2] || '#contact' }; } },
-  { key: 'template', question: "Pick a style (1–5): 1=Executive Dark, 2=Warm Professional, 3=Tech Premium, 4=Minimal Portfolio, 5=AI Agency", parse: (a) => ({ template: a }) },
+  { key: 'template', question: "Pick a template style:", parse: (a) => ({ template: a }) },
 ];
 
-const TEMPLATE_SLUGS = ['executive-dark', 'warm-professional', 'tech-premium', 'minimal-portfolio', 'ai-agency'];
+const TEMPLATE_OPTIONS = [
+  { slug: 'aether', name: 'AETHER', description: 'Dark space theme with animated stars, gradient text, glassmorphism cards', bestFor: 'AI/Tech, SaaS, Digital agencies' },
+  { slug: 'uslu', name: 'USLU', description: 'Sophisticated dark theme with bronze/gold accents, elegant typography', bestFor: 'Real estate, Architecture, Premium services' },
+  { slug: 'vitalis', name: 'VITALIS', description: 'Warm organic feel with cream backgrounds, green accents, smooth animations', bestFor: 'Health/Wellness, Food, Lifestyle brands' },
+  { slug: 'sourcing-sense', name: 'SOURCING SENSE', description: 'Classical influence with gold accents, timeline layouts', bestFor: 'Consultants, Professional services, B2B' },
+  { slug: 'svrn', name: 'SVRN', description: 'Ultra-minimal dark theme with full-bleed layouts, premium feel', bestFor: 'Luxury marketplaces, High-end products' },
+];
 
 function answersToFormData(answers) {
   const formData = {
@@ -113,11 +119,11 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
 
     if (currentQuestion.key === 'template') {
       const n = parseInt(answer, 10);
-      const nameMap = { 'executive': 1, 'warm': 2, 'tech': 3, 'minimal': 4, 'agency': 5 };
+      const nameMap = { 'aether': 1, 'uslu': 2, 'vitalis': 3, 'sourcing': 4, 'svrn': 5 };
       const byName = nameMap[answer.toLowerCase().split(/\s+/)[0]];
       const valid = (!isNaN(n) && n >= 1 && n <= 5) || (byName && byName >= 1 && byName <= 5);
       if (!valid) {
-        toast.error('Enter 1, 2, 3, 4, or 5 (or a template name)');
+        toast.error('Enter 1–5 or a template name (Aether, USLU, Vitalis, Sourcing, SVRN)');
         return;
       }
     }
@@ -149,9 +155,9 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
       const formData = answersToFormData(allAnswers);
       const t = String(allAnswers.template || '1');
       const n = parseInt(t, 10);
-      const nameMap = { executive: 1, warm: 2, tech: 3, minimal: 4, agency: 5 };
+      const nameMap = { aether: 1, uslu: 2, vitalis: 3, sourcing: 4, svrn: 5 };
       const templateNum = (!isNaN(n) && n >= 1 && n <= 5) ? n : (nameMap[t.toLowerCase().split(/\s+/)[0]] || 1);
-      const templateId = TEMPLATE_SLUGS[templateNum - 1] || TEMPLATE_SLUGS[0];
+      const templateId = TEMPLATE_OPTIONS[templateNum - 1]?.slug || TEMPLATE_OPTIONS[0].slug;
 
       const res = await fetch('/api/websites/generate', {
         method: 'POST',
@@ -183,6 +189,20 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
       setGenerating(false);
       setLoading(false);
     }
+  };
+
+  const handleTemplateSelect = (index) => {
+    if (loading || generating) return;
+    setInput(String(index + 1));
+    const currentQ = QUESTIONS[currentQuestionIndex];
+    const newAnswers = { ...answers, [currentQ.key]: String(index + 1) };
+    setAnswers(newAnswers);
+    if (currentQuestionIndex < QUESTIONS.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      generateWebsite(newAnswers);
+    }
+    setInput('');
   };
 
   const handleKeyDown = (e) => {
@@ -267,6 +287,24 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
             <div className="bg-neutral-900/50 border border-white/10 rounded-2xl p-4">
               <p className="text-white text-sm leading-relaxed">{currentQuestion.question}</p>
             </div>
+            {currentQuestion.key === 'template' && (
+              <div className="mt-3 grid gap-2">
+                {TEMPLATE_OPTIONS.map((tpl, i) => (
+                  <button
+                    key={tpl.slug}
+                    onClick={() => handleTemplateSelect(i)}
+                    disabled={loading || generating}
+                    className="p-4 rounded-xl border border-white/10 hover:border-indigo-500/50 bg-neutral-900/30 hover:bg-neutral-800/50 text-left transition-all group disabled:opacity-50"
+                  >
+                    <div className="font-semibold text-sm text-white group-hover:text-indigo-400 transition-colors">
+                      {i + 1}. {tpl.name}
+                    </div>
+                    <div className="text-xs text-neutral-400 mt-1">{tpl.description}</div>
+                    <div className="text-xs text-indigo-400/70 mt-1.5">Best for: {tpl.bestFor}</div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

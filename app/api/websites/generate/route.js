@@ -14,27 +14,68 @@ import path from 'path';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
 
-// Manifest slugs to file mapping (from public/templates/templates-manifest.json)
+// Template slug → file mapping
 const TEMPLATE_FILES = {
+  // New templates (Tailwind-based)
+  'aether': 'template-aether.html',
+  'uslu': 'template-uslu.html',
+  'vitalis': 'template-vitalis.html',
+  'sourcing-sense': 'template-sourcing-sense.html',
+  'svrn': 'template-svrn.html',
+  // Short ID aliases
+  '1a': 'template-aether.html',
+  '2b': 'template-uslu.html',
+  '3c': 'template-vitalis.html',
+  '4d': 'template-sourcing-sense.html',
+  '5e': 'template-svrn.html',
+  // Legacy slugs (existing sites still reference these)
   'executive-dark': 'template-1a-executive-dark.html',
   'warm-professional': 'template-2b-warm-professional.html',
   'tech-premium': 'template-3c-tech-premium.html',
   'minimal-portfolio': 'template-4d-minimal-portfolio.html',
   'ai-agency': 'template-5e-ai-agency.html',
-  '1a': 'template-1a-executive-dark.html',
-  '2b': 'template-2b-warm-professional.html',
-  '3c': 'template-3c-tech-premium.html',
-  '4d': 'template-4d-minimal-portfolio.html',
-  '5e': 'template-5e-ai-agency.html',
 };
 
 const SLUG_MAP = {
-  '1a': 'executive-dark',
-  '2b': 'warm-professional',
-  '3c': 'tech-premium',
-  '4d': 'minimal-portfolio',
-  '5e': 'ai-agency',
+  '1a': 'aether',
+  '2b': 'uslu',
+  '3c': 'vitalis',
+  '4d': 'sourcing-sense',
+  '5e': 'svrn',
 };
+
+// Template selection based on business type
+const BUSINESS_TYPE_TEMPLATES = {
+  'ai': 'aether',
+  'tech': 'aether',
+  'saas': 'aether',
+  'software': 'aether',
+  'real-estate': 'uslu',
+  'architecture': 'uslu',
+  'luxury': 'uslu',
+  'food': 'vitalis',
+  'health': 'vitalis',
+  'wellness': 'vitalis',
+  'nutrition': 'vitalis',
+  'lifestyle': 'vitalis',
+  'fitness': 'vitalis',
+  'consulting': 'sourcing-sense',
+  'b2b': 'sourcing-sense',
+  'professional-services': 'sourcing-sense',
+  'finance': 'sourcing-sense',
+  'legal': 'sourcing-sense',
+  'marketplace': 'svrn',
+  'ecommerce': 'svrn',
+  'fashion': 'svrn',
+  'agency': 'aether',
+  'marketing': 'aether',
+};
+
+function selectTemplate(businessType) {
+  if (!businessType) return 'aether';
+  const key = businessType.toLowerCase().replace(/\s+/g, '-');
+  return BUSINESS_TYPE_TEMPLATES[key] || 'aether';
+}
 
 async function getUserId(request) {
   // 1. Try Authorization header
@@ -124,11 +165,13 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { templateId, formData } = body;
+    const { formData } = body;
+    // Support explicit templateId or auto-select from businessType
+    const templateId = body.templateId || selectTemplate(formData?.businessType);
 
-    if (!templateId || !formData || typeof formData !== 'object') {
+    if (!formData || typeof formData !== 'object') {
       return NextResponse.json(
-        { error: 'templateId and formData are required' },
+        { error: 'formData is required' },
         { status: 400 }
       );
     }

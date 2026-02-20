@@ -4,8 +4,8 @@
   "description": "AI-Powered Sales Automation Platform",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0f23",
-  "theme_color": "#6366f1",
+  "background_color": "#0A0A0F",
+  "theme_color": "#10B981",
   "icons": [
     {
       "src": "/icon-192.png",

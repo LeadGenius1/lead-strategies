@@ -12,6 +12,9 @@ import {
   ChartBarIcon,
   ClockIcon,
   ShareIcon,
+  PlusIcon,
+  XMarkIcon,
+  ShoppingBagIcon,
 } from '@heroicons/react/24/outline';
 import StatusBadge from '@/components/videosite/StatusBadge';
 import VideoPlayer from '@/components/video/VideoPlayer';
@@ -33,15 +36,16 @@ export default function VideoDetailPage() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [modalTab, setModalTab] = useState('existing');
+  const [newProduct, setNewProduct] = useState({ title: '', description: '', link: '', imageUrl: '', price: '' });
 
   useEffect(() => {
     async function loadVideo() {
       try {
-        const token = document.cookie
-          .split('; ')
-          .find((row) => row.startsWith('token='))
-          ?.split('=')[1];
-
+        const token = getToken();
         const res = await fetch(`${apiUrl}/api/v1/videosite/videos/${params.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -61,8 +65,97 @@ export default function VideoDetailPage() {
       }
     }
 
-    if (params.id) loadVideo();
+    if (params.id) {
+      loadVideo();
+      loadVideoProducts();
+    }
   }, [params.id, router]);
+
+  function getToken() {
+    return document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('token='))
+      ?.split('=')[1];
+  }
+
+  async function loadVideoProducts() {
+    try {
+      const res = await fetch(`${apiUrl}/api/v1/products/video/${params.id}`);
+      if (res.ok) {
+        const json = await res.json();
+        setProducts(json.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load video products:', err);
+    }
+  }
+
+  async function loadAllProducts() {
+    try {
+      const token = getToken();
+      const res = await fetch(`${apiUrl}/api/v1/products`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setAllProducts(json.data || []);
+      }
+    } catch (err) {
+      console.error('Failed to load products:', err);
+    }
+  }
+
+  async function attachProduct(productId) {
+    try {
+      const token = getToken();
+      await fetch(`${apiUrl}/api/v1/products/video/${params.id}/${productId}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      });
+      loadVideoProducts();
+    } catch (err) {
+      console.error('Attach product error:', err);
+    }
+  }
+
+  async function detachProduct(productId) {
+    try {
+      const token = getToken();
+      await fetch(`${apiUrl}/api/v1/products/video/${params.id}/${productId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+    } catch (err) {
+      console.error('Detach product error:', err);
+    }
+  }
+
+  async function createAndAttach() {
+    if (!newProduct.title || !newProduct.link) return;
+    try {
+      const token = getToken();
+      const res = await fetch(`${apiUrl}/api/v1/products`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        await attachProduct(json.data.id);
+        setNewProduct({ title: '', description: '', link: '', imageUrl: '', price: '' });
+        setShowProductModal(false);
+      }
+    } catch (err) {
+      console.error('Create product error:', err);
+    }
+  }
+
+  function openProductModal() {
+    setShowProductModal(true);
+    setModalTab('existing');
+    loadAllProducts();
+  }
 
   async function handleDelete() {
     if (!confirm('Are you sure you want to delete this video? This action cannot be undone.')) {
@@ -72,11 +165,7 @@ export default function VideoDetailPage() {
     setDeleting(true);
 
     try {
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('token='))
-        ?.split('=')[1];
-
+      const token = getToken();
       const res = await fetch(`${apiUrl}/api/v1/videosite/videos/${params.id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
@@ -220,6 +309,67 @@ export default function VideoDetailPage() {
                 </p>
               </div>
             )}
+
+            {/* Featured Products */}
+            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-medium text-neutral-500 uppercase tracking-wide flex items-center gap-2">
+                  <ShoppingBagIcon className="w-4 h-4 text-indigo-400" />
+                  Featured Products
+                </h3>
+                <button
+                  type="button"
+                  onClick={openProductModal}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/20 hover:border-indigo-500/40 transition-all text-xs font-medium"
+                >
+                  <PlusIcon className="w-3.5 h-3.5" />
+                  Add Product
+                </button>
+              </div>
+
+              {products.length === 0 ? (
+                <p className="text-neutral-600 text-sm text-center py-6">
+                  No products attached. Add products to promote them on this video.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {products.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex items-center gap-3 p-3 bg-black/50 rounded-lg border border-white/5 group"
+                    >
+                      {product.imageUrl ? (
+                        <img
+                          src={product.imageUrl}
+                          alt={product.title}
+                          className="w-12 h-12 rounded-lg object-cover border border-white/10 flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                          <ShoppingBagIcon className="w-5 h-5 text-indigo-400" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">{product.title}</p>
+                        {product.price && (
+                          <span className="inline-block mt-0.5 px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs rounded-full font-mono">
+                            {product.price}
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => detachProduct(product.id)}
+                        className="p-1.5 text-neutral-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <XMarkIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Stats Sidebar */}
@@ -323,6 +473,145 @@ export default function VideoDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Add Product Modal */}
+      {showProductModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-neutral-900 border border-white/10 rounded-2xl w-full max-w-lg mx-4 overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <h3 className="text-sm font-medium text-white">Add Product</h3>
+              <button
+                type="button"
+                onClick={() => setShowProductModal(false)}
+                className="p-1 text-neutral-500 hover:text-white transition-colors"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-white/10">
+              <button
+                type="button"
+                onClick={() => setModalTab('existing')}
+                className={`flex-1 py-2.5 text-xs font-medium transition-colors ${modalTab === 'existing' ? 'text-indigo-400 border-b-2 border-indigo-500' : 'text-neutral-500 hover:text-neutral-300'}`}
+              >
+                My Products
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalTab('create')}
+                className={`flex-1 py-2.5 text-xs font-medium transition-colors ${modalTab === 'create' ? 'text-indigo-400 border-b-2 border-indigo-500' : 'text-neutral-500 hover:text-neutral-300'}`}
+              >
+                Create New
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="p-4 max-h-80 overflow-y-auto">
+              {modalTab === 'existing' ? (
+                allProducts.length === 0 ? (
+                  <p className="text-neutral-600 text-sm text-center py-6">
+                    No products yet. Create one first.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {allProducts.map((p) => {
+                      const attached = products.some((vp) => vp.id === p.id);
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          disabled={attached}
+                          onClick={() => { attachProduct(p.id); setShowProductModal(false); }}
+                          className={`w-full flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${attached ? 'border-indigo-500/30 bg-indigo-500/5 opacity-60 cursor-not-allowed' : 'border-white/5 bg-black/30 hover:border-indigo-500/30 hover:bg-indigo-500/5'}`}
+                        >
+                          {p.imageUrl ? (
+                            <img src={p.imageUrl} alt={p.title} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                              <ShoppingBagIcon className="w-4 h-4 text-indigo-400" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-white truncate">{p.title}</p>
+                            {p.price && <span className="text-xs text-cyan-400 font-mono">{p.price}</span>}
+                          </div>
+                          {attached && <span className="text-xs text-indigo-400">Added</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )
+              ) : (
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs text-neutral-500 uppercase tracking-wide mb-1 block">Title *</label>
+                    <input
+                      type="text"
+                      value={newProduct.title}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, title: e.target.value }))}
+                      className="w-full px-3 py-2 bg-black/50 border border-white/10 rounded-lg text-white text-sm placeholder-neutral-600 focus:outline-none focus:border-indigo-500/50"
+                      placeholder="Product name"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-neutral-500 uppercase tracking-wide mb-1 block">Link *</label>
+                    <input
+                      type="url"
+                      value={newProduct.link}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, link: e.target.value }))}
+                      className="w-full px-3 py-2 bg-black/50 border border-white/10 rounded-lg text-white text-sm placeholder-neutral-600 focus:outline-none focus:border-indigo-500/50"
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-neutral-500 uppercase tracking-wide mb-1 block">Description</label>
+                    <input
+                      type="text"
+                      value={newProduct.description}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, description: e.target.value }))}
+                      className="w-full px-3 py-2 bg-black/50 border border-white/10 rounded-lg text-white text-sm placeholder-neutral-600 focus:outline-none focus:border-indigo-500/50"
+                      placeholder="Short description"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-neutral-500 uppercase tracking-wide mb-1 block">Image URL</label>
+                      <input
+                        type="url"
+                        value={newProduct.imageUrl}
+                        onChange={(e) => setNewProduct((p) => ({ ...p, imageUrl: e.target.value }))}
+                        className="w-full px-3 py-2 bg-black/50 border border-white/10 rounded-lg text-white text-sm placeholder-neutral-600 focus:outline-none focus:border-indigo-500/50"
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-neutral-500 uppercase tracking-wide mb-1 block">Price</label>
+                      <input
+                        type="text"
+                        value={newProduct.price}
+                        onChange={(e) => setNewProduct((p) => ({ ...p, price: e.target.value }))}
+                        className="w-full px-3 py-2 bg-black/50 border border-white/10 rounded-lg text-white text-sm placeholder-neutral-600 focus:outline-none focus:border-indigo-500/50"
+                        placeholder="$29.99"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={createAndAttach}
+                    disabled={!newProduct.title || !newProduct.link}
+                    className="w-full py-2.5 bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 rounded-lg text-sm font-medium hover:bg-indigo-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Create & Attach
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

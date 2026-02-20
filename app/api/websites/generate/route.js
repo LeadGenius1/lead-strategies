@@ -9,7 +9,8 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { getSession } from '@/lib/auth-session';
 import { prisma } from '@/lib/prisma';
-import { readFile } from 'fs/promises';
+import { readFile, access } from 'fs/promises';
+import { constants as fsConstants } from 'fs';
 import path from 'path';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
@@ -17,25 +18,27 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
 
 // Template slug → file mapping
+// ALL slugs now point to the new Tailwind templates.
+// Legacy slugs redirect to the closest new template.
 const TEMPLATE_FILES = {
-  // New templates (Tailwind-based)
+  // Primary new templates
   'aether': 'template-aether.html',
   'uslu': 'template-uslu.html',
   'vitalis': 'template-vitalis.html',
   'sourcing-sense': 'template-sourcing-sense.html',
   'svrn': 'template-svrn.html',
-  // Short ID aliases
+  // Short ID aliases → new templates
   '1a': 'template-aether.html',
   '2b': 'template-uslu.html',
   '3c': 'template-vitalis.html',
   '4d': 'template-sourcing-sense.html',
   '5e': 'template-svrn.html',
-  // Legacy slugs (existing sites still reference these)
-  'executive-dark': 'template-1a-executive-dark.html',
-  'warm-professional': 'template-2b-warm-professional.html',
-  'tech-premium': 'template-3c-tech-premium.html',
-  'minimal-portfolio': 'template-4d-minimal-portfolio.html',
-  'ai-agency': 'template-5e-ai-agency.html',
+  // Legacy slugs → redirect to new templates (not old generic files)
+  'executive-dark': 'template-aether.html',
+  'warm-professional': 'template-vitalis.html',
+  'tech-premium': 'template-aether.html',
+  'minimal-portfolio': 'template-svrn.html',
+  'ai-agency': 'template-aether.html',
 };
 
 const SLUG_MAP = {
@@ -252,25 +255,91 @@ function replacePlaceholders(html, placeholders) {
 }
 
 // ============================================
-// TEMPLATE LOADING (always reads from disk)
+// TEMPLATE LOADING (disk read with HTTP fallback)
 // ============================================
+
+async function readTemplateFromDisk(file) {
+  // Try multiple possible paths where public/templates/ could live
+  const candidates = [
+    path.join(process.cwd(), 'public', 'templates', file),
+    path.join(process.cwd(), '.next', 'server', 'public', 'templates', file),
+    path.resolve('public', 'templates', file),
+  ];
+
+  for (const filePath of candidates) {
+    try {
+      await access(filePath, fsConstants.R_OK);
+      const html = await readFile(filePath, 'utf-8');
+      console.log(`[loadTemplate] ✅ Read from disk: ${filePath} (${html.length} chars)`);
+      return html;
+    } catch {
+      // Try next path
+    }
+  }
+
+  console.warn(`[loadTemplate] ❌ File not found on disk for: ${file}`);
+  console.warn(`[loadTemplate]    Tried paths: ${candidates.join(', ')}`);
+  return null;
+}
+
+async function readTemplateFromURL(file) {
+  // Fallback: fetch from public URL (files in public/ are served by Next.js)
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+    || process.env.NEXTAUTH_URL
+    || `http://localhost:${process.env.PORT || 3000}`;
+  const url = `${baseUrl}/templates/${file}`;
+
+  try {
+    console.log(`[loadTemplate] Attempting HTTP fallback: ${url}`);
+    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) {
+      console.error(`[loadTemplate] ❌ HTTP fallback failed: ${res.status} for ${url}`);
+      return null;
+    }
+    const html = await res.text();
+    console.log(`[loadTemplate] ✅ Read from URL: ${url} (${html.length} chars)`);
+    return html;
+  } catch (error) {
+    console.error(`[loadTemplate] ❌ HTTP fallback error: ${error.message}`);
+    return null;
+  }
+}
 
 async function loadTemplate(slug) {
   const s = SLUG_MAP[slug] || slug;
   const file = TEMPLATE_FILES[s] || TEMPLATE_FILES[slug];
-  if (!file) return null;
 
-  const publicDir = path.join(process.cwd(), 'public', 'templates');
-  const html = await readFile(path.join(publicDir, file), 'utf-8');
+  console.log(`[loadTemplate] slug="${slug}" → resolved="${s}" → file="${file}"`);
+
+  if (!file) {
+    console.error(`[loadTemplate] ❌ No file mapping for slug: ${slug}`);
+    return null;
+  }
+
+  // Try disk first, then HTTP fallback
+  let html = await readTemplateFromDisk(file);
+  if (!html) {
+    html = await readTemplateFromURL(file);
+  }
+
+  if (!html) {
+    console.error(`[loadTemplate] ❌ Could not load template "${file}" from any source`);
+    return null;
+  }
+
+  // Verify it's a real Tailwind template (not old generic HTML)
+  const isTailwind = html.includes('cdn.tailwindcss.com') || html.includes('tailwindcss');
+  console.log(`[loadTemplate] Template type: ${isTailwind ? 'Tailwind ✅' : 'Legacy/Generic ⚠️'} | Length: ${html.length}`);
 
   // Upsert DB record so we have a templateId for AiBuilderSite
   const name = s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   const t = await prisma.websiteTemplate.upsert({
     where: { slug: s },
-    update: { html },
+    update: { html, updatedAt: new Date() },
     create: { name, slug: s, html, css: '' },
   });
 
+  console.log(`[loadTemplate] ✅ DB upserted: id=${t.id}, slug=${t.slug}`);
   return t;
 }
 
@@ -290,6 +359,8 @@ export async function POST(request) {
     // Support explicit templateId or auto-select from businessType
     const templateId = body.templateId || selectTemplate(formData?.businessType);
 
+    console.log(`[websites/generate] ▶ Request: templateId="${body.templateId}" businessType="${formData?.businessType}" → resolved="${templateId}"`);
+
     if (!formData || typeof formData !== 'object') {
       return NextResponse.json(
         { error: 'formData is required' },
@@ -297,7 +368,7 @@ export async function POST(request) {
       );
     }
 
-    // 1. Load template HTML from disk (always fresh)
+    // 1. Load template HTML from disk (always fresh, with HTTP fallback)
     const template = await loadTemplate(templateId);
     if (!template) {
       return NextResponse.json(

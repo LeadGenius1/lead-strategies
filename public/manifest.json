@@ -1,11 +1,11 @@
 {
   "name": "AI Lead Strategies",
-  "short_name": "AI Lead",
-  "description": "Unified platform for lead generation and customer engagement",
+  "short_name": "AI Leads",
+  "description": "AI-Powered Sales Automation",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#0f0f23",
+  "theme_color": "#00d4ff",
   "icons": [
     {
       "src": "/icon-192.png",

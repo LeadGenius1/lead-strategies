@@ -35,17 +35,15 @@ export const metadata = {
     telephone: false,
   },
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
-    ],
+    icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
-    other: [
-      { rel: 'icon', url: '/icon-192.png', sizes: '192x192' },
-      { rel: 'icon', url: '/icon-512.png', sizes: '512x512' },
-    ],
   },
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'AI Lead Strategies',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',

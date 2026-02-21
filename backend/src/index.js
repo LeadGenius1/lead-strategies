@@ -155,27 +155,33 @@ app.use(express.urlencoded({ extended: true }));
 // Request logging
 app.use(requestLogger);
 
-// Rate limiting - start with in-memory, upgrade to Redis if available
-// At 1M+ users: consider RATE_LIMIT_MAX=500-1000, tiered limits per user
-const limiterConfig = {
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX || '300', 10), // configurable for scale
+// Per-endpoint rate limiting (tiered by operation type)
+const { authLimiter, signupLimiter, aiLimiter, writeLimiter } = require('./middleware/rateLimiter');
+
+// Global fallback rate limit
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX || '500', 10),
   message: { error: 'Too many requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    // NEVER rate limit auth — users must always be able to log in
-    if (req.path.includes('/auth/login') || req.path.includes('/auth/signup') || req.path.includes('/auth/register') ||
-        req.path.includes('/auth/oauth') || req.path.includes('/auth/me') || req.path.includes('/auth/logout')) return true;
     if (req.path.includes('/webhooks/') && req.method === 'POST') return true;
     if (req.path === '/health' || req.path === '/api/health' || req.path === '/api/v1/health') return true;
     return false;
   },
-};
+});
+app.use('/api/', globalLimiter);
 
-// Start with in-memory rate limiting (always available)
-const limiter = rateLimit(limiterConfig);
-app.use('/api/', limiter);
+// Targeted rate limits (applied before route handlers)
+app.use('/api/v1/auth/login', authLimiter);
+app.use('/api/v1/auth/signup', signupLimiter);
+app.use('/api/v1/auth/register', signupLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/signup', signupLimiter);
+app.use('/api/v1/copilot', aiLimiter);
+app.use('/api/v1/websites/generate', aiLimiter);
+app.use('/admin/login', authLimiter);
 
 // ===========================================
 // ROUTES (always registered, regardless of Redis)

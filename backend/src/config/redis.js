@@ -147,5 +147,6 @@ module.exports = {
   getRedisClient,
   getRedisStore,
   checkRedisHealth,
-  closeRedis
+  closeRedis,
+  shutdownRedis: closeRedis,
 };

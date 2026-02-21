@@ -374,9 +374,28 @@
          TAB: SYSTEM STATUS
     ═══════════════════════════════════ -->
     <div id="tab-status" class="tab-content hidden">
-      <div class="mb-8">
-        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">System Status</h1>
-        <p class="text-neutral-500 text-sm font-light">CLAUDE.md verified state · last checked Feb 16, 2026</p>
+      <!-- Live alert banner (hidden by default, shown when critical service down) -->
+      <div id="status-alert-banner" class="hidden relative p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 mb-4 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-rose-500 to-transparent"></div>
+        <div class="flex items-center gap-2">
+          <span class="text-rose-400 text-sm">&#9888;</span>
+          <span id="status-alert-text" class="text-[11px] text-rose-300 font-medium"></span>
+        </div>
+      </div>
+
+      <div class="mb-8 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl font-medium tracking-tight text-white mb-2">System Status</h1>
+          <p class="text-neutral-500 text-sm font-light">
+            <span id="status-timestamp">Last updated: loading...</span>
+            <span id="status-mode" class="ml-2 px-2 py-0.5 rounded-full text-[9px] mono bg-neutral-800 text-neutral-500">STATIC</span>
+          </p>
+        </div>
+        <button id="refresh-status-btn" onclick="fetchSystemStatus()" title="Refresh now"
+          class="flex items-center gap-2 px-3 py-2 rounded-xl bg-black/50 border border-white/10 text-neutral-400 hover:text-white hover:border-indigo-500/30 transition-all text-xs">
+          <svg id="refresh-icon" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span id="refresh-label">Refresh</span>
+        </button>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -420,6 +439,19 @@
             <div class="space-y-1.5" id="locked-files-list"></div>
           </div>
         </div>
+      </div>
+
+      <!-- Live Health Checks -->
+      <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden mb-6">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
+        <div class="flex items-center justify-between mb-5">
+          <div class="text-xs font-medium text-white">Live Health Checks</div>
+          <div id="health-overall" class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-neutral-600"></span>
+            <span class="text-[10px] mono text-neutral-500">Checking...</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="health-grid"></div>
       </div>
 
       <!-- Infrastructure -->
@@ -907,6 +939,152 @@ function renderGTMSteps() {
         ${i < GTM_STEPS.length - 1 ? '' : `<span class="ml-auto text-[9px] mono text-emerald-500">↻ loop</span>`}
       </div>`;
   }).join('');
+}
+
+// ── LIVE SYSTEM STATUS ──────────────────────────────────────────────────────
+
+let statusRefreshInterval = null;
+
+async function fetchSystemStatus() {
+  const refreshBtn = document.getElementById('refresh-status-btn');
+  const refreshIcon = document.getElementById('refresh-icon');
+  const refreshLabel = document.getElementById('refresh-label');
+
+  // Spin the refresh icon
+  refreshIcon.style.animation = 'spin 1s linear infinite';
+  refreshLabel.textContent = 'Checking...';
+  refreshBtn.disabled = true;
+
+  const healthChecks = [];
+  let hasFailure = false;
+
+  // 1. Backend comprehensive health (/api/health — checks DB, Redis, R2, Stripe, Anthropic)
+  try {
+    const res = await fetch('https://api.aileadstrategies.com/api/health', { signal: AbortSignal.timeout(8000) });
+    const data = await res.json();
+
+    // Backend API itself
+    healthChecks.push({
+      name: 'Backend API',
+      status: data.status === 'healthy' ? 'ok' : 'error',
+      detail: data.status === 'healthy' ? `Uptime: ${Math.round(data.uptime / 60)}m` : 'Unhealthy',
+    });
+
+    // Individual service checks from the response
+    if (data.checks) {
+      const checkMap = {
+        database: { name: 'Database (PostgreSQL)', okDetail: 'Connected via Prisma' },
+        redis: { name: 'Redis Cache', okDetail: 'Connected' },
+        stripe: { name: 'Stripe Payments', okDetail: 'Configured' },
+        r2Storage: { name: 'Cloudflare R2', okDetail: 'Connected' },
+        anthropic: { name: 'Claude AI (Anthropic)', okDetail: 'API key set' },
+      };
+      for (const [key, meta] of Object.entries(checkMap)) {
+        const check = data.checks[key];
+        if (check) {
+          const isOk = check.status === 'healthy' || check.status === 'configured';
+          if (!isOk) hasFailure = true;
+          healthChecks.push({
+            name: meta.name,
+            status: isOk ? 'ok' : 'error',
+            detail: isOk ? meta.okDetail : (check.message || 'Error'),
+          });
+        }
+      }
+
+      // Memory check
+      if (data.checks.memory) {
+        const heapMB = data.checks.memory.heapUsedMB || 0;
+        const memStatus = heapMB > 400 ? 'warn' : 'ok';
+        healthChecks.push({
+          name: 'Memory',
+          status: memStatus,
+          detail: `Heap: ${Math.round(heapMB)}MB`,
+        });
+      }
+    }
+  } catch (err) {
+    hasFailure = true;
+    healthChecks.push({ name: 'Backend API', status: 'error', detail: 'Unreachable' });
+  }
+
+  // 2. Frontend health check
+  try {
+    const fRes = await fetch('https://aileadstrategies.com', { mode: 'no-cors', signal: AbortSignal.timeout(8000) });
+    healthChecks.push({ name: 'Frontend', status: 'ok', detail: 'aileadstrategies.com' });
+  } catch (err) {
+    hasFailure = true;
+    healthChecks.push({ name: 'Frontend', status: 'error', detail: 'Unreachable' });
+  }
+
+  // Render health grid
+  const grid = document.getElementById('health-grid');
+  grid.innerHTML = healthChecks.map(h => {
+    const colors = {
+      ok: { dot: 'bg-emerald-500', text: 'text-emerald-400', border: 'border-emerald-500/20', label: 'OPERATIONAL' },
+      warn: { dot: 'bg-amber-500', text: 'text-amber-400', border: 'border-amber-500/20', label: 'DEGRADED' },
+      error: { dot: 'bg-rose-500', text: 'text-rose-400', border: 'border-rose-500/20', label: 'DOWN' },
+    };
+    const c = colors[h.status] || colors.error;
+    return `
+      <div class="p-3 bg-black/30 rounded-xl border border-white/5 ${h.status === 'error' ? c.border : ''}">
+        <div class="flex items-center gap-1.5 mb-2">
+          <span class="relative flex h-2 w-2">
+            ${h.status === 'ok' ? `<span class="animate-ping absolute inline-flex h-full w-full rounded-full ${c.dot} opacity-75"></span>` : ''}
+            <span class="relative inline-flex rounded-full h-2 w-2 ${c.dot}"></span>
+          </span>
+          <span class="text-[9px] mono ${c.text}">${c.label}</span>
+        </div>
+        <div class="text-[11px] font-medium text-white">${h.name}</div>
+        <div class="text-[10px] text-neutral-500 mono mt-0.5">${h.detail}</div>
+      </div>`;
+  }).join('');
+
+  // Overall status indicator
+  const overall = document.getElementById('health-overall');
+  const downCount = healthChecks.filter(h => h.status === 'error').length;
+  const warnCount = healthChecks.filter(h => h.status === 'warn').length;
+  if (downCount > 0) {
+    overall.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span><span class="text-[10px] mono text-rose-400">${downCount} SERVICE${downCount > 1 ? 'S' : ''} DOWN</span>`;
+  } else if (warnCount > 0) {
+    overall.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-[10px] mono text-amber-400">DEGRADED</span>`;
+  } else {
+    overall.innerHTML = `<span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span><span class="text-[10px] mono text-emerald-400">ALL SYSTEMS OPERATIONAL</span>`;
+  }
+
+  // Alert banner
+  const banner = document.getElementById('status-alert-banner');
+  if (hasFailure) {
+    const failedNames = healthChecks.filter(h => h.status === 'error').map(h => h.name).join(', ');
+    document.getElementById('status-alert-text').textContent = `CRITICAL: ${failedNames} — service down. Check Railway dashboard immediately.`;
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+
+  // Update timestamp
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  document.getElementById('status-timestamp').textContent = `Last updated: ${dateStr} at ${timeStr}`;
+  document.getElementById('status-mode').textContent = 'LIVE';
+  document.getElementById('status-mode').className = 'ml-2 px-2 py-0.5 rounded-full text-[9px] mono bg-emerald-500/10 border border-emerald-500/20 text-emerald-400';
+
+  // Save to localStorage
+  localStorage.setItem('gtm_status_last_check', now.toISOString());
+
+  // Reset refresh button
+  refreshIcon.style.animation = '';
+  refreshLabel.textContent = 'Refresh';
+  refreshBtn.disabled = false;
+}
+
+function startStatusAutoRefresh() {
+  // Initial fetch
+  fetchSystemStatus();
+  // Auto-refresh every 5 minutes
+  if (statusRefreshInterval) clearInterval(statusRefreshInterval);
+  statusRefreshInterval = setInterval(fetchSystemStatus, 5 * 60 * 1000);
 }
 
 function renderStatusWorking() {
@@ -1461,6 +1639,7 @@ renderStatusWorking();
 renderStatusPending();
 renderLockedFiles();
 renderInfra();
+startStatusAutoRefresh();
 renderCampaigns();
 renderLeadLists();
 renderPlatforms();

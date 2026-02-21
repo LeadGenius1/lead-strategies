@@ -163,7 +163,46 @@ function getAnthropicClient() {
 
 // Master business context — injected into every GTM chat so Claude knows the full picture
 async function getMasterContext() {
+  // Live health checks — direct service pings, no HTTP self-call
+  const liveStatus = { timestamp: new Date().toISOString(), uptime_seconds: Math.round(process.uptime()) };
+
+  // Database
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    liveStatus.database = 'healthy — connected';
+  } catch (err) {
+    liveStatus.database = `DOWN — ${err.message}`;
+  }
+
+  // Redis
+  try {
+    const Redis = require('ioredis');
+    const redisUrl = process.env.REDIS_URL || process.env.REDIS_PRIVATE_URL;
+    if (redisUrl) {
+      const redis = new Redis(redisUrl, { connectTimeout: 3000, lazyConnect: true });
+      await redis.connect();
+      await redis.ping();
+      liveStatus.redis = 'healthy — connected';
+      await redis.quit();
+    } else {
+      liveStatus.redis = 'not configured — REDIS_URL not set';
+    }
+  } catch (err) {
+    liveStatus.redis = `DOWN — ${err.message}`;
+  }
+
+  // Config-based checks (no network calls needed)
+  liveStatus.stripe = process.env.STRIPE_SECRET_KEY ? 'configured' : 'not configured';
+  liveStatus.r2_storage = (process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_R2_ACCESS_KEY) ? 'configured' : 'not configured';
+  liveStatus.anthropic = (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY) ? 'configured' : 'not configured';
+  liveStatus.mailgun = process.env.MAILGUN_API_KEY ? 'configured' : 'not configured';
+
+  // Memory
+  const heapMB = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
+  liveStatus.memory = `${heapMB}MB heap used${heapMB > 400 ? ' — HIGH' : ''}`;
+
   return {
+    current_system_status: liveStatus,
     business: {
       name: 'AI Lead Strategies LLC',
       owner: 'Michael',
@@ -302,6 +341,18 @@ You are the Master AI Coordinator for AI Lead Strategies' GTM Control Center.
 You have FULL knowledge of the business. NEVER ask "What's your business?" or "Tell me about your company."
 When asked about status, platforms, agents, campaigns, or strategy — provide specific data from the context below.
 Be proactive with actionable recommendations. You are Michael's strategic advisor.
+
+CURRENT SYSTEM STATUS (LIVE — checked at ${masterContext.current_system_status.timestamp}):
+- Backend: running (uptime ${Math.round(masterContext.current_system_status.uptime_seconds / 60)} minutes)
+- Database: ${masterContext.current_system_status.database}
+- Redis: ${masterContext.current_system_status.redis}
+- Stripe: ${masterContext.current_system_status.stripe}
+- R2 Storage: ${masterContext.current_system_status.r2_storage}
+- Anthropic AI: ${masterContext.current_system_status.anthropic}
+- Mailgun: ${masterContext.current_system_status.mailgun}
+- Memory: ${masterContext.current_system_status.memory}
+
+When asked about system status, report the LIVE data above with the exact timestamp. Do not guess or use stale information.
 
 ${JSON.stringify(masterContext, null, 2)}`;
 

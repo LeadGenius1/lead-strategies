@@ -92,7 +92,7 @@ router.post('/oauth/callback', async (req, res) => {
       const token = jwt.sign(
         { id, email, name, role: 'user', tier: subscriptionTier },
         JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '24h' }
       );
       return res.json({
         success: true,
@@ -147,7 +147,7 @@ router.post('/oauth/callback', async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'user', tier: user.subscription_tier || subscriptionTier },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '24h' }
     );
 
     res.json({
@@ -191,7 +191,7 @@ async function handleSignup(req, res) {
     const token = jwt.sign(
       { id, email, name: name || email.split('@')[0], role: 'user', tier: subscriptionTier },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '24h' }
     );
     return res.status(201).json({
       success: true,
@@ -235,7 +235,7 @@ async function handleSignup(req, res) {
   const token = jwt.sign(
     { id: user.id, email: user.email, role: 'user', tier: user.subscription_tier || subscriptionTier },
     JWT_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: '24h' }
   );
   res.status(201).json({
     success: true,
@@ -280,12 +280,16 @@ router.post('/register', validateBody(schemas.signup), async (req, res) => {
   }
 });
 
-// Helper: verify pbkdf2 password
+// Helper: verify pbkdf2 password (timing-safe to prevent timing attacks)
 function verifyPassword(plainPassword, storedHash) {
   if (!storedHash || !storedHash.includes(':')) return false;
   const [salt, hash] = storedHash.split(':');
   const derived = crypto.pbkdf2Sync(plainPassword, salt, 100000, 64, 'sha512').toString('hex');
-  return derived === hash;
+  try {
+    return crypto.timingSafeEqual(Buffer.from(derived, 'hex'), Buffer.from(hash, 'hex'));
+  } catch {
+    return false;
+  }
 }
 
 // POST /api/v1/auth/login
@@ -301,7 +305,7 @@ router.post('/login', validateBody(schemas.login), async (req, res) => {
       const token = jwt.sign(
         { id: 'user_1', email, role: 'user' },
         JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '24h' }
       );
       return res.json({ success: true, token, data: { user: { id: 'user_1', email } } });
     }
@@ -322,7 +326,7 @@ router.post('/login', validateBody(schemas.login), async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'user', tier: user.subscription_tier || 'leadsite-ai' },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '24h' }
     );
     res.json({
       success: true,

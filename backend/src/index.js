@@ -301,6 +301,12 @@ app.get('/api/health', async (req, res) => {
   const cpu = process.cpuUsage();
   checks.cpu = { status: 'healthy', user: cpu.user, system: cpu.system };
 
+  // Circuit breaker status
+  try {
+    const { getAllBreakerStatus } = require('./config/circuitBreaker');
+    checks.circuitBreakers = getAllBreakerStatus();
+  } catch (_) {}
+
   const overallStatus = criticalIssues.length === 0 ? 'healthy' : 'degraded';
   res.json({
     status: overallStatus,

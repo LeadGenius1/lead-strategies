@@ -8,6 +8,7 @@ const path = require('path');
 const { authenticate } = require('../middleware/auth');
 const { fetchWebsite } = require('../services/scraper');
 const apolloService = require('../services/apollo');
+const { breakers } = require('../config/circuitBreaker');
 
 const router = express.Router();
 const { prisma } = require('../config/database');
@@ -404,12 +405,14 @@ When asked about dev rules, coding standards, locked files, deployment process, 
 ${JSON.stringify({...masterContext, _claudeRules: undefined}, null, 2)}`;
 
     console.log('🤖 Calling Anthropic API...');
-    const chatMessage = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: fullMessage }],
-    });
+    const chatMessage = await breakers.anthropic.execute(() =>
+      anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: fullMessage }],
+      })
+    );
 
     const content = chatMessage.content[0].text;
     console.log('✅ Lead Hunter response received');

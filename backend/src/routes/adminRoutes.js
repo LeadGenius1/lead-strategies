@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { id: 'admin-1', email: ADMIN_EMAIL, role: 'super_admin', tier: 5 },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '8h' }
     );
     return res.json({
       success: true,
@@ -103,7 +103,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: 'super_admin', tier: 5 },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '8h' }
     );
 
     return res.json({

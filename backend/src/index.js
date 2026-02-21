@@ -406,7 +406,7 @@ initializeRedis().then((redisConfig) => {
 
 // Start server immediately (routes are already registered)
 // Bind to 0.0.0.0 to accept connections from all network interfaces (required for Railway/Docker)
-app.listen(PORT, '0.0.0.0', async () => {
+app._server = app.listen(PORT, '0.0.0.0', async () => {
   // API Keys Status - log which services are configured (values masked)
   const apiKeysStatus = {
     anthropic: !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY),
@@ -491,6 +491,61 @@ app.listen(PORT, '0.0.0.0', async () => {
   } catch (err) {
     console.warn('[Email Sentinel] Skip:', err.message);
   }
+});
+
+// ===========================================
+// GRACEFUL SHUTDOWN
+// ===========================================
+let isShuttingDown = false;
+
+async function gracefulShutdown(signal) {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.log(`\n${signal} received. Starting graceful shutdown...`);
+
+  // Stop accepting new connections
+  const server = app._server;
+  if (server) {
+    server.close(() => {
+      console.log('HTTP server closed');
+    });
+  }
+
+  // Drain database connections
+  try {
+    const { disconnectDatabase } = require('./config/database');
+    await disconnectDatabase();
+    console.log('Database connections closed');
+  } catch (err) {
+    console.error('Error closing database:', err.message);
+  }
+
+  // Close Redis
+  try {
+    const { shutdownRedis } = require('./config/redis');
+    if (typeof shutdownRedis === 'function') {
+      await shutdownRedis();
+      console.log('Redis connections closed');
+    }
+  } catch (err) {
+    // shutdownRedis may not exist yet
+  }
+
+  console.log('Graceful shutdown complete');
+  process.exit(0);
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Catch unhandled errors (don't crash silently)
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  gracefulShutdown('uncaughtException');
 });
 
 module.exports = app;

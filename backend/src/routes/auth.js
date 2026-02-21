@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { validateBody, schemas } = require('../middleware/validate');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
 
@@ -252,7 +253,7 @@ async function handleSignup(req, res) {
 }
 
 // POST /api/v1/auth/signup - Primary registration endpoint (frontend calls this)
-router.post('/signup', async (req, res) => {
+router.post('/signup', validateBody(schemas.signup), async (req, res) => {
   try {
     await handleSignup(req, res);
   } catch (error) {
@@ -270,7 +271,7 @@ router.post('/signup', async (req, res) => {
 });
 
 // POST /api/v1/auth/register - Alias for /signup
-router.post('/register', async (req, res) => {
+router.post('/register', validateBody(schemas.signup), async (req, res) => {
   try {
     await handleSignup(req, res);
   } catch (error) {
@@ -288,7 +289,7 @@ function verifyPassword(plainPassword, storedHash) {
 }
 
 // POST /api/v1/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', validateBody(schemas.login), async (req, res) => {
   try {
     const { email, password } = req.body || {};
     if (!email || !password) {

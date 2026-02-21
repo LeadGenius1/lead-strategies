@@ -161,6 +161,64 @@ function getAnthropicClient() {
   }
 }
 
+// Master business context — injected into every GTM chat so Claude knows the full picture
+async function getMasterContext() {
+  return {
+    business: {
+      name: 'AI Lead Strategies LLC',
+      owner: 'Michael',
+      email: 'aileadstrategies@gmail.com',
+      location: '600 Eagleview Blvd, Suite 317, Exton, PA 19341',
+    },
+    platforms: [
+      { name: 'LeadSite.AI', domain: 'leadsiteai.com', description: 'Email lead generation — Lead Hunter, Proactive Hunter, Prospects, Campaigns, Replies', pricing: '$49 / $149 / $349 per month' },
+      { name: 'LeadSite.IO', domain: 'leadsiteio.com', description: 'AI website builder — 6 questions to a fully generated site', pricing: '$49 / $149 / $349 per month' },
+      { name: 'ClientContact.IO', domain: 'clientcontactio.com', description: 'Unified inbox — 22+ channels, SMS outreach, channel manager', pricing: '$99 / $149 / $399 per month' },
+      { name: 'VideoSite.AI', domain: 'videositeai.com', description: 'Video monetization — $1 per qualified view, creator payouts via Stripe', pricing: 'FREE for creators' },
+      { name: 'UltraLead.AI', domain: 'ultraleadai.com', description: 'All-in-One CRM + all 5 platforms + 7 AI agents + deals + analytics + AI copywriter', pricing: '$499 per month' },
+    ],
+    email_infrastructure: {
+      provider: 'Instantly.ai',
+      accounts: [
+        'contact@getaileadstrategies.com',
+        'contact@meetaileadstrategies.com',
+        'contact@trendaileadstrategies.com',
+        'contact@onlineaileadstrategies.com',
+      ],
+      daily_capacity: '120 emails/day (30 per account)',
+      warmup_status: '99-100% on all 4 accounts',
+      lead_lists: 26,
+      campaigns: [
+        { name: 'AI Lead Strategies Introduction', status: 'DRAFT' },
+        { name: 'LeadSite Master Campaign', status: 'DRAFT', variables: ['personalization', 'custom_pitch'] },
+      ],
+    },
+    ai_agents: [
+      'Lead Hunter — Apollo.io 275M+ database, ICP-matched prospecting, daily automated runs',
+      'Copy Writer — Claude AI per-lead personalized emails with A/B subject lines',
+      'Compliance Guardian — CAN-SPAM / GDPR / CASL pre-send enforcement',
+      'Warmup Conductor — Domain reputation management via Instantly.ai (all 4 at 99-100%)',
+      'Engagement Analyzer — Opens/clicks/reply sentiment analysis, determines next action',
+      'Analytics Brain — Revenue forecasting, pipeline health scoring (85%+ accuracy after 90 days)',
+      'Healing Sentinel — Auto-fix failed sends, stale deals, API health monitoring',
+    ],
+    infrastructure: {
+      frontend: 'Next.js 14 on Railway (aileadstrategies.com)',
+      backend: 'Express.js on Railway (api.aileadstrategies.com)',
+      database: 'PostgreSQL via Prisma ORM',
+      storage: 'Cloudflare R2 (bucket: videosite)',
+      email: 'Mailgun (SPF/DKIM/DMARC verified)',
+      payments: 'Stripe (API keys configured)',
+      cache: 'Redis on Railway',
+    },
+    gtm_status: {
+      break_even: '12 customers at $49/mo or 2 customers at $499/mo',
+      margin_after_break_even: '97%',
+      bundle_pricing: { starter: '$79/mo', professional: '$199/mo', enterprise: '$249/mo', annual_discount: '20% off' },
+    },
+  };
+}
+
 // All routes require authentication
 router.use(authenticate);
 
@@ -235,11 +293,23 @@ router.post('/chat', async (req, res) => {
     const contextLead = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
     const fullMessage = `${message}${websiteContext}${leadContext}${contextLead}`;
 
+    // Build system prompt with full business context
+    const masterContext = await getMasterContext();
+    const systemPrompt = `${LEAD_HUNTER_SYSTEM_PROMPT}
+
+## MASTER BUSINESS CONTEXT (AI Lead Strategies LLC)
+You are the Master AI Coordinator for AI Lead Strategies' GTM Control Center.
+You have FULL knowledge of the business. NEVER ask "What's your business?" or "Tell me about your company."
+When asked about status, platforms, agents, campaigns, or strategy — provide specific data from the context below.
+Be proactive with actionable recommendations. You are Michael's strategic advisor.
+
+${JSON.stringify(masterContext, null, 2)}`;
+
     console.log('🤖 Calling Anthropic API...');
     const chatMessage = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
-      system: LEAD_HUNTER_SYSTEM_PROMPT,
+      system: systemPrompt,
       messages: [{ role: 'user', content: fullMessage }],
     });
 

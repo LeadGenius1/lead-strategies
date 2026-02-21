@@ -5,8 +5,9 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { JWT_SECRET } = require('../middleware/auth');
 
-const ADMIN_EMAIL = 'admin@aileadstrategies.com';
-const ADMIN_DEFAULT_PASSWORD = 'YourSecurePassword123!';
+// Admin credentials from environment variables (NEVER hardcode)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 
 function getPrisma() {
   try {
@@ -23,6 +24,14 @@ function hashPassword(plain) {
   return `${salt}:${hash}`;
 }
 
+// Verify password against stored hash (salt:hash format)
+function verifyPassword(plain, storedHash) {
+  if (!storedHash || !storedHash.includes(':')) return false;
+  const [salt, hash] = storedHash.split(':');
+  const testHash = crypto.pbkdf2Sync(plain, salt, 100000, 64, 'sha512').toString('hex');
+  return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(testHash, 'hex'));
+}
+
 // POST /admin/login or /api/admin/login - Admin authentication
 // Returns real JWT so admin can execute all /api/v1/* features (Lead Hunter, Campaigns, CRM, etc.)
 router.post('/login', async (req, res) => {
@@ -33,8 +42,17 @@ router.post('/login', async (req, res) => {
       message: 'Email and password are required',
     });
   }
-  // Validate admin credentials
-  if (email !== ADMIN_EMAIL || password !== ADMIN_DEFAULT_PASSWORD) {
+
+  // Validate admin credentials from environment
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD_HASH) {
+    console.error('Admin login attempted but ADMIN_EMAIL/ADMIN_PASSWORD_HASH env vars not set');
+    return res.status(503).json({
+      success: false,
+      message: 'Admin login not configured',
+    });
+  }
+
+  if (email !== ADMIN_EMAIL || !verifyPassword(password, ADMIN_PASSWORD_HASH)) {
     return res.status(401).json({
       success: false,
       message: 'Invalid email or password',
@@ -70,7 +88,7 @@ router.post('/login', async (req, res) => {
       user = await db.user.create({
         data: {
           email: ADMIN_EMAIL,
-          passwordHash: hashPassword(ADMIN_DEFAULT_PASSWORD),
+          passwordHash: ADMIN_PASSWORD_HASH,
           name: 'Admin User',
           auth_provider: 'email',
           tier: 5,

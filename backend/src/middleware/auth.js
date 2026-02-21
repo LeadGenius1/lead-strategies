@@ -1,7 +1,13 @@
 // Authentication Middleware
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is not set. Authentication will fail.');
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET must be set in production');
+  }
+}
 
 const authenticate = (req, res, next) => {
   try {
@@ -83,7 +89,7 @@ const requireFeature = (feature) => {
       next();
     } catch (error) {
       console.error('Require feature error:', error);
-      next();
+      return res.status(500).json({ success: false, error: 'Feature check failed' });
     }
   };
 };
@@ -131,7 +137,7 @@ const checkLeadLimit = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Check lead limit error:', error);
-    next();
+    return res.status(500).json({ success: false, error: 'Lead limit check failed' });
   }
 };
 

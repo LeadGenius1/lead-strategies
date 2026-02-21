@@ -1,11 +1,17 @@
-// Integration status - reports which features are configured (no auth required)
+// Integration status - reports which features are configured
 const express = require('express');
 const router = express.Router();
 const { checkRedisHealth } = require('../config/redis');
+const { authenticate } = require('../middleware/auth');
 
 // GET /api/v1/status/api-keys - Test all Railway API keys with actual connectivity
-// Call: GET /api/v1/status/api-keys or https://api.leadsite.ai/api/v1/status/api-keys
-router.get('/api-keys', async (req, res) => {
+// PROTECTED: Requires authentication + admin role (exposes service configuration)
+router.get('/api-keys', authenticate, (req, res, next) => {
+  if (!req.user || (req.user.role !== 'super_admin' && req.user.role !== 'admin' && !req.user.is_admin)) {
+    return res.status(403).json({ success: false, error: 'Admin access required' });
+  }
+  next();
+}, async (req, res) => {
   const results = {};
   const run = async (name, fn) => {
     try {

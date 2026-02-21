@@ -3,6 +3,7 @@
 
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+const axios = require('axios');
 const { authenticate } = require('../middleware/auth');
 const { fetchWebsite } = require('../services/scraper');
 const apolloService = require('../services/apollo');
@@ -167,7 +168,7 @@ router.use(authenticate);
 // POST /api/v1/copilot/chat - Lead Hunter AI agent with website fetch + lead search
 router.post('/chat', async (req, res) => {
   try {
-    const { message, context = {} } = req.body;
+    const { message, context = {}, history = [] } = req.body;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({
@@ -235,12 +236,20 @@ router.post('/chat', async (req, res) => {
     const contextLead = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
     const fullMessage = `${message}${websiteContext}${leadContext}${contextLead}`;
 
-    console.log('🤖 Calling Anthropic API...');
+    // Build messages array with conversation history for multi-turn context
+    const priorMessages = Array.isArray(history)
+      ? history
+          .filter(m => m && typeof m.content === 'string' && ['user', 'assistant'].includes(m.role))
+          .slice(-20) // Keep last 20 messages to stay within token limits
+      : [];
+    const messages = [...priorMessages, { role: 'user', content: fullMessage }];
+
+    console.log('🤖 Calling Anthropic API...', { historyLength: priorMessages.length });
     const chatMessage = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: LEAD_HUNTER_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: fullMessage }],
+      messages,
     });
 
     const content = chatMessage.content[0].text;
@@ -261,6 +270,67 @@ router.post('/chat', async (req, res) => {
       success: false,
       error: `AI service error: ${error.message}`,
       data: { response: `Sorry, I encountered an error: ${error.message}. Please try again.` }
+    });
+  }
+});
+
+// POST /api/v1/copilot/speak - Text-to-speech via ElevenLabs proxy
+router.post('/speak', async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text || typeof text !== 'string') {
+      return res.status(400).json({ success: false, error: 'Text is required' });
+    }
+
+    const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
+    if (!elevenLabsKey) {
+      return res.status(503).json({
+        success: false,
+        error: 'Voice service not configured. Set ELEVENLABS_API_KEY in Railway environment variables.',
+        code: 'ELEVENLABS_NOT_CONFIGURED'
+      });
+    }
+
+    // Truncate to 5000 chars to avoid excessive API costs
+    const truncatedText = text.slice(0, 5000);
+
+    // Use Rachel voice (21m00Tcm4TlvDq8ikWAM) - clear, professional female voice
+    const voiceId = process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
+
+    const response = await axios.post(
+      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+      {
+        text: truncatedText,
+        model_id: 'eleven_monolingual_v1',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75
+        }
+      },
+      {
+        headers: {
+          'Accept': 'audio/mpeg',
+          'Content-Type': 'application/json',
+          'xi-api-key': elevenLabsKey
+        },
+        responseType: 'arraybuffer',
+        timeout: 30000
+      }
+    );
+
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': response.data.length,
+      'Cache-Control': 'no-cache'
+    });
+    res.send(Buffer.from(response.data));
+  } catch (error) {
+    console.error('❌ TTS error:', error.response?.status || error.message);
+    const status = error.response?.status === 401 ? 503 : 500;
+    res.status(status).json({
+      success: false,
+      error: status === 503 ? 'Voice service authentication failed. Check ELEVENLABS_API_KEY.' : `Voice service error: ${error.message}`
     });
   }
 });

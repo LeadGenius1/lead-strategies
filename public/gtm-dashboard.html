@@ -102,9 +102,15 @@
   #chat-messages { scroll-behavior: smooth; }
   .msg-ai   { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15); }
   .msg-user { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+  .msg-ai.msg-offline { border-color: rgba(251,191,36,0.25); }
 
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
   .blink { animation: blink 1.2s ease-in-out infinite; }
+
+  /* ── Voice ── */
+  .mic-active { background: rgba(239,68,68,0.2) !important; border-color: rgba(239,68,68,0.5) !important; }
+  @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
+  .mic-active { animation: mic-pulse 1.5s infinite; }
 
   /* ── Progress bar ── */
   @keyframes fillBar { from{width:0} to{width:var(--w)} }
@@ -541,10 +547,21 @@ AFTER CHANGES:
         </div>
 
 <!-- Input -->
-        <div class="flex gap-3 flex-shrink-0">
+        <div class="flex gap-3 flex-shrink-0 items-center">
+          <!-- Mic button -->
+          <button id="mic-btn" onclick="toggleVoiceInput()" title="Voice input (click to speak)"
+            class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-black/50 border border-white/10 text-neutral-400 hover:text-white hover:border-white/20 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4M12 15a3 3 0 003-3V5a3 3 0 00-6 0v7a3 3 0 003 3z"/></svg>
+          </button>
           <input id="chat-input" type="text" placeholder="Ask anything about AI Lead Strategies..."
             class="flex-1 bg-black/50 border border-white/10 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-sm placeholder:text-neutral-600 mono"
             onkeydown="if(event.key==='Enter') sendChat()">
+          <!-- Speaker toggle -->
+          <button id="speaker-btn" onclick="toggleSpeaker()" title="Toggle voice responses"
+            class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-black/50 border border-white/10 text-neutral-400 hover:text-white hover:border-white/20 transition-all">
+            <svg id="speaker-icon-on" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.788l4.72-3.15A.5.5 0 0112 6.05v11.9a.5.5 0 01-.78.416L6.5 15.212H4a1 1 0 01-1-1v-4.424a1 1 0 011-1h2.5z"/></svg>
+            <svg id="speaker-icon-off" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </button>
           <button onclick="sendChat()" class="relative group inline-flex items-center overflow-hidden rounded-xl p-[1px] transition-transform hover:scale-105 active:scale-95">
             <span class="absolute inset-[-1000%] spin-border bg-[conic-gradient(from_90deg_at_50%_50%,#000_0%,#6366f1_50%,#000_100%)]"></span>
             <span class="relative inline-flex h-full w-full items-center justify-center rounded-xl bg-black px-5 py-3 text-sm font-medium text-white backdrop-blur-3xl border border-white/10 group-hover:bg-neutral-900/80 transition-colors">
@@ -1181,6 +1198,23 @@ function renderBlueprintEnhancements() {
 
 // ── CHAT ─────────────────────────────────────────────────────────────────────
 
+const API_BASE = 'https://api.aileadstrategies.com';
+let chatHistory = [];          // {role, content} pairs for context
+let speakerEnabled = false;    // voice output toggle
+let isRecording = false;       // voice input state
+let recognition = null;        // SpeechRecognition instance
+
+// Read auth token from cookies (vanilla JS — no js-cookie dependency)
+function getAuthToken() {
+  const cookies = document.cookie.split(';').reduce((acc, c) => {
+    const [k, ...v] = c.trim().split('=');
+    acc[k] = decodeURIComponent(v.join('='));
+    return acc;
+  }, {});
+  return cookies['token'] || cookies['admin_token'] || '';
+}
+
+// ── OFFLINE FALLBACK (original RESPOND function) ──
 const RESPOND = q => {
   const lq = q.toLowerCase();
 
@@ -1247,37 +1281,163 @@ const RESPOND = q => {
   return `**✦ AI Assistant — Ask me anything about AI Lead Strategies**\n\nI have full context on:\n\n**GTM & Sales:** "best way to bring products to market" · "email copy strategy" · "which platform to sell first"\n**Infrastructure:** production status · API health · database · Railway · Cloudflare R2\n**Campaigns:** activation steps · sender accounts · lead lists · email sequences\n**Platforms:** pricing · status · features for all 5 platforms\n**Dev Rules:** all 7 rules · locked files · Cursor templates · rollback procedure\n**AI Agents:** all 7 UltraLead agents · what each one does\n\nWhat would you like to know?`;
 };
 
-function addMsg(role, content) {
+// ── MESSAGE RENDERING ──
+function addMsg(role, content, isOffline) {
   const div = document.createElement('div');
-  div.className = `px-4 py-3 rounded-xl msg-${role} ${role === 'user' ? 'ml-12' : 'mr-12'}`;
+  const offlineClass = (role === 'ai' && isOffline) ? ' msg-offline' : '';
+  div.className = `px-4 py-3 rounded-xl msg-${role}${offlineClass} ${role === 'user' ? 'ml-12' : 'mr-12'}`;
 
   const formatted = content
     .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-white">$1</strong>')
     .replace(/`([^`]+)`/g, '<code class="bg-black/40 text-purple-300 px-1.5 py-0.5 rounded mono text-[10px]">$1</code>')
     .split('\n').map(line => `<div class="text-[11px] ${role === 'user' ? 'text-neutral-200' : 'text-neutral-300'} leading-relaxed font-light">${line || '&nbsp;'}</div>`).join('');
 
+  const label = role === 'user' ? 'MICHAEL' : (isOffline ? '✦ AI ASSISTANT · OFFLINE' : '✦ AI ASSISTANT · LIVE');
+  const labelColor = role === 'user' ? 'text-neutral-600' : (isOffline ? 'text-amber-500' : 'text-indigo-500');
+
   div.innerHTML = `
-    <div class="text-[9px] mono ${role === 'user' ? 'text-neutral-600' : 'text-indigo-500'} mb-1.5">${role === 'user' ? 'MICHAEL' : '✦ AI ASSISTANT'}</div>
+    <div class="text-[9px] mono ${labelColor} mb-1.5">${label}</div>
     ${formatted}`;
   document.getElementById('chat-messages').appendChild(div);
   document.getElementById('chat-messages').scrollTop = 999999;
+
+  // Voice output — speak AI responses if enabled
+  if (role === 'ai' && speakerEnabled) {
+    speakText(content.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1').replace(/[#•→✅⚪🔴🟢🚨⚡🌐📬🏆🎬💰🏗️📋🔒📧🚀💻🤖💳✍️🎯✦]/g, ''));
+  }
 }
 
+// ── LIVE API CHAT ──
 async function sendChat() {
   const inp = document.getElementById('chat-input');
   const q = inp.value.trim();
   if (!q) return;
   inp.value = '';
   addMsg('user', q);
+
+  // Add to history
+  chatHistory.push({ role: 'user', content: q });
+
   document.getElementById('typing-ind').classList.remove('hidden');
-  await new Promise(r => setTimeout(r, 600 + Math.random() * 500));
+
+  const token = getAuthToken();
+
+  // Try live API first
+  if (token) {
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/copilot/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          message: q,
+          context: {}
+        })
+      });
+
+      document.getElementById('typing-ind').classList.add('hidden');
+
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data.data?.response || data.data?.message || 'No response received.';
+        chatHistory.push({ role: 'assistant', content: reply });
+        // Keep history manageable (last 20 exchanges)
+        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+        addMsg('ai', reply, false);
+        return;
+      }
+      // Non-OK response — fall through to offline
+      console.warn('Copilot API returned', res.status, '— falling back to offline');
+    } catch (err) {
+      console.warn('Copilot API unreachable — falling back to offline:', err.message);
+    }
+  }
+
+  // Offline fallback
   document.getElementById('typing-ind').classList.add('hidden');
-  addMsg('ai', RESPOND(q));
+  const offlineReply = RESPOND(q);
+  chatHistory.push({ role: 'assistant', content: offlineReply });
+  if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+  addMsg('ai', offlineReply, true);
 }
 
 function quickChat(q) {
   document.getElementById('chat-input').value = q;
   sendChat();
+}
+
+// ── VOICE INPUT (SpeechRecognition — browser native) ──
+function toggleVoiceInput() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    addMsg('ai', '**Voice input not supported** in this browser. Try Chrome or Edge.', true);
+    return;
+  }
+
+  const micBtn = document.getElementById('mic-btn');
+
+  if (isRecording && recognition) {
+    recognition.stop();
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    micBtn.classList.add('mic-active');
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = Array.from(event.results)
+      .map(r => r[0].transcript)
+      .join('');
+    document.getElementById('chat-input').value = transcript;
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove('mic-active');
+    // Auto-send if we got text
+    const inp = document.getElementById('chat-input');
+    if (inp.value.trim()) {
+      sendChat();
+    }
+  };
+
+  recognition.onerror = (event) => {
+    isRecording = false;
+    micBtn.classList.remove('mic-active');
+    if (event.error !== 'no-speech') {
+      console.warn('Speech recognition error:', event.error);
+    }
+  };
+
+  recognition.start();
+}
+
+// ── VOICE OUTPUT (SpeechSynthesis — browser native, no backend needed) ──
+function toggleSpeaker() {
+  speakerEnabled = !speakerEnabled;
+  document.getElementById('speaker-icon-on').classList.toggle('hidden', !speakerEnabled);
+  document.getElementById('speaker-icon-off').classList.toggle('hidden', speakerEnabled);
+  document.getElementById('speaker-btn').classList.toggle('text-indigo-400', speakerEnabled);
+  document.getElementById('speaker-btn').classList.toggle('border-indigo-500/30', speakerEnabled);
+}
+
+function speakText(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel(); // stop any current speech
+  const utterance = new SpeechSynthesisUtterance(text.substring(0, 500)); // cap at 500 chars
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  utterance.volume = 0.8;
+  window.speechSynthesis.speak(utterance);
 }
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────

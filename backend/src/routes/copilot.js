@@ -2,6 +2,8 @@
 // Used by LeadSite.AI for AI-powered email writing
 
 const express = require('express');
+const fs = require('fs').promises;
+const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 const { authenticate } = require('../middleware/auth');
 const { fetchWebsite } = require('../services/scraper');
@@ -201,8 +203,18 @@ async function getMasterContext() {
   const heapMB = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
   liveStatus.memory = `${heapMB}MB heap used${heapMB > 400 ? ' — HIGH' : ''}`;
 
+  // Load CLAUDE.md rules (source of truth for dev standards)
+  let claudeRules = '';
+  try {
+    claudeRules = await fs.readFile(path.join(__dirname, '../../../CLAUDE.md'), 'utf-8');
+  } catch (err) {
+    console.warn('CLAUDE.md not found, skipping rules injection:', err.message);
+  }
+
   return {
     current_system_status: liveStatus,
+    rules_loaded: !!claudeRules,
+    _claudeRules: claudeRules,  // full text, used in system prompt but excluded from JSON dump
     business: {
       name: 'AI Lead Strategies LLC',
       owner: 'Michael',
@@ -354,7 +366,12 @@ CURRENT SYSTEM STATUS (LIVE — checked at ${masterContext.current_system_status
 
 When asked about system status, report the LIVE data above with the exact timestamp. Do not guess or use stale information.
 
-${JSON.stringify(masterContext, null, 2)}`;
+DEVELOPMENT RULES (from CLAUDE.md — source of truth):
+${masterContext._claudeRules || 'CLAUDE.md not available — advise checking the repo root.'}
+
+When asked about dev rules, coding standards, locked files, deployment process, or how to make changes — reference these rules. They are non-negotiable.
+
+${JSON.stringify({...masterContext, _claudeRules: undefined}, null, 2)}`;
 
     console.log('🤖 Calling Anthropic API...');
     const chatMessage = await anthropic.messages.create({

@@ -1,3 +1,6 @@
+// Prisma Schema for LeadSite.AI - Unified Database for All 5 Tiers
+// Each tier unlocks different features via the 'tier' field
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,419 +10,418 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                      String             @id @default(uuid())
-  email                   String             @unique
-  passwordHash            String             @map("password_hash")
-  name                    String?
-  company                 String?
-  tier                    Int                @default(1)
-  stripeCustomerId        String?            @map("stripe_customer_id")
-  stripeAccountId         String?            @map("stripe_account_id")
-  stripeSubscriptionId    String?            @map("stripe_subscription_id")
-  subscriptionStatus      String?            @default("trial") @map("subscription_status")
-  trialEndsAt             DateTime?          @map("trial_ends_at")
-  createdAt               DateTime           @default(now()) @map("created_at")
-  updatedAt               DateTime           @updatedAt @map("updated_at")
-  lastLoginAt             DateTime?          @map("last_login_at")
-  google_id               String?            @unique
-  microsoft_id            String?            @unique
-  linkedin_id             String?            @unique
-  auth_provider           String?            @default("email")
-  profile_picture         String?
-  email_verified          Boolean?           @default(false)
-  email_verified_at       DateTime?
-  metadata                Json?
-  is_admin                Boolean?           @default(false)
-  subscription_tier       String?            @default("free") @db.VarChar(50)
-  trial_start_date        DateTime?          @default(now()) @db.Timestamp(6)
-  trial_end_date          DateTime?          @default(dbgenerated("(CURRENT_TIMESTAMP + '14 days'::interval)")) @db.Timestamp(6)
-  subscription_start_date DateTime?          @db.Timestamp(6)
-  subscription_end_date   DateTime?          @db.Timestamp(6)
-  last_payment_date       DateTime?          @db.Timestamp(6)
-  payment_reminder_sent   Boolean?           @default(false)
-  plan_tier               String?            @default("free") @db.VarChar(50)
-  avatar_url              String?
-  total_earnings          Decimal            @default(0) @db.Decimal(12, 2)
-  balance_available       Decimal            @default(0) @db.Decimal(12, 2)
-  activities              Activity[]
-  apiKeys                 ApiKey[]
-  autoResponses           AutoResponse[]
-  calls                   Call[]
-  campaigns               Campaign[]
-  cannedResponses         CannedResponse[]
-  companies               Company[]
-  contacts                Contact[]
-  conversationNotes       ConversationNote[]
-  conversations           Conversation[]
-  deals                   Deal[]
-  documents               Document[]
-  emailTemplates          EmailTemplate[]
-  leads                   Lead[]
-  messages                Message[]
-  teamMemberships         TeamMember[]
-  videos                  Video[]
-  websites                Website[]
-  aiBuilderSites          AiBuilderSite[]
-  emailAccounts           UserEmailAccount[]
-  emailPoolSubscription   EmailPoolSubscription?
-  videoViewsAsCreator     VideoView[]       @relation("UserAsCreator")
-  videoViewsAsViewer      VideoView[]       @relation("UserAsViewer")
-  creatorEarnings         CreatorEarning[]
-  payouts                 Payout[]
-  channels                Channel[]
-  advertiser              Advertiser?
-  products                Product[]
+// ==================== USERS & AUTH ====================
 
-  @@index([metadata], type: Gin)
+model User {
+  id           String  @id @default(uuid())
+  email        String  @unique
+  passwordHash String  @map("password_hash")
+  name         String?
+  company      String?
+
+  // Tier System (1-5)
+  // 1 = LeadSite.AI ($79/mo) - 50 leads, email campaigns
+  // 2 = LeadSite.IO ($149/mo) - 100 leads, website builder
+  // 3 = ClientContact.IO ($249/mo) - 500 leads, 22+ channels
+  // 4 = VideoSite.IO ($99/mo) - 1000 leads, video monetization
+  // 5 = UltraLead ($599/mo) - 10000 leads, all features + API
+  tier Int @default(1)
+
+  // Subscription
+  stripeCustomerId     String?   @map("stripe_customer_id")
+  stripeSubscriptionId String?   @map("stripe_subscription_id")
+  subscriptionStatus   String?   @default("trial") @map("subscription_status")
+  trialEndsAt          DateTime? @map("trial_ends_at")
+
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastLoginAt DateTime? @map("last_login_at")
+
+  // Relations
+  leads             Lead[]
+  campaigns         Campaign[]
+  emailTemplates    EmailTemplate[]
+  websites          Website[]
+  forms             Form[]
+  videos            Video[]
+  apiKeys           ApiKey[]
+  conversations     Conversation[]
+  channels          Channel[]
+  messages          Message[]
+  cannedResponses   CannedResponse[]
+  autoResponses     AutoResponse[]
+  conversationNotes ConversationNote[]
+
+  // UltraLead Relations (Tier 5)
+  companies         Company[]
+  contacts          Contact[]
+  deals             Deal[]
+  activities        Activity[]
+  calls             Call[]
+  meetings          Meeting[]
+  documents         Document[]
+  teamMemberships   TeamMember[]
+
+  // User Email Delivery System (Two-Tier)
+  emailAccounts         UserEmailAccount[]
+  emailPoolSubscription EmailPoolSubscription?
+
+  @@index([subscriptionStatus])
+  @@index([stripeCustomerId])
+  @@index([createdAt])
   @@map("users")
 }
 
+// ==================== LEADS ====================
+
 model Lead {
-  id              String         @id @default(uuid())
-  userId          String         @map("user_id")
-  email           String
-  name            String?
-  company         String?
-  phone           String?
-  title           String?
-  website         String?
-  linkedinUrl     String?        @map("linkedin_url")
-  source          String?
-  status          String         @default("new")
-  score           Int?           @default(0)
-  notes           String?
-  tags            String[]       @default([])
-  customFields    Json?          @map("custom_fields")
-  createdAt       DateTime       @default(now()) @map("created_at")
-  updatedAt       DateTime       @updatedAt @map("updated_at")
-  lastContactedAt DateTime?      @map("last_contacted_at")
-  campaignLeads   CampaignLead[]
-  emailEvents     EmailEvent[]
-  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Contact Info
+  email       String
+  name        String?
+  company     String?
+  phone       String?
+  title       String? // Job title
+  website     String?
+  linkedinUrl String? @map("linkedin_url")
+
+  // Lead Data
+  source String? // Where the lead came from
+  status String   @default("new") // new, contacted, replied, qualified, converted, lost
+  score  Int?     @default(0) // Lead score 0-100
+  notes  String?
+  tags   String[] @default([])
+
+  // Custom Fields (JSON)
+  customFields Json? @map("custom_fields")
+
+  // Timestamps
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  lastContactedAt DateTime? @map("last_contacted_at")
+
+  // Relations
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaignLeads CampaignLead[]
+  emailEvents   EmailEvent[]
 
   @@unique([userId, email])
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([email])
   @@map("leads")
 }
 
+// ==================== CAMPAIGNS ====================
+
 model Campaign {
-  id            String         @id @default(uuid())
-  userId        String         @map("user_id")
-  name          String
-  description   String?
-  type          String         @default("email")
-  status        String         @default("draft")
-  subject       String?
-  fromName      String?        @map("from_name")
-  fromEmail     String?        @map("from_email")
-  replyTo       String?        @map("reply_to")
-  templateId    String?        @map("template_id")
-  htmlContent   String?        @map("html_content")
-  textContent   String?        @map("text_content")
-  scheduledAt   DateTime?      @map("scheduled_at")
-  startedAt     DateTime?      @map("started_at")
-  completedAt   DateTime?      @map("completed_at")
-  totalLeads    Int            @default(0) @map("total_leads")
-  sentCount     Int            @default(0) @map("sent_count")
-  openCount     Int            @default(0) @map("open_count")
-  clickCount    Int            @default(0) @map("click_count")
-  replyCount    Int            @default(0) @map("reply_count")
-  bounceCount   Int            @default(0) @map("bounce_count")
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  campaignLeads CampaignLead[]
-  template      EmailTemplate? @relation(fields: [templateId], references: [id])
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Campaign Info
+  name        String
+  description String?
+  type        String  @default("email") // email, sms, social, video (tier-gated)
+  status      String  @default("draft") // draft, scheduled, active, paused, completed
+
+  // Email Campaign Settings
+  subject   String?
+  fromName  String? @map("from_name")
+  fromEmail String? @map("from_email")
+  replyTo   String? @map("reply_to")
+
+  // Content
+  templateId  String? @map("template_id")
+  htmlContent String? @map("html_content")
+  textContent String? @map("text_content")
+
+  // Scheduling
+  scheduledAt DateTime? @map("scheduled_at")
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+
+  // Stats (denormalized for quick access)
+  totalLeads  Int @default(0) @map("total_leads")
+  sentCount   Int @default(0) @map("sent_count")
+  openCount   Int @default(0) @map("open_count")
+  clickCount  Int @default(0) @map("click_count")
+  replyCount  Int @default(0) @map("reply_count")
+  bounceCount Int @default(0) @map("bounce_count")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template      EmailTemplate? @relation(fields: [templateId], references: [id])
+  campaignLeads CampaignLead[]
   emailEvents   EmailEvent[]
 
+  @@index([userId, status])
+  @@index([userId, createdAt])
   @@map("campaigns")
 }
 
 model CampaignLead {
-  id         String    @id @default(uuid())
-  campaignId String    @map("campaign_id")
-  leadId     String    @map("lead_id")
-  status     String    @default("pending")
-  sentAt     DateTime? @map("sent_at")
-  openedAt   DateTime? @map("opened_at")
-  clickedAt  DateTime? @map("clicked_at")
-  repliedAt  DateTime? @map("replied_at")
-  campaign   Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  lead       Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  id         String @id @default(uuid())
+  campaignId String @map("campaign_id")
+  leadId     String @map("lead_id")
+
+  status    String    @default("pending") // pending, sent, delivered, opened, clicked, replied, bounced, unsubscribed
+  sentAt    DateTime? @map("sent_at")
+  openedAt  DateTime? @map("opened_at")
+  clickedAt DateTime? @map("clicked_at")
+  repliedAt DateTime? @map("replied_at")
+
+  // Relations
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead     Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@unique([campaignId, leadId])
+  @@index([campaignId, status])
+  @@index([leadId])
   @@map("campaign_leads")
 }
 
+// ==================== EMAIL TEMPLATES ====================
+
 model EmailTemplate {
-  id          String     @id @default(uuid())
-  userId      String     @map("user_id")
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
   name        String
   subject     String?
-  htmlContent String?    @map("html_content")
-  textContent String?    @map("text_content")
-  variables   String[]   @default([])
-  isDefault   Boolean    @default(false) @map("is_default")
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
-  campaigns   Campaign[]
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  htmlContent String? @map("html_content")
+  textContent String? @map("text_content")
 
+  // Template Variables (placeholders)
+  variables String[] @default([]) // ["firstName", "company", etc.]
+
+  isDefault Boolean @default(false) @map("is_default")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns Campaign[]
+
+  @@index([userId])
   @@map("email_templates")
 }
 
-model EmailEvent {
-  id         String   @id @default(uuid())
-  campaignId String   @map("campaign_id")
-  leadId     String   @map("lead_id")
-  eventType  String
-  eventData  Json?    @map("event_data")
-  createdAt  DateTime @default(now()) @map("created_at")
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+// ==================== EMAIL EVENTS (Analytics) ====================
 
+model EmailEvent {
+  id         String @id @default(uuid())
+  campaignId String @map("campaign_id")
+  leadId     String @map("lead_id")
+
+  eventType String // sent, delivered, opened, clicked, replied, bounced, complained, unsubscribed
+  eventData Json?  @map("event_data")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead     Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId, eventType])
+  @@index([leadId])
+  @@index([createdAt])
   @@map("email_events")
 }
 
+// ==================== WEBSITES (Tier 2+) ====================
+
 model Website {
-  id            String    @id @default(uuid())
-  userId        String    @map("user_id")
+  id     String @id @default(uuid())
+  userId String @map("user_id")
 
-  // Website content
-  name          String
-  slug          String?   @unique
-  template      String    @default("aether")
-  content       Json      @default("{}")
-  htmlContent   String?   @map("html_content") @db.Text
+  name      String
+  domain    String?
+  subdomain String? @unique
 
-  // Status
-  status        String    @default("draft")
-  isPublished   Boolean   @default(false) @map("is_published")
-  publishedAt   DateTime? @map("published_at")
+  // Website Builder Data
+  pages    Json?   @default("[]")
+  settings Json?   @default("{}")
+  theme    String? @default("default")
 
-  // Billing
-  isFreeWebsite Boolean   @default(false) @map("is_free_website")
-  purchaseId    String?   @map("purchase_id")
+  isPublished Boolean @default(false) @map("is_published")
 
-  // Timestamps
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forms Form[]
 
   @@index([userId])
-  @@index([slug])
+  @@index([userId, isPublished])
   @@map("websites")
 }
 
-// AI Website Builder models (separate from existing Website)
-model WebsiteTemplate {
-  id           String   @id @default(uuid())
-  name         String
-  slug         String   @unique
-  previewImage String?  @map("preview_image")
-  html         String   @db.Text
-  css          String   @db.Text
-  formSchema   Json?    @map("form_schema")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  sites        AiBuilderSite[]
+// ==================== FORMS (Tier 2+ - LeadSite.IO) ====================
 
-  @@map("website_templates")
+model Form {
+  id        String @id @default(uuid())
+  userId    String @map("user_id")
+  websiteId String? @map("website_id")
+
+  name    String
+  fields  Json // Array of form field definitions
+  settings Json @default("{}") // Redirect URL, success message, email notifications, etc.
+
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  website      Website?        @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+  submissions  FormSubmission[]
+
+  @@index([userId])
+  @@index([websiteId])
+  @@map("forms")
 }
 
-model AiBuilderSite {
-  id           String         @id @default(uuid())
-  userId       String         @map("user_id")
-  templateId   String         @map("template_id")
-  name         String
-  html         String         @db.Text
-  css          String         @db.Text
-  formData     Json?          @map("form_data")
-  status       WebsiteStatus  @default(draft)
-  subdomain    String?        @unique
-  customDomain String?        @map("custom_domain")
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @updatedAt @map("updated_at")
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template     WebsiteTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
-  versions     AiBuilderSiteVersion[]
-  leads        AiBuilderSiteLead[]
+model FormSubmission {
+  id     String @id @default(uuid())
+  formId String @map("form_id")
+
+  data      Json // Submission data (field values)
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId])
+  @@index([createdAt])
+  @@map("form_submissions")
+}
+
+// ==================== VIDEOS (Tier 4+) ====================
+
+model Video {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  title       String
+  description String?
+  templateId  String? @map("template_id")
+
+  // Video File
+  filename     String?
+  videoUrl     String? @map("video_url")
+  thumbnailUrl String? @map("thumbnail_url")
+  duration     Int? // Duration in seconds
+  fileSize     Int?    @map("file_size")
+  aspectRatio  String? @default("16:9") @map("aspect_ratio") // 16:9, 9:16, 1:1
+
+  // Video Content
+  script  String? // AI-generated script
+  scenes  Json?   // Array of scene definitions
+  settings Json?  @default("{}") // Style, music, voiceover settings
+
+  // Analytics
+  views      Int     @default(0)
+  watchTime  Int     @default(0) @map("watch_time") // Total watch time in seconds
+  engagement Decimal @default(0) @db.Decimal(5, 2) // Engagement percentage
+  clicks     Int     @default(0)
+  shares     Int     @default(0)
+  platformViews Json? @map("platform_views") // Views per platform
+  heatmap    Json?   // Engagement heatmap data
+
+  // Monetization
+  isMonetized Boolean @default(false) @map("is_monetized")
+  earnings    Decimal @default(0) @db.Decimal(10, 2)
+
+  // Status
+  status String @default("generating") // generating, ready, published, private
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
-  @@map("ai_builder_sites")
-}
-
-model AiBuilderSiteVersion {
-  id        String       @id @default(uuid())
-  siteId    String       @map("site_id")
-  html      String       @db.Text
-  css       String       @db.Text
-  formData  Json?        @map("form_data")
-  version   Int
-  createdAt DateTime     @default(now()) @map("created_at")
-  site      AiBuilderSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-
-  @@index([siteId])
-  @@map("ai_builder_site_versions")
-}
-
-model AiBuilderSiteLead {
-  id        String       @id @default(uuid())
-  siteId    String       @map("site_id")
-  name      String?
-  email     String
-  phone     String?
-  message   String?      @db.Text
-  formData  Json?        @map("form_data")
-  status    LeadStatus   @default(new)
-  leadId    String?      @map("lead_id")
-  createdAt DateTime     @default(now()) @map("created_at")
-  site      AiBuilderSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-
-  @@index([siteId])
-  @@index([status])
-  @@map("ai_builder_site_leads")
-}
-
-enum WebsiteStatus {
-  draft
-  published
-  archived
-}
-
-enum LeadStatus {
-  new
-  contacted
-  qualified
-  converted
-}
-
-model Video {
-  id           String   @id @default(uuid())
-  userId       String   @map("user_id")
-  title        String
-  description  String?
-  filename     String?
-  file_url     String?
-  thumbnailUrl String?  @map("thumbnail_url")
-  duration     Int?
-  fileSize     Int?     @map("file_size")
-  isMonetized  Boolean  @default(false) @map("is_monetized")
-  view_count   Int      @default(0)
-  earnings     Decimal  @default(0) @db.Decimal(10, 2)
-  status       String   @default("processing")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  views        VideoView[]
-  creatorEarnings CreatorEarning[]
-  products     VideoProduct[]
-
   @@map("videos")
 }
 
-model VideoView {
-  id        String   @id @default(uuid())
-  videoId   String   @map("video_id")
-  creatorId String   @map("creator_id")
-  viewerId  String?  @map("viewer_id")
-  sessionId String   @map("session_id")
-  watchTime Int      @default(0) @map("watch_time")
-  isQualified Boolean @default(false) @map("is_qualified")
-  referrer  String?
-  userAgent String?  @map("user_agent")
-  ipAddress String?  @map("ip_address")
-  createdAt DateTime @default(now()) @map("created_at")
-  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  creator   User     @relation("UserAsCreator", fields: [creatorId], references: [id], onDelete: Cascade)
-  viewer    User?    @relation("UserAsViewer", fields: [viewerId], references: [id], onDelete: SetNull)
-
-  @@index([videoId])
-  @@index([creatorId])
-  @@index([viewerId])
-  @@index([createdAt])
-  @@index([videoId, sessionId, createdAt])
-  @@map("video_views")
-}
-
-model CreatorEarning {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  videoId   String   @map("video_id")
-  viewId    String   @map("view_id")
-  amount    Decimal  @db.Decimal(10, 4)
-  status    String   @default("pending")
-  payoutId  String?  @map("payout_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  creator   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  payout    Payout?  @relation(fields: [payoutId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
-  @@index([videoId])
-  @@index([status])
-  @@index([payoutId])
-  @@map("creator_earnings")
-}
-
-model Payout {
-  id               String   @id @default(uuid())
-  userId           String   @map("user_id")
-  amount           Decimal  @db.Decimal(10, 2)
-  status           String   @default("pending")
-  stripeAccountId  String?  @map("stripe_account_id")
-  stripeTransferId String?  @map("stripe_transfer_id")
-  error            String?  @db.Text
-  createdAt        DateTime @default(now()) @map("created_at")
-  creator          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  creatorEarnings  CreatorEarning[]
-
-  @@index([userId])
-  @@index([status])
-  @@map("payouts")
-}
+// ==================== API KEYS (Tier 5) ====================
 
 model ApiKey {
-  id          String    @id @default(uuid())
-  userId      String    @map("user_id")
-  name        String
-  key         String    @unique
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  name String
+  key  String @unique
+
   permissions String[]  @default(["read"])
   lastUsedAt  DateTime? @map("last_used_at")
   expiresAt   DateTime? @map("expires_at")
-  isActive    Boolean   @default(true) @map("is_active")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("api_keys")
 }
 
+// ==================== CONVERSATIONS & MESSAGES (Tier 3+) ====================
+
 model Conversation {
-  id            String             @id @default(uuid())
-  userId        String             @map("user_id")
-  contactName   String?            @map("contact_name")
-  contactEmail  String?            @map("contact_email")
-  contactPhone  String?            @map("contact_phone")
-  contactId     String?            @map("contact_id")
-  channel       String
-  channelId     String?            @map("channel_id")
-  subject       String?
-  status        String             @default("open")
-  priority      String             @default("normal")
-  assignedTo    String?            @map("assigned_to")
-  tags          String[]           @default([])
-  labels        String[]           @default([])
-  messageCount  Int                @default(0) @map("message_count")
-  unreadCount   Int                @default(0) @map("unread_count")
-  createdAt     DateTime           @default(now()) @map("created_at")
-  updatedAt     DateTime           @updatedAt @map("updated_at")
-  lastMessageAt DateTime?          @map("last_message_at")
-  closedAt      DateTime?          @map("closed_at")
-  notes         ConversationNote[]
-  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages      Message[]
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Contact Info
+  contactName  String? @map("contact_name")
+  contactEmail String? @map("contact_email")
+  contactPhone String? @map("contact_phone")
+  contactId    String? @map("contact_id") // Link to Lead if exists
+
+  // Channel Info
+  channel   String // email, sms, whatsapp, messenger, instagram, linkedin, twitter, slack, discord, telegram, webchat, voice, video
+  channelId String? @map("channel_id") // External channel ID (e.g., email address, phone number)
+
+  // Conversation Metadata
+  subject    String?
+  status     String  @default("open") // open, closed, archived, spam
+  priority   String  @default("normal") // low, normal, high, urgent
+  assignedTo String? @map("assigned_to") // User ID if team feature enabled
+
+  // Tags and Labels
+  tags   String[] @default([])
+  labels String[] @default([])
+
+  // Stats
+  messageCount Int @default(0) @map("message_count")
+  unreadCount  Int @default(0) @map("unread_count")
+
+  // Timestamps
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  lastMessageAt DateTime? @map("last_message_at")
+  closedAt      DateTime? @map("closed_at")
+
+  // Relations
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+  notes    ConversationNote[]
 
   @@index([userId, status])
   @@index([userId, channel])
@@ -428,119 +430,201 @@ model Conversation {
 }
 
 model Message {
-  id               String       @id @default(uuid())
-  conversationId   String       @map("conversation_id")
-  userId           String       @map("user_id")
-  content          String
-  htmlContent      String?      @map("html_content")
-  subject          String?
-  channel          String
-  channelMessageId String?      @map("channel_message_id")
-  direction        String       @default("inbound")
-  status           String       @default("sent")
-  isRead           Boolean      @default(false) @map("is_read")
-  attachments      Json?
-  metadata         Json?
-  createdAt        DateTime     @default(now()) @map("created_at")
-  readAt           DateTime?    @map("read_at")
-  conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String @id @default(uuid())
+  conversationId String @map("conversation_id")
+  userId         String @map("user_id")
+
+  // Message Content
+  content     String // Text content
+  htmlContent String? @map("html_content") // HTML content if available
+  subject     String? // Subject line (for email)
+
+  // Channel Info
+  channel          String // Same as conversation channel
+  channelMessageId String? @map("channel_message_id") // External message ID
+
+  // Direction
+  direction String @default("inbound") // inbound, outbound
+
+  // Status
+  status String  @default("sent") // sent, delivered, read, failed
+  isRead Boolean @default(false) @map("is_read")
+
+  // Attachments
+  attachments Json? // Array of attachment metadata
+
+  // Metadata
+  metadata Json? // Channel-specific metadata
+
+  // Timestamps
+  createdAt DateTime  @default(now()) @map("created_at")
+  readAt    DateTime? @map("read_at")
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, createdAt])
   @@index([userId, createdAt])
   @@map("messages")
 }
 
-model Channel {
-  id          String    @id @default(uuid())
-  userId      String    @map("user_id")
-  type        String
-  name        String
-  credentials Json?
-  settings    Json?
-  status      String    @default("connected")
-  lastSyncAt  DateTime? @map("last_sync_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+// ==================== CLIENTCONTACT.IO FEATURES ====================
 
-  @@index([userId])
-  @@index([type])
-  @@map("channels")
-}
-
+// Canned Responses / Templates
 model CannedResponse {
-  id           String         @id @default(uuid())
-  userId       String         @map("user_id")
-  name         String
-  content      String
-  htmlContent  String?        @map("html_content")
-  subject      String?
-  category     String?
-  tags         String[]       @default([])
-  channels     String[]       @default([])
-  variables    String[]       @default([])
-  useCount     Int            @default(0) @map("use_count")
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @updatedAt @map("updated_at")
-  AutoResponse AutoResponse[]
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Template Info
+  name        String
+  content     String // Text content
+  htmlContent String? @map("html_content") // HTML content if available
+  subject     String? // Subject line (for email templates)
+
+  // Category/Tags
+  category String? // e.g., "greeting", "follow-up", "closing", "support"
+  tags     String[] @default([])
+
+  // Channel Support
+  channels String[] @default([]) // email, sms, whatsapp, etc. - empty means all channels
+
+  // Variables/Placeholders
+  variables String[] @default([]) // ["{{firstName}}", "{{company}}", etc.]
+
+  // Usage Stats
+  useCount Int @default(0) @map("use_count")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AutoResponse AutoResponse[]
 
   @@index([userId, category])
   @@index([userId, createdAt])
   @@map("canned_responses")
 }
 
+// Auto-Response Rules
 model AutoResponse {
-  id               String          @id @default(uuid())
-  userId           String          @map("user_id")
-  name             String
-  description      String?
-  enabled          Boolean         @default(true)
-  triggerType      String
-  conditions       Json
-  cannedResponseId String?         @map("canned_response_id")
-  responseContent  String?         @map("response_content")
-  responseSubject  String?         @map("response_subject")
-  channels         String[]        @default([])
-  priority         Int             @default(0)
-  delaySeconds     Int             @default(0) @map("delay_seconds")
-  maxPerDay        Int?            @map("max_per_day")
-  maxPerContact    Int?            @map("max_per_contact")
-  triggerCount     Int             @default(0) @map("trigger_count")
-  lastTriggeredAt  DateTime?       @map("last_triggered_at")
-  createdAt        DateTime        @default(now()) @map("created_at")
-  updatedAt        DateTime        @updatedAt @map("updated_at")
-  cannedResponse   CannedResponse? @relation(fields: [cannedResponseId], references: [id])
-  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(uuid())
+  userId String @map("user_id")
 
+  // Rule Info
+  name        String
+  description String?
+  enabled     Boolean @default(true)
+
+  // Conditions (when to trigger)
+  triggerType String // "keyword", "channel", "time", "tag", "all"
+  conditions  Json // Flexible conditions object
+
+  // Response
+  cannedResponseId String? @map("canned_response_id") // Use existing canned response
+  responseContent  String? @map("response_content") // Or custom response content
+  responseSubject  String? @map("response_subject") // Subject for email
+
+  // Channel Filter
+  channels String[] @default([]) // Apply to specific channels only
+
+  // Priority/Order
+  priority Int @default(0) // Higher priority runs first
+
+  // Delay (seconds before sending)
+  delaySeconds Int @default(0) @map("delay_seconds")
+
+  // Limits
+  maxPerDay     Int? @map("max_per_day") // Max responses per day
+  maxPerContact Int? @map("max_per_contact") // Max responses per contact
+
+  // Stats
+  triggerCount    Int       @default(0) @map("trigger_count")
+  lastTriggeredAt DateTime? @map("last_triggered_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cannedResponse CannedResponse? @relation(fields: [cannedResponseId], references: [id], onDelete: SetNull)
+
+  @@index([userId, enabled])
   @@index([userId, priority])
   @@map("auto_responses")
 }
 
+// Internal Notes (for conversations)
 model ConversationNote {
-  id             String       @id @default(uuid())
-  conversationId String       @map("conversation_id")
-  userId         String       @map("user_id")
-  content        String
-  isInternal     Boolean      @default(true) @map("is_internal")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String @id @default(uuid())
+  conversationId String @map("conversation_id")
+  userId         String @map("user_id")
+
+  // Note Content
+  content String
+
+  // Visibility
+  isInternal Boolean @default(true) @map("is_internal") // Always true for notes
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, createdAt])
   @@index([userId, createdAt])
   @@map("conversation_notes")
 }
 
+// ==================== CHANNELS (Tier 3+ - ClientContact.IO) ====================
+
+model Channel {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Channel Info
+  type String // email, sms, whatsapp, linkedin, twitter, facebook, instagram, slack, discord, telegram, webchat
+  name String
+
+  // Connection Credentials (encrypted)
+  credentials Json // OAuth tokens, API keys, etc.
+
+  // Settings
+  settings Json @default("{}") // enabled, autoSync, syncInterval, etc.
+  status   String @default("connected") // connected, disconnected, error
+
+  // Sync Info
+  lastSyncAt DateTime? @map("last_sync_at")
+  syncCount  Int       @default(0) @map("sync_count")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, name])
+  @@index([userId])
+  @@index([type])
+  @@map("channels")
+}
+
+// ==================== SELF-HEALING SYSTEM ====================
+
+// System Health Metrics - Stores all monitored metrics
 model SystemHealthMetric {
   id          String   @id @default(uuid())
   metricName  String   @map("metric_name")
   metricValue Decimal  @map("metric_value") @db.Decimal(15, 4)
   metricUnit  String?  @map("metric_unit")
-  component   String
-  severity    String   @default("normal")
+  component   String // api, database, redis, frontend, system
+  severity    String   @default("normal") // normal, warning, critical
   createdAt   DateTime @default(now()) @map("created_at")
 
   @@index([metricName, createdAt])
@@ -549,20 +633,23 @@ model SystemHealthMetric {
   @@map("system_health_metrics")
 }
 
+// Diagnostic Reports - AI-powered analysis results
 model DiagnosticReport {
-  id              String          @id @default(uuid())
-  alertId         String?         @map("alert_id")
-  issueType       String          @map("issue_type")
-  rootCause       String?         @map("root_cause")
-  evidence        Json?
-  aiAnalysis      String?         @map("ai_analysis")
-  aiModel         String?         @map("ai_model")
-  confidenceScore Decimal?        @map("confidence_score") @db.Decimal(3, 2)
-  suggestedFix    String?         @map("suggested_fix")
+  id              String   @id @default(uuid())
+  alertId         String?  @map("alert_id")
+  issueType       String   @map("issue_type")
+  rootCause       String?  @map("root_cause")
+  evidence        Json? // logs, metrics, traces
+  aiAnalysis      String?  @map("ai_analysis")
+  aiModel         String?  @map("ai_model")
+  confidenceScore Decimal? @map("confidence_score") @db.Decimal(3, 2)
+  suggestedFix    String?  @map("suggested_fix")
   severity        String?
-  affectedUsers   Int?            @default(0) @map("affected_users")
-  createdAt       DateTime        @default(now()) @map("created_at")
-  repairs         RepairHistory[]
+  affectedUsers   Int?     @default(0) @map("affected_users")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  repairs RepairHistory[]
 
   @@index([issueType])
   @@index([severity])
@@ -570,18 +657,21 @@ model DiagnosticReport {
   @@map("diagnostic_reports")
 }
 
+// Repair History - Track all automated fixes
 model RepairHistory {
-  id                 String            @id @default(uuid())
-  diagnosticId       String?           @map("diagnostic_id")
-  repairType         String            @map("repair_type")
-  fixApplied         String?           @map("fix_applied")
-  fixCode            String?           @map("fix_code")
+  id                 String   @id @default(uuid())
+  diagnosticId       String?  @map("diagnostic_id")
+  repairType         String   @map("repair_type")
+  fixApplied         String?  @map("fix_applied")
+  fixCode            String?  @map("fix_code")
   success            Boolean
-  timeToFixSeconds   Int?              @map("time_to_fix_seconds")
-  verificationResult Json?             @map("verification_result")
-  rollbackPlan       String?           @map("rollback_plan")
-  createdAt          DateTime          @default(now()) @map("created_at")
-  diagnostic         DiagnosticReport? @relation(fields: [diagnosticId], references: [id])
+  timeToFixSeconds   Int?     @map("time_to_fix_seconds")
+  verificationResult Json?    @map("verification_result")
+  rollbackPlan       String?  @map("rollback_plan")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  // Relations
+  diagnostic DiagnosticReport? @relation(fields: [diagnosticId], references: [id])
 
   @@index([success])
   @@index([repairType])
@@ -589,10 +679,11 @@ model RepairHistory {
   @@map("repair_history")
 }
 
+// Learning Patterns - Patterns learned from successful repairs
 model LearningPattern {
   id                String    @id @default(uuid())
   patternHash       String    @unique @map("pattern_hash")
-  symptoms          Json
+  symptoms          Json // symptoms that identify this pattern
   rootCause         String?   @map("root_cause")
   solution          String?
   successCount      Int       @default(0) @map("success_count")
@@ -608,16 +699,17 @@ model LearningPattern {
   @@map("learning_patterns")
 }
 
+// Predictions - Forecasted issues
 model Prediction {
   id              String    @id @default(uuid())
-  predictionType  String    @map("prediction_type")
+  predictionType  String    @map("prediction_type") // disk_full, traffic_spike, cost_overrun
   predictedIssue  String?   @map("predicted_issue")
   predictedTime   DateTime? @map("predicted_time")
   confidence      Decimal?  @db.Decimal(3, 2)
   dataPoints      Json?     @map("data_points")
   proactiveAction String?   @map("proactive_action")
   actionTaken     Boolean   @default(false) @map("action_taken")
-  outcome         String?
+  outcome         String? // prevented, occurred, false_positive
   createdAt       DateTime  @default(now()) @map("created_at")
 
   @@index([predictionType])
@@ -625,6 +717,7 @@ model Prediction {
   @@map("predictions")
 }
 
+// Security Incidents - Tracked threats and mitigations
 model SecurityIncident {
   id               String   @id @default(uuid())
   threatType       String   @map("threat_type")
@@ -644,9 +737,10 @@ model SecurityIncident {
   @@map("security_incidents")
 }
 
+// Performance Metrics - Query and cache optimization tracking
 model PerformanceMetric {
   id                  String   @id @default(uuid())
-  metricType          String   @map("metric_type")
+  metricType          String   @map("metric_type") // query_time, cache_hit, api_latency
   endpoint            String?
   queryHash           String?  @map("query_hash")
   valueMs             Decimal? @map("value_ms") @db.Decimal(10, 2)
@@ -662,6 +756,7 @@ model PerformanceMetric {
   @@map("performance_metrics")
 }
 
+// System Alerts - Active and historical alerts
 model SystemAlert {
   id             String    @id @default(uuid())
   alertType      String    @map("alert_type")
@@ -684,38 +779,50 @@ model SystemAlert {
   @@map("system_alerts")
 }
 
+// ==================== ADMIN SYSTEM ====================
+
+// Admin Users - AI Lead Strategies LLC internal staff only
 model AdminUser {
-  id           String          @id @default(uuid())
-  email        String          @unique
-  passwordHash String          @map("password_hash")
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
   name         String
-  role         String          @default("admin")
-  permissions  String[]        @default([])
-  mfaEnabled   Boolean         @default(false) @map("mfa_enabled")
-  mfaSecret    String?         @map("mfa_secret")
-  lastLoginAt  DateTime?       @map("last_login_at")
-  lastLoginIp  String?         @map("last_login_ip")
-  failedLogins Int             @default(0) @map("failed_logins")
-  lockedUntil  DateTime?       @map("locked_until")
-  createdBy    String?         @map("created_by")
-  createdAt    DateTime        @default(now()) @map("created_at")
-  updatedAt    DateTime        @updatedAt @map("updated_at")
-  auditLogs    AdminAuditLog[]
+  role         String   @default("admin") // super_admin, admin, viewer
+  permissions  String[] @default([]) // granular permissions
+
+  // Security
+  mfaEnabled   Boolean   @default(false) @map("mfa_enabled")
+  mfaSecret    String?   @map("mfa_secret")
+  lastLoginAt  DateTime? @map("last_login_at")
+  lastLoginIp  String?   @map("last_login_ip")
+  failedLogins Int       @default(0) @map("failed_logins")
+  lockedUntil  DateTime? @map("locked_until")
+
+  // Audit
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  auditLogs AdminAuditLog[]
 
   @@map("admin_users")
 }
 
+// Admin Audit Log - Track all admin actions
 model AdminAuditLog {
-  id          String    @id @default(uuid())
-  adminUserId String    @map("admin_user_id")
-  action      String
-  resource    String?
-  resourceId  String?   @map("resource_id")
-  details     Json?
-  ipAddress   String?   @map("ip_address")
-  userAgent   String?   @map("user_agent")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  adminUser   AdminUser @relation(fields: [adminUserId], references: [id])
+  id          String   @id @default(uuid())
+  adminUserId String   @map("admin_user_id")
+  action      String // login, view_dashboard, restart_agent, acknowledge_alert, etc.
+  resource    String? // What was accessed/modified
+  resourceId  String?  @map("resource_id")
+  details     Json? // Additional context
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id])
 
   @@index([adminUserId])
   @@index([action])
@@ -723,6 +830,7 @@ model AdminAuditLog {
   @@map("admin_audit_logs")
 }
 
+// Admin Sessions - Separate from user sessions
 model AdminSession {
   id           String   @id @default(uuid())
   adminUserId  String   @map("admin_user_id")
@@ -739,38 +847,51 @@ model AdminSession {
   @@map("admin_sessions")
 }
 
+// ==================== ULTRALEAD (Tier 5 - Enterprise CRM) ====================
+
+// Companies - B2B company profiles
 model Company {
-  id             String     @id @default(uuid())
-  userId         String     @map("user_id")
-  name           String
-  domain         String?
-  industry       String?
-  size           String?
-  revenue        String?
-  website        String?
-  linkedinUrl    String?    @map("linkedin_url")
-  phone          String?
-  address        String?
-  city           String?
-  state          String?
-  country        String?
-  postalCode     String?    @map("postal_code")
+  id       String @id @default(uuid())
+  userId   String @map("user_id")
+
+  // Company Info
+  name        String
+  domain      String?
+  industry    String?
+  size        String?   // 1-10, 11-50, 51-200, 201-500, 501-1000, 1000+
+  revenue     String?   // Revenue range
+  website     String?
+  linkedinUrl String?   @map("linkedin_url")
+  phone       String?
+  address     String?
+  city        String?
+  state       String?
+  country     String?
+  postalCode  String?   @map("postal_code")
+
+  // Enrichment Data
   description    String?
-  foundedYear    Int?       @map("founded_year")
-  employeeCount  Int?       @map("employee_count")
-  technologies   String[]   @default([])
+  foundedYear    Int?      @map("founded_year")
+  employeeCount  Int?      @map("employee_count")
+  technologies   String[]  @default([])
   funding        String?
-  socialProfiles Json?      @map("social_profiles")
-  accountOwner   String?    @map("account_owner")
-  accountTier    String?    @default("prospect") @map("account_tier")
-  tags           String[]   @default([])
-  customFields   Json?      @map("custom_fields")
-  createdAt      DateTime   @default(now()) @map("created_at")
-  updatedAt      DateTime   @updatedAt @map("updated_at")
-  activities     Activity[]
-  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  contacts       Contact[]
-  deals          Deal[]
+  socialProfiles Json?     @map("social_profiles")
+
+  // Relationship
+  accountOwner String?  @map("account_owner")
+  accountTier  String?  @default("prospect") @map("account_tier") // prospect, customer, partner, churned
+  tags         String[] @default([])
+  customFields Json?    @map("custom_fields")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts  Contact[]
+  deals     Deal[]
+  activities Activity[]
 
   @@index([userId])
   @@index([name])
@@ -779,38 +900,50 @@ model Company {
   @@map("companies")
 }
 
+// Contacts - Individual people at companies
 model Contact {
-  id              String     @id @default(uuid())
-  userId          String     @map("user_id")
-  companyId       String?    @map("company_id")
-  firstName       String     @map("first_name")
-  lastName        String     @map("last_name")
-  email           String
-  phone           String?
-  mobile          String?
-  jobTitle        String?    @map("job_title")
-  department      String?
-  linkedinUrl     String?    @map("linkedin_url")
-  twitterUrl      String?    @map("twitter_url")
-  status          String     @default("active")
-  leadScore       Int?       @default(0) @map("lead_score")
-  lifecycle       String?    @default("lead")
-  source          String?
-  tags            String[]   @default([])
-  customFields    Json?      @map("custom_fields")
-  emailOptIn      Boolean    @default(true) @map("email_opt_in")
-  phoneOptIn      Boolean    @default(true) @map("phone_opt_in")
-  smsOptIn        Boolean    @default(false) @map("sms_opt_in")
-  timezone        String?
-  preferredTime   String?    @map("preferred_time")
-  lastContactedAt DateTime?  @map("last_contacted_at")
-  createdAt       DateTime   @default(now()) @map("created_at")
-  updatedAt       DateTime   @updatedAt @map("updated_at")
-  activities      Activity[]
-  calls           Call[]
-  company         Company?   @relation(fields: [companyId], references: [id])
-  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  deals           Deal[]     @relation("ContactDeals")
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
+  companyId String? @map("company_id")
+
+  // Contact Info
+  firstName   String  @map("first_name")
+  lastName    String  @map("last_name")
+  email       String
+  phone       String?
+  mobile      String?
+  jobTitle    String? @map("job_title")
+  department  String?
+  linkedinUrl String? @map("linkedin_url")
+  twitterUrl  String? @map("twitter_url")
+
+  // Contact Status
+  status       String   @default("active") // active, inactive, bounced, unsubscribed
+  leadScore    Int?     @default(0) @map("lead_score")
+  lifecycle    String?  @default("lead") // lead, mql, sql, opportunity, customer, evangelist
+  source       String?
+  tags         String[] @default([])
+  customFields Json?    @map("custom_fields")
+
+  // Communication Preferences
+  emailOptIn    Boolean @default(true) @map("email_opt_in")
+  phoneOptIn    Boolean @default(true) @map("phone_opt_in")
+  smsOptIn      Boolean @default(false) @map("sms_opt_in")
+  timezone      String?
+  preferredTime String? @map("preferred_time")
+
+  // Timestamps
+  lastContactedAt DateTime? @map("last_contacted_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company    Company?   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  deals      Deal[]     @relation("ContactDeals")
+  activities Activity[]
+  calls      Call[]
+  meetings   Meeting[]
 
   @@unique([userId, email])
   @@index([userId])
@@ -820,34 +953,46 @@ model Contact {
   @@map("contacts")
 }
 
+// Deals - Sales pipeline opportunities
 model Deal {
-  id            String     @id @default(uuid())
-  userId        String     @map("user_id")
-  companyId     String?    @map("company_id")
-  name          String
-  value         Decimal    @db.Decimal(15, 2)
-  currency      String     @default("USD")
-  stage         String     @default("lead")
-  probability   Int?       @default(0)
-  priority      String?    @default("medium")
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
+  companyId String? @map("company_id")
+
+  // Deal Info
+  name        String
+  value       Decimal   @db.Decimal(15, 2)
+  currency    String    @default("USD")
+  stage       String    @default("lead") // lead, qualified, proposal, negotiation, closed_won, closed_lost
+  probability Int?      @default(0) // 0-100
+  priority    String?   @default("medium") // low, medium, high, urgent
+
+  // Deal Details
   description   String?
-  nextStep      String?    @map("next_step")
-  expectedClose DateTime?  @map("expected_close")
-  actualClose   DateTime?  @map("actual_close")
-  lostReason    String?    @map("lost_reason")
-  wonReason     String?    @map("won_reason")
+  nextStep      String?   @map("next_step")
+  expectedClose DateTime? @map("expected_close")
+  actualClose   DateTime? @map("actual_close")
+  lostReason    String?   @map("lost_reason")
+  wonReason     String?   @map("won_reason")
   competitor    String?
-  ownerId       String?    @map("owner_id")
-  teamId        String?    @map("team_id")
-  tags          String[]   @default([])
-  customFields  Json?      @map("custom_fields")
-  createdAt     DateTime   @default(now()) @map("created_at")
-  updatedAt     DateTime   @updatedAt @map("updated_at")
-  activities    Activity[]
-  company       Company?   @relation(fields: [companyId], references: [id])
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documents     Document[]
-  contacts      Contact[]  @relation("ContactDeals")
+
+  // Ownership
+  ownerId     String?  @map("owner_id")
+  teamId      String?  @map("team_id")
+  tags        String[] @default([])
+  customFields Json?   @map("custom_fields")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company    Company?   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  contacts   Contact[]  @relation("ContactDeals")
+  activities Activity[]
+  meetings   Meeting[]
+  documents  Document[]
 
   @@index([userId])
   @@index([companyId])
@@ -857,30 +1002,43 @@ model Deal {
   @@map("deals")
 }
 
+// Activities - All sales activities (calls, emails, meetings, tasks)
 model Activity {
-  id          String    @id @default(uuid())
-  userId      String    @map("user_id")
-  contactId   String?   @map("contact_id")
-  companyId   String?   @map("company_id")
-  dealId      String?   @map("deal_id")
-  type        String
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
+  contactId String? @map("contact_id")
+  companyId String? @map("company_id")
+  dealId    String? @map("deal_id")
+
+  // Activity Info
+  type        String // call, email, meeting, task, note, linkedin, sms
   subject     String?
   description String?
-  outcome     String?
-  dueDate     DateTime? @map("due_date")
-  completedAt DateTime? @map("completed_at")
-  duration    Int?
-  isCompleted Boolean   @default(false) @map("is_completed")
-  reminderAt  DateTime? @map("reminder_at")
-  assignedTo  String?   @map("assigned_to")
-  priority    String?   @default("normal")
-  metadata    Json?
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  company     Company?  @relation(fields: [companyId], references: [id])
-  contact     Contact?  @relation(fields: [contactId], references: [id])
-  deal        Deal?     @relation(fields: [dealId], references: [id])
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outcome     String? // completed, no_answer, left_voicemail, scheduled, cancelled
+
+  // Scheduling
+  dueDate       DateTime? @map("due_date")
+  completedAt   DateTime? @map("completed_at")
+  duration      Int?      // Duration in minutes
+  isCompleted   Boolean   @default(false) @map("is_completed")
+  reminderAt    DateTime? @map("reminder_at")
+
+  // Assignment
+  assignedTo String? @map("assigned_to")
+  priority   String? @default("normal") // low, normal, high, urgent
+
+  // Metadata
+  metadata Json? // Additional activity-specific data
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contact Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  deal    Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([contactId])
@@ -891,36 +1049,53 @@ model Activity {
   @@map("activities")
 }
 
+// Calls - Voice call records with Twilio integration
 model Call {
-  id                  String    @id @default(uuid())
-  userId              String    @map("user_id")
-  contactId           String?   @map("contact_id")
-  direction           String
-  status              String
-  fromNumber          String    @map("from_number")
-  toNumber            String    @map("to_number")
-  duration            Int?
-  startedAt           DateTime? @map("started_at")
-  endedAt             DateTime? @map("ended_at")
-  twilioSid           String?   @unique @map("twilio_sid")
-  twilioStatus        String?   @map("twilio_status")
-  twilioPrice         Decimal?  @map("twilio_price") @db.Decimal(10, 4)
-  recordingUrl        String?   @map("recording_url")
-  recordingSid        String?   @map("recording_sid")
-  transcription       String?
-  transcriptionStatus String?   @map("transcription_status")
-  sentiment           String?
-  keywords            String[]  @default([])
-  summary             String?
-  actionItems         String[]  @default([]) @map("action_items")
-  coachingNotes       String?   @map("coaching_notes")
-  notes               String?
-  outcome             String?
-  metadata            Json?
-  createdAt           DateTime  @default(now()) @map("created_at")
-  updatedAt           DateTime  @updatedAt @map("updated_at")
-  contact             Contact?  @relation(fields: [contactId], references: [id])
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
+  contactId String? @map("contact_id")
+
+  // Call Info
+  direction   String // inbound, outbound
+  status      String // initiated, ringing, in-progress, completed, busy, no-answer, failed
+  fromNumber  String @map("from_number")
+  toNumber    String @map("to_number")
+  duration    Int?   // Duration in seconds
+  startedAt   DateTime? @map("started_at")
+  endedAt     DateTime? @map("ended_at")
+
+  // Twilio Data
+  twilioSid      String? @unique @map("twilio_sid")
+  twilioStatus   String? @map("twilio_status")
+  twilioPrice    Decimal? @map("twilio_price") @db.Decimal(10, 4)
+
+  // Recording & Transcription
+  recordingUrl    String? @map("recording_url")
+  recordingSid    String? @map("recording_sid")
+  transcription   String?
+  transcriptionStatus String? @map("transcription_status") // pending, completed, failed
+
+  // AI Analysis
+  aiAnalysis      String?  @map("ai_analysis")
+  analyzedAt      DateTime? @map("analyzed_at")
+  sentiment       String?  // positive, neutral, negative
+  keywords        String[] @default([])
+  summary         String?
+  actionItems     String[] @default([]) @map("action_items")
+  coachingNotes   String?  @map("coaching_notes")
+
+  // Metadata
+  notes    String?
+  outcome  String?  // interested, not_interested, follow_up, wrong_number, voicemail
+  metadata Json?
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contact Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([contactId])
@@ -930,30 +1105,43 @@ model Call {
   @@map("calls")
 }
 
+// Documents - Proposals, contracts, attachments
 model Document {
-  id              String    @id @default(uuid())
-  userId          String    @map("user_id")
-  dealId          String?   @map("deal_id")
-  name            String
-  type            String
-  mimeType        String?   @map("mime_type")
-  size            Int?
-  url             String
-  storageKey      String?   @map("storage_key")
-  status          String    @default("draft")
-  version         Int       @default(1)
-  parentId        String?   @map("parent_id")
-  signatureStatus String?   @map("signature_status")
-  signatureId     String?   @map("signature_id")
-  signedAt        DateTime? @map("signed_at")
-  expiresAt       DateTime? @map("expires_at")
-  viewCount       Int       @default(0) @map("view_count")
-  lastViewedAt    DateTime? @map("last_viewed_at")
-  downloadCount   Int       @default(0) @map("download_count")
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
-  deal            Deal?     @relation(fields: [dealId], references: [id])
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String  @id @default(uuid())
+  userId String  @map("user_id")
+  dealId String? @map("deal_id")
+
+  // Document Info
+  name        String
+  type        String   // proposal, contract, quote, invoice, presentation, other
+  mimeType    String?  @map("mime_type")
+  size        Int?     // File size in bytes
+  url         String
+  storageKey  String?  @map("storage_key")
+
+  // Document Status
+  status      String   @default("draft") // draft, sent, viewed, signed, expired
+  version     Int      @default(1)
+  parentId    String?  @map("parent_id") // For versioning
+
+  // E-Signature (DocuSign integration)
+  signatureStatus  String?   @map("signature_status") // pending, signed, declined, expired
+  signatureId      String?   @map("signature_id")
+  signedAt         DateTime? @map("signed_at")
+  expiresAt        DateTime? @map("expires_at")
+
+  // Analytics
+  viewCount     Int       @default(0) @map("view_count")
+  lastViewedAt  DateTime? @map("last_viewed_at")
+  downloadCount Int       @default(0) @map("download_count")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deal Deal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([dealId])
@@ -962,33 +1150,51 @@ model Document {
   @@map("documents")
 }
 
+// Team - Sales teams for collaboration
 model Team {
-  id          String       @id @default(uuid())
+  id     String @id @default(uuid())
+
+  // Team Info
   name        String
   description String?
-  ownerId     String       @map("owner_id")
-  settings    Json?
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  members     TeamMember[]
+  ownerId     String  @map("owner_id")
+
+  // Settings
+  settings Json? // Team-specific settings
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  members TeamMember[]
 
   @@map("teams")
 }
 
+// TeamMember - Team membership with roles
 model TeamMember {
-  id          String   @id @default(uuid())
-  userId      String   @map("user_id")
-  teamId      String   @map("team_id")
-  role        String   @default("member")
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  teamId String @map("team_id")
+
+  // Role & Permissions
+  role        String   @default("member") // owner, admin, manager, member
   permissions String[] @default([])
-  quota       Decimal? @db.Decimal(15, 2)
-  quotaPeriod String?  @map("quota_period")
-  isActive    Boolean  @default(true) @map("is_active")
-  joinedAt    DateTime @default(now()) @map("joined_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Performance Tracking
+  quota         Decimal? @db.Decimal(15, 2) // Sales quota
+  quotaPeriod   String?  @map("quota_period") // monthly, quarterly, yearly
+  isActive      Boolean  @default(true) @map("is_active")
+
+  // Timestamps
+  joinedAt  DateTime @default(now()) @map("joined_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([userId, teamId])
   @@index([userId])
@@ -996,213 +1202,204 @@ model TeamMember {
   @@map("team_members")
 }
 
+// Pipeline - Custom sales pipelines
 model Pipeline {
-  id          String          @id @default(uuid())
-  userId      String          @map("user_id")
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Pipeline Info
   name        String
   description String?
-  isDefault   Boolean         @default(false) @map("is_default")
-  createdAt   DateTime        @default(now()) @map("created_at")
-  updatedAt   DateTime        @updatedAt @map("updated_at")
-  stages      PipelineStage[]
+  isDefault   Boolean @default(false) @map("is_default")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  stages PipelineStage[]
 
   @@index([userId])
   @@map("pipelines")
 }
 
+// PipelineStage - Stages within a pipeline
 model PipelineStage {
-  id          String   @id @default(uuid())
-  pipelineId  String   @map("pipeline_id")
+  id         String @id @default(uuid())
+  pipelineId String @map("pipeline_id")
+
+  // Stage Info
   name        String
   position    Int      @default(0)
-  probability Int      @default(0)
+  probability Int      @default(0) // Default probability for deals in this stage
   color       String?
-  rottingDays Int?     @map("rotting_days")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  pipeline    Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  rottingDays Int?     @map("rotting_days") // Days until deal is considered "rotting"
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
 
   @@index([pipelineId])
   @@index([position])
   @@map("pipeline_stages")
 }
 
+// Sequence - Automated outreach sequences
 model Sequence {
-  id             String         @id @default(uuid())
-  userId         String         @map("user_id")
-  name           String
-  description    String?
-  status         String         @default("draft")
-  channels       String[]       @default([])
-  timezone       String?
-  sendingDays    String[]       @default(["mon", "tue", "wed", "thu", "fri"]) @map("sending_days")
-  sendingStart   String?        @map("sending_start")
-  sendingEnd     String?        @map("sending_end")
-  enrolledCount  Int            @default(0) @map("enrolled_count")
-  completedCount Int            @default(0) @map("completed_count")
-  repliedCount   Int            @default(0) @map("replied_count")
-  bouncedCount   Int            @default(0) @map("bounced_count")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  steps          SequenceStep[]
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  // Sequence Info
+  name        String
+  description String?
+  status      String  @default("draft") // draft, active, paused, archived
+
+  // Settings
+  channels     String[] @default([]) // email, sms, linkedin, call
+  timezone     String?
+  sendingDays  String[] @default(["mon", "tue", "wed", "thu", "fri"]) @map("sending_days")
+  sendingStart String?  @map("sending_start") // "09:00"
+  sendingEnd   String?  @map("sending_end")   // "17:00"
+
+  // Analytics
+  enrolledCount   Int @default(0) @map("enrolled_count")
+  completedCount  Int @default(0) @map("completed_count")
+  repliedCount    Int @default(0) @map("replied_count")
+  bouncedCount    Int @default(0) @map("bounced_count")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  steps SequenceStep[]
 
   @@index([userId])
   @@index([status])
   @@map("sequences")
 }
 
+// SequenceStep - Individual steps in a sequence
 model SequenceStep {
-  id         String   @id @default(uuid())
-  sequenceId String   @map("sequence_id")
-  position   Int      @default(0)
-  channel    String
-  delayDays  Int      @default(1) @map("delay_days")
-  delayHours Int      @default(0) @map("delay_hours")
-  subject    String?
-  body       String?
-  template   String?
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-  sequence   Sequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  id         String @id @default(uuid())
+  sequenceId String @map("sequence_id")
+
+  // Step Info
+  position    Int     @default(0)
+  channel     String  // email, sms, linkedin, call, task
+  delayDays   Int     @default(1) @map("delay_days")
+  delayHours  Int     @default(0) @map("delay_hours")
+
+  // Content
+  subject  String?
+  body     String?
+  template String? // Template ID if using templates
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  sequence Sequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
 
   @@index([sequenceId])
   @@index([position])
   @@map("sequence_steps")
 }
 
-model domain_acquisition_logs {
-  id                 String    @id
-  domain_name        String
-  registrar          String
-  purchase_status    String
-  setup_status       String
-  domain_cost        Float
-  workspace_cost     Float
-  total_cost         Float
-  purchased_at       DateTime?
-  dns_configured_at  DateTime?
-  workspace_setup_at DateTime?
-  warmup_started_at  DateTime?
-  activated_at       DateTime?
-  last_error         String?
-  retry_count        Int       @default(0)
-  created_at         DateTime  @default(now())
-  updated_at         DateTime
+// ==================== MEETINGS (Tier 5 - UltraLead) ====================
 
-  @@index([purchase_status, setup_status])
-}
+model Meeting {
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
+  contactId String? @map("contact_id")
+  dealId    String? @map("deal_id")
 
-model domain_mailboxes {
-  id               String      @id
-  domain_id        String
-  email_address    String
-  mailbox_password String?
-  smtp_host        String?
-  smtp_port        Int?
-  imap_host        String?
-  imap_port        Int?
-  daily_send_limit Int         @default(75)
-  daily_send_count Int         @default(0)
-  status           String      @default("active")
-  created_at       DateTime    @default(now())
-  updated_at       DateTime
-  domain_pool      domain_pool @relation(fields: [domain_id], references: [id], onDelete: Cascade)
+  // Meeting Info
+  title       String
+  description String?
 
-  @@unique([domain_id, email_address])
-  @@index([domain_id])
-}
+  // Scheduling
+  scheduledAt DateTime @map("scheduled_at")
+  endAt       DateTime @map("end_at")
+  duration    Int      // Duration in minutes
+  timezone    String   @default("UTC")
 
-model domain_pool {
-  id                  String             @id
-  domain_name         String             @unique
-  provider            String             @default("google_workspace")
-  status              String             @default("warming")
-  reputation_score    Int                @default(0)
-  daily_send_limit    Int                @default(150)
-  daily_send_count    Int                @default(0)
-  warmup_started_at   DateTime?
-  warmup_completed_at DateTime?
-  last_used_at        DateTime?
-  created_at          DateTime           @default(now())
-  updated_at          DateTime
-  domain_mailboxes    domain_mailboxes[]
+  // Location
+  location  String? // Physical location
+  meetingUrl String? @map("meeting_url") // Video call URL
 
-  @@index([domain_name])
+  // Calendar Integration
+  calendarId String? @map("calendar_id") // Google Calendar, Outlook, etc.
+  sendInvite  Boolean @default(true) @map("send_invite")
+
+  // Status
+  status String @default("scheduled") // scheduled, completed, cancelled, no_show
+
+  // Notes
+  notes String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contact Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  deal    Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([contactId])
+  @@index([dealId])
+  @@index([scheduledAt])
   @@index([status])
-}
-
-model email_reminders {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id       String?   @db.VarChar(255)
-  reminder_type String    @db.VarChar(50)
-  sent_at       DateTime? @default(now()) @db.Timestamp(6)
-  email_status  String?   @default("sent") @db.VarChar(50)
-}
-
-model email_verification_tokens {
-  id         String    @id
-  user_id    String
-  token_hash String    @unique
-  expires_at DateTime
-  used_at    DateTime?
-  created_at DateTime  @default(now())
-
-  @@index([expires_at])
-  @@index([token_hash])
-  @@index([user_id])
-}
-
-model subscription_logs {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id    String?   @db.VarChar(255)
-  event_type String    @db.VarChar(50)
-  event_data Json?
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+  @@map("meetings")
 }
 
 // ============================================
 // USER EMAIL DELIVERY SYSTEM — TWO-TIER
-// (Restored from checkpoint-login-working)
 // ============================================
 
 model UserEmailAccount {
-  id                   String        @id @default(cuid())
-  userId               String
-  email                String
-  displayName          String?
-  provider             EmailProvider
-  status               AccountStatus @default(WARMING)
-  tier                 EmailTier     @default(FREE)
-  accessToken          String?       @db.Text
-  refreshToken         String?       @db.Text
-  tokenExpiresAt       DateTime?
-  scopes               String?
-  smtpHost             String?
-  smtpPort             Int?
-  smtpUsername         String?
-  smtpPassword         String?       @db.Text
-  imapHost             String?
-  imapPort             Int?
-  poolSubscriptionId   String?
-  poolRotationOrder    Int?
-  dailyLimit           Int           @default(50)
-  dailySentCount       Int           @default(0)
-  dailySentResetAt     DateTime      @default(now())
-  totalSent            Int           @default(0)
-  bounceCount          Int           @default(0)
-  bounceRate           Float         @default(0)
-  spamComplaintCount   Int           @default(0)
-  spamComplaintRate    Float         @default(0)
-  reputationScore      Int           @default(100)
-  lastHealthCheck      DateTime?
-  lastSentAt           DateTime?
-  warmupStartedAt      DateTime?
-  warmupDailyLimit     Int           @default(5)
-  warmupCurrentDay     Int           @default(0)
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
-  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  poolSubscription     EmailPoolSubscription? @relation(fields: [poolSubscriptionId], references: [id])
+  id              String        @id @default(cuid())
+  userId          String
+  email           String
+  displayName     String?
+  provider        EmailProvider
+  status          AccountStatus @default(WARMING)
+  tier            EmailTier     @default(FREE)
+  accessToken     String?       @db.Text
+  refreshToken    String?       @db.Text
+  tokenExpiresAt  DateTime?
+  scopes          String?
+  smtpHost        String?
+  smtpPort        Int?
+  smtpUsername    String?
+  smtpPassword    String?       @db.Text
+  imapHost        String?
+  imapPort        Int?
+  poolSubscriptionId String?
+  poolRotationOrder  Int?
+  dailyLimit          Int     @default(50)
+  dailySentCount      Int     @default(0)
+  dailySentResetAt    DateTime @default(now())
+  totalSent           Int     @default(0)
+  bounceCount         Int     @default(0)
+  bounceRate          Float   @default(0)
+  spamComplaintCount  Int     @default(0)
+  spamComplaintRate   Float   @default(0)
+  reputationScore     Int     @default(100)
+  lastHealthCheck     DateTime?
+  lastSentAt          DateTime?
+  warmupStartedAt     DateTime?
+  warmupDailyLimit    Int     @default(5)
+  warmupCurrentDay    Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poolSubscription EmailPoolSubscription? @relation(fields: [poolSubscriptionId], references: [id])
   @@unique([userId, email])
   @@index([userId])
   @@index([status])
@@ -1223,10 +1420,10 @@ model EmailPoolSubscription {
   cancelAtPeriodEnd    Boolean  @default(false)
   poolSize             Int      @default(4)
   totalDailyLimit      Int      @default(800)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  poolAccounts        UserEmailAccount[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poolAccounts UserEmailAccount[]
   @@index([stripeSubscriptionId])
   @@index([status])
 }
@@ -1257,109 +1454,4 @@ enum PoolSubscriptionStatus {
   PAST_DUE
   CANCELED
   EXPIRED
-}
-
-// ============================================
-// ADVERTISER PLATFORM
-// ============================================
-
-model Advertiser {
-  id               String       @id @default(uuid())
-  userId           String       @unique @map("user_id")
-  companyName      String       @map("company_name")
-  contactEmail     String       @map("contact_email")
-  contactPhone     String?      @map("contact_phone")
-  website          String?
-  stripeCustomerId String?      @unique @map("stripe_customer_id")
-  createdAt        DateTime     @default(now()) @map("created_at")
-  updatedAt        DateTime     @updatedAt @map("updated_at")
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  campaigns        AdCampaign[]
-
-  @@index([userId])
-  @@map("advertisers")
-}
-
-model AdCampaign {
-  id               String    @id @default(uuid())
-  advertiserId     String    @map("advertiser_id")
-  name             String
-  status           AdStatus  @default(PENDING)
-  videoUrl         String    @map("video_url")
-  thumbnailUrl     String?   @map("thumbnail_url")
-  title            String
-  description      String?
-  callToAction     String    @default("Learn More") @map("call_to_action")
-  clickUrl         String    @map("click_url")
-  tier             AdTier    @default(PROFESSIONAL)
-  costPerView      Float     @map("cost_per_view")
-  budgetTotal      Float     @map("budget_total")
-  budgetSpent      Float     @default(0) @map("budget_spent")
-  targetCategories String[]  @default([]) @map("target_categories")
-  targetAudience   Json?     @map("target_audience")
-  startDate        DateTime  @map("start_date")
-  endDate          DateTime? @map("end_date")
-  impressions      Int       @default(0)
-  views            Int       @default(0)
-  clicks           Int       @default(0)
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @updatedAt @map("updated_at")
-  advertiser       Advertiser @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
-
-  @@index([advertiserId])
-  @@index([status])
-  @@index([startDate, endDate])
-  @@map("ad_campaigns")
-}
-
-enum AdStatus {
-  PENDING
-  APPROVED
-  PAUSED
-  COMPLETED
-  REJECTED
-}
-
-enum AdTier {
-  STARTER
-  PROFESSIONAL
-  PREMIUM
-}
-
-// ============================================
-// VIDEO PRODUCT PROMOTIONS
-// ============================================
-
-model Product {
-  id          String         @id @default(cuid())
-  userId      String
-  title       String
-  description String?
-  link        String
-  imageUrl    String?        @map("image_url")
-  price       String?
-  isActive    Boolean        @default(true) @map("is_active")
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @updatedAt @map("updated_at")
-
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  videos      VideoProduct[]
-
-  @@index([userId])
-  @@map("products")
-}
-
-model VideoProduct {
-  id        String   @id @default(cuid())
-  videoId   String   @map("video_id")
-  productId String   @map("product_id")
-  position  Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at")
-
-  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([videoId, productId])
-  @@index([videoId])
-  @@map("video_products")
 }

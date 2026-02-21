@@ -58,7 +58,7 @@ export function middleware(request) {
   // Restrict browser features
   response.headers.set(
     'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+    'camera=(), microphone=(self), geolocation=(), interest-cohort=()'
   );
 
   // Enforce HTTPS (1 year)
@@ -71,7 +71,7 @@ export function middleware(request) {
   // Allows: self, inline scripts/styles, CDNs, API, fonts, images
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://www.googletagmanager.com https://www.google-analytics.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com data:;
     img-src 'self' data: https: blob:;

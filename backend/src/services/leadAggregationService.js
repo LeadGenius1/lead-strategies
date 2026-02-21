@@ -2,7 +2,7 @@
 // Aggregates leads from multiple sources: LinkedIn, Google Maps, Apollo, Hunter.io, Clearbit, Crunchbase, ZoomInfo, Yelp
 
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 /**
  * Aggregate leads from multiple sources

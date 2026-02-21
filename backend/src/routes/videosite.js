@@ -9,7 +9,7 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 // Cloudflare R2 config
 const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;

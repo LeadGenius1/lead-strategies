@@ -2,7 +2,7 @@
 // Sales automation agents for CRM operations
 
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 // Initialize Anthropic client if available
 let anthropic = null;

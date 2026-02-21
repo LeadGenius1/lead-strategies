@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 // All routes require authentication and website_builder feature (Tier 2+)
 router.use(authenticate);

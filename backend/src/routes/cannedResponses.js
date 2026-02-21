@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 router.use(authenticate);
 

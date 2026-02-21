@@ -65,7 +65,7 @@ const requireFeature = (feature) => {
   return async (req, res, next) => {
     try {
       const { PrismaClient } = require('@prisma/client');
-      const prisma = new PrismaClient();
+      const { prisma } = require('../config/database');
 
       const user = await prisma.user.findUnique({
         where: { id: req.user.id },
@@ -106,7 +106,7 @@ const LEAD_LIMITS = {
 const checkLeadLimit = async (req, res, next) => {
   try {
     const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
+    const { prisma } = require('../config/database');
 
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },

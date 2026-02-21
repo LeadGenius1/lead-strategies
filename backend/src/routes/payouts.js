@@ -9,7 +9,7 @@ function getPrisma() {
   if (!process.env.DATABASE_URL) return null;
   if (!prisma) {
     const { PrismaClient } = require('@prisma/client');
-    prisma = new PrismaClient();
+    prisma = require('../config/database').prisma;
   }
   return prisma;
 }

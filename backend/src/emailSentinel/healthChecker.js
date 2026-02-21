@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 const { testSmtpConnection } = require('./smtpTest');
 const { decryptToken } = require('./tokenManager');
 
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 async function checkAllAccountHealth(queue) {
   const accounts = await prisma.userEmailAccount.findMany({

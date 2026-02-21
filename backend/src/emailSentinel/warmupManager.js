@@ -1,7 +1,7 @@
 // Warmup progression for UserEmailAccount (port from agents/email-infrastructure-sentinel)
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 const FREE_WARMUP_SCHEDULE = [
   { day: 1, limit: 5 }, { day: 3, limit: 10 }, { day: 5, limit: 15 },

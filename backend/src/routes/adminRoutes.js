@@ -9,13 +9,7 @@ const { JWT_SECRET } = require('../middleware/auth');
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 
-function getPrisma() {
-  try {
-    const { PrismaClient } = require('@prisma/client');
-    return new PrismaClient();
-  } catch (_) {
-    return null;
-  }
+function getPrisma() { return require('../config/database').prisma; }
 }
 
 function hashPassword(plain) {

@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 // AI Response Generation using Anthropic
 async function generateAIResponse(context, conversationHistory) {

@@ -6,7 +6,7 @@ const { checkAllAccountHealth, checkSingleAccountHealth } = require('./healthChe
 const { progressWarmup } = require('./warmupManager');
 
 const QUEUE_NAME = 'email-infrastructure-sentinel';
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 async function autoPauseAccount(accountId, reason) {
   await prisma.userEmailAccount.update({

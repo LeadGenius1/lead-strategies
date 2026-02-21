@@ -7,7 +7,7 @@ const { authenticate } = require('../middleware/auth');
 const agents = require('../services/ultraleadAgents');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 // Agent definitions
 const agentDefinitions = [

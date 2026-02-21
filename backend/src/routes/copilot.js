@@ -10,7 +10,7 @@ const { fetchWebsite } = require('../services/scraper');
 const apolloService = require('../services/apollo');
 
 const router = express.Router();
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 
 // Lead Hunter system prompt - elite AI lead gen specialist
 const LEAD_HUNTER_SYSTEM_PROMPT = `You are Lead Hunter, an elite AI-powered lead generation and outreach specialist for AI Lead Strategies. You are warm, professional, and genuinely helpful - never robotic or salesy.

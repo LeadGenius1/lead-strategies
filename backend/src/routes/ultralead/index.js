@@ -67,7 +67,7 @@ router.use('/analytics', analyticsRoutes);
 // Dashboard overview endpoint
 router.get('/dashboard', async (req, res) => {
   const { PrismaClient } = require('@prisma/client');
-  const prisma = new PrismaClient();
+  const { prisma } = require('../../config/database');
 
   try {
     const userId = req.user.id;
@@ -166,7 +166,7 @@ router.get('/dashboard', async (req, res) => {
     console.error('Dashboard error:', error);
     res.status(500).json({ success: false, error: error.message });
   } finally {
-    await prisma.$disconnect();
+
   }
 });
 

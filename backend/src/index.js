@@ -226,10 +226,10 @@ app.get('/api/health', async (req, res) => {
   // Database
   try {
     if (process.env.DATABASE_URL) {
-      const { PrismaClient } = require('@prisma/client');
-      const prisma = new PrismaClient();
-      await prisma.$queryRaw`SELECT 1`;
-      await prisma.$disconnect();
+      const { checkDatabaseHealth } = require('./config/database');
+      const dbHealth = await checkDatabaseHealth();
+      if (dbHealth.status !== 'healthy') throw new Error(dbHealth.error || 'DB check failed');
+
       checks.database = { status: 'healthy', message: 'Connected' };
     } else {
       checks.database = { status: 'not_configured', message: 'DATABASE_URL not set' };

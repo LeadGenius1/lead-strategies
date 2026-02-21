@@ -279,56 +279,65 @@ router.post('/bulk', checkLeadLimit, async (req, res) => {
       });
     }
 
-    const createdLeads = [];
     const errors = [];
 
+    // Validate emails first
+    const validLeads = [];
     for (const leadData of leads) {
-      try {
-        if (!leadData.email) {
-          errors.push({ lead: leadData, error: 'Email is required' });
-          continue;
-        }
-
-        // Check if lead exists
-        const existing = await db.lead.findUnique({
-          where: {
-            userId_email: {
-              userId: req.user.id,
-              email: leadData.email
-            }
-          }
-        });
-
-        if (existing) {
-          errors.push({ lead: leadData, error: 'Lead already exists' });
-          continue;
-        }
-
-        const name = leadData.name || (leadData.firstName && leadData.lastName ? `${leadData.firstName} ${leadData.lastName}` : leadData.firstName || leadData.lastName || null);
-
-        const lead = await db.lead.create({
-          data: {
-            userId: req.user.id,
-            email: leadData.email,
-            name,
-            company: leadData.company,
-            phone: leadData.phone,
-            title: leadData.title,
-            website: leadData.website,
-            linkedinUrl: leadData.linkedinUrl,
-            source: leadData.source || 'import',
-            status: leadData.status || 'new',
-            score: parseInt(leadData.score) || 0,
-            notes: leadData.notes,
-            tags: Array.isArray(leadData.tags) ? leadData.tags : [],
-            customFields: leadData.customFields || {}
-          }
-        });
-
-        createdLeads.push(lead);
-      } catch (error) {
-        errors.push({ lead: leadData, error: error.message });
+      if (!leadData.email) {
+        errors.push({ lead: leadData, error: 'Email is required' });
+      } else {
+        validLeads.push(leadData);
       }
+    }
+
+    // Batch check existing leads (single query instead of N queries)
+    const existingLeads = await db.lead.findMany({
+      where: {
+        userId: req.user.id,
+        email: { in: validLeads.map(l => l.email) },
+      },
+      select: { email: true },
+    });
+    const existingEmails = new Set(existingLeads.map(l => l.email));
+
+    // Separate new vs duplicate
+    const newLeads = [];
+    for (const leadData of validLeads) {
+      if (existingEmails.has(leadData.email)) {
+        errors.push({ lead: leadData, error: 'Lead already exists' });
+      } else {
+        newLeads.push(leadData);
+      }
+    }
+
+    // Batch create via transaction (single round trip)
+    const createdLeads = [];
+    if (newLeads.length > 0) {
+      const results = await db.$transaction(
+        newLeads.map(leadData => {
+          const name = leadData.name || (leadData.firstName && leadData.lastName ? `${leadData.firstName} ${leadData.lastName}` : leadData.firstName || leadData.lastName || null);
+          return db.lead.create({
+            data: {
+              userId: req.user.id,
+              email: leadData.email,
+              name,
+              company: leadData.company,
+              phone: leadData.phone,
+              title: leadData.title,
+              website: leadData.website,
+              linkedinUrl: leadData.linkedinUrl,
+              source: leadData.source || 'import',
+              status: leadData.status || 'new',
+              score: parseInt(leadData.score) || 0,
+              notes: leadData.notes,
+              tags: Array.isArray(leadData.tags) ? leadData.tags : [],
+              customFields: leadData.customFields || {},
+            },
+          });
+        })
+      );
+      createdLeads.push(...results);
     }
 
     res.status(201).json({
@@ -546,42 +555,41 @@ router.post('/discover', checkLeadLimit, async (req, res) => {
 
     // Generate sample prospects (20-50 as per plan)
     const count = Math.min(maxResults, Math.floor(Math.random() * 30) + 20);
-    
+    const generatedEmails = [];
+    const prospectsByEmail = {};
+
     for (let i = 0; i < count; i++) {
       const firstName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
       const lastName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
       const company = sampleCompanies[Math.floor(Math.random() * sampleCompanies.length)];
       const title = sampleTitles[Math.floor(Math.random() * sampleTitles.length)];
       const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${company.toLowerCase().replace(/\s+/g, '')}.com`;
+      generatedEmails.push(email);
+      prospectsByEmail[email] = {
+        email, firstName, lastName,
+        name: `${firstName} ${lastName}`,
+        company, title,
+        source: 'ai-discovery', status: 'new',
+        website: `https://${company.toLowerCase().replace(/\s+/g, '')}.com`,
+        linkedinUrl: `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}`,
+        customFields: {
+          discoveredLocation: location || 'Unknown',
+          discoveredIndustry: industry || 'Technology',
+          discoveredKeywords: keywords || [],
+        },
+      };
+    }
 
-      // Check if lead already exists
-      const existing = await db.lead.findUnique({
-        where: {
-          userId_email: {
-            userId: req.user.id,
-            email
-          }
-        }
-      });
+    // Batch check existing leads (single query instead of N queries)
+    const existingLeads = await db.lead.findMany({
+      where: { userId: req.user.id, email: { in: [...new Set(generatedEmails)] } },
+      select: { email: true },
+    });
+    const existingEmails = new Set(existingLeads.map(l => l.email));
 
-      if (!existing) {
-        discoveredProspects.push({
-          email,
-          firstName,
-          lastName,
-          name: `${firstName} ${lastName}`,
-          company,
-          title,
-          source: 'ai-discovery',
-          status: 'new',
-          website: `https://${company.toLowerCase().replace(/\s+/g, '')}.com`,
-          linkedinUrl: `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}`,
-          customFields: {
-            discoveredLocation: location || 'Unknown',
-            discoveredIndustry: industry || 'Technology',
-            discoveredKeywords: keywords || []
-          }
-        });
+    for (const email of [...new Set(generatedEmails)]) {
+      if (!existingEmails.has(email)) {
+        discoveredProspects.push(prospectsByEmail[email]);
       }
     }
 
@@ -608,30 +616,33 @@ router.post('/discover', checkLeadLimit, async (req, res) => {
       company: user?.company
     });
 
-    // Bulk create leads
-    const createdLeads = [];
+    // Bulk create leads via transaction (single round trip instead of N)
     const errors = [];
+    let createdLeads = [];
 
-    for (const prospect of scoredProspects) {
+    if (scoredProspects.length > 0) {
       try {
-        const lead = await db.lead.create({
-          data: {
-            userId: req.user.id,
-            email: prospect.email,
-            name: prospect.name,
-            company: prospect.company,
-            title: prospect.title,
-            website: prospect.website,
-            linkedinUrl: prospect.linkedinUrl,
-            source: prospect.source,
-            status: prospect.status,
-            score: prospect.score,
-            customFields: prospect.customFields || {}
-          }
-        });
-        createdLeads.push(lead);
+        createdLeads = await db.$transaction(
+          scoredProspects.map(prospect =>
+            db.lead.create({
+              data: {
+                userId: req.user.id,
+                email: prospect.email,
+                name: prospect.name,
+                company: prospect.company,
+                title: prospect.title,
+                website: prospect.website,
+                linkedinUrl: prospect.linkedinUrl,
+                source: prospect.source,
+                status: prospect.status,
+                score: prospect.score,
+                customFields: prospect.customFields || {},
+              },
+            })
+          )
+        );
       } catch (error) {
-        errors.push({ prospect, error: error.message });
+        errors.push({ error: error.message });
       }
     }
 
@@ -748,30 +759,34 @@ router.post('/batch/score', async (req, res) => {
       company: user?.company
     };
 
-    // Score all leads
-    const scoredLeads = [];
-    for (const lead of leads) {
-      const scoringResult = calculateLeadScore(lead, userProfile);
-      
-      const updatedLead = await db.lead.update({
-        where: { id: lead.id },
-        data: {
-          score: scoringResult.score,
-          customFields: {
-            ...lead.customFields,
-            scoreBreakdown: scoringResult.breakdown,
-            lastScoredAt: new Date().toISOString()
-          }
-        }
-      });
+    // Score all leads and batch update via transaction
+    const scoringResults = leads.map(lead => ({
+      lead,
+      scoring: calculateLeadScore(lead, userProfile),
+    }));
 
-      scoredLeads.push({
-        ...updatedLead,
-        scoreBreakdown: scoringResult.breakdown,
-        firstName: updatedLead.name?.split(' ')[0] || '',
-        lastName: updatedLead.name?.split(' ').slice(1).join(' ') || ''
-      });
-    }
+    const updatedLeads = await db.$transaction(
+      scoringResults.map(({ lead, scoring }) =>
+        db.lead.update({
+          where: { id: lead.id },
+          data: {
+            score: scoring.score,
+            customFields: {
+              ...lead.customFields,
+              scoreBreakdown: scoring.breakdown,
+              lastScoredAt: new Date().toISOString(),
+            },
+          },
+        })
+      )
+    );
+
+    const scoredLeads = updatedLeads.map((updatedLead, i) => ({
+      ...updatedLead,
+      scoreBreakdown: scoringResults[i].scoring.breakdown,
+      firstName: updatedLead.name?.split(' ')[0] || '',
+      lastName: updatedLead.name?.split(' ').slice(1).join(' ') || '',
+    }));
 
     res.json({
       success: true,

@@ -2,7 +2,7 @@
 // $1 per qualified view, Cloudflare R2 storage, Stripe Connect payouts
 
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+
 const { authenticate } = require('../middleware/auth');
 const crypto = require('crypto');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');

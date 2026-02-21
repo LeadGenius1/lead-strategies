@@ -6,7 +6,7 @@ let prisma = null;
 function getPrisma() {
   if (!process.env.DATABASE_URL) return null;
   if (!prisma) {
-    const { PrismaClient } = require('@prisma/client');
+
     prisma = require('../config/database').prisma;
   }
   return prisma;

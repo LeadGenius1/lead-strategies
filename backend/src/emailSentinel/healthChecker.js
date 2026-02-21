@@ -1,5 +1,5 @@
 // Health checker for UserEmailAccount (port from agents/email-infrastructure-sentinel)
-const { PrismaClient } = require('@prisma/client');
+
 const { testSmtpConnection } = require('./smtpTest');
 const { decryptToken } = require('./tokenManager');
 

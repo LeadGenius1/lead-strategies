@@ -1,7 +1,6 @@
 // ClientContact.IO 7 AI Agents System
 // Sales automation agents for CRM operations
 
-const { PrismaClient } = require('@prisma/client');
 const { prisma } = require('../config/database');
 
 // Initialize Anthropic client if available

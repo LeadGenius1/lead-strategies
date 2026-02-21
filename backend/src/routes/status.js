@@ -112,7 +112,7 @@ router.get('/api-keys', authenticate, (req, res, next) => {
   await run('database', async () => {
     if (!process.env.DATABASE_URL) return { ok: false, error: 'DATABASE_URL not set' };
     try {
-      const { PrismaClient } = require('@prisma/client');
+
       const { prisma } = require('../config/database');
       await prisma.$queryRaw`SELECT 1`;
 

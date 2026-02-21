@@ -1,6 +1,6 @@
 // BullMQ worker for Email Sentinel - backend only (Redis)
 const { Worker } = require('bullmq');
-const { PrismaClient } = require('@prisma/client');
+
 const { getQueue, getRedisConnection } = require('./queue');
 const { checkAllAccountHealth, checkSingleAccountHealth } = require('./healthChecker');
 const { progressWarmup } = require('./warmupManager');

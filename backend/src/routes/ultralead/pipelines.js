@@ -1,6 +1,6 @@
 // Pipelines Routes - UltraLead CRM
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+
 
 const router = express.Router();
 const { prisma } = require('../../config/database');

@@ -1,6 +1,6 @@
 // ClientContact.IO - Auto-Response Rules Routes
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();

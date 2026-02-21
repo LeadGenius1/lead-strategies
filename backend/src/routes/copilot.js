@@ -4,7 +4,7 @@
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
-const { PrismaClient } = require('@prisma/client');
+
 const { authenticate } = require('../middleware/auth');
 const { fetchWebsite } = require('../services/scraper');
 const apolloService = require('../services/apollo');

@@ -1,7 +1,6 @@
 // Master Orchestrator - Agent 6
 // E2E journey testing, integration validation, 100% completion status
 
-const { PrismaClient } = require('@prisma/client');
 const { prisma } = require('../config/database');
 
 class MasterOrchestrator {

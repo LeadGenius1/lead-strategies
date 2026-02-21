@@ -1,7 +1,6 @@
 // Multi-Source Lead Aggregation Service
 // Aggregates leads from multiple sources: LinkedIn, Google Maps, Apollo, Hunter.io, Clearbit, Crunchbase, ZoomInfo, Yelp
 
-const { PrismaClient } = require('@prisma/client');
 const { prisma } = require('../config/database');
 
 /**

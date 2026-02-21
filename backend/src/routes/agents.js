@@ -2,7 +2,7 @@
 // Manage and monitor all 7 AI agents
 
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+
 const { authenticate } = require('../middleware/auth');
 const agents = require('../services/ultraleadAgents');
 

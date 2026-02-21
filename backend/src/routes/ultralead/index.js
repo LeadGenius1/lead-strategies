@@ -66,7 +66,7 @@ router.use('/analytics', analyticsRoutes);
 
 // Dashboard overview endpoint
 router.get('/dashboard', async (req, res) => {
-  const { PrismaClient } = require('@prisma/client');
+
   const { prisma } = require('../../config/database');
 
   try {

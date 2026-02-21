@@ -1,5 +1,5 @@
 // Warmup progression for UserEmailAccount (port from agents/email-infrastructure-sentinel)
-const { PrismaClient } = require('@prisma/client');
+
 
 const { prisma } = require('../config/database');
 

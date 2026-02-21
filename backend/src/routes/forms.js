@@ -1,6 +1,6 @@
 // Lead Form Builder Routes (LeadSite.IO)
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+
 const { authenticate, requireFeature } = require('../middleware/auth');
 
 const router = express.Router();

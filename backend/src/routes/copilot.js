@@ -2,62 +2,13 @@
 // Used by LeadSite.AI for AI-powered email writing
 
 const express = require('express');
-const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
-const axios = require('axios');
-const multer = require('multer');
 const { authenticate } = require('../middleware/auth');
 const { fetchWebsite } = require('../services/scraper');
 const apolloService = require('../services/apollo');
 
 const router = express.Router();
 const prisma = new PrismaClient();
-
-// File upload config: memory storage, 10MB limit, allowed types
-const ALLOWED_TYPES = {
-  'application/pdf': 'pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-  'text/plain': 'txt',
-  'text/markdown': 'md',
-  'text/csv': 'csv',
-  'image/png': 'image',
-  'image/jpeg': 'image',
-  'image/jpg': 'image',
-  'application/vnd.ms-excel': 'csv',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'csv',
-};
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-  fileFilter: (req, file, cb) => {
-    if (ALLOWED_TYPES[file.mimetype]) {
-      cb(null, true);
-    } else {
-      cb(new Error(`File type ${file.mimetype} not allowed. Accepted: PDF, DOCX, TXT, MD, CSV, PNG, JPG`));
-    }
-  }
-});
-
-// R2 client for file storage (reuse existing config pattern from videosite.js)
-function getR2Client() {
-  const { S3Client } = require('@aws-sdk/client-s3');
-  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const accessKey = process.env.CLOUDFLARE_R2_ACCESS_KEY;
-  const secretKey = process.env.CLOUDFLARE_R2_SECRET_KEY;
-  if (!accountId || !accessKey || !secretKey) return null;
-  return new S3Client({
-    region: 'auto',
-    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-    credentials: { accessKeyId: accessKey, secretAccessKey: secretKey },
-    requestChecksumCalculation: 'WHEN_REQUIRED',
-    responseChecksumValidation: 'WHEN_REQUIRED',
-  });
-}
-
-function sanitizeFilename(name) {
-  return name.replace(/[\/\\:*?"<>|]/g, '_').replace(/\.\./g, '_').slice(0, 100);
-}
 
 // Lead Hunter system prompt - elite AI lead gen specialist
 const LEAD_HUNTER_SYSTEM_PROMPT = `You are Lead Hunter, an elite AI-powered lead generation and outreach specialist for AI Lead Strategies. You are warm, professional, and genuinely helpful - never robotic or salesy.
@@ -213,112 +164,10 @@ function getAnthropicClient() {
 // All routes require authentication
 router.use(authenticate);
 
-// POST /api/v1/copilot/upload - Upload file for AI analysis
-router.post('/upload', (req, res, next) => {
-  upload.single('file')(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ success: false, error: 'File too large. Maximum size is 10MB.' });
-      return res.status(400).json({ success: false, error: err.message });
-    }
-    if (err) return res.status(400).json({ success: false, error: err.message });
-    next();
-  });
-}, async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No file provided' });
-    }
-
-    const file = req.file;
-    const fileType = ALLOWED_TYPES[file.mimetype] || 'unknown';
-    const safeName = sanitizeFilename(file.originalname);
-    let extractedText = '';
-    let isImage = false;
-
-    // Extract text based on file type
-    if (fileType === 'pdf') {
-      try {
-        const pdfParse = require('pdf-parse');
-        const result = await pdfParse(file.buffer);
-        extractedText = result.text || '';
-      } catch (e) {
-        console.error('PDF parse error:', e.message);
-        extractedText = '[PDF could not be parsed. The file may be image-based or corrupted.]';
-      }
-    } else if (fileType === 'docx') {
-      try {
-        const mammoth = require('mammoth');
-        const result = await mammoth.extractRawText({ buffer: file.buffer });
-        extractedText = result.value || '';
-      } catch (e) {
-        console.error('DOCX parse error:', e.message);
-        extractedText = '[DOCX could not be parsed.]';
-      }
-    } else if (['txt', 'md', 'csv'].includes(fileType)) {
-      extractedText = file.buffer.toString('utf-8');
-    } else if (fileType === 'image') {
-      isImage = true;
-      extractedText = '[Image file — will be analyzed visually by AI]';
-    }
-
-    // Truncate extracted text to 50,000 chars
-    if (extractedText.length > 50000) {
-      extractedText = extractedText.slice(0, 50000) + '\n\n[...truncated at 50,000 characters]';
-    }
-
-    // Upload to R2 for storage
-    let fileUrl = null;
-    const r2 = getR2Client();
-    const bucket = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
-    const publicUrl = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || '';
-
-    if (r2) {
-      try {
-        const { PutObjectCommand } = require('@aws-sdk/client-s3');
-        const key = `uploads/${req.user.id}/${Date.now()}-${crypto.randomBytes(4).toString('hex')}-${safeName}`;
-        await r2.send(new PutObjectCommand({
-          Bucket: bucket,
-          Key: key,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        }));
-        fileUrl = publicUrl ? `${publicUrl}/${key}` : key;
-      } catch (e) {
-        console.error('R2 upload error:', e.message);
-        // Non-fatal — text extraction still works without storage
-      }
-    }
-
-    // For images, encode as base64 for Claude vision
-    let imageBase64 = null;
-    if (isImage) {
-      imageBase64 = file.buffer.toString('base64');
-    }
-
-    res.json({
-      success: true,
-      data: {
-        filename: safeName,
-        mimeType: file.mimetype,
-        size: file.size,
-        type: fileType,
-        extractedText,
-        fileUrl,
-        isImage,
-        imageBase64: isImage ? imageBase64 : undefined,
-        imageMediaType: isImage ? file.mimetype : undefined,
-      }
-    });
-  } catch (error) {
-    console.error('File upload error:', error);
-    res.status(500).json({ success: false, error: `Upload failed: ${error.message}` });
-  }
-});
-
 // POST /api/v1/copilot/chat - Lead Hunter AI agent with website fetch + lead search
 router.post('/chat', async (req, res) => {
   try {
-    const { message, context = {}, history = [], fileContext } = req.body;
+    const { message, context = {} } = req.body;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({
@@ -384,41 +233,14 @@ router.post('/chat', async (req, res) => {
     }
 
     const contextLead = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
+    const fullMessage = `${message}${websiteContext}${leadContext}${contextLead}`;
 
-    // File context injection
-    let fileContextStr = '';
-    if (fileContext && fileContext.extractedText) {
-      fileContextStr = `\n\n[UPLOADED FILE: ${fileContext.filename || 'unknown'}]\n${fileContext.extractedText}\n`;
-    }
-
-    const fullMessage = `${message}${websiteContext}${leadContext}${fileContextStr}${contextLead}`;
-
-    // Build messages array with conversation history for multi-turn context
-    const priorMessages = Array.isArray(history)
-      ? history
-          .filter(m => m && typeof m.content === 'string' && ['user', 'assistant'].includes(m.role))
-          .slice(-20)
-      : [];
-
-    // Build the user message content — multi-modal for images
-    let userContent;
-    if (fileContext && fileContext.isImage && fileContext.imageBase64) {
-      userContent = [
-        { type: 'image', source: { type: 'base64', media_type: fileContext.imageMediaType || 'image/png', data: fileContext.imageBase64 } },
-        { type: 'text', text: fullMessage }
-      ];
-    } else {
-      userContent = fullMessage;
-    }
-
-    const messages = [...priorMessages, { role: 'user', content: userContent }];
-
-    console.log('🤖 Calling Anthropic API...', { historyLength: priorMessages.length, hasFile: !!fileContext });
+    console.log('🤖 Calling Anthropic API...');
     const chatMessage = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: LEAD_HUNTER_SYSTEM_PROMPT,
-      messages,
+      messages: [{ role: 'user', content: fullMessage }],
     });
 
     const content = chatMessage.content[0].text;
@@ -439,67 +261,6 @@ router.post('/chat', async (req, res) => {
       success: false,
       error: `AI service error: ${error.message}`,
       data: { response: `Sorry, I encountered an error: ${error.message}. Please try again.` }
-    });
-  }
-});
-
-// POST /api/v1/copilot/speak - Text-to-speech via ElevenLabs proxy
-router.post('/speak', async (req, res) => {
-  try {
-    const { text } = req.body;
-
-    if (!text || typeof text !== 'string') {
-      return res.status(400).json({ success: false, error: 'Text is required' });
-    }
-
-    const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
-    if (!elevenLabsKey) {
-      return res.status(503).json({
-        success: false,
-        error: 'Voice service not configured. Set ELEVENLABS_API_KEY in Railway environment variables.',
-        code: 'ELEVENLABS_NOT_CONFIGURED'
-      });
-    }
-
-    // Truncate to 5000 chars to avoid excessive API costs
-    const truncatedText = text.slice(0, 5000);
-
-    // Use Rachel voice (21m00Tcm4TlvDq8ikWAM) - clear, professional female voice
-    const voiceId = process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
-
-    const response = await axios.post(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-      {
-        text: truncatedText,
-        model_id: 'eleven_monolingual_v1',
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75
-        }
-      },
-      {
-        headers: {
-          'Accept': 'audio/mpeg',
-          'Content-Type': 'application/json',
-          'xi-api-key': elevenLabsKey
-        },
-        responseType: 'arraybuffer',
-        timeout: 30000
-      }
-    );
-
-    res.set({
-      'Content-Type': 'audio/mpeg',
-      'Content-Length': response.data.length,
-      'Cache-Control': 'no-cache'
-    });
-    res.send(Buffer.from(response.data));
-  } catch (error) {
-    console.error('❌ TTS error:', error.response?.status || error.message);
-    const status = error.response?.status === 401 ? 503 : 500;
-    res.status(status).json({
-      success: false,
-      error: status === 503 ? 'Voice service authentication failed. Check ELEVENLABS_API_KEY.' : `Voice service error: ${error.message}`
     });
   }
 });

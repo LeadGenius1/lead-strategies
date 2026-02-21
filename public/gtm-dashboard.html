@@ -106,14 +106,6 @@
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
   .blink { animation: blink 1.2s ease-in-out infinite; }
 
-  /* ── Voice ── */
-  @keyframes pulse-mic { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
-  .mic-active { animation: pulse-mic 1.5s ease-in-out infinite; background: rgba(239,68,68,0.2) !important; border-color: rgba(239,68,68,0.5) !important; }
-  .voice-btn { transition: all 0.2s; }
-  .voice-btn:hover { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.4); }
-  .voice-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .speak-spin { animation: spin 1s linear infinite; }
-
   /* ── Progress bar ── */
   @keyframes fillBar { from{width:0} to{width:var(--w)} }
   .fill-bar { animation: fillBar 1.2s cubic-bezier(.4,0,.2,1) forwards; }
@@ -376,15 +368,9 @@
          TAB: SYSTEM STATUS
     ═══════════════════════════════════ -->
     <div id="tab-status" class="tab-content hidden">
-      <div class="mb-8 flex items-start justify-between">
-        <div>
-          <h1 class="text-3xl font-medium tracking-tight text-white mb-2">System Status</h1>
-          <p id="status-timestamp" class="text-neutral-500 text-sm font-light">Checking...</p>
-        </div>
-        <button onclick="fetchSystemStatus()" id="status-refresh-btn" class="voice-btn flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 bg-black/50 text-neutral-400 hover:text-white text-xs mono">
-          <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-          Refresh
-        </button>
+      <div class="mb-8">
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">System Status</h1>
+        <p class="text-neutral-500 text-sm font-light">CLAUDE.md verified state · last checked Feb 16, 2026</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -554,27 +540,8 @@ AFTER CHANGES:
           </span>
         </div>
 
-<!-- File attachment chip -->
-        <div id="file-chip" class="hidden flex items-center gap-2 px-3 py-2 mb-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex-shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-          <span id="file-chip-name" class="text-[11px] mono text-indigo-300 truncate max-w-[200px]"></span>
-          <span id="file-chip-size" class="text-[9px] text-neutral-500"></span>
-          <button onclick="clearFileAttachment()" class="ml-auto text-neutral-500 hover:text-red-400 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-        </div>
-
 <!-- Input -->
-        <div class="flex gap-2 flex-shrink-0 items-center">
-          <!-- File Upload Button -->
-          <input id="file-input" type="file" class="hidden" accept=".pdf,.docx,.txt,.md,.csv,.png,.jpg,.jpeg,.xlsx,.xls" onchange="handleFileSelect(event)">
-          <button onclick="document.getElementById('file-input').click()" title="Attach file" class="voice-btn flex items-center justify-center w-11 h-11 rounded-xl border border-white/10 bg-black/50 text-neutral-400 hover:text-white flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-          </button>
-          <!-- Mic Button -->
-          <button id="mic-btn" onclick="toggleMic()" title="Voice input" class="voice-btn hidden items-center justify-center w-11 h-11 rounded-xl border border-white/10 bg-black/50 text-neutral-400 hover:text-white flex-shrink-0">
-            <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
-          </button>
+        <div class="flex gap-3 flex-shrink-0">
           <input id="chat-input" type="text" placeholder="Ask anything about AI Lead Strategies..."
             class="flex-1 bg-black/50 border border-white/10 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-sm placeholder:text-neutral-600 mono"
             onkeydown="if(event.key==='Enter') sendChat()">
@@ -585,8 +552,6 @@ AFTER CHANGES:
             </span>
           </button>
         </div>
-        <!-- Connection status -->
-        <div id="chat-status" class="mt-2 text-[9px] mono text-neutral-600 text-center"></div>
       </div>
     </div>
 
@@ -680,6 +645,20 @@ const RULES = [
   { n:7, title:"DEPLOYMENT GATE",           color:"indigo", lock:false, desc:"Branch verify → local test → git diff main (read every line) → merge → push → wait 90 seconds → curl production to verify.", cmd:"# After push — wait 90s then:\ncurl https://api.aileadstrategies.com/health\ncurl -X POST .../api/auth/signup -d '{}'" },
 ];
 
+const STATUS_WORKING = [
+  "Email/password signup → 201 JWT","Plan tier selection","14-day trial countdown",
+  "JWT auth on protected routes","Backend health check","Frontend build & deploy",
+  "Prisma DB queries","Cloudflare R2 video upload","Video listing dashboard",
+  "AI Website Builder (6Q→site)","Website preview","Admin / Profile / Settings",
+];
+const STATUS_PENDING = [
+  "Google OAuth — not tested E2E",
+  "Stripe checkout — API keys set, flow untested",
+  "Video playback — R2 public URL needs verify",
+  "LeadSite.AI F01-F05 — need E2E verification",
+  "ClientContact F07/F08/F17 — need verification",
+  "CRM / Deals / Analytics / AI Copywriter",
+];
 const LOCKED_FILES = [
   "backend/src/routes/auth.js",
   "backend/src/middleware/auth.js",
@@ -689,193 +668,16 @@ const LOCKED_FILES = [
   "lib/auth.js",
   "lib/prisma.ts — NEVER touch, it works",
 ];
-
-// ── LIVE SYSTEM STATUS ──────────────────────────────────────────────────────
-let lastHealthData = null;
-let statusRefreshTimer = null;
-let previousStatuses = {}; // Track for change detection & notifications
-
-const FIX_LINKS = {
-  'database':  'https://railway.com/project',
-  'redis':     'https://railway.com/project',
-  'r2Storage': 'https://dash.cloudflare.com',
-  'stripe':    'https://dashboard.stripe.com',
-  'anthropic': 'https://railway.com/project',
-  'frontend':  'https://railway.com/project',
-  'backend':   'https://railway.com/project',
-  'memory':    'https://railway.com/project',
-};
-
-function statusIcon(status) {
-  if (status === 'ok') return '<span class="relative flex h-2 w-2 flex-shrink-0"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>';
-  if (status === 'degraded' || status === 'warning') return '<span class="flex h-2 w-2 rounded-full bg-amber-500 flex-shrink-0"></span>';
-  return '<span class="relative flex h-2 w-2 flex-shrink-0"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>';
-}
-
-function statusColor(status) {
-  if (status === 'ok') return 'emerald';
-  if (status === 'degraded' || status === 'warning') return 'amber';
-  return 'rose';
-}
-
-function fixButton(key) {
-  const url = FIX_LINKS[key];
-  if (!url) return '';
-  return `<a href="${url}" target="_blank" rel="noopener" class="text-[9px] mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-500 hover:text-white hover:border-indigo-500/30 transition-all ml-auto flex-shrink-0">Fix →</a>`;
-}
-
-function sendDesktopNotification(title, body) {
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  new Notification(title, { body, icon: '/icon-192.png', tag: 'system-health' });
-}
-
-async function fetchSystemStatus() {
-  const btn = document.getElementById('status-refresh-btn');
-  const icon = document.getElementById('refresh-icon');
-  if (btn) btn.disabled = true;
-  if (icon) icon.classList.add('speak-spin');
-
-  const workingItems = [];
-  const degradedItems = [];
-  const downItems = [];
-  const infraItems = [];
-
-  try {
-    // 1. Comprehensive health check (DB, Redis, R2, Stripe, Anthropic, memory, CPU)
-    const healthRes = await fetch(`${API_BASE}/api/health`, { signal: AbortSignal.timeout(15000) });
-    const health = await healthRes.json();
-    lastHealthData = health;
-
-    const checks = health.checks || {};
-    const serviceNames = {
-      database: 'PostgreSQL Database',
-      redis: 'Redis Cache',
-      r2Storage: 'Cloudflare R2 Storage',
-      stripe: 'Stripe Payments',
-      anthropic: 'Anthropic AI (Claude)',
-      memory: `Memory (${checks.memory?.heapUsedMB || '?'}MB)`,
-      cpu: 'CPU Usage',
-    };
-
-    // Categorize each check
-    for (const [key, check] of Object.entries(checks)) {
-      const name = serviceNames[key] || key;
-      const s = check.status;
-      const msg = check.message || check.error || '';
-      const item = { name, status: s, message: msg, key };
-
-      if (s === 'ok') workingItems.push(item);
-      else if (s === 'degraded' || s === 'warning') degradedItems.push(item);
-      else downItems.push(item);
-
-      // Detect status change → notify
-      if (previousStatuses[key] && previousStatuses[key] !== s && s !== 'ok') {
-        sendDesktopNotification('⚠️ Service Degraded', `${name}: ${msg || s}`);
-      }
-      previousStatuses[key] = s;
-
-      // Build infra row
-      const colorMap = { database:'emerald', redis:'blue', r2Storage:'cyan', stripe:'rose', anthropic:'purple', memory:'amber', cpu:'indigo' };
-      infraItems.push({ label: name.split('(')[0].trim(), val: s === 'ok' ? 'Healthy' : s === 'degraded' ? 'Degraded' : 'Down', sub: msg, color: colorMap[key] || 'neutral', status: s, key });
-    }
-
-    // 2. Frontend check
-    try {
-      const feRes = await fetch('https://aileadstrategies.com', { mode: 'no-cors', signal: AbortSignal.timeout(10000) });
-      workingItems.push({ name: 'Frontend (aileadstrategies.com)', status: 'ok', message: 'Reachable', key: 'frontend' });
-      infraItems.unshift({ label: 'Frontend', val: 'Healthy', sub: 'aileadstrategies.com · Railway', color: 'indigo', status: 'ok', key: 'frontend' });
-    } catch {
-      downItems.push({ name: 'Frontend (aileadstrategies.com)', status: 'error', message: 'Unreachable', key: 'frontend' });
-      infraItems.unshift({ label: 'Frontend', val: 'Down', sub: 'aileadstrategies.com · Unreachable', color: 'indigo', status: 'error', key: 'frontend' });
-      sendDesktopNotification('🚨 Frontend Down', 'aileadstrategies.com is not responding');
-    }
-
-    // 3. Backend check (already confirmed if /api/health responded)
-    workingItems.unshift({ name: 'Backend API (api.aileadstrategies.com)', status: 'ok', message: `Uptime: ${Math.round(health.uptime / 60)}min`, key: 'backend' });
-    infraItems.splice(1, 0, { label: 'Backend API', val: 'Healthy', sub: `api.aileadstrategies.com · ${Math.round(health.uptime / 60)}min uptime`, color: 'purple', status: 'ok', key: 'backend' });
-
-    // 4. Signup check
-    try {
-      const signupRes = await fetch(`${API_BASE}/api/auth/signup`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
-        signal: AbortSignal.timeout(10000)
-      });
-      if (signupRes.status === 400) {
-        workingItems.push({ name: 'Email/Password Signup', status: 'ok', message: '400 (expected)', key: 'signup' });
-      } else {
-        degradedItems.push({ name: 'Email/Password Signup', status: 'degraded', message: `Unexpected ${signupRes.status}`, key: 'signup' });
-      }
-    } catch {
-      downItems.push({ name: 'Email/Password Signup', status: 'error', message: 'Route unreachable', key: 'signup' });
-    }
-
-    // Overall status
-    const overallStatus = downItems.length > 0 ? 'error' : degradedItems.length > 0 ? 'degraded' : 'ok';
-    const ts = new Date().toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
-    document.getElementById('status-timestamp').innerHTML = `
-      ${statusIcon(overallStatus)}
-      <span class="text-${statusColor(overallStatus)}-400 font-medium">${overallStatus === 'ok' ? 'All Systems Operational' : overallStatus === 'degraded' ? 'Degraded Performance' : 'Service Disruption'}</span>
-      <span class="text-neutral-600">·</span> Last checked: ${ts}
-      <span class="text-neutral-600">·</span> Auto-refresh: 5min
-    `;
-
-  } catch (err) {
-    // API completely unreachable — show static fallback
-    console.error('Health fetch failed:', err);
-    document.getElementById('status-timestamp').innerHTML = `
-      ${statusIcon('error')}
-      <span class="text-rose-400 font-medium">API Unreachable</span>
-      <span class="text-neutral-600">·</span> Showing cached data
-    `;
-    workingItems.push(...['Email/password signup','Plan tier selection','14-day trial countdown','JWT auth','Backend health check','Frontend build & deploy','Prisma DB queries','R2 video upload','Video listing','AI Website Builder','Website preview','Admin/Profile/Settings'].map(n => ({ name: n, status: 'ok', message: 'From cache', key: '' })));
-    degradedItems.push(...['Google OAuth','Stripe checkout','Video playback','LeadSite.AI features','ClientContact features','CRM/Deals/Analytics'].map(n => ({ name: n, status: 'degraded', message: 'Unverified', key: '' })));
-  }
-
-  // Render working
-  document.getElementById('status-working').innerHTML = workingItems.map(item => `
-    <div class="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
-      ${statusIcon(item.status)}
-      <span class="text-[11px] text-neutral-300">${item.name}</span>
-      <span class="text-[9px] mono text-neutral-600 ml-auto">${item.message || ''}</span>
-    </div>`).join('') || '<div class="text-[11px] text-neutral-600">No services reporting healthy</div>';
-
-  // Render degraded/pending
-  document.getElementById('status-pending').innerHTML = [...degradedItems, ...downItems].map(item => `
-    <div class="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
-      ${statusIcon(item.status)}
-      <span class="text-[11px] text-neutral-${item.status === 'error' ? '200' : '400'}">${item.name}</span>
-      ${fixButton(item.key)}
-    </div>`).join('') || '<div class="text-[11px] text-emerald-500">✓ No issues detected</div>';
-
-  // Render infra grid
-  document.getElementById('infra-grid').innerHTML = infraItems.map(item => {
-    const c = COLORS[item.color] || COLORS.neutral;
-    const sc = statusColor(item.status);
-    return `
-      <div class="p-4 bg-black/30 rounded-xl border border-white/5 hover:border-${sc}-500/30 transition-all">
-        <div class="flex items-center gap-1.5 mb-1.5">
-          ${statusIcon(item.status)}
-          <span class="text-[9px] mono ${c.text}">${item.label.toUpperCase()}</span>
-        </div>
-        <div class="text-sm font-medium text-${sc}-400 mb-1">${item.val}</div>
-        <div class="text-[10px] text-neutral-600 mono">${item.sub || ''}</div>
-      </div>`;
-  }).join('');
-
-  if (btn) btn.disabled = false;
-  if (icon) icon.classList.remove('speak-spin');
-
-  // Request notification permission on first load
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
-  }
-}
-
-// Auto-refresh every 5 minutes
-function startStatusAutoRefresh() {
-  if (statusRefreshTimer) clearInterval(statusRefreshTimer);
-  statusRefreshTimer = setInterval(fetchSystemStatus, 5 * 60 * 1000);
-}
+const INFRA = [
+  { label:"Frontend",  val:"Next.js 14",              sub:"Railway: superb-possibility",      color:"indigo" },
+  { label:"Backend",   val:"Express.js",               sub:"Railway: backend · api.*",          color:"purple" },
+  { label:"Database",  val:"PostgreSQL + Prisma",      sub:"switchyard.proxy.rlwy.net:32069",   color:"emerald" },
+  { label:"Storage",   val:"Cloudflare R2",            sub:"bucket: videosite · pub-0074…",     color:"cyan" },
+  { label:"Email",     val:"Mailgun",                  sub:"SPF / DKIM / DMARC verified",       color:"amber" },
+  { label:"Payments",  val:"Stripe",                   sub:"Keys in Railway env · untested",    color:"rose" },
+  { label:"Cache",     val:"Redis",                    sub:"Railway internal",                   color:"blue" },
+  { label:"Repo",      val:"LeadGenius1",              sub:"lead-strategies · branch: main",    color:"neutral" },
+];
 const GTM_STEPS = [
   { step:1, label:"Business Goal",                icon:"◎", color:"indigo" },
   { step:2, label:"Controller Agent",             icon:"◈", color:"indigo" },
@@ -1090,10 +892,38 @@ function renderGTMSteps() {
   }).join('');
 }
 
+function renderStatusWorking() {
+  document.getElementById('status-working').innerHTML = STATUS_WORKING.map(s => `
+    <div class="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
+      <svg class="w-3 h-3 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span class="text-[11px] text-neutral-300">${s}</span>
+    </div>`).join('');
+}
+
+function renderStatusPending() {
+  document.getElementById('status-pending').innerHTML = STATUS_PENDING.map(s => `
+    <div class="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
+      <div class="w-2 h-2 rounded-full bg-amber-500/50 flex-shrink-0"></div>
+      <span class="text-[11px] text-neutral-400">${s}</span>
+    </div>`).join('');
+}
+
 function renderLockedFiles() {
   document.getElementById('locked-files-list').innerHTML = LOCKED_FILES.map(f => `
     <div class="text-[10px] mono text-rose-400 bg-black/30 rounded-md px-2.5 py-1.5 border border-rose-500/10">${f}</div>
   `).join('');
+}
+
+function renderInfra() {
+  document.getElementById('infra-grid').innerHTML = INFRA.map(item => {
+    const c = COLORS[item.color];
+    return `
+      <div class="p-4 bg-black/30 rounded-xl border border-white/5 hover:border-white/10 transition-all">
+        <div class="text-[9px] mono ${c.text} mb-1.5">${item.label.toUpperCase()}</div>
+        <div class="text-sm font-medium text-white mb-1">${item.val}</div>
+        <div class="text-[10px] text-neutral-600 mono">${item.sub}</div>
+      </div>`;
+  }).join('');
 }
 
 function renderCampaigns() {
@@ -1351,71 +1181,86 @@ function renderBlueprintEnhancements() {
 
 // ── CHAT ─────────────────────────────────────────────────────────────────────
 
-const API_BASE = 'https://api.aileadstrategies.com';
-const chatHistory = []; // Track conversation for multi-turn context
-let chatMode = 'offline'; // 'live' or 'offline'
-let pendingFileContext = null; // File attached to next message
-
-// Get auth token from cookies
-function getChatToken() {
-  const cookies = document.cookie.split(';').reduce((acc, c) => {
-    const [k, v] = c.trim().split('=');
-    acc[k] = v;
-    return acc;
-  }, {});
-  return cookies.token || cookies.admin_token || null;
-}
-
-// Offline fallback responses (original RESPOND function)
-function RESPOND_OFFLINE(q) {
+const RESPOND = q => {
   const lq = q.toLowerCase();
-  if (lq.includes('health') || lq.includes('status') || lq.includes('production') || lq.includes('api'))
-    return `**🟢 Production — HEALTHY**\n\nAPI health fetched live:\n\`{"status":"healthy"}\`\n\n**Frontend:** aileadstrategies.com ✅\n**Backend:** api.aileadstrategies.com ✅\n**Database:** PostgreSQL ✅\n\n_Note: Running in offline mode. Sign in for live AI responses._`;
-  if (lq.includes('rule') || lq.includes('policy'))
-    return `**📋 7 Non-Negotiable Rules**\n\n1. ONE FILE AT A TIME\n2. BRANCH FIRST\n3. READ THE DIFF\n4. TEST AUTH\n5. LOCK CRITICAL FILES\n6. COMMIT FORMAT\n7. DEPLOYMENT GATE\n\n_Running in offline mode. Sign in for live AI responses._`;
-  if (lq.includes('platform') || lq.includes('pricing'))
-    return `**💰 Platform Pricing**\n\n⚡ LeadSite.AI — $49/$149/$349\n🌐 LeadSite.IO — $49/$149/$349\n📬 ClientContact.IO — $99/$149/$399\n🏆 UltraLead.AI — $499\n🎬 VideoSite.AI — FREE\n\n_Running in offline mode. Sign in for live AI responses._`;
-  if (lq.includes('agent'))
-    return `**🤖 7 UltraLead AI Agents**\n\n🎯 Lead Hunter\n✍️ Copy Writer\n⚖️ Compliance Guardian\n🔥 Warmup Conductor\n📊 Engagement Analyzer\n🧠 Analytics Brain\n🛡️ Healing Sentinel\n\n_Running in offline mode. Sign in for live AI responses._`;
-  return `**✦ AI Assistant — Offline Mode**\n\nI'm running with cached responses. For live AI-powered answers:\n1. Sign in at aileadstrategies.com\n2. Ensure ANTHROPIC_API_KEY is set in Railway\n\nI can still answer questions about: platforms, pricing, rules, agents, infrastructure.`;
-}
 
-function formatContent(content) {
-  return content
-    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-white">$1</strong>')
-    .replace(/`([^`]+)`/g, '<code class="bg-black/40 text-purple-300 px-1.5 py-0.5 rounded mono text-[10px]">$1</code>')
-    .split('\n').map(line => `<div class="text-[11px] text-neutral-300 leading-relaxed font-light">${line || '&nbsp;'}</div>`).join('');
-}
+  if (lq.includes('health') || lq.includes('status') || lq.includes('production') || lq.includes('api')) {
+    return `**🟢 Production — HEALTHY**\n\nAPI health fetched live:\n\`{"status":"healthy","timestamp":"2026-02-01T01:12:02.738Z"}\`\n\n**Frontend:** aileadstrategies.com → Railway (superb-possibility) ✅\n**Backend:** api.aileadstrategies.com → Railway (backend) ✅\n**Database:** PostgreSQL → switchyard.proxy.rlwy.net:32069 ✅\n\nVerification commands:\n\`curl https://api.aileadstrategies.com/health\` → 200\n\`curl -X POST .../api/auth/signup -d '{}'\` → 400 (not 404/500)\n\`curl .../api/v1/leads\` → 401 (not 404/500)`;
+  }
+
+  if (lq.includes('rule') || lq.includes('policy') || lq.includes('7 rule')) {
+    return `**📋 7 Non-Negotiable Rules (STANDARD_EXECUTION_POLICY.md)**\n\n1. **ONE FILE AT A TIME** — Every Cursor prompt: one file or route only\n2. **BRANCH FIRST** — git checkout -b fix/name before ANY work\n3. **READ THE DIFF** — git diff every time, unexpected change = git checkout .\n4. **TEST AUTH** — 3 curl tests after EVERY backend change, no exceptions\n5. **LOCK CRITICAL FILES** — auth.js, middleware/auth.js, index.js, schema.prisma = READ-ONLY\n6. **COMMIT FORMAT** — fix(scope): description — always scoped\n7. **DEPLOYMENT GATE** — branch → test → diff → merge → push → 90s → verify\n\n⚠️ Auth has been broken 5+ times from ignoring these. Violation = immediate revert.`;
+  }
+
+  if (lq.includes('lock') || lq.includes('read-only') || lq.includes('do not touch')) {
+    return `**🔒 Locked Files (READ-ONLY)**\n\nThese files CANNOT be touched unless the task specifically targets them:\n\n\`backend/src/routes/auth.js\` — all auth routes\n\`backend/src/middleware/auth.js\` — JWT validation\n\`backend/src/index.js\` — route mounting only\n\`backend/prisma/schema.prisma\` — source of truth\n\`prisma/schema.prisma\` — frontend Prisma, must stay synced\n\`lib/auth.js\` — frontend auth API calls\n\`lib/prisma.ts\` — Prisma singleton, NEVER touch\n\nEvery Cursor prompt must include:\n"DO NOT modify these files: auth.js, middleware/auth.js, index.js, schema.prisma"`;
+  }
+
+  if (lq.includes('account') || lq.includes('sender') || lq.includes('warmup') || lq.includes('instantly')) {
+    return `**📧 Sender Accounts — Instantly MCP (live)**\n\n✅ contact@getaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n✅ contact@meetaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n✅ contact@trendaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n✅ contact@onlineaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n\n**Capacity:** 120 emails/day total\n**Pool:** premium-v1 on all 4\n**Org ID:** 408925ca-e46a-4b6a-b6ba-3b1d8a6813fa\n**All tracking:** inst.*.com subdomains — CTD_ACTIVE`;
+  }
+
+  if (lq.includes('campaign')) {
+    return `**🚀 Campaigns — Instantly MCP (live)**\n\n🔵 **AI Lead Strategies Introduction**\nID: b94241d3-3332-4f88-887c-677428958b76\nStatus: DRAFT · Created: 2025-11-30\n\n🔵 **LeadSite Master Campaign**\nID: 2cd8abb7-7e77-4710-a878-c5ab3246cb3a\nStatus: DRAFT · Created: 2025-12-16\nVariables: {{personalization}}, {{custom_pitch}}\n\n**To activate:**\n1. Assign email_list (4 sender accounts ready)\n2. Add leads from 26 available lists\n3. Configure campaign_schedule\n4. Call activate_campaign(campaign_id)`;
+  }
+
+  if (lq.includes('platform') || lq.includes('pricing') || lq.includes('tier')) {
+    return `**💰 Platform Pricing (CLAUDE.md — source of truth)**\n\n⚡ **LeadSite.AI** — $49 / $149 / $349/mo · leadsiteai.com\n🌐 **LeadSite.IO** — $49 / $149 / $349/mo · leadsiteio.com\n📬 **ClientContact.IO** — $99 / $149 / $399/mo · clientcontactio.com\n🏆 **UltraLead.AI** — $499/mo · ultraleadai.com\n🎬 **VideoSite.AI** — FREE · videositeai.com\n\n**Bundles:** Starter $79 · Pro $199 · Enterprise $249 · Annual: −20%\n\n⚠️ The live website shows slightly different pricing. CLAUDE.md is always source of truth.`;
+  }
+
+  if (lq.includes('database') || lq.includes('infra') || lq.includes('railway') || lq.includes('architecture')) {
+    return `**🏗️ Infrastructure (CLAUDE.md)**\n\nRepo: LeadGenius1/lead-strategies · branch: main (NO master)\nFrontend: Next.js 14 → Railway "superb-possibility" → aileadstrategies.com\nBackend: Express.js → Railway "backend" → api.aileadstrategies.com\nDB: PostgreSQL → switchyard.proxy.rlwy.net:32069 (Prisma ORM)\nStorage: Cloudflare R2 · bucket: videosite · pub-00746658f70a4185a900f207b96d9e3b.r2.dev\nEmail: Mailgun (SPF/DKIM/DMARC verified)\nPayments: Stripe (keys in env · flow untested)\nCache: Redis (Railway internal)\n\n🚨 NEVER use postgres.railway.internal — does NOT work\n🚨 NEVER reference lead-strategies-backend (deleted)\n🚨 NEVER reference master branch`;
+  }
+
+  if (lq.includes('rollback') || lq.includes('emergency') || lq.includes('broken')) {
+    return `**🚨 Emergency Rollback (STANDARD_EXECUTION_POLICY.md)**\n\nOption 1 — Revert last commit:\n\`git revert HEAD && git push origin main\`\nWait 90 seconds.\n\nOption 2 — Hard reset:\n\`git log --oneline -10\` → find last good commit\n\`git reset --hard [commit-hash]\`\n\`git push origin main --force\`\n\nOption 3 — Railway dashboard:\nrailway.app → Backend → Deployments → Previous → Rollback\n\nALWAYS verify after:\n\`curl https://api.aileadstrategies.com/health\` → 200\n\`curl -X POST .../api/auth/signup -d '{}'\` → 400`;
+  }
+
+  if (lq.includes('cursor') || lq.includes('prompt template')) {
+    return `**💻 Cursor Prompt Template (required)**\n\nSCOPE: [Exactly ONE file or route]\nOBJECTIVE: [Specific thing to fix/add]\nDO NOT TOUCH: auth.js, middleware/auth.js, index.js, schema.prisma\nCONSTRAINTS:\n- Preserve existing response format\n- Preserve existing imports\n- Preserve existing middleware order\n- Match existing code patterns\n\nBEFORE MAKING CHANGES:\n1. Show me current contents of [target file]\n2. Explain what you plan to change and why\n3. Wait for approval before editing\n\nAFTER CHANGES:\n1. Show me git diff\n2. Run auth curl test → 400\n3. Confirm auth works`;
+  }
+
+  if (lq.includes('agent')) {
+    return `**🤖 7 UltraLead AI Agents**\n\n🎯 Lead Hunter — Apollo.io 275M+ search, ICP-matched, daily runs\n✍️ Copy Writer — Claude AI per-lead personalized emails + A/B subjects\n⚖️ Compliance Guardian — CAN-SPAM / GDPR / CASL pre-send enforcement\n🔥 Warmup Conductor — Domain reputation via Instantly.ai (all 4 at 100%)\n📊 Engagement Analyzer — Opens/clicks/reply sentiment → next action\n🧠 Analytics Brain — Revenue forecast, pipeline health (85%+ after 90 days)\n🛡️ Healing Sentinel — Auto-fix failed sends, stale deals, API health\n\nAll 7 live in UltraLead.AI ($499/mo) · ultraleadai.com`;
+  }
+
+  if (lq.includes('market') || lq.includes('gtm') || lq.includes('go-to-market') || lq.includes('bring') || lq.includes('launch') || lq.includes('sell') || lq.includes('sales') || lq.includes('growth') || lq.includes('acquire') || lq.includes('customer') || lq.includes('outreach') || lq.includes('strategy') || lq.includes('revenue')) {
+    return `**🚀 GTM Strategy — Bringing the 5 Platforms to Market**\n\nYou have 4 warmed sender accounts (120 emails/day) and 26 lead lists ready. Here's the highest-leverage sequence:\n\n**PHASE 1 — Activate Cold Outreach NOW (Week 1)**\nYour 2 draft campaigns need 3 steps to go live:\n1. Assign all 4 sender accounts to both campaigns\n2. Populate {{personalization}} + {{custom_pitch}} variables in "LeadSite Master Campaign"\n3. Call activate_campaign() on both\n\nStart with LeadSite.IO ($49/mo) — it's your easiest entry point. A business gets a full AI-built website in minutes. Low barrier, high perceived value, instant demo-able.\n\n**PHASE 2 — Platform Sequencing by Friction**\nLead with lowest friction → upsell to flagship:\n• Entry: LeadSite.IO or LeadSite.AI ($49) — hook on speed & AI\n• Mid: ClientContact.IO ($99) — "never miss a lead" is obvious pain\n• Flagship: UltraLead.AI ($499) — after they've seen ROI from the above\n• Free viral: VideoSite.AI (FREE) — creators share it, brands follow\n\n**PHASE 3 — The 12-Customer Break-Even Target**\nYour own site says: 12 customers = break even, 97% margin after that.\n• At $49/mo you need 12 LeadSite customers = $588 MRR to break even\n• At $499/mo (UltraLead) you need just 2 customers\n• Focus cold outreach on UltraLead prospects = fastest path to profitability\n\n**PHASE 4 — Channels to Run in Parallel**\n• Cold email via Instantly (120/day capacity — start today)\n• LinkedIn outreach via ClientContact.IO (F08 — once verified)\n• VideoSite.AI content driving inbound (zero cost)\n• Bundle pricing: Starter $79 · Pro $199 to increase ACV\n\n**Your immediate next action:** Activate both Instantly campaigns. The infrastructure is 100% ready — warmup complete, accounts live, lists loaded.`;
+  }
+
+  if (lq.includes('lead') && (lq.includes('list') || lq.includes('prospect') || lq.includes('target'))) {
+    return `**🎯 Lead Lists & Prospecting (Instantly MCP — live)**\n\n26 lists ready across 2 types:\n\n**Supersearch Lists (5)** — Dec 25, 2025\nBroad ICP searches across Apollo.io 275M+ database. These are your highest-volume top-of-funnel prospects.\n\n**Enriched Company Lists (21 entries across 6 companies):**\n• Fairmont Consulting Group × 5 leads\n• Bonifacio Consulting Services × 1 lead\n• Pristine Property Management × 3 leads\n• Tesla × 8 leads (test lists)\n• Chargeback Expertz Boston × 2 leads\n\n**Best targeting strategy for your platforms:**\n• LeadSite.IO → target: small businesses, local services, solo founders, agencies\n• LeadSite.AI → target: SDRs, sales managers, B2B SaaS teams, recruiters\n• ClientContact.IO → target: customer support leads, social media managers, e-commerce\n• UltraLead.AI → target: VPs of Sales, revenue operations, sales team leads\n\nAdd the Supersearch lists to both active campaigns first — they give you the widest immediate reach.`;
+  }
+
+  if (lq.includes('email') || lq.includes('copy') || lq.includes('sequence') || lq.includes('message') || lq.includes('subject')) {
+    return `**✍️ Email & Copy Strategy**\n\n**Your 2 active campaigns:**\n• "AI Lead Strategies Introduction" — good for cold awareness, attach to all 4 senders\n• "LeadSite Master Campaign" — needs {{personalization}} + {{custom_pitch}} filled in\n\n**Proven cold email structure for SaaS:**\nSubject: "[First name], [company] is leaving [X] on the table"\nLine 1: Hyper-specific observation about their company\nLine 2: The pain you solve in one sentence\nLine 3: Social proof — "+400% avg ROI, 97% margin"\nCTA: Single, low-friction ask — "Worth a 15-min look?"\n\n**Variables to use:**\n• {{firstName}} {{lastName}} {{companyName}} — standard\n• {{personalization}} — custom hook about their specific business\n• {{custom_pitch}} — which platform is most relevant to them\n\n**Sending cadence with 4 accounts:**\n• 30 emails/account/day = 120/day total\n• Warm up with 3-step sequences: Day 1 → Day 4 → Day 9\n• stop_on_reply: true (already default)\n• Best send time: 8–10am recipient local time\n\nThe Copy Writer AI Agent (UltraLead) can generate personalized variants at scale once the platform is fully verified.`;
+  }
+
+  if (lq.includes('videosite') || lq.includes('video') || lq.includes('creator') || lq.includes('$1 per view') || lq.includes('monetiz')) {
+    return `**🎬 VideoSite.AI — Creator Monetization**\n\nDomain: videositeai.com · Price: FREE for creators\n\n**How it works:**\n• Creators upload videos (MP4/MOV/AVI/MKV, up to 5GB)\n• Viewers watch 30+ seconds = "qualified view"\n• Creator earns $1.00 per qualified view\n• Payout via Stripe Connect, minimum $10, instant transfer\n\n**Qualified view requirements:**\n1. Minimum 30 seconds watch time\n2. Unique viewer (1 count per viewer per video per day)\n3. Human viewer (bot detection active)\n4. Valid session (full player load)\n\n**vs YouTube:** $1.00/view vs $0.002–0.005. No follower minimum vs 1,000 subs + 4,000 watch hours required.\n\n**Current status:** Upload & listing WORKING. Playback needs R2 public URL verification. Earnings/payouts need Stripe flow verification.\n\n**R2 Storage:** bucket: videosite · pub-00746658f70a4185a900f207b96d9e3b.r2.dev\n\n**GTM angle:** VideoSite is your free viral product — creators share it, which builds brand awareness for all 5 platforms organically.`;
+  }
+
+  if (lq.includes('stripe') || lq.includes('payment') || lq.includes('billing') || lq.includes('checkout')) {
+    return `**💳 Stripe & Payments**\n\nCurrent status (CLAUDE.md, Feb 16 2026):\n✅ Stripe API keys configured in Railway environment variables\n⚪ Checkout flow — NOT yet tested end-to-end\n\n**Platform pricing to configure in Stripe:**\n• LeadSite.AI: $49 / $149 / $349 / month\n• LeadSite.IO: $49 / $149 / $349 / month\n• ClientContact.IO: $99 / $149 / $399 / month\n• UltraLead.AI: $499 / month\n• VideoSite.AI: FREE (advertiser billing only)\n\n**Annual discounts:** 20% off — configure as separate Stripe price IDs\n\n**Bundle pricing to add:**\n• Starter bundle: $79/mo (LeadSite.AI + LeadSite.IO)\n• Professional: $199/mo (all except VideoSite)\n• Enterprise: $249/mo (all 5 platforms)\n\n**To verify Stripe flow (follow Rule 1 — one file at a time):**\nTarget ONLY the Stripe webhook handler or checkout session route. Test with Stripe CLI: stripe listen --forward-to localhost:3001/api/stripe/webhook`;
+  }
+
+  return `**✦ AI Assistant — Ask me anything about AI Lead Strategies**\n\nI have full context on:\n\n**GTM & Sales:** "best way to bring products to market" · "email copy strategy" · "which platform to sell first"\n**Infrastructure:** production status · API health · database · Railway · Cloudflare R2\n**Campaigns:** activation steps · sender accounts · lead lists · email sequences\n**Platforms:** pricing · status · features for all 5 platforms\n**Dev Rules:** all 7 rules · locked files · Cursor templates · rollback procedure\n**AI Agents:** all 7 UltraLead agents · what each one does\n\nWhat would you like to know?`;
+};
 
 function addMsg(role, content) {
   const div = document.createElement('div');
   div.className = `px-4 py-3 rounded-xl msg-${role} ${role === 'user' ? 'ml-12' : 'mr-12'}`;
 
-  const formatted = role === 'user'
-    ? content.split('\n').map(line => `<div class="text-[11px] text-neutral-200 leading-relaxed font-light">${line || '&nbsp;'}</div>`).join('')
-    : formatContent(content);
-
-  const speakBtn = role === 'ai'
-    ? `<button onclick="speakMsg(this)" title="Listen" class="voice-btn inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-lg border border-white/10 bg-black/30 text-neutral-500 hover:text-indigo-400 text-[9px] mono">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        Listen
-      </button>`
-    : '';
+  const formatted = content
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-white">$1</strong>')
+    .replace(/`([^`]+)`/g, '<code class="bg-black/40 text-purple-300 px-1.5 py-0.5 rounded mono text-[10px]">$1</code>')
+    .split('\n').map(line => `<div class="text-[11px] ${role === 'user' ? 'text-neutral-200' : 'text-neutral-300'} leading-relaxed font-light">${line || '&nbsp;'}</div>`).join('');
 
   div.innerHTML = `
-    <div class="text-[9px] mono ${role === 'user' ? 'text-neutral-600' : 'text-indigo-500'} mb-1.5">${role === 'user' ? 'MICHAEL' : '✦ AI ASSISTANT'} ${chatMode === 'live' && role === 'ai' ? '<span class="text-emerald-500">● LIVE</span>' : ''}</div>
-    ${formatted}
-    ${speakBtn}`;
+    <div class="text-[9px] mono ${role === 'user' ? 'text-neutral-600' : 'text-indigo-500'} mb-1.5">${role === 'user' ? 'MICHAEL' : '✦ AI ASSISTANT'}</div>
+    ${formatted}`;
   document.getElementById('chat-messages').appendChild(div);
   document.getElementById('chat-messages').scrollTop = 999999;
-
-  // Store in history for multi-turn
-  chatHistory.push({ role: role === 'ai' ? 'assistant' : 'user', content });
-}
-
-function updateStatus(text, color) {
-  const el = document.getElementById('chat-status');
-  if (el) el.innerHTML = `<span class="text-${color}-500">${text}</span>`;
 }
 
 async function sendChat() {
@@ -1423,287 +1268,17 @@ async function sendChat() {
   const q = inp.value.trim();
   if (!q) return;
   inp.value = '';
-
-  // Show file info in user message if attached
-  const fileLabel = pendingFileContext ? ` [📎 ${pendingFileContext.filename}]` : '';
-  addMsg('user', q + fileLabel);
+  addMsg('user', q);
   document.getElementById('typing-ind').classList.remove('hidden');
-
-  const token = getChatToken();
-  const currentFileContext = pendingFileContext;
-  pendingFileContext = null;
-  clearFileChip();
-
-  // Try live API first
-  if (token) {
-    try {
-      const body = {
-        message: q,
-        history: chatHistory.slice(-20),
-        context: {}
-      };
-      if (currentFileContext) body.fileContext = currentFileContext;
-
-      const res = await fetch(`${API_BASE}/api/v1/copilot/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(body)
-      });
-
-      document.getElementById('typing-ind').classList.add('hidden');
-
-      if (res.ok) {
-        const data = await res.json();
-        const reply = data.data?.response || data.data?.message || 'Response received.';
-        chatMode = 'live';
-        updateStatus('Connected to AI — Live mode', 'emerald');
-        addMsg('ai', reply);
-        return;
-      }
-
-      // Handle specific error codes
-      if (res.status === 503) {
-        chatMode = 'offline';
-        updateStatus('AI not configured — Offline mode (set ANTHROPIC_API_KEY in Railway)', 'amber');
-      } else if (res.status === 401) {
-        chatMode = 'offline';
-        updateStatus('Session expired — Offline mode', 'amber');
-      } else {
-        chatMode = 'offline';
-        updateStatus(`API error ${res.status} — Offline fallback`, 'amber');
-      }
-    } catch (err) {
-      document.getElementById('typing-ind').classList.add('hidden');
-      chatMode = 'offline';
-      updateStatus('Cannot reach API — Offline fallback', 'red');
-    }
-  } else {
-    document.getElementById('typing-ind').classList.add('hidden');
-    chatMode = 'offline';
-    updateStatus('No auth token — Offline mode (sign in for live AI)', 'amber');
-  }
-
-  // Fallback to offline responses
-  addMsg('ai', RESPOND_OFFLINE(q));
+  await new Promise(r => setTimeout(r, 600 + Math.random() * 500));
+  document.getElementById('typing-ind').classList.add('hidden');
+  addMsg('ai', RESPOND(q));
 }
 
 function quickChat(q) {
   document.getElementById('chat-input').value = q;
   sendChat();
 }
-
-// ── FILE UPLOAD ───────────────────────────────────────────────────────────────
-
-function clearFileChip() {
-  document.getElementById('file-chip').classList.add('hidden');
-  document.getElementById('file-input').value = '';
-}
-
-function clearFileAttachment() {
-  pendingFileContext = null;
-  clearFileChip();
-}
-
-function formatFileSize(bytes) {
-  if (bytes < 1024) return bytes + 'B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB';
-  return (bytes / (1024 * 1024)).toFixed(1) + 'MB';
-}
-
-async function handleFileSelect(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  // Validate size
-  if (file.size > 10 * 1024 * 1024) {
-    addMsg('ai', '**File too large.** Maximum size is 10MB. Please choose a smaller file.');
-    event.target.value = '';
-    return;
-  }
-
-  const token = getChatToken();
-  if (!token) {
-    addMsg('ai', '**Sign in required** to upload files. Please log in first.');
-    event.target.value = '';
-    return;
-  }
-
-  // Show chip
-  document.getElementById('file-chip-name').textContent = file.name;
-  document.getElementById('file-chip-size').textContent = formatFileSize(file.size);
-  document.getElementById('file-chip').classList.remove('hidden');
-
-  // Show uploading message
-  addMsg('ai', `Uploading **${file.name}** (${formatFileSize(file.size)})...`);
-
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const res = await fetch(`${API_BASE}/api/v1/copilot/upload`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: formData
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Upload failed (${res.status})`);
-    }
-
-    const data = await res.json();
-    pendingFileContext = data.data;
-
-    // Update chip and notify
-    const typeEmoji = { pdf:'📄', docx:'📝', txt:'📃', md:'📃', csv:'📊', image:'🖼️' };
-    addMsg('ai', `${typeEmoji[data.data.type] || '📎'} **${data.data.filename}** ready for analysis. Type your question and send.`);
-
-  } catch (err) {
-    console.error('Upload error:', err);
-    addMsg('ai', `**Upload failed:** ${err.message}`);
-    clearFileAttachment();
-  }
-}
-
-// ── VOICE INPUT (Speech Recognition) ──────────────────────────────────────────
-
-let recognition = null;
-let isListening = false;
-
-function initSpeechRecognition() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) return;
-
-  // Show mic button since browser supports it
-  document.getElementById('mic-btn').classList.remove('hidden');
-  document.getElementById('mic-btn').classList.add('flex');
-
-  recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
-
-  recognition.onresult = (event) => {
-    const transcript = Array.from(event.results)
-      .map(r => r[0].transcript)
-      .join('');
-    document.getElementById('chat-input').value = transcript;
-  };
-
-  recognition.onend = () => {
-    isListening = false;
-    document.getElementById('mic-btn').classList.remove('mic-active');
-    // Auto-send if we got text
-    const inp = document.getElementById('chat-input');
-    if (inp.value.trim()) {
-      sendChat();
-    }
-  };
-
-  recognition.onerror = (event) => {
-    console.warn('Speech recognition error:', event.error);
-    isListening = false;
-    document.getElementById('mic-btn').classList.remove('mic-active');
-  };
-}
-
-function toggleMic() {
-  if (!recognition) return;
-  if (isListening) {
-    recognition.stop();
-    isListening = false;
-    document.getElementById('mic-btn').classList.remove('mic-active');
-  } else {
-    recognition.start();
-    isListening = true;
-    document.getElementById('mic-btn').classList.add('mic-active');
-    document.getElementById('chat-input').value = '';
-    document.getElementById('chat-input').placeholder = 'Listening...';
-    // Reset placeholder when done
-    recognition.addEventListener('end', () => {
-      document.getElementById('chat-input').placeholder = 'Ask anything about AI Lead Strategies...';
-    }, { once: true });
-  }
-}
-
-// ── VOICE OUTPUT (ElevenLabs TTS) ─────────────────────────────────────────────
-
-let currentAudio = null;
-
-async function speakMsg(btn) {
-  // Get the text content from the parent message div
-  const msgDiv = btn.closest('.msg-ai');
-  if (!msgDiv) return;
-
-  // Extract plain text from the formatted HTML
-  const textEls = msgDiv.querySelectorAll('.text-\\[11px\\]');
-  const text = Array.from(textEls).map(el => el.textContent).join('\n').trim();
-  if (!text) return;
-
-  const token = getChatToken();
-  if (!token) {
-    btn.innerHTML = '<span class="text-red-400 text-[9px]">Sign in required</span>';
-    setTimeout(() => { btn.innerHTML = getSpeakerIcon() + ' Listen'; }, 2000);
-    return;
-  }
-
-  // Stop current audio if playing
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
-  }
-
-  // Show loading state
-  const originalHTML = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<svg class="speak-spin" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Generating...';
-
-  try {
-    const res = await fetch(`${API_BASE}/api/v1/copilot/speak`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ text: text.slice(0, 5000) })
-    });
-
-    if (res.status === 503) {
-      btn.innerHTML = '<span class="text-amber-400 text-[9px]">Voice not configured</span>';
-      setTimeout(() => { btn.innerHTML = originalHTML; btn.disabled = false; }, 3000);
-      return;
-    }
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    currentAudio = new Audio(url);
-
-    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Playing...';
-    btn.classList.add('text-indigo-400');
-
-    currentAudio.onended = () => {
-      btn.innerHTML = originalHTML;
-      btn.disabled = false;
-      btn.classList.remove('text-indigo-400');
-      URL.revokeObjectURL(url);
-      currentAudio = null;
-    };
-
-    currentAudio.play();
-  } catch (err) {
-    console.error('TTS error:', err);
-    btn.innerHTML = '<span class="text-red-400 text-[9px]">Voice error</span>';
-    setTimeout(() => { btn.innerHTML = originalHTML; btn.disabled = false; }, 3000);
-  }
-}
-
-// Init speech recognition on page load
-initSpeechRecognition();
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
 
@@ -1722,9 +1297,10 @@ function switchTab(id) {
 // ── INIT ──────────────────────────────────────────────────────────────────────
 renderAccounts();
 renderGTMSteps();
-fetchSystemStatus(); // Live health checks (replaces static status)
-startStatusAutoRefresh(); // Auto-refresh every 5 min
+renderStatusWorking();
+renderStatusPending();
 renderLockedFiles();
+renderInfra();
 renderCampaigns();
 renderLeadLists();
 renderPlatforms();

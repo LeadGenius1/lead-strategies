@@ -65,7 +65,12 @@ function SignupForm() {
         tier: selectedTier,
       })
       toast.success('Account created! Let\'s set up your profile.')
-      router.push('/onboarding')
+      // Redirect based on tier - LeadSite.AI goes to website extraction
+      if (selectedTier === 'leadsite-ai' || selectedTier === 'leadsite_ai') {
+        router.push('/onboarding/website-setup')
+      } else {
+        router.push('/dashboard')
+      }
     } catch (error) {
       const status = error.response?.status
       const data = error.response?.data || {}

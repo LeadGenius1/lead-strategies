@@ -6,14 +6,18 @@ import api from '@/lib/api'
 import { getCurrentUser } from '@/lib/auth'
 import toast from 'react-hot-toast'
 import Cookies from 'js-cookie'
-import { Check, Bot } from 'lucide-react'
+import { Check, Bot, Globe, Sparkles } from 'lucide-react'
 
 export default function OnboardingPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [extracting, setExtracting] = useState(false)
+  const [extractUrl, setExtractUrl] = useState('')
   const [user, setUser] = useState(null)
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
+    // Profile
+    name: '',
     // Business Information
     company: '',
     industry: '',
@@ -37,7 +41,8 @@ export default function OnboardingPage() {
       setUser(currentUser)
       
       // Pre-fill if data exists
-      if (currentUser.company) setFormData(prev => ({ ...prev, company: currentUser.company }))
+      if (currentUser.user?.name) setFormData(prev => ({ ...prev, name: currentUser.user.name }))
+      if (currentUser.user?.company) setFormData(prev => ({ ...prev, company: currentUser.user.company }))
       if (currentUser.businessInfo) {
         setFormData(prev => ({
           ...prev,
@@ -48,15 +53,64 @@ export default function OnboardingPage() {
     loadUser()
   }, [router])
 
+  const extractBusinessInfo = async () => {
+    if (!extractUrl.trim()) {
+      toast.error('Please enter a website URL')
+      return
+    }
+    setExtracting(true)
+    try {
+      const token = Cookies.get('token')
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'
+      const res = await fetch(`${backendUrl}/api/v1/copilot/extract-business`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ url: extractUrl.trim() }),
+      })
+      const data = await res.json()
+      if (data.success && data.data) {
+        setFormData(prev => ({
+          ...prev,
+          company: data.data.company || prev.company,
+          industry: data.data.industry || prev.industry,
+          services: data.data.services || prev.services,
+          location: data.data.location || prev.location,
+          targetMarket: data.data.targetMarket || prev.targetMarket,
+          website: extractUrl.trim(),
+        }))
+        toast.success('Business info extracted! Review and edit below.')
+      } else {
+        toast.error(data.error || 'Could not extract info. Please fill in manually.')
+      }
+    } catch (error) {
+      console.error('Extract error:', error)
+      toast.error('Extraction failed. Please fill in manually.')
+    } finally {
+      setExtracting(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      // Save onboarding data to user profile
+      // Save onboarding data to user profile (name goes as top-level field)
       await api.post('/api/users/onboarding', {
-        ...formData,
-        onboardingComplete: true
+        name: formData.name,
+        company: formData.company,
+        industry: formData.industry,
+        services: formData.services,
+        location: formData.location,
+        targetMarket: formData.targetMarket,
+        website: formData.website,
+        phone: formData.phone,
+        monthlyLeadGoal: formData.monthlyLeadGoal,
+        budget: formData.budget,
+        onboardingComplete: true,
       })
       
       toast.success('Profile setup complete! Welcome aboard!')
@@ -117,10 +171,61 @@ export default function OnboardingPage() {
         {/* Onboarding Form */}
         <div className="bg-dark-surface border border-dark-border rounded-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Your Name */}
+            <div>
+              <label className="block text-sm font-medium text-dark-text mb-2">
+                Your Name *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-dark-primary transition"
+                placeholder="John Doe"
+              />
+            </div>
+
+            {/* AI Website Extraction */}
+            <div className="bg-purple-500/5 border border-purple-500/20 rounded-lg p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+                <h3 className="font-semibold text-white">Auto-fill with AI</h3>
+              </div>
+              <p className="text-sm text-dark-textMuted mb-4">
+                Paste your website URL and our AI will extract your business info automatically.
+              </p>
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-textMuted" />
+                  <input
+                    type="text"
+                    value={extractUrl}
+                    onChange={(e) => setExtractUrl(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), extractBusinessInfo())}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-dark-bg border border-dark-border text-dark-text placeholder-dark-textMuted focus:outline-none focus:border-purple-500 transition"
+                    placeholder="https://yourcompany.com"
+                    disabled={extracting}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={extractBusinessInfo}
+                  disabled={extracting}
+                  className="px-5 py-3 rounded-lg bg-purple-500 hover:bg-purple-600 text-white font-medium text-sm transition disabled:opacity-50 whitespace-nowrap"
+                >
+                  {extracting ? 'Analyzing...' : 'Extract with AI'}
+                </button>
+              </div>
+              {extracting && (
+                <p className="text-xs text-purple-400 mt-2 animate-pulse">AI is analyzing your website...</p>
+              )}
+            </div>
+
             {/* Business Information */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-white mb-4">Tell us about your business</h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-dark-text mb-2">

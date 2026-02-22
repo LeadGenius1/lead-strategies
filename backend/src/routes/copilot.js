@@ -796,4 +796,87 @@ router.post('/analyze', async (req, res) => {
   }
 });
 
+// POST /api/v1/copilot/extract-business - AI website extraction for onboarding
+router.post('/extract-business', async (req, res) => {
+  try {
+    const { url } = req.body || {};
+    if (!url || typeof url !== 'string') {
+      return res.status(400).json({ success: false, error: 'URL is required' });
+    }
+
+    // Validate URL format
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url.startsWith('http') ? url : `https://${url}`);
+    } catch {
+      return res.status(400).json({ success: false, error: 'Invalid URL format' });
+    }
+
+    // Scrape the website
+    let siteData;
+    try {
+      siteData = await fetchWebsite(parsedUrl.href);
+    } catch (scrapeErr) {
+      console.error('[extract-business] Scrape failed:', scrapeErr.message);
+      return res.status(422).json({ success: false, error: 'Could not fetch that website. Please check the URL and try again.' });
+    }
+
+    // Build context from scraped data
+    const siteContext = [
+      `URL: ${siteData.url}`,
+      `Title: ${siteData.title}`,
+      `Description: ${siteData.description}`,
+      `H1: ${siteData.h1}`,
+      `H2s: ${(siteData.h2s || []).join(', ')}`,
+      `About: ${siteData.aboutText}`,
+      `Services: ${siteData.servicesText}`,
+      `Content: ${(siteData.content || '').slice(0, 3000)}`,
+    ].join('\n');
+
+    // Use Anthropic to extract structured business info
+    const anthropic = getAnthropicClient();
+    if (!anthropic) {
+      return res.status(503).json({ success: false, error: 'AI service temporarily unavailable' });
+    }
+
+    const extraction = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 512,
+      system: `You are a business analyst. Given website content, extract structured business information. Return ONLY valid JSON (no markdown, no code fences) with these exact fields:
+- "company": Company name
+- "industry": Primary industry or sector
+- "services": Main products or services offered (1-2 sentences)
+- "location": Business location or service area (or empty string if unknown)
+- "targetMarket": Who their customers are (1 sentence)
+If a field cannot be determined from the content, use an empty string.`,
+      messages: [{ role: 'user', content: `Extract business information from this website:\n\n${siteContext}` }],
+    });
+
+    // Parse Claude's response
+    const responseText = extraction.content?.[0]?.text || '{}';
+    let extracted;
+    try {
+      extracted = JSON.parse(responseText);
+    } catch {
+      console.error('[extract-business] Failed to parse Claude response:', responseText.slice(0, 200));
+      return res.status(500).json({ success: false, error: 'AI returned an unexpected format. Please fill in your info manually.' });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        company: extracted.company || '',
+        industry: extracted.industry || '',
+        services: extracted.services || '',
+        location: extracted.location || '',
+        targetMarket: extracted.targetMarket || '',
+        sourceUrl: parsedUrl.href,
+      },
+    });
+  } catch (error) {
+    console.error('[extract-business] Error:', error.message);
+    res.status(500).json({ success: false, error: 'Extraction failed. Please fill in your info manually.' });
+  }
+});
+
 module.exports = router;

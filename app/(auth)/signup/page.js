@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signup } from '@/lib/auth'
-import { AUTH_ENDPOINTS } from '@/lib/auth-endpoints'
 import toast from 'react-hot-toast'
 
 const TIERS = [
@@ -44,16 +43,9 @@ function SignupForm() {
     }
   }, [])
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
-    company: '',
     password: '',
     confirmPassword: '',
-    // Business info for AI agent context
-    industry: '',
-    services: '',
-    location: '',
-    targetMarket: '',
   })
 
   const handleSubmit = async (e) => {
@@ -68,34 +60,12 @@ function SignupForm() {
 
     try {
       await signup({
-        name: formData.name,
         email: formData.email,
-        company: formData.company,
         password: formData.password,
         tier: selectedTier,
-        // Business info for AI agent
-        businessInfo: {
-          industry: formData.industry,
-          services: formData.services,
-          location: formData.location,
-          targetMarket: formData.targetMarket,
-        },
       })
-      toast.success('Account created! Welcome to AI Lead Strategies.')
-      
-      // Redirect each tier to their chosen platform dashboard
-      const tierDashboardMap = {
-        'leadsite-ai': '/prospects',
-        'leadsite-io': '/dashboard',
-        'clientcontact': '/inbox',
-        'clientcontact-io': '/inbox',
-        'ultralead': '/crm',
-        'clientcontact-crm': '/crm',
-        'videosite': '/dashboard',
-        'videosite-io': '/dashboard',
-      }
-      const dashboardPath = tierDashboardMap[selectedTier] || '/dashboard'
-      router.push(dashboardPath)
+      toast.success('Account created! Let\'s set up your profile.')
+      router.push('/onboarding')
     } catch (error) {
       const status = error.response?.status
       const data = error.response?.data || {}
@@ -103,7 +73,7 @@ function SignupForm() {
 
       if (status === 404) {
         toast.error('Signup service is temporarily unavailable. Please try "Continue with Google" or try again later.', { duration: 6000 })
-        console.error('[Signup] 404 - Auth route missing. Endpoint:', AUTH_ENDPOINTS.SIGNUP)
+        console.error('[Signup] 404 - Auth route missing')
       } else if (status === 400 || status === 422) {
         toast.error(msg || 'Please check your form and try again.')
       } else if (error.code === 'ERR_NETWORK' || !status) {
@@ -144,7 +114,7 @@ function SignupForm() {
               Get <span className="text-gradient">Started</span>
             </h1>
             <p className="text-neutral-400 font-geist text-base sm:text-lg max-w-xl mx-auto">
-              5 platforms, 5 separate dashboards. Choose your product — after signup you go straight to that product&apos;s dashboard.
+              Choose your platform. Create your account in seconds — we&apos;ll set up your profile next.
             </p>
           </div>
 
@@ -230,34 +200,6 @@ function SignupForm() {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist"
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist"
-                    placeholder="Acme Inc (optional)"
-                  />
-                </div>
-              </div>
-
               <div>
                 <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
                   Email
@@ -300,74 +242,6 @@ function SignupForm() {
                     className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist"
                     placeholder="••••••••"
                   />
-                </div>
-              </div>
-
-              {/* Business Info Section for AI Agent */}
-              <div className="border-t border-subtle pt-8 mt-8">
-                <h3 className="text-lg font-space-grotesk text-white mb-2">Business Information</h3>
-                <p className="text-sm text-neutral-500 font-geist mb-6">
-                  Help our AI agent find the best prospects for your business
-                </p>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                      Industry *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.industry}
-                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                      className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist"
-                      placeholder="e.g., Commercial Cleaning, SaaS, Real Estate"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                      Services/Products *
-                    </label>
-                    <textarea
-                      required
-                      value={formData.services}
-                      onChange={(e) => setFormData({ ...formData, services: e.target.value })}
-                      className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist resize-none"
-                      placeholder="Describe your main services or products"
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                        Location/Service Area *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.location}
-                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                        className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist"
-                        placeholder="e.g., Berks County, PA"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs uppercase tracking-widest text-neutral-500 font-geist mb-2">
-                        Target Market *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.targetMarket}
-                        onChange={(e) => setFormData({ ...formData, targetMarket: e.target.value })}
-                        className="w-full px-4 py-3 bg-black border border-subtle text-white placeholder-neutral-600 focus:outline-none focus:border-purple-500 transition font-geist"
-                        placeholder="e.g., Offices, Medical Facilities"
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
 

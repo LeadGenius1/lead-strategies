@@ -62,6 +62,22 @@ export default function WebsitesPage() {
       const status = error.response?.status
       const errData = error.response?.data
       if (status === 403) {
+        // Check if user actually has an eligible plan despite backend 403
+        // This handles plan name mismatches (e.g. "LeadSite-IO Plan" vs numeric tier)
+        const tkn = Cookies.get('token') || Cookies.get('admin_token')
+        if (tkn) {
+          try {
+            const payload = JSON.parse(atob(tkn.split('.')[1]))
+            const tierStr = (payload.tier || '').toString().toLowerCase().replace(/[\s_]/g, '-')
+            const eligible = ['leadsite-io', 'ultralead', 'ultralead-ai'].some(p => tierStr.includes(p))
+              || (Number(payload.tier) >= 2 && Number.isInteger(Number(payload.tier)))
+            if (eligible) {
+              // User has access — backend blocked incorrectly, show empty list with builder button
+              setWebsites([])
+              return
+            }
+          } catch { /* token decode failed, fall through to block */ }
+        }
         setFeatureBlocked(true)
         setUpgradeMessage(errData?.message || 'Upgrade to LeadSite.IO to create AI-powered websites.')
         setWebsites([])

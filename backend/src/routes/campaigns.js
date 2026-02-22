@@ -77,11 +77,25 @@ router.post('/', async (req, res) => {
     if (!db) {
       return res.status(201).json({ success: true, data: { id: Date.now().toString(), ...req.body, status: 'draft', createdAt: new Date() } });
     }
+    const { name, description, type, subject, fromName, fromEmail, replyTo, templateId, htmlContent, textContent, scheduledAt } = req.body;
+    if (!name) {
+      return res.status(400).json({ success: false, error: 'Campaign name is required' });
+    }
     const campaign = await db.campaign.create({
       data: {
-        ...req.body,
         userId: req.user.id,
-        status: 'draft'
+        name,
+        description: description || null,
+        type: type || 'email',
+        status: 'draft',
+        subject: subject || null,
+        fromName: fromName || null,
+        fromEmail: fromEmail || null,
+        replyTo: replyTo || null,
+        templateId: templateId || null,
+        htmlContent: htmlContent || req.body.body || null,
+        textContent: textContent || null,
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       }
     });
     res.status(201).json({ success: true, data: campaign });

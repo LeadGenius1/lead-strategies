@@ -238,7 +238,7 @@ async function getMasterContext() {
   // Load deployment context (latest changes, marketing implications)
   let deploymentContext = null;
   try {
-    const contextPath = path.join(__dirname, '../../../public/nexus-data/system-context.json');
+    const contextPath = path.join(__dirname, '../../data/system-context.json');
     const raw = await fs.readFile(contextPath, 'utf-8');
     deploymentContext = JSON.parse(raw);
   } catch (err) {

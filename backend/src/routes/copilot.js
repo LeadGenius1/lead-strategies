@@ -212,6 +212,29 @@ async function getMasterContext() {
     console.warn('CLAUDE.md not found, skipping rules injection:', err.message);
   }
 
+  // Add NEXUS Blueprint context
+  let nexusModules = [];
+  let pendingRecommendations = [];
+  try {
+    nexusModules = await prisma.nexusModule.findMany({
+      include: {
+        updates: {
+          orderBy: { createdAt: 'desc' },
+          take: 3
+        }
+      },
+      orderBy: { moduleNumber: 'asc' }
+    });
+
+    pendingRecommendations = await prisma.nexusRecommendation.findMany({
+      where: { status: 'PENDING' },
+      orderBy: { priority: 'desc' },
+      take: 10
+    });
+  } catch (err) {
+    console.warn('NEXUS Blueprint queries failed (tables may not exist yet):', err.message);
+  }
+
   return {
     current_system_status: liveStatus,
     rules_loaded: !!claudeRules,
@@ -267,6 +290,19 @@ async function getMasterContext() {
       break_even: '12 customers at $49/mo or 2 customers at $499/mo',
       margin_after_break_even: '97%',
       bundle_pricing: { starter: '$79/mo', professional: '$199/mo', enterprise: '$249/mo', annual_discount: '20% off' },
+    },
+    nexus: {
+      modules: nexusModules,
+      summary: {
+        total: nexusModules.length,
+        completed: nexusModules.filter(m => m.status === 'COMPLETED').length,
+        inProgress: nexusModules.filter(m => m.status === 'IN_PROGRESS').length,
+        avgProgress: nexusModules.length > 0 ? Math.round(nexusModules.reduce((sum, m) => sum + m.progress, 0) / nexusModules.length) : 0
+      },
+      pendingRecommendations,
+      currentFocus: nexusModules.filter(m =>
+        m.status === 'IN_PROGRESS' || m.priority === 'STRATEGIC'
+      )
     },
   };
 }
@@ -402,7 +438,36 @@ ${masterContext._claudeRules || 'CLAUDE.md not available — advise checking the
 
 When asked about dev rules, coding standards, locked files, deployment process, or how to make changes — reference these rules. They are non-negotiable.
 
-${JSON.stringify({...masterContext, _claudeRules: undefined}, null, 2)}`;
+NEXUS BLUEPRINT - STRATEGIC ROADMAP:
+You have access to the 8-module NEXUS Blueprint:
+${JSON.stringify(masterContext.nexus, null, 2)}
+
+NEXUS CAPABILITIES:
+- Monitor progress on all strategic modules
+- Recommend next actions based on NEXUS priorities
+- Update NEXUS status when work completes
+- Generate strategic recommendations
+- Coordinate 7 AI agents to execute NEXUS initiatives
+
+AUTONOMOUS NEXUS UPDATES:
+You CAN and SHOULD update NEXUS when:
+- Strategic initiatives complete
+- System state changes
+- New data reveals progress
+- Blockers discovered or resolved
+
+Use update_nexus_module and create_nexus_recommendation tools.
+
+STRATEGIC FRAMEWORK:
+When asked about priorities/strategy/"what next":
+1. Analyze NEXUS state
+2. Identify highest-priority modules
+3. Check dependencies/blockers
+4. Recommend specific actions
+5. Coordinate relevant agents
+6. Update NEXUS with decisions
+
+${JSON.stringify({...masterContext, _claudeRules: undefined, nexus: undefined}, null, 2)}`;
 
     console.log('🤖 Calling Anthropic API...');
     const chatMessage = await breakers.anthropic.execute(() =>

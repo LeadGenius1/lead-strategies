@@ -164,7 +164,7 @@ function getAnthropicClient() {
   }
 }
 
-// Master business context — injected into every GTM chat so Claude knows the full picture
+// Master business context — injected into every NEXUS Command Center chat so Claude knows the full picture
 async function getMasterContext() {
   // Live health checks — direct service pings, no HTTP self-call
   const liveStatus = { timestamp: new Date().toISOString(), uptime_seconds: Math.round(process.uptime()) };
@@ -386,7 +386,7 @@ router.post('/chat', async (req, res) => {
     const systemPrompt = `${LEAD_HUNTER_SYSTEM_PROMPT}
 
 ## MASTER BUSINESS CONTEXT (AI Lead Strategies LLC)
-You are the AI Chief Strategy Officer for AI Lead Strategies' GTM Control Center — not just a chatbot.
+You are the AI Chief Strategy Officer for AI Lead Strategies' NEXUS Command Center — not just a chatbot.
 You have FULL knowledge of the business. NEVER ask "What's your business?" or "Tell me about your company."
 You report directly to Michael (the owner). Be proactive, data-driven, and action-oriented.
 

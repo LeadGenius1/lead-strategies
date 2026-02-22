@@ -41,7 +41,7 @@ Seed script: `backend/scripts/seed-nexus.js` (idempotent — safe to re-run)
 | POST | `/api/v1/nexus/recommendations` | Create new recommendation |
 | PATCH | `/api/v1/nexus/recommendations/:id` | Update recommendation status |
 
-**Live GTM Dashboard** (`public/gtm-dashboard.html`):
+**NEXUS Command Center** (`public/nexus-command-center.html`):
 - NEXUS tab now shows live data from API (replaces static content)
 - Summary stats: total modules, in-progress, completed, avg progress
 - Module cards with progress bars, initiative tracking, priority/effort/category badges
@@ -84,7 +84,7 @@ curl .../api/v1/nexus/summary (with JWT)                   → 200 — returns 4
 | `backend/src/routes/nexus.js` | Created | 188 lines |
 | `backend/src/routes/copilot.js` | Modified | +66 (NEXUS context) |
 | `backend/src/index.js` | Modified | +4 (route mount) |
-| `public/gtm-dashboard.html` | Modified | +150 (live dashboard) |
+| `public/nexus-command-center.html` | Modified | +150 (live dashboard) |
 
 **Total: 7 files, ~680 lines added**
 

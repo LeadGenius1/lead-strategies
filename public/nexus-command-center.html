@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS Command Center — AI Lead Strategies</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+  // Suppress Tailwind CDN production warning — this is a local dashboard file, not a deployed app
+  const _warn = console.warn.bind(console);
+  console.warn = (...args) => {
+    if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+    _warn(...args);
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background-color: #000; }
+
+  /* ── Stars (exact from AETHER source) ── */
+  .stars {
+    width: 1px; height: 1px;
+    background: transparent;
+    box-shadow:
+      1744px 122px #FFF, 134px 1321px #FFF, 92px 859px #FFF,
+      456px 340px #FFF, 789px 1650px #FFF, 1200px 500px #FFF,
+      345px 890px #FFF, 1500px 230px #FFF, 670px 1100px #FFF,
+      220px 670px #FFF, 980px 1400px #FFF, 1100px 780px #FFF,
+      55px 1200px #FFF, 1650px 950px #FFF, 400px 60px #FFF,
+      830px 1800px #FFF, 1350px 400px #FFF, 190px 1500px #FFF,
+      560px 720px #FFF, 1480px 1600px #FFF, 760px 280px #FFF,
+      110px 420px #FFF, 1290px 1100px #FFF, 640px 1750px #FFF,
+      1010px 620px #FFF, 380px 1350px #FFF, 870px 90px #FFF,
+      1720px 700px #FFF, 290px 1900px #FFF, 1560px 1200px #FFF;
+    animation: animStar 50s linear infinite;
+  }
+  .stars::after {
+    content: " "; position: absolute; top: 2000px;
+    width: 1px; height: 1px; background: transparent;
+    box-shadow:
+      1744px 122px #FFF, 134px 1321px #FFF, 92px 859px #FFF,
+      456px 340px #FFF, 789px 1650px #FFF, 1200px 500px #FFF,
+      345px 890px #FFF, 1500px 230px #FFF, 670px 1100px #FFF,
+      220px 670px #FFF, 980px 1400px #FFF, 1100px 780px #FFF,
+      55px 1200px #FFF, 1650px 950px #FFF, 400px 60px #FFF,
+      830px 1800px #FFF, 1350px 400px #FFF, 190px 1500px #FFF,
+      560px 720px #FFF, 1480px 1600px #FFF;
+  }
+  @keyframes animStar {
+    from { transform: translateY(0px); }
+    to   { transform: translateY(-2000px); }
+  }
+
+  /* ── Grid ── */
+  .bg-grid {
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  }
+
+  /* ── Glows ── */
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%       { opacity: 0.8; transform: scale(1.05); }
+  }
+  .glow-blob { animation: pulse-glow 8s infinite; }
+
+  /* ── Conic spin button ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin-border { animation: spin 3s linear infinite; }
+
+  /* ── Pulse dot ── */
+  @keyframes ping { 75%,100%{ transform:scale(2); opacity:0; } }
+  .animate-ping { animation: ping 1s cubic-bezier(0,0,0.2,1) infinite; }
+
+  /* ── Status bar scan line ── */
+  @keyframes scan {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+  .scan-line { animation: scan 2.5s linear infinite; }
+
+  /* ── Tab indicator slide ── */
+  .tab-btn { transition: all 0.2s; }
+  .tab-btn.active { color: #fff; border-bottom: 2px solid #6366f1; }
+  .tab-btn:not(.active) { color: #525252; border-bottom: 2px solid transparent; }
+
+  /* ── Card hover ── */
+  .glow-card { transition: border-color 0.4s, box-shadow 0.4s; }
+  .glow-card:hover { border-color: rgba(99,102,241,0.5) !important; box-shadow: 0 0 30px rgba(99,102,241,0.08); }
+  .glow-card-purple:hover { border-color: rgba(168,85,247,0.5) !important; box-shadow: 0 0 30px rgba(168,85,247,0.08); }
+  .glow-card-emerald:hover { border-color: rgba(52,211,153,0.5) !important; box-shadow: 0 0 30px rgba(52,211,153,0.08); }
+  .glow-card-amber:hover  { border-color: rgba(251,191,36,0.5)  !important; box-shadow: 0 0 30px rgba(251,191,36,0.08); }
+  .glow-card-rose:hover   { border-color: rgba(251,113,133,0.5) !important; box-shadow: 0 0 30px rgba(251,113,133,0.08); }
+
+  /* ── Chat ── */
+  #chat-messages { scroll-behavior: smooth; }
+  .msg-ai   { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15); }
+  .msg-user { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+  .msg-ai.msg-offline { border-color: rgba(251,191,36,0.25); }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  .blink { animation: blink 1.2s ease-in-out infinite; }
+
+  /* ── Voice ── */
+  .mic-active { background: rgba(239,68,68,0.2) !important; border-color: rgba(239,68,68,0.5) !important; }
+  @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
+  .mic-active { animation: mic-pulse 1.5s infinite; }
+
+  /* ── Progress bar ── */
+  @keyframes fillBar { from{width:0} to{width:var(--w)} }
+  .fill-bar { animation: fillBar 1.2s cubic-bezier(.4,0,.2,1) forwards; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+
+<body class="bg-black text-white antialiased selection:bg-indigo-500/30 selection:text-indigo-200 overflow-x-hidden min-h-screen">
+
+<!-- ═══════════════════════════════════════════════════
+     AMBIENT BACKGROUND (exact AETHER pattern)
+════════════════════════════════════════════════════ -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+  <div class="stars absolute w-[1px] h-[1px] bg-transparent rounded-full opacity-50"></div>
+  <div class="absolute inset-0 bg-grid opacity-30"></div>
+  <div class="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[120px] glow-blob"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] bg-purple-900/10 rounded-full blur-[120px] glow-blob"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-800/5 rounded-full blur-[80px]"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TOP NAV (AETHER style)
+════════════════════════════════════════════════════ -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-md">
+  <div class="max-w-screen-xl mx-auto px-6 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-5 h-5 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full"></div>
+      <span class="text-xs font-medium tracking-widest uppercase text-white">AI Lead Strategies</span>
+      <span class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[9px] mono">NEXUS COMMAND CENTER</span>
+    </div>
+
+    <!-- Live status -->
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-[10px] mono text-neutral-400">api.aileadstrategies.com <span class="text-emerald-400">HEALTHY</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-[10px] mono text-neutral-600">
+        <span>FETCHED</span>
+        <span class="text-neutral-400">Feb 18, 2026</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     MAIN LAYOUT
+════════════════════════════════════════════════════ -->
+<div class="relative z-10 pt-14 flex min-h-screen">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="fixed left-0 top-14 bottom-0 w-56 border-r border-white/5 bg-black/40 backdrop-blur-md flex flex-col z-40">
+    <!-- Logo area -->
+    <div class="p-5 border-b border-white/5">
+      <div class="text-[10px] mono text-neutral-600 mb-1 uppercase tracking-widest">Workspace</div>
+      <div class="text-sm font-medium text-white">Michael's Dashboard</div>
+      <div class="text-[10px] text-neutral-500 mt-0.5">600 Eagleview Blvd · Exton PA</div>
+    </div>
+
+    <!-- Nav items -->
+    <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
+      <div class="text-[9px] mono text-neutral-600 px-3 py-2 uppercase tracking-widest">Navigation</div>
+
+      <button onclick="switchTab('overview')" id="nav-overview" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
+        Overview
+      </button>
+      <button onclick="switchTab('status')" id="nav-status" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        System Status
+      </button>
+      <button onclick="switchTab('campaigns')" id="nav-campaigns" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Campaigns
+        <span class="ml-auto px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded text-[9px] mono">DRAFT</span>
+      </button>
+      <button onclick="switchTab('platforms')" id="nav-platforms" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        5 Platforms
+      </button>
+      <button onclick="switchTab('agents')" id="nav-agents" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+        AI Agents
+        <span class="ml-auto px-1.5 py-0.5 bg-indigo-500/20 text-indigo-400 rounded text-[9px] mono">7</span>
+      </button>
+      <button onclick="switchTab('rules')" id="nav-rules" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Dev Rules
+      </button>
+      <button onclick="switchTab('concierge')" id="nav-concierge" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        AI Assistant
+        <span class="ml-auto flex h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
+      </button>
+      <button onclick="switchTab('blueprint')" id="nav-blueprint" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all text-left">
+        <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+        NEXUS Blueprint
+        <span class="ml-auto px-1.5 py-0.5 bg-purple-500/20 text-purple-400 rounded text-[9px] mono">8</span>
+      </button>
+    </nav>
+
+    <!-- Infra quick ref -->
+    <div class="p-4 border-t border-white/5 space-y-2">
+      <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-2">Infrastructure</div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Repo</span>
+        <span class="text-[10px] mono text-neutral-300">LeadGenius1/lead-strategies</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Branch</span>
+        <span class="text-[10px] mono text-indigo-400">main</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">DB</span>
+        <span class="text-[10px] mono text-emerald-400">switchyard.proxy…</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="ml-56 flex-1 p-8 min-h-screen">
+
+    <!-- ══════════════════════════════════
+         TAB: OVERVIEW
+    ═══════════════════════════════════ -->
+    <div id="tab-overview" class="tab-content">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-[10px] mono tracking-wide mb-4">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+          </span>
+          NEXUS COMMAND CENTER — LIVE
+        </div>
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">NEXUS Command Center</h1>
+        <p class="text-neutral-500 text-sm font-light">AI Lead Strategies LLC · aileadstrategies.com fetched live · Instantly MCP connected</p>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- API Health -->
+        <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">API Status</div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+            <span class="text-xl font-medium text-emerald-400">HEALTHY</span>
+          </div>
+          <div class="text-[10px] mono text-neutral-600">api.aileadstrategies.com</div>
+        </div>
+
+        <!-- Accounts -->
+        <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Sender Accounts</div>
+          <div class="text-3xl font-medium text-white mb-1">4</div>
+          <div class="text-[10px] text-neutral-500">120 emails / day capacity</div>
+        </div>
+
+        <!-- Warmup -->
+        <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Warmup Score</div>
+          <div class="text-3xl font-medium text-white mb-1">100%</div>
+          <div class="text-[10px] text-neutral-500">All domains · pool: premium-v1</div>
+        </div>
+
+        <!-- Lead Lists -->
+        <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Lead Lists</div>
+          <div class="text-3xl font-medium text-white mb-1">26</div>
+          <div class="text-[10px] text-neutral-500">Supersearch + enriched companies</div>
+        </div>
+      </div>
+
+      <!-- Live Website Pull + GTM Engine (2-col) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+        <!-- Live site data -->
+        <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <div class="text-xs font-medium text-white">🌐 aileadstrategies.com</div>
+              <div class="text-[10px] text-neutral-500 mt-0.5">Fetched live — Feb 18, 2026</div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] mono">LIVE</span>
+          </div>
+
+          <!-- Tagline -->
+          <div class="bg-black/40 rounded-xl p-4 border border-white/5 mb-4">
+            <div class="text-xs font-medium text-white mb-1">"ONE PLATFORM INFINITE REVENUE"</div>
+            <div class="text-[10px] text-neutral-500">Automated B2B Marketing Ecosystem</div>
+          </div>
+
+          <!-- Stats from homepage -->
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="text-center bg-black/30 rounded-lg p-3 border border-white/5">
+              <div class="text-lg font-medium text-indigo-400">+400%</div>
+              <div class="text-[9px] text-neutral-600 mt-0.5">Avg ROI</div>
+            </div>
+            <div class="text-center bg-black/30 rounded-lg p-3 border border-white/5">
+              <div class="text-lg font-medium text-purple-400">97%</div>
+              <div class="text-[9px] text-neutral-600 mt-0.5">Profit Margin</div>
+            </div>
+            <div class="text-center bg-black/30 rounded-lg p-3 border border-white/5">
+              <div class="text-lg font-medium text-white">12</div>
+              <div class="text-[9px] text-neutral-600 mt-0.5">Break-Even Customers</div>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="flex items-center gap-4 text-[10px] mono text-neutral-500">
+            <span>📞 (855) 506-8886</span>
+            <span>📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4d7d1d4d4cbd6d0e4c5cdc8c1c5c0d7d0d6c5d0c1c3cdc1d78ac7cbc9">[email&#160;protected]</a></span>
+          </div>
+        </div>
+
+        <!-- GTM Engine Flow -->
+        <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+          <div class="text-xs font-medium text-white mb-5">◈ Agentic GTM Engine</div>
+
+          <div class="space-y-2">
+            <!-- Connecting line -->
+            <div class="relative">
+              <!-- steps -->
+              <div class="space-y-1.5 relative">
+                <div class="absolute left-[11px] top-6 bottom-6 w-[1px] bg-gradient-to-b from-indigo-500/40 via-purple-500/20 to-transparent"></div>
+                <div id="gtm-steps"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accounts Row -->
+      <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent"></div>
+        <div class="flex items-center justify-between mb-5">
+          <div class="text-xs font-medium text-white">Sender Infrastructure — Instantly MCP (Live)</div>
+          <span class="text-[10px] mono text-neutral-600">org: 408925ca-e46a-4b6a-b6ba-3b1d8a6813fa</span>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="accounts-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: SYSTEM STATUS
+    ═══════════════════════════════════ -->
+    <div id="tab-status" class="tab-content hidden">
+      <!-- Live alert banner (hidden by default, shown when critical service down) -->
+      <div id="status-alert-banner" class="hidden relative p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 mb-4 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-rose-500 to-transparent"></div>
+        <div class="flex items-center gap-2">
+          <span class="text-rose-400 text-sm">&#9888;</span>
+          <span id="status-alert-text" class="text-[11px] text-rose-300 font-medium"></span>
+        </div>
+      </div>
+
+      <div class="mb-8 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl font-medium tracking-tight text-white mb-2">System Status</h1>
+          <p class="text-neutral-500 text-sm font-light">
+            <span id="status-timestamp">Last updated: loading...</span>
+            <span id="status-mode" class="ml-2 px-2 py-0.5 rounded-full text-[9px] mono bg-neutral-800 text-neutral-500">STATIC</span>
+          </p>
+        </div>
+        <button id="refresh-status-btn" onclick="fetchSystemStatus()" title="Refresh now"
+          class="flex items-center gap-2 px-3 py-2 rounded-xl bg-black/50 border border-white/10 text-neutral-400 hover:text-white hover:border-indigo-500/30 transition-all text-xs">
+          <svg id="refresh-icon" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span id="refresh-label">Refresh</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Working -->
+        <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card-emerald glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
+          <div class="flex items-center gap-2 mb-5">
+            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+            <span class="text-xs font-medium text-white">Known Working</span>
+          </div>
+          <div class="space-y-2" id="status-working"></div>
+        </div>
+
+        <!-- Needs verify -->
+        <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card-amber glow-card overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+          <div class="flex items-center gap-2 mb-5">
+            <span class="relative flex h-2 w-2 rounded-full bg-amber-500"></span>
+            <span class="text-xs font-medium text-white">Needs Verification</span>
+          </div>
+          <div class="space-y-2" id="status-pending"></div>
+        </div>
+
+        <!-- Not implemented + locked files -->
+        <div class="space-y-4">
+          <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-rose-500/20 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-rose-500/40 to-transparent"></div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="relative flex h-2 w-2 rounded-full bg-rose-500"></span>
+              <span class="text-xs font-medium text-white">Not Implemented</span>
+            </div>
+            <div class="text-[11px] text-neutral-400 bg-black/30 rounded-lg p-3 border border-white/5">
+              🔴 Website build limits per plan tier — currently unlimited
+            </div>
+          </div>
+
+          <!-- Locked files -->
+          <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            <div class="text-xs font-medium text-white mb-4">🔒 Locked Files (READ-ONLY)</div>
+            <div class="space-y-1.5" id="locked-files-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Health Checks -->
+      <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden mb-6">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
+        <div class="flex items-center justify-between mb-5">
+          <div class="text-xs font-medium text-white">Live Health Checks</div>
+          <div id="health-overall" class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-neutral-600"></span>
+            <span class="text-[10px] mono text-neutral-500">Checking...</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="health-grid"></div>
+      </div>
+
+      <!-- Infrastructure -->
+      <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+        <div class="text-xs font-medium text-white mb-5">🏗️ Infrastructure (CLAUDE.md)</div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="infra-grid"></div>
+        <div class="mt-4 bg-neutral-900/50 border border-white/5 rounded-xl p-3">
+          <div class="text-[11px] text-neutral-500 mono">ℹ️ DB connection: use <code class="bg-black/40 text-neutral-300 px-1 rounded">switchyard.proxy.rlwy.net:32069</code> — not the internal hostname</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: CAMPAIGNS
+    ═══════════════════════════════════ -->
+    <div id="tab-campaigns" class="tab-content hidden">
+      <div class="mb-8">
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">Campaigns</h1>
+        <p class="text-neutral-500 text-sm font-light">Instantly MCP — live data — 4 senders ready · 2 campaigns in draft</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6" id="campaigns-grid"></div>
+
+      <!-- Lead lists -->
+      <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
+        <div class="flex items-center justify-between mb-5">
+          <div class="text-xs font-medium text-white">Lead Lists</div>
+          <span class="text-[10px] mono text-neutral-500">26 total · Instantly MCP</span>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3" id="lead-lists-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: PLATFORMS
+    ═══════════════════════════════════ -->
+    <div id="tab-platforms" class="tab-content hidden">
+      <div class="mb-8">
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">Platform Ecosystem</h1>
+        <p class="text-neutral-500 text-sm font-light">5 integrated platforms · CLAUDE.md is source of truth for pricing & status</p>
+      </div>
+      <div class="space-y-4" id="platforms-list"></div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: AI AGENTS
+    ═══════════════════════════════════ -->
+    <div id="tab-agents" class="tab-content hidden">
+      <div class="mb-8">
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">AI Agents</h1>
+        <p class="text-neutral-500 text-sm font-light">7 UltraLead self-healing agents · working 24/7 to close deals</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="agents-grid"></div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: DEV RULES
+    ═══════════════════════════════════ -->
+    <div id="tab-rules" class="tab-content hidden">
+      <div class="mb-8">
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">Dev Rules</h1>
+        <p class="text-neutral-500 text-sm font-light">STANDARD_EXECUTION_POLICY.md · Violation = immediate revert · no exceptions</p>
+      </div>
+
+      <!-- Warning banner -->
+      <div class="relative p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 mb-6 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-rose-500 to-transparent"></div>
+        <div class="text-xs text-rose-300">⚠️ Authentication has been broken and "fixed" <strong>5+ times</strong> from ignoring these rules. They are non-negotiable. Every violation requires an immediate revert.</div>
+      </div>
+
+      <div class="space-y-4" id="rules-list"></div>
+
+      <!-- Cursor template -->
+      <div class="relative mt-6 p-6 rounded-2xl bg-neutral-900/30 border border-white/10 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+        <div class="text-xs font-medium text-white mb-4">💻 Required Cursor Prompt Template (Rule 6)</div>
+        <pre class="bg-black/50 rounded-xl p-4 border border-white/5 text-[10px] mono text-neutral-400 overflow-x-auto leading-relaxed">SCOPE: [Exactly ONE file or ONE route]
+OBJECTIVE: [Specific thing to fix/add]
+DO NOT TOUCH: auth.js, middleware/auth.js, index.js, schema.prisma
+
+CONSTRAINTS:
+- Preserve existing response format
+- Preserve existing imports
+- Preserve existing middleware order
+- Match existing code patterns (check surrounding files first)
+
+BEFORE MAKING CHANGES:
+1. Show me current contents of [target file]
+2. Explain what you plan to change and why
+3. Wait for my approval before editing
+
+AFTER CHANGES:
+1. Show me the git diff
+2. Run: curl -X POST http://localhost:3001/api/auth/signup \
+     -H "Content-Type: application/json" -d '{}'
+3. Confirm auth still returns 400 (not 404/500)</pre>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: CONCIERGE
+    ═══════════════════════════════════ -->
+    <div id="tab-concierge" class="tab-content hidden flex flex-col" style="height: calc(100vh - 7rem);">
+      <div class="mb-6 flex-shrink-0">
+        <h1 class="text-3xl font-medium tracking-tight text-white mb-2">AI Assistant</h1>
+        <p class="text-neutral-500 text-sm font-light">Ask anything — live API, Instantly MCP, CLAUDE.md, all 7 rules</p>
+      </div>
+
+      <div class="flex-1 flex flex-col relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 overflow-hidden" style="min-height: 0;">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+
+        <!-- Messages -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 mb-4 pr-1" style="min-height:0;"></div>
+
+        <!-- Typing indicator -->
+        <div id="typing-ind" class="hidden flex items-center gap-2 px-4 py-3 rounded-xl msg-ai w-fit mb-3">
+          <span class="text-xs text-neutral-500 mono">thinking</span>
+          <span class="flex gap-1">
+            <span class="w-1 h-1 bg-indigo-400 rounded-full blink" style="animation-delay:0s"></span>
+            <span class="w-1 h-1 bg-indigo-400 rounded-full blink" style="animation-delay:.2s"></span>
+            <span class="w-1 h-1 bg-indigo-400 rounded-full blink" style="animation-delay:.4s"></span>
+          </span>
+        </div>
+
+<!-- Input -->
+        <div class="flex gap-3 flex-shrink-0 items-center">
+          <!-- Mic button -->
+          <button id="mic-btn" onclick="toggleVoiceInput()" title="Voice input (click to speak)"
+            class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-black/50 border border-white/10 text-neutral-400 hover:text-white hover:border-white/20 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4M12 15a3 3 0 003-3V5a3 3 0 00-6 0v7a3 3 0 003 3z"/></svg>
+          </button>
+          <input id="chat-input" type="text" placeholder="Ask anything about AI Lead Strategies..."
+            class="flex-1 bg-black/50 border border-white/10 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all text-sm placeholder:text-neutral-600 mono"
+            onkeydown="if(event.key==='Enter') sendChat()">
+          <!-- Speaker toggle -->
+          <button id="speaker-btn" onclick="toggleSpeaker()" title="Toggle voice responses"
+            class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-black/50 border border-white/10 text-neutral-400 hover:text-white hover:border-white/20 transition-all">
+            <svg id="speaker-icon-on" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.788l4.72-3.15A.5.5 0 0112 6.05v11.9a.5.5 0 01-.78.416L6.5 15.212H4a1 1 0 01-1-1v-4.424a1 1 0 011-1h2.5z"/></svg>
+            <svg id="speaker-icon-off" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </button>
+          <button onclick="sendChat()" class="relative group inline-flex items-center overflow-hidden rounded-xl p-[1px] transition-transform hover:scale-105 active:scale-95">
+            <span class="absolute inset-[-1000%] spin-border bg-[conic-gradient(from_90deg_at_50%_50%,#000_0%,#6366f1_50%,#000_100%)]"></span>
+            <span class="relative inline-flex h-full w-full items-center justify-center rounded-xl bg-black px-5 py-3 text-sm font-medium text-white backdrop-blur-3xl border border-white/10 group-hover:bg-neutral-900/80 transition-colors">
+              Send
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         TAB: NEXUS BLUEPRINT
+    ═══════════════════════════════════ -->
+    <div id="tab-blueprint" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-[10px] mono tracking-wide mb-4">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+          </span>
+          NEXUS BLUEPRINT — LIVE
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-medium tracking-tight text-white mb-2">NEXUS Blueprint</h1>
+            <p class="text-neutral-500 text-sm font-light">Strategic roadmap autonomously managed by Master AI</p>
+          </div>
+          <button onclick="loadNexusData()" class="px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs hover:bg-purple-500/30 transition-all">Refresh</button>
+        </div>
+      </div>
+
+      <!-- Summary Stats (4 cards) -->
+      <div id="nexus-summary" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="relative p-4 rounded-xl bg-black/40 border border-white/5"><div class="text-neutral-500 text-xs">Loading...</div></div>
+      </div>
+
+      <!-- AI Recommendations -->
+      <div id="nexus-recommendations" class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-xs font-medium text-white">◈ AI Recommendations</div>
+          <span id="nexus-rec-count" class="text-[10px] mono text-neutral-500"></span>
+        </div>
+        <div id="recommendations-list" class="space-y-3"></div>
+      </div>
+
+      <!-- Module Cards (2-col) -->
+      <div class="flex items-center justify-between mb-5">
+        <div class="text-xs font-medium text-white">◈ Strategic Modules</div>
+        <span id="nexus-module-count" class="text-[10px] mono text-neutral-500"></span>
+      </div>
+      <div id="nexus-modules" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+
+      <!-- Fallback: static enhancements still render below if API fails -->
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-5">
+          <div class="text-xs font-medium text-white">◈ Enhancement Roadmap</div>
+          <span class="text-[10px] mono text-neutral-500">8 upgrades · click to expand</span>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="blueprint-enhancements-grid"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     DATA & LOGIC
+════════════════════════════════════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+const ACCOUNTS = [
+  { email: "contact@getaileadstrategies.com",    domain: "getaileadstrategies.com",    warmup: 100, limit: 30, tracking: "inst.getaileadstrategies.com"    },
+  { email: "contact@meetaileadstrategies.com",   domain: "meetaileadstrategies.com",   warmup: 100, limit: 30, tracking: "inst.meetaileadstrategies.com"   },
+  { email: "contact@trendaileadstrategies.com",  domain: "trendaileadstrategies.com",  warmup: 100, limit: 30, tracking: "inst.trendaileadstrategies.com"  },
+  { email: "contact@onlineaileadstrategies.com", domain: "onlineaileadstrategies.com", warmup: 100, limit: 30, tracking: "inst.onlineaileadstrategies.com" },
+];
+
+const CAMPAIGNS = [
+  { id: "b94241d3-3332-4f88-887c-677428958b76", name: "AI Lead Strategies Introduction", status: "DRAFT", created: "2025-11-30", vars: [], checklist: ["Assign email_list (4 accounts ready)", "Add leads from 26 available lists", "Configure campaign_schedule", "Call activate_campaign()"] },
+  { id: "2cd8abb7-7e77-4710-a878-c5ab3246cb3a", name: "LeadSite Master Campaign",         status: "DRAFT", created: "2025-12-16", vars: ["personalization", "custom_pitch"], checklist: ["Assign email_list (4 accounts ready)", "Populate {{personalization}} variable", "Populate {{custom_pitch}} variable", "Call activate_campaign()"] },
+];
+
+const LEAD_LISTS = [];
+
+const PLATFORMS = [
+  { icon:"⚡", name:"LeadSite.AI",       domain:"leadsiteai.com",     color:"indigo",  tiers:["$49","$149","$349"], status:"warn", statusTxt:"Sidebar nav works — F01-F05 need end-to-end verification",           features:["Lead Hunter (F01)","Proactive Hunter (F02)","Prospects (F03)","Campaigns (F04)","Replies (F05)"], desc:"Email lead generation on autopilot · AI scrapes prospects, writes emails, manages follow-ups" },
+  { icon:"🌐", name:"LeadSite.IO",       domain:"leadsiteio.com",     color:"purple",  tiers:["$49","$149","$349"], status:"ok",   statusTxt:"AI builder WORKING (6 questions → template → site) · Editing/publishing TODO", features:["AI Site Generator","60 Templates","Custom Domains","Lead Forms","Analytics"], desc:"AI website builder + lead generation · includes 1 free AI-built website" },
+  { icon:"📬", name:"ClientContact.IO",  domain:"clientcontactio.com",color:"cyan",    tiers:["$99","$149","$399"], status:"warn", statusTxt:"Sidebar nav works — channel connections / inbox flow need verification",     features:["Unified Inbox (F07)","Channel Manager (F08)","SMS Outreach (F17)","22+ Channels","AI Auto-Responder"], desc:"Unified inbox for 22+ channels · AI auto-responds and books meetings" },
+  { icon:"🏆", name:"UltraLead.AI",      domain:"ultraleadai.com",    color:"amber",   tiers:["$499"],              status:"warn", statusTxt:"Dashboard/Profile/Settings WORKING · CRM/Deals/Analytics/AI Copywriter need verify", features:["7 AI Agents","Full CRM Pipeline","Deals (F13)","AI Copywriter (F18)","Voice + Transcription"], desc:"Flagship CRM · 7 self-healing AI agents working around the clock to close deals" },
+  { icon:"🎬", name:"VideoSite.AI",      domain:"videositeai.com",    color:"rose",    tiers:["FREE"],              status:"warn", statusTxt:"Upload & listing WORKING · Playback, earnings, payouts need R2 public URL verify", features:["Video Upload (F10)","Listings (F09)","View Tracking","Creator Earnings (F11)","Stripe Payouts"], desc:"Creator monetization · earn $1 per qualified view (30s+) · instant Stripe payouts" },
+];
+
+const AGENTS = [
+  { emoji:"🎯", name:"Lead Hunter",          role:"F01",        color:"indigo", desc:"Searches Apollo.io 275M+ contacts matching your ICP criteria. Runs daily + manual trigger. Delivers 10–50 qualified leads/day." },
+  { emoji:"✍️", name:"Copy Writer",          role:"F18",        color:"purple", desc:"Claude AI writes personalized emails per lead, subject line variants for A/B testing, and tone adjustment. Unlimited emails generated." },
+  { emoji:"⚖️", name:"Compliance Guardian",  role:"compliance", color:"cyan",   desc:"Enforces CAN-SPAM, GDPR, CASL before every send. Verifies unsubscribe links, physical address, sender identity. Score 0–100." },
+  { emoji:"🔥", name:"Warmup Conductor",     role:"warmup",     color:"orange", desc:"Monitors domain reputation via Instantly.ai. Manages warmup volume ramp. All 4 domains currently at 100% — pool: premium-v1." },
+  { emoji:"📊", name:"Engagement Analyzer",  role:"analytics",  color:"emerald",desc:"Tracks opens, clicks, reply sentiment (positive/neutral/negative). Scores lead engagement. Recommends next action per prospect." },
+  { emoji:"🧠", name:"Analytics Brain",      role:"forecasting",color:"blue",   desc:"Revenue forecasting, pipeline health reports, deal risk flags. Weekly automated reports. 85%+ accuracy after 90 days of data." },
+  { emoji:"🛡️", name:"Healing Sentinel",     role:"self_heal",  color:"rose",   desc:"Auto-detects failed sends, stale deals (no activity), API health issues. Creates follow-up tasks. Alerts on critical failures." },
+];
+
+const RULES = [
+  { n:1, title:"ONE FILE AT A TIME",        color:"indigo", lock:false, desc:"Every Cursor prompt targets ONE file or ONE route. Never 'fix all auth' or 'update all platforms.'", cmd:null },
+  { n:2, title:"BRANCH FIRST, NEVER MAIN",  color:"purple", lock:false, desc:"Run git checkout -b fix/name BEFORE any work. Merge to main only after fully verified and tested.", cmd:"git checkout -b fix/descriptive-name" },
+  { n:3, title:"READ THE DIFF",             color:"cyan",   lock:false, desc:"Run git diff after every change. Any unexpected file changed? Run git checkout . and re-prompt with narrower scope.", cmd:"git diff" },
+  { n:4, title:"TEST AUTH EVERY CHANGE",    color:"emerald",lock:false, desc:"3 curl tests after EVERY backend change — even if unrelated to auth. All must pass before pushing.", cmd:"curl https://api.aileadstrategies.com/health\ncurl -X POST .../api/auth/signup -d '{}' → 400\ncurl .../api/v1/leads → 401" },
+  { n:5, title:"LOCK CRITICAL FILES",       color:"rose",   lock:true,  desc:"auth.js, middleware/auth.js, index.js, schema.prisma — READ-ONLY unless your prompt is specifically about them. Tell Cursor explicitly.", cmd:"DO NOT modify: auth.js, middleware/auth.js, index.js, schema.prisma" },
+  { n:6, title:"COMMIT MESSAGE FORMAT",     color:"amber",  lock:false, desc:"Always include the scope in parentheses. Every PR/merge to main must reference what changed, what was tested, and auth verification result.", cmd:"fix(auth): description\nfeat(videos): description\nfix(frontend): description" },
+  { n:7, title:"DEPLOYMENT GATE",           color:"indigo", lock:false, desc:"Branch verify → local test → git diff main (read every line) → merge → push → wait 90 seconds → curl production to verify.", cmd:"# After push — wait 90s then:\ncurl https://api.aileadstrategies.com/health\ncurl -X POST .../api/auth/signup -d '{}'" },
+];
+
+const STATUS_WORKING = [
+  "Email/password signup → 201 JWT","Plan tier selection","14-day trial countdown",
+  "JWT auth on protected routes","Backend health check","Frontend build & deploy",
+  "Prisma DB queries","Cloudflare R2 video upload","Video listing dashboard",
+  "AI Website Builder (6Q→site)","Website preview","Admin / Profile / Settings",
+];
+const STATUS_PENDING = [
+  "Google OAuth — not tested E2E",
+  "Stripe checkout — API keys set, flow untested",
+  "Video playback — R2 public URL needs verify",
+  "LeadSite.AI F01-F05 — need E2E verification",
+  "ClientContact F07/F08/F17 — need verification",
+  "CRM / Deals / Analytics / AI Copywriter",
+];
+const LOCKED_FILES = [
+  "backend/src/routes/auth.js",
+  "backend/src/middleware/auth.js",
+  "backend/src/index.js",
+  "backend/prisma/schema.prisma",
+  "prisma/schema.prisma",
+  "lib/auth.js",
+  "lib/prisma.ts — NEVER touch, it works",
+];
+const INFRA = [
+  { label:"Frontend",  val:"Next.js 14",              sub:"Railway: superb-possibility",      color:"indigo" },
+  { label:"Backend",   val:"Express.js",               sub:"Railway: backend · api.*",          color:"purple" },
+  { label:"Database",  val:"PostgreSQL + Prisma",      sub:"switchyard.proxy.rlwy.net:32069",   color:"emerald" },
+  { label:"Storage",   val:"Cloudflare R2",            sub:"bucket: videosite · pub-0074…",     color:"cyan" },
+  { label:"Email",     val:"Mailgun",                  sub:"SPF / DKIM / DMARC verified",       color:"amber" },
+  { label:"Payments",  val:"Stripe",                   sub:"Keys in Railway env · untested",    color:"rose" },
+  { label:"Cache",     val:"Redis",                    sub:"Railway internal",                   color:"blue" },
+  { label:"Repo",      val:"LeadGenius1",              sub:"lead-strategies · branch: main",    color:"neutral" },
+];
+const GTM_STEPS = [
+  { step:1, label:"Business Goal",                icon:"◎", color:"indigo" },
+  { step:2, label:"Controller Agent",             icon:"◈", color:"indigo" },
+  { step:3, label:"ICP Research",                 icon:"◉", color:"purple" },
+  { step:4, label:"Offer + Copy (Claude AI)",     icon:"◉", color:"purple" },
+  { step:5, label:"Outbound — LeadSite.AI",       icon:"⚡", color:"blue"   },
+  { step:6, label:"Conversations — ClientContact",icon:"📬", color:"cyan"   },
+  { step:7, label:"Analytics Feedback Loop",      icon:"🧠", color:"emerald"},
+];
+
+const BLUEPRINT_STATS = [
+  { value:"$195B", label:"B2B SaaS TAM",          source:"2026 global market",       color:"indigo"  },
+  { value:"+340%", label:"AI-Led Outbound Growth", source:"YoY adoption rate",        color:"emerald" },
+  { value:"4,200%",label:"Cold Email Avg ROI",     source:"$42 return per $1 spent",  color:"purple"  },
+  { value:"67%",   label:"Pipeline Automation",    source:"of top performers automate",color:"emerald" },
+  { value:"+287%", label:"Multi-Channel Lift",     source:"vs single-channel outreach",color:"indigo"  },
+  { value:"$4.1B", label:"Revenue Intelligence",   source:"2026 market size",         color:"purple"  },
+];
+
+const BLUEPRINT_ROADMAP = [
+  { phase:1, name:"Foundation",    weeks:"Weeks 1-2", color:"indigo",  items:["Supabase memory tables","Outcome tracking IDs","Decision logging system"] },
+  { phase:2, name:"Intelligence",  weeks:"Weeks 3-4", color:"purple",  items:["Campaign pattern learning","Lead scoring refinement","Send time optimization"] },
+  { phase:3, name:"Automation",    weeks:"Weeks 5-6", color:"cyan",    items:["A2A Agent Cards","Bounded auto-actions","Compliance intercepts"] },
+  { phase:4, name:"Optimization",  weeks:"Weeks 7-8", color:"emerald", items:["Revenue intelligence UI","Multi-channel sequencer","Self-healing campaigns"] },
+];
+
+const BLUEPRINT_ENHANCEMENTS = [
+  {
+    id:"persistent-memory", number:"01", title:"Persistent Agent Memory Layer",
+    priority:"CRITICAL", priorityColor:"rose", category:"Architecture", icon:"🧠",
+    impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 1-3",
+    currentState:"NEXUS currently operates statelessly — each session starts fresh. No memory of past scans, decisions, lead outcomes, or campaign performance history.",
+    enhancements:[
+      "Dual-memory architecture: Working Memory (session) + Persistent Memory (Supabase)",
+      "Lead Intelligence Memory — remembers every interaction, sentiment, outcome",
+      "Campaign Pattern Memory — learns winning subject lines, send times, sequences",
+      "Decision Memory — logs approvals/rejections, creates feedback loop",
+      "System Health Memory — tracks uptime, errors, resolutions"
+    ],
+    businessImpact:"85%+ forecast accuracy after 90 days. NEXUS evolves from reactive tool to proactive intelligence.",
+    implementation:"Supabase tables: agent_memory, lead_outcomes, campaign_patterns, decision_log"
+  },
+  {
+    id:"a2a-protocol", number:"02", title:"Agent-to-Agent Protocol (A2A)",
+    priority:"CRITICAL", priorityColor:"rose", category:"Interoperability", icon:"🔗",
+    impact:"TRANSFORMATIVE", effort:"HIGH", timeline:"Weeks 2-6",
+    currentState:"7 agents operate as concepts within NEXUS but can't independently communicate or delegate.",
+    enhancements:[
+      "Each agent as A2A-compliant server with Agent Cards",
+      "Lead Hunter → Copy Writer delegation via A2A",
+      "Compliance Guardian intercepts all outbound actions",
+      "Engagement Analyzer triggers Warmup Conductor adjustments",
+      "Healing Sentinel monitors all 6 other agents via A2A"
+    ],
+    businessImpact:"Transforms 7 isolated agents into self-coordinating autonomous sales team. 60-70% reduction in manual orchestration.",
+    implementation:"Agent Card endpoints on Cloudflare Workers. A2A Python SDK. NEXUS as super-agent orchestrator."
+  },
+  {
+    id:"feedback-loops", number:"03", title:"Continuous Learning Feedback Loops",
+    priority:"HIGH", priorityColor:"amber", category:"Intelligence", icon:"🔄",
+    impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 2-4",
+    currentState:"NEXUS provides recommendations but has no mechanism to track outcomes.",
+    enhancements:[
+      "Outcome Tracking Loop — every recommendation gets unique ID + result tracking",
+      "Campaign A/B Learning — auto-promote winning patterns",
+      "Lead Scoring Refinement — ICP criteria adjust based on actual conversions",
+      "Send Time Optimization — cross-reference times with open/reply rates",
+      "Michael Override Learning — incorporate rejection reasoning into future logic"
+    ],
+    businessImpact:"Every action makes system smarter. 85%+ forecast accuracy. 25-40% campaign ROI improvement.",
+    implementation:"Feedback tables in Supabase. Instantly webhooks for events. Scoring adjustment algorithm."
+  },
+  {
+    id:"autonomous-workflows", number:"04", title:"Bounded Autonomous Workflows",
+    priority:"HIGH", priorityColor:"amber", category:"Automation", icon:"⚡",
+    impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 3-5",
+    currentState:"NEXUS requires Michael to initiate every action. Cannot execute multi-step workflows autonomously.",
+    enhancements:[
+      "3 autonomy tiers: GREEN (execute), YELLOW (execute+notify), RED (recommend+wait)",
+      "Morning Autopilot — 7AM daily diagnostic, warmup adjustments, priority briefing",
+      "Lead Pipeline Automation — auto-score, auto-enrich, auto-assign",
+      "Self-Healing Workflows — auto-pause low-deliverability accounts",
+      "Escalation Protocol — immediate notification on anomalies"
+    ],
+    businessImpact:"Reduces daily management from hours to minutes. 24/7 operation. 60-70% reduction in coordination.",
+    implementation:"Cron-triggered scans via Supabase Edge Functions. Action tiers in system prompt."
+  },
+  {
+    id:"revenue-intelligence", number:"05", title:"Revenue Intelligence Engine",
+    priority:"HIGH", priorityColor:"amber", category:"Analytics", icon:"📊",
+    impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 3-6",
+    currentState:"Analytics Brain exists conceptually but lacks real data pipeline. No forecasting.",
+    enhancements:[
+      "Pipeline Health Dashboard — real-time funnel visualization with conversion rates",
+      "Revenue Forecasting — monthly/quarterly projections with confidence intervals",
+      "Campaign ROI Calculator — cost per lead, reply, conversion, projected LTV",
+      "Engagement Velocity Scoring — faster velocity = higher close probability",
+      "Board-Ready Reports — one-click investor/stakeholder reports"
+    ],
+    businessImpact:"Transforms from 'tool company' to 'intelligence company.' Revenue predictability.",
+    implementation:"Instantly analytics + Stripe revenue via MCP. Forecasting in system prompt. Reports as React artifacts."
+  },
+  {
+    id:"multi-agent-governance", number:"06", title:"Agent Governance & Observability",
+    priority:"STRATEGIC", priorityColor:"indigo", category:"Governance", icon:"🛡️",
+    impact:"MEDIUM-HIGH", effort:"MEDIUM", timeline:"Weeks 4-6",
+    currentState:"No audit trail of agent actions. No policy enforcement. No explainability.",
+    enhancements:[
+      "Full Action Audit Log — every MCP call logged with timestamp, agent, input, output",
+      "Policy Enforcement Layer — rules agents cannot violate",
+      "Agent Performance Scorecards — accuracy, speed, value contribution",
+      "Explainability — reasoning chain for every recommendation",
+      "Compliance Dashboard — CAN-SPAM, GDPR, CASL status"
+    ],
+    businessImpact:"Builds trust in autonomous ops. Enables scaling. Critical for enterprise customers.",
+    implementation:"audit_log table in Supabase. Logging middleware. Policy checks in system prompt."
+  },
+  {
+    id:"customer-facing-agents", number:"07", title:"Customer-Facing AI Agents",
+    priority:"STRATEGIC", priorityColor:"indigo", category:"Product", icon:"🤖",
+    impact:"TRANSFORMATIVE", effort:"HIGH", timeline:"Weeks 5-8",
+    currentState:"NEXUS is internal only. Customers get static dashboards, no AI capabilities.",
+    enhancements:[
+      "Per-Customer NEXUS Lite — scaled-down AI agent for each UltraLead customer",
+      "AI Concierge for Onboarding — guides setup, asks questions, configures workspace",
+      "Smart Support Agent — handles tier-1 support, escalates with context",
+      "Campaign Copilot — helps build campaigns, suggests ICP, writes sequences",
+      "Website Intelligence Agent — optimization recommendations for lead conversion"
+    ],
+    businessImpact:"THE MOAT. Competitors offer tools — you offer AI team. Justifies premium pricing. Reduces churn.",
+    implementation:"Claude API with per-tenant system prompts. Supabase for customer memory. Embedded React components."
+  },
+  {
+    id:"marketplace", number:"08", title:"Agent Marketplace & Ecosystem",
+    priority:"STRATEGIC", priorityColor:"indigo", category:"Platform", icon:"🏪",
+    impact:"TRANSFORMATIVE", effort:"HIGH", timeline:"Weeks 8-12",
+    currentState:"Closed ecosystem. 7 internal agents only. No third-party extensions.",
+    enhancements:[
+      "Agent Template Library — pre-built configs for industries",
+      "Custom Agent Builder — low-code agent creation interface",
+      "Partner API — third-party tools build agents for ecosystem",
+      "Agent Performance Marketplace — community-rated agents",
+      "Revenue Share Model — developer monetization"
+    ],
+    businessImpact:"Transforms from SaaS to PLATFORM. 5-10x higher valuations. Network effects + ecosystem lock-in.",
+    implementation:"Agent Card standard. Registry in Supabase. Visual builder in React. Revenue via Stripe MCP."
+  },
+];
+
+
+// ── COLOR MAP ─────────────────────────────────────────────────────────────────
+const COLORS = {
+  indigo:  { bg:"bg-indigo-500/10",  border:"border-indigo-500/20",  text:"text-indigo-400",  bar:"bg-indigo-500",  dot:"bg-indigo-500"  },
+  purple:  { bg:"bg-purple-500/10",  border:"border-purple-500/20",  text:"text-purple-400",  bar:"bg-purple-500",  dot:"bg-purple-500"  },
+  cyan:    { bg:"bg-cyan-500/10",    border:"border-cyan-500/20",    text:"text-cyan-400",    bar:"bg-cyan-500",    dot:"bg-cyan-500"    },
+  emerald: { bg:"bg-emerald-500/10", border:"border-emerald-500/20", text:"text-emerald-400", bar:"bg-emerald-500", dot:"bg-emerald-500" },
+  amber:   { bg:"bg-amber-500/10",   border:"border-amber-500/20",   text:"text-amber-400",   bar:"bg-amber-500",  dot:"bg-amber-500"   },
+  rose:    { bg:"bg-rose-500/10",    border:"border-rose-500/20",    text:"text-rose-400",    bar:"bg-rose-500",   dot:"bg-rose-500"    },
+  orange:  { bg:"bg-orange-500/10",  border:"border-orange-500/20",  text:"text-orange-400",  bar:"bg-orange-500", dot:"bg-orange-500"  },
+  blue:    { bg:"bg-blue-500/10",    border:"border-blue-500/20",    text:"text-blue-400",    bar:"bg-blue-500",   dot:"bg-blue-500"    },
+  neutral: { bg:"bg-neutral-500/10", border:"border-neutral-500/20", text:"text-neutral-400", bar:"bg-neutral-500",dot:"bg-neutral-500"  },
+};
+
+// ── RENDER FUNCTIONS ─────────────────────────────────────────────────────────
+
+function renderAccounts() {
+  const g = document.getElementById('accounts-grid');
+  g.innerHTML = ACCOUNTS.map(a => `
+    <div class="relative p-4 rounded-xl bg-black/40 border border-white/5 overflow-hidden group hover:border-indigo-500/30 transition-all">
+      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent"></div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-[9px] mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">ACTIVE</span>
+      </div>
+      <div class="text-[10px] mono text-neutral-300 mb-3 break-all leading-relaxed">${a.email}</div>
+      <div class="flex gap-4 mb-3">
+        <div>
+          <div class="text-[9px] text-neutral-600 mb-0.5">WARMUP</div>
+          <div class="text-lg font-medium text-emerald-400">${a.warmup}%</div>
+        </div>
+        <div>
+          <div class="text-[9px] text-neutral-600 mb-0.5">LIMIT</div>
+          <div class="text-lg font-medium text-indigo-400">${a.limit}/day</div>
+        </div>
+      </div>
+      <div class="w-full bg-white/5 rounded-full h-1 mb-2">
+        <div class="bg-emerald-500 h-1 rounded-full" style="width:${a.warmup}%"></div>
+      </div>
+      <div class="text-[9px] mono text-neutral-600 truncate">${a.tracking} · CTD_ACTIVE</div>
+    </div>
+  `).join('');
+}
+
+function renderGTMSteps() {
+  const el = document.getElementById('gtm-steps');
+  el.innerHTML = GTM_STEPS.map((s, i) => {
+    const c = COLORS[s.color];
+    return `
+      <div class="flex items-center gap-3 py-2">
+        <div class="w-5 h-5 rounded-full ${c.bg} border ${c.border} flex items-center justify-center flex-shrink-0 z-10">
+          <div class="w-1.5 h-1.5 rounded-full ${c.dot}"></div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[9px] mono ${c.text}">STEP ${s.step}</span>
+          <span class="text-[11px] text-neutral-300">${s.label}</span>
+        </div>
+        ${i < GTM_STEPS.length - 1 ? '' : `<span class="ml-auto text-[9px] mono text-emerald-500">↻ loop</span>`}
+      </div>`;
+  }).join('');
+}
+
+// ── LIVE SYSTEM STATUS ──────────────────────────────────────────────────────
+
+let statusRefreshInterval = null;
+
+async function fetchSystemStatus() {
+  const refreshBtn = document.getElementById('refresh-status-btn');
+  const refreshIcon = document.getElementById('refresh-icon');
+  const refreshLabel = document.getElementById('refresh-label');
+
+  // Spin the refresh icon
+  refreshIcon.style.animation = 'spin 1s linear infinite';
+  refreshLabel.textContent = 'Checking...';
+  refreshBtn.disabled = true;
+
+  const healthChecks = [];
+  let hasFailure = false;
+
+  // 1. Backend comprehensive health (/api/health — checks DB, Redis, R2, Stripe, Anthropic)
+  try {
+    const res = await fetch('https://api.aileadstrategies.com/api/health', { signal: AbortSignal.timeout(8000) });
+    const data = await res.json();
+
+    // Backend API itself
+    healthChecks.push({
+      name: 'Backend API',
+      status: data.status === 'healthy' ? 'ok' : 'error',
+      detail: data.status === 'healthy' ? `Uptime: ${Math.round(data.uptime / 60)}m` : 'Unhealthy',
+    });
+
+    // Individual service checks from the response
+    if (data.checks) {
+      const checkMap = {
+        database: { name: 'Database (PostgreSQL)', okDetail: 'Connected via Prisma' },
+        redis: { name: 'Redis Cache', okDetail: 'Connected' },
+        stripe: { name: 'Stripe Payments', okDetail: 'Configured' },
+        r2Storage: { name: 'Cloudflare R2', okDetail: 'Connected' },
+        anthropic: { name: 'Claude AI (Anthropic)', okDetail: 'API key set' },
+      };
+      for (const [key, meta] of Object.entries(checkMap)) {
+        const check = data.checks[key];
+        if (check) {
+          const isOk = check.status === 'healthy' || check.status === 'configured';
+          if (!isOk) hasFailure = true;
+          healthChecks.push({
+            name: meta.name,
+            status: isOk ? 'ok' : 'error',
+            detail: isOk ? meta.okDetail : (check.message || 'Error'),
+          });
+        }
+      }
+
+      // Memory check
+      if (data.checks.memory) {
+        const heapMB = data.checks.memory.heapUsedMB || 0;
+        const memStatus = heapMB > 400 ? 'warn' : 'ok';
+        healthChecks.push({
+          name: 'Memory',
+          status: memStatus,
+          detail: `Heap: ${Math.round(heapMB)}MB`,
+        });
+      }
+    }
+  } catch (err) {
+    hasFailure = true;
+    healthChecks.push({ name: 'Backend API', status: 'error', detail: 'Unreachable' });
+  }
+
+  // 2. Frontend health check
+  try {
+    const fRes = await fetch('https://aileadstrategies.com', { mode: 'no-cors', signal: AbortSignal.timeout(8000) });
+    healthChecks.push({ name: 'Frontend', status: 'ok', detail: 'aileadstrategies.com' });
+  } catch (err) {
+    hasFailure = true;
+    healthChecks.push({ name: 'Frontend', status: 'error', detail: 'Unreachable' });
+  }
+
+  // Render health grid
+  const grid = document.getElementById('health-grid');
+  grid.innerHTML = healthChecks.map(h => {
+    const colors = {
+      ok: { dot: 'bg-emerald-500', text: 'text-emerald-400', border: 'border-emerald-500/20', label: 'OPERATIONAL' },
+      warn: { dot: 'bg-amber-500', text: 'text-amber-400', border: 'border-amber-500/20', label: 'DEGRADED' },
+      error: { dot: 'bg-rose-500', text: 'text-rose-400', border: 'border-rose-500/20', label: 'DOWN' },
+    };
+    const c = colors[h.status] || colors.error;
+    return `
+      <div class="p-3 bg-black/30 rounded-xl border border-white/5 ${h.status === 'error' ? c.border : ''}">
+        <div class="flex items-center gap-1.5 mb-2">
+          <span class="relative flex h-2 w-2">
+            ${h.status === 'ok' ? `<span class="animate-ping absolute inline-flex h-full w-full rounded-full ${c.dot} opacity-75"></span>` : ''}
+            <span class="relative inline-flex rounded-full h-2 w-2 ${c.dot}"></span>
+          </span>
+          <span class="text-[9px] mono ${c.text}">${c.label}</span>
+        </div>
+        <div class="text-[11px] font-medium text-white">${h.name}</div>
+        <div class="text-[10px] text-neutral-500 mono mt-0.5">${h.detail}</div>
+      </div>`;
+  }).join('');
+
+  // Overall status indicator
+  const overall = document.getElementById('health-overall');
+  const downCount = healthChecks.filter(h => h.status === 'error').length;
+  const warnCount = healthChecks.filter(h => h.status === 'warn').length;
+  if (downCount > 0) {
+    overall.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span><span class="text-[10px] mono text-rose-400">${downCount} SERVICE${downCount > 1 ? 'S' : ''} DOWN</span>`;
+  } else if (warnCount > 0) {
+    overall.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span><span class="text-[10px] mono text-amber-400">DEGRADED</span>`;
+  } else {
+    overall.innerHTML = `<span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span><span class="text-[10px] mono text-emerald-400">ALL SYSTEMS OPERATIONAL</span>`;
+  }
+
+  // Alert banner
+  const banner = document.getElementById('status-alert-banner');
+  if (hasFailure) {
+    const failedNames = healthChecks.filter(h => h.status === 'error').map(h => h.name).join(', ');
+    document.getElementById('status-alert-text').textContent = `CRITICAL: ${failedNames} — service down. Check Railway dashboard immediately.`;
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+
+  // Update timestamp
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  document.getElementById('status-timestamp').textContent = `Last updated: ${dateStr} at ${timeStr}`;
+  document.getElementById('status-mode').textContent = 'LIVE';
+  document.getElementById('status-mode').className = 'ml-2 px-2 py-0.5 rounded-full text-[9px] mono bg-emerald-500/10 border border-emerald-500/20 text-emerald-400';
+
+  // Save to localStorage
+  localStorage.setItem('gtm_status_last_check', now.toISOString());
+
+  // Reset refresh button
+  refreshIcon.style.animation = '';
+  refreshLabel.textContent = 'Refresh';
+  refreshBtn.disabled = false;
+}
+
+function startStatusAutoRefresh() {
+  // Initial fetch
+  fetchSystemStatus();
+  // Auto-refresh every 5 minutes
+  if (statusRefreshInterval) clearInterval(statusRefreshInterval);
+  statusRefreshInterval = setInterval(fetchSystemStatus, 5 * 60 * 1000);
+}
+
+function renderStatusWorking() {
+  document.getElementById('status-working').innerHTML = STATUS_WORKING.map(s => `
+    <div class="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
+      <svg class="w-3 h-3 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span class="text-[11px] text-neutral-300">${s}</span>
+    </div>`).join('');
+}
+
+function renderStatusPending() {
+  document.getElementById('status-pending').innerHTML = STATUS_PENDING.map(s => `
+    <div class="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
+      <div class="w-2 h-2 rounded-full bg-amber-500/50 flex-shrink-0"></div>
+      <span class="text-[11px] text-neutral-400">${s}</span>
+    </div>`).join('');
+}
+
+function renderLockedFiles() {
+  document.getElementById('locked-files-list').innerHTML = LOCKED_FILES.map(f => `
+    <div class="text-[10px] mono text-rose-400 bg-black/30 rounded-md px-2.5 py-1.5 border border-rose-500/10">${f}</div>
+  `).join('');
+}
+
+function renderInfra() {
+  document.getElementById('infra-grid').innerHTML = INFRA.map(item => {
+    const c = COLORS[item.color];
+    return `
+      <div class="p-4 bg-black/30 rounded-xl border border-white/5 hover:border-white/10 transition-all">
+        <div class="text-[9px] mono ${c.text} mb-1.5">${item.label.toUpperCase()}</div>
+        <div class="text-sm font-medium text-white mb-1">${item.val}</div>
+        <div class="text-[10px] text-neutral-600 mono">${item.sub}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderCampaigns() {
+  document.getElementById('campaigns-grid').innerHTML = CAMPAIGNS.map(c => `
+    <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <div class="text-sm font-medium text-white mb-1">${c.name}</div>
+          <div class="text-[10px] mono text-neutral-600">${c.id}</div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[9px] mono flex-shrink-0">${c.status}</span>
+      </div>
+      ${c.vars.length ? `<div class="flex gap-2 mb-4">${c.vars.map(v=>`<code class="text-[10px] mono bg-black/40 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">{{${v}}}</code>`).join('')}</div>` : ''}
+      <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Activation Checklist</div>
+      <div class="space-y-2">
+        ${c.checklist.map(item=>`
+          <div class="flex items-center gap-2.5">
+            <div class="w-3.5 h-3.5 rounded border border-white/10 flex-shrink-0"></div>
+            <span class="text-[11px] text-neutral-400">${item}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function renderLeadLists() {
+  document.getElementById('lead-lists-grid').innerHTML = LEAD_LISTS.map(l => {
+    const c = l.type === 'supersearch' ? COLORS.indigo : COLORS.purple;
+    return `
+      <div class="flex items-center justify-between p-3 bg-black/30 rounded-xl border border-white/5 hover:border-white/10 transition-all">
+        <span class="text-[11px] text-neutral-300 flex-1 truncate pr-2">${l.name}</span>
+        <span class="${c.bg} ${c.text} text-[9px] mono px-1.5 py-0.5 rounded flex-shrink-0">${l.type}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderPlatforms() {
+  document.getElementById('platforms-list').innerHTML = PLATFORMS.map(p => {
+    const c = COLORS[p.color];
+    const statusColor = p.status === 'ok' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+    return `
+      <div class="relative flex items-start gap-5 p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${p.color}-500/30 to-transparent"></div>
+        <div class="w-12 h-12 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center text-2xl flex-shrink-0">${p.icon}</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start justify-between gap-4 mb-2">
+            <div>
+              <div class="text-sm font-medium text-white">${p.name}</div>
+              <div class="text-[10px] mono text-neutral-600 mt-0.5">${p.domain}</div>
+            </div>
+            <div class="flex gap-1.5 flex-shrink-0">
+              ${p.tiers.map(t=>`<span class="px-2 py-0.5 rounded ${c.bg} border ${c.border} ${c.text} text-[9px] mono">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="text-[11px] text-neutral-500 mb-3 font-light">${p.desc}</div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${statusColor} text-[10px] mb-3">
+            ${p.status === 'ok' ? '✅' : '⚪'} ${p.statusTxt}
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            ${p.features.map(f=>`<span class="${c.bg} ${c.text} text-[10px] px-2 py-0.5 rounded">${f}</span>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderAgents() {
+  // random "active" states
+  const activeIdx = Math.floor(Math.random() * AGENTS.length);
+  document.getElementById('agents-grid').innerHTML = AGENTS.map((a, i) => {
+    const c = COLORS[a.color];
+    const isActive = i === activeIdx;
+    return `
+      <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden" id="agent-card-${i}">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${a.color}-500/40 to-transparent"></div>
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center text-xl flex-shrink-0">${a.emoji}</div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <div class="text-sm font-medium text-white">${a.name}</div>
+              ${isActive
+                ? `<span class="flex items-center gap-1 text-[9px] mono text-emerald-400"><span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span></span>RUNNING</span>`
+                : `<span class="text-[9px] mono text-neutral-600">STANDBY</span>`}
+            </div>
+            <div class="text-[9px] mono ${c.text} mb-2">${a.role}</div>
+            <div class="text-[11px] text-neutral-400 leading-relaxed font-light">${a.desc}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // cycle active agent every 4s
+  let current = activeIdx;
+  setInterval(() => {
+    const prev = document.getElementById(`agent-card-${current}`);
+    if (prev) prev.querySelector('.text-emerald-400')?.parentElement?.outerHTML &&
+      (prev.querySelector('[class*="RUNNING"]') || prev.querySelector('[class*="emerald"]')) &&
+      (prev.innerHTML = prev.innerHTML
+        .replace(/<span class="flex items-center gap-1.*?RUNNING<\/span><\/span>/, `<span class="text-[9px] mono text-neutral-600">STANDBY</span>`)
+      );
+    current = Math.floor(Math.random() * AGENTS.length);
+    renderAgents();
+  }, 5000);
+}
+
+function renderRules() {
+  document.getElementById('rules-list').innerHTML = RULES.map(r => {
+    const c = COLORS[r.color];
+    return `
+      <div class="relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${r.color}-500/30 to-transparent"></div>
+        <div class="flex items-start gap-4">
+          <div class="w-9 h-9 rounded-lg ${c.bg} border ${c.border} flex items-center justify-center flex-shrink-0">
+            <span class="text-sm font-medium ${c.text}">${r.n}</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="text-sm font-medium text-white">RULE ${r.n}: ${r.title}</div>
+              ${r.lock ? `<span class="px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[9px] mono">🔒 LOCKED</span>` : ''}
+            </div>
+            <div class="text-[11px] text-neutral-400 mb-3 font-light">${r.desc}</div>
+            ${r.cmd ? `<pre class="bg-black/50 rounded-lg p-3 border border-white/5 text-[10px] mono text-neutral-500 overflow-x-auto whitespace-pre">${r.cmd}</pre>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── BLUEPRINT ────────────────────────────────────────────────────────────────
+
+let expandedBlueprint = null;
+
+function toggleBlueprintCard(id) {
+  expandedBlueprint = expandedBlueprint === id ? null : id;
+  renderBlueprintEnhancements();
+}
+
+function renderBlueprint() {
+  loadNexusData();
+  renderBlueprintEnhancements();
+}
+
+// ── NEXUS LIVE DATA ──────────────────────────────────────────────────────────
+
+let nexusRefreshInterval;
+
+async function loadNexusData() {
+  try {
+    const token = localStorage.getItem('token') || (typeof getAuthToken === 'function' ? getAuthToken() : '');
+    if (!token) {
+      document.getElementById('nexus-summary').innerHTML = '<div class="col-span-4 text-neutral-500 text-sm p-4">Login required to view NEXUS data</div>';
+      return;
+    }
+
+    const res = await fetch('https://api.aileadstrategies.com/api/v1/nexus/summary', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    const data = await res.json();
+    if (!data.success) {
+      console.warn('NEXUS API returned error:', data.error);
+      return;
+    }
+
+    const { modules, stats, pendingRecommendations } = data.data;
+
+    // Summary stats
+    document.getElementById('nexus-summary').innerHTML = [
+      { value: stats.total, label: 'Modules', color: 'emerald' },
+      { value: stats.inProgress, label: 'In Progress', color: 'blue' },
+      { value: stats.completed, label: 'Completed', color: 'green' },
+      { value: stats.avgProgress + '%', label: 'Avg Progress', color: 'purple' },
+    ].map(s => `
+      <div class="relative p-4 rounded-xl bg-black/40 border border-white/5 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${s.color}-500/40 to-transparent"></div>
+        <div class="text-2xl font-bold text-${s.color}-400">${s.value}</div>
+        <div class="text-[10px] mono text-neutral-500 mt-1">${s.label}</div>
+      </div>
+    `).join('');
+
+    // Recommendations
+    const recList = document.getElementById('recommendations-list');
+    const recCount = document.getElementById('nexus-rec-count');
+    if (pendingRecommendations && pendingRecommendations.length > 0) {
+      recCount.textContent = pendingRecommendations.length + ' pending';
+      recList.innerHTML = pendingRecommendations.map(r => `
+        <div class="relative p-4 rounded-xl bg-black/40 border border-amber-500/20 overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent"></div>
+          <div class="flex items-start justify-between mb-2">
+            <div class="text-sm font-medium text-white">${r.title}</div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/20 mono">P${r.priority}</span>
+          </div>
+          <div class="text-xs text-neutral-400 mb-2">${r.rationale.substring(0, 200)}${r.rationale.length > 200 ? '...' : ''}</div>
+          <div class="flex items-center gap-3 text-[10px] mono text-neutral-500">
+            <span>Confidence: ${Math.round(r.aiConfidence * 100)}%</span>
+            <span>Effort: ${r.effort}</span>
+            <span>By: ${r.generatedBy}</span>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      recCount.textContent = 'none pending';
+      recList.innerHTML = '<div class="text-neutral-500 text-xs p-4">No pending recommendations. The AI will generate recommendations as it monitors system state.</div>';
+    }
+
+    // Module cards
+    const statusConfig = {
+      'NOT_STARTED': { color: 'neutral', label: 'NOT STARTED' },
+      'IN_PROGRESS': { color: 'blue', label: 'IN PROGRESS' },
+      'BLOCKED':     { color: 'rose', label: 'BLOCKED' },
+      'COMPLETED':   { color: 'emerald', label: 'COMPLETED' },
+    };
+
+    document.getElementById('nexus-module-count').textContent = modules.length + ' modules';
+    document.getElementById('nexus-modules').innerHTML = modules.map(m => {
+      const sc = statusConfig[m.status] || statusConfig['NOT_STARTED'];
+      const initiatives = m.initiatives || [];
+      const doneCount = initiatives.filter(i => i.status === 'COMPLETED').length;
+      return `
+        <div class="relative p-6 rounded-xl bg-black/40 border border-${sc.color}-500/20 overflow-hidden group hover:border-${sc.color}-500/40 transition-all">
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${sc.color}-500/40 to-transparent"></div>
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[10px] mono text-neutral-600">#${m.moduleNumber}</span>
+              <h3 class="text-sm font-medium text-white">${m.title}</h3>
+            </div>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-${sc.color}-500/20 text-${sc.color}-300 border border-${sc.color}-500/20 mono">${sc.label}</span>
+          </div>
+          <div class="mb-3">
+            <div class="flex justify-between text-[10px] mono text-neutral-500 mb-1">
+              <span>Progress</span><span>${m.progress}%</span>
+            </div>
+            <div class="w-full bg-neutral-800 rounded-full h-1.5">
+              <div class="bg-${sc.color}-500 h-1.5 rounded-full transition-all" style="width: ${m.progress}%"></div>
+            </div>
+          </div>
+          <p class="text-[11px] text-neutral-400 mb-3 font-light leading-relaxed">${m.currentState.substring(0, 150)}${m.currentState.length > 150 ? '...' : ''}</p>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 mono">${m.priority}</span>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 mono">${m.effort}</span>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 mono">${m.category}</span>
+          </div>
+          ${initiatives.length > 0 ? `
+            <div class="text-[10px] mono text-neutral-500 mb-1">Initiatives: ${doneCount}/${initiatives.length} done</div>
+            <div class="space-y-1">
+              ${initiatives.slice(0, 4).map(i => `
+                <div class="flex items-center gap-2 text-[10px]">
+                  <span class="${i.status === 'COMPLETED' ? 'text-emerald-400' : i.status === 'IN_PROGRESS' ? 'text-blue-400' : 'text-neutral-600'}">${i.status === 'COMPLETED' ? '●' : i.status === 'IN_PROGRESS' ? '◐' : '○'}</span>
+                  <span class="${i.status === 'COMPLETED' ? 'text-neutral-400 line-through' : 'text-neutral-400'}">${i.name}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+          ${m.updates && m.updates.length > 0 ? `
+            <div class="mt-3 pt-3 border-t border-white/5">
+              <div class="text-[10px] mono text-neutral-600 mb-1">Latest update</div>
+              <div class="text-[10px] text-neutral-400">${m.updates[0].content.substring(0, 100)}</div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+
+  } catch (error) {
+    console.error('NEXUS load error:', error);
+    document.getElementById('nexus-summary').innerHTML = '<div class="col-span-4 text-neutral-500 text-sm p-4">Failed to load live NEXUS data — showing static blueprint below</div>';
+  }
+}
+
+function initNexusRefresh() {
+  if (nexusRefreshInterval) clearInterval(nexusRefreshInterval);
+  nexusRefreshInterval = setInterval(loadNexusData, 30000);
+}
+
+function renderBlueprintStats() {
+  document.getElementById('blueprint-stats-grid').innerHTML = BLUEPRINT_STATS.map(s => {
+    const c = COLORS[s.color];
+    return `
+      <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${s.color}-500/50 to-transparent"></div>
+        <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">${s.label}</div>
+        <div class="text-2xl font-medium text-white mb-1">${s.value}</div>
+        <div class="text-[10px] text-neutral-500">${s.source}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderBlueprintRoadmap() {
+  document.getElementById('blueprint-roadmap-grid').innerHTML = BLUEPRINT_ROADMAP.map(p => {
+    const c = COLORS[p.color];
+    return `
+      <div class="relative">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-[22px] h-[22px] rounded-full ${c.bg} border ${c.border} flex items-center justify-center flex-shrink-0 z-10">
+            <div class="w-1.5 h-1.5 rounded-full ${c.dot}"></div>
+          </div>
+          <span class="text-[9px] mono ${c.text}">PHASE ${p.phase}</span>
+        </div>
+        <div class="ml-[30px]">
+          <div class="text-sm font-medium text-white mb-0.5">${p.name}</div>
+          <div class="text-[10px] mono text-neutral-600 mb-3">${p.weeks}</div>
+          <div class="space-y-1.5">
+            ${p.items.map(item => `
+              <div class="flex items-center gap-2">
+                <svg class="w-3 h-3 ${c.text} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-[10px] text-neutral-400">${item}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderBlueprintEnhancements() {
+  const PRIORITY_COLORS = {
+    rose:   { bg:"bg-rose-500/10",   border:"border-rose-500/20",   text:"text-rose-400"   },
+    amber:  { bg:"bg-amber-500/10",  border:"border-amber-500/20",  text:"text-amber-400"  },
+    indigo: { bg:"bg-indigo-500/10", border:"border-indigo-500/20", text:"text-indigo-400" },
+  };
+  const IMPACT_COLORS = {
+    "TRANSFORMATIVE": { bg:"bg-purple-500/10", border:"border-purple-500/20", text:"text-purple-400" },
+    "HIGH":           { bg:"bg-emerald-500/10",border:"border-emerald-500/20",text:"text-emerald-400"},
+    "MEDIUM-HIGH":    { bg:"bg-cyan-500/10",   border:"border-cyan-500/20",   text:"text-cyan-400"   },
+    "MEDIUM":         { bg:"bg-blue-500/10",   border:"border-blue-500/20",   text:"text-blue-400"   },
+  };
+
+  document.getElementById('blueprint-enhancements-grid').innerHTML = BLUEPRINT_ENHANCEMENTS.map(e => {
+    const pc = PRIORITY_COLORS[e.priorityColor];
+    const ic = IMPACT_COLORS[e.impact] || IMPACT_COLORS["MEDIUM"];
+    const isOpen = expandedBlueprint === e.id;
+
+    return `
+      <div class="relative rounded-2xl bg-neutral-900/30 border ${isOpen ? 'border-purple-500/30' : 'border-white/10'} glow-card-purple glow-card overflow-hidden cursor-pointer transition-all" onclick="toggleBlueprintCard('${e.id}')">
+        <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
+        <div class="p-5">
+          <!-- Header -->
+          <div class="flex items-start gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl ${pc.bg} border ${pc.border} flex items-center justify-center text-xl flex-shrink-0">${e.icon}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-[9px] mono text-neutral-600">#${e.number}</span>
+                <span class="text-[9px] mono text-neutral-600">${e.category}</span>
+              </div>
+              <div class="text-sm font-medium text-white">${e.title}</div>
+            </div>
+            <span class="px-1.5 py-0.5 ${pc.bg} border ${pc.border} ${pc.text} rounded text-[9px] mono flex-shrink-0">${e.priority}</span>
+          </div>
+
+          <!-- Current state -->
+          <div class="text-[11px] text-neutral-400 mb-3 font-light">${e.currentState}</div>
+
+          <!-- Badges -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-1.5 py-0.5 ${ic.bg} border ${ic.border} ${ic.text} rounded text-[9px] mono">${e.impact}</span>
+            <span class="px-1.5 py-0.5 bg-neutral-500/10 border border-neutral-500/20 text-neutral-400 rounded text-[9px] mono">${e.effort} EFFORT</span>
+            <span class="px-1.5 py-0.5 bg-neutral-500/10 border border-neutral-500/20 text-neutral-400 rounded text-[9px] mono">${e.timeline}</span>
+            <span class="ml-auto text-[9px] mono text-neutral-600">${isOpen ? '▲ collapse' : '▼ details'}</span>
+          </div>
+        </div>
+
+        ${isOpen ? `
+        <!-- Expanded content -->
+        <div class="border-t border-white/5 px-5 pb-5 pt-4">
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-2">Enhancements</div>
+          <div class="space-y-1.5 mb-4">
+            ${e.enhancements.map(line => `
+              <div class="flex items-start gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1 flex-shrink-0"></div>
+                <span class="text-[11px] text-neutral-300 font-light">${line}</span>
+              </div>`).join('')}
+          </div>
+
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-2">Business Impact</div>
+          <div class="bg-emerald-500/5 border border-emerald-500/15 rounded-xl p-3 mb-4">
+            <div class="text-[11px] text-emerald-400 font-light">${e.businessImpact}</div>
+          </div>
+
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-2">Implementation</div>
+          <div class="bg-black/30 border border-white/5 rounded-xl p-3">
+            <div class="text-[10px] mono text-neutral-400">${e.implementation}</div>
+          </div>
+        </div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ── CHAT ─────────────────────────────────────────────────────────────────────
+
+const API_BASE = 'https://api.aileadstrategies.com';
+let chatHistory = [];          // {role, content} pairs for context
+let speakerEnabled = false;    // voice output toggle
+let isRecording = false;       // voice input state
+let recognition = null;        // SpeechRecognition instance
+
+// Read auth token from cookies (vanilla JS — no js-cookie dependency)
+function getAuthToken() {
+  const cookies = document.cookie.split(';').reduce((acc, c) => {
+    const [k, ...v] = c.trim().split('=');
+    acc[k] = decodeURIComponent(v.join('='));
+    return acc;
+  }, {});
+  return cookies['token'] || cookies['admin_token'] || '';
+}
+
+// ── OFFLINE FALLBACK (original RESPOND function) ──
+const RESPOND = q => {
+  const lq = q.toLowerCase();
+
+  if (lq.includes('health') || lq.includes('status') || lq.includes('production') || lq.includes('api')) {
+    return `**🟢 Production — HEALTHY**\n\nAPI health fetched live:\n\`{"status":"healthy","timestamp":"2026-02-01T01:12:02.738Z"}\`\n\n**Frontend:** aileadstrategies.com → Railway (superb-possibility) ✅\n**Backend:** api.aileadstrategies.com → Railway (backend) ✅\n**Database:** PostgreSQL → switchyard.proxy.rlwy.net:32069 ✅\n\nVerification commands:\n\`curl https://api.aileadstrategies.com/health\` → 200\n\`curl -X POST .../api/auth/signup -d '{}'\` → 400 (not 404/500)\n\`curl .../api/v1/leads\` → 401 (not 404/500)`;
+  }
+
+  if (lq.includes('rule') || lq.includes('policy') || lq.includes('7 rule')) {
+    return `**📋 7 Non-Negotiable Rules (STANDARD_EXECUTION_POLICY.md)**\n\n1. **ONE FILE AT A TIME** — Every Cursor prompt: one file or route only\n2. **BRANCH FIRST** — git checkout -b fix/name before ANY work\n3. **READ THE DIFF** — git diff every time, unexpected change = git checkout .\n4. **TEST AUTH** — 3 curl tests after EVERY backend change, no exceptions\n5. **LOCK CRITICAL FILES** — auth.js, middleware/auth.js, index.js, schema.prisma = READ-ONLY\n6. **COMMIT FORMAT** — fix(scope): description — always scoped\n7. **DEPLOYMENT GATE** — branch → test → diff → merge → push → 90s → verify\n\n⚠️ Auth has been broken 5+ times from ignoring these. Violation = immediate revert.`;
+  }
+
+  if (lq.includes('lock') || lq.includes('read-only') || lq.includes('do not touch')) {
+    return `**🔒 Locked Files (READ-ONLY)**\n\nThese files CANNOT be touched unless the task specifically targets them:\n\n\`backend/src/routes/auth.js\` — all auth routes\n\`backend/src/middleware/auth.js\` — JWT validation\n\`backend/src/index.js\` — route mounting only\n\`backend/prisma/schema.prisma\` — source of truth\n\`prisma/schema.prisma\` — frontend Prisma, must stay synced\n\`lib/auth.js\` — frontend auth API calls\n\`lib/prisma.ts\` — Prisma singleton, NEVER touch\n\nEvery Cursor prompt must include:\n"DO NOT modify these files: auth.js, middleware/auth.js, index.js, schema.prisma"`;
+  }
+
+  if (lq.includes('account') || lq.includes('sender') || lq.includes('warmup') || lq.includes('instantly')) {
+    return `**📧 Sender Accounts — Instantly MCP (live)**\n\n✅ contact@getaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n✅ contact@meetaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n✅ contact@trendaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n✅ contact@onlineaileadstrategies.com — 100% warmup · 30/day · CTD_ACTIVE\n\n**Capacity:** 120 emails/day total\n**Pool:** premium-v1 on all 4\n**Org ID:** 408925ca-e46a-4b6a-b6ba-3b1d8a6813fa\n**All tracking:** inst.*.com subdomains — CTD_ACTIVE`;
+  }
+
+  if (lq.includes('campaign')) {
+    return `**🚀 Campaigns — Instantly MCP (live)**\n\n🔵 **AI Lead Strategies Introduction**\nID: b94241d3-3332-4f88-887c-677428958b76\nStatus: DRAFT · Created: 2025-11-30\n\n🔵 **LeadSite Master Campaign**\nID: 2cd8abb7-7e77-4710-a878-c5ab3246cb3a\nStatus: DRAFT · Created: 2025-12-16\nVariables: {{personalization}}, {{custom_pitch}}\n\n**To activate:**\n1. Assign email_list (4 sender accounts ready)\n2. Add leads from 26 available lists\n3. Configure campaign_schedule\n4. Call activate_campaign(campaign_id)`;
+  }
+
+  if (lq.includes('platform') || lq.includes('pricing') || lq.includes('tier')) {
+    return `**💰 Platform Pricing (CLAUDE.md — source of truth)**\n\n⚡ **LeadSite.AI** — $49 / $149 / $349/mo · leadsiteai.com\n🌐 **LeadSite.IO** — $49 / $149 / $349/mo · leadsiteio.com\n📬 **ClientContact.IO** — $99 / $149 / $399/mo · clientcontactio.com\n🏆 **UltraLead.AI** — $499/mo · ultraleadai.com\n🎬 **VideoSite.AI** — FREE · videositeai.com\n\n**Bundles:** Starter $79 · Pro $199 · Enterprise $249 · Annual: −20%\n\n⚠️ The live website shows slightly different pricing. CLAUDE.md is always source of truth.`;
+  }
+
+  if (lq.includes('database') || lq.includes('infra') || lq.includes('railway') || lq.includes('architecture')) {
+    return `**🏗️ Infrastructure (CLAUDE.md)**\n\nRepo: LeadGenius1/lead-strategies · branch: main (NO master)\nFrontend: Next.js 14 → Railway "superb-possibility" → aileadstrategies.com\nBackend: Express.js → Railway "backend" → api.aileadstrategies.com\nDB: PostgreSQL → switchyard.proxy.rlwy.net:32069 (Prisma ORM)\nStorage: Cloudflare R2 · bucket: videosite · pub-00746658f70a4185a900f207b96d9e3b.r2.dev\nEmail: Mailgun (SPF/DKIM/DMARC verified)\nPayments: Stripe (keys in env · flow untested)\nCache: Redis (Railway internal)\n\n🚨 NEVER use postgres.railway.internal — does NOT work\n🚨 NEVER reference lead-strategies-backend (deleted)\n🚨 NEVER reference master branch`;
+  }
+
+  if (lq.includes('rollback') || lq.includes('emergency') || lq.includes('broken')) {
+    return `**🚨 Emergency Rollback (STANDARD_EXECUTION_POLICY.md)**\n\nOption 1 — Revert last commit:\n\`git revert HEAD && git push origin main\`\nWait 90 seconds.\n\nOption 2 — Hard reset:\n\`git log --oneline -10\` → find last good commit\n\`git reset --hard [commit-hash]\`\n\`git push origin main --force\`\n\nOption 3 — Railway dashboard:\nrailway.app → Backend → Deployments → Previous → Rollback\n\nALWAYS verify after:\n\`curl https://api.aileadstrategies.com/health\` → 200\n\`curl -X POST .../api/auth/signup -d '{}'\` → 400`;
+  }
+
+  if (lq.includes('cursor') || lq.includes('prompt template')) {
+    return `**💻 Cursor Prompt Template (required)**\n\nSCOPE: [Exactly ONE file or route]\nOBJECTIVE: [Specific thing to fix/add]\nDO NOT TOUCH: auth.js, middleware/auth.js, index.js, schema.prisma\nCONSTRAINTS:\n- Preserve existing response format\n- Preserve existing imports\n- Preserve existing middleware order\n- Match existing code patterns\n\nBEFORE MAKING CHANGES:\n1. Show me current contents of [target file]\n2. Explain what you plan to change and why\n3. Wait for approval before editing\n\nAFTER CHANGES:\n1. Show me git diff\n2. Run auth curl test → 400\n3. Confirm auth works`;
+  }
+
+  if (lq.includes('agent')) {
+    return `**🤖 7 UltraLead AI Agents**\n\n🎯 Lead Hunter — Apollo.io 275M+ search, ICP-matched, daily runs\n✍️ Copy Writer — Claude AI per-lead personalized emails + A/B subjects\n⚖️ Compliance Guardian — CAN-SPAM / GDPR / CASL pre-send enforcement\n🔥 Warmup Conductor — Domain reputation via Instantly.ai (all 4 at 100%)\n📊 Engagement Analyzer — Opens/clicks/reply sentiment → next action\n🧠 Analytics Brain — Revenue forecast, pipeline health (85%+ after 90 days)\n🛡️ Healing Sentinel — Auto-fix failed sends, stale deals, API health\n\nAll 7 live in UltraLead.AI ($499/mo) · ultraleadai.com`;
+  }
+
+  if (lq.includes('market') || lq.includes('gtm') || lq.includes('go-to-market') || lq.includes('bring') || lq.includes('launch') || lq.includes('sell') || lq.includes('sales') || lq.includes('growth') || lq.includes('acquire') || lq.includes('customer') || lq.includes('outreach') || lq.includes('strategy') || lq.includes('revenue')) {
+    return `**🚀 GTM Strategy — Bringing the 5 Platforms to Market**\n\nYou have 4 warmed sender accounts (120 emails/day) and 26 lead lists ready. Here's the highest-leverage sequence:\n\n**PHASE 1 — Activate Cold Outreach NOW (Week 1)**\nYour 2 draft campaigns need 3 steps to go live:\n1. Assign all 4 sender accounts to both campaigns\n2. Populate {{personalization}} + {{custom_pitch}} variables in "LeadSite Master Campaign"\n3. Call activate_campaign() on both\n\nStart with LeadSite.IO ($49/mo) — it's your easiest entry point. A business gets a full AI-built website in minutes. Low barrier, high perceived value, instant demo-able.\n\n**PHASE 2 — Platform Sequencing by Friction**\nLead with lowest friction → upsell to flagship:\n• Entry: LeadSite.IO or LeadSite.AI ($49) — hook on speed & AI\n• Mid: ClientContact.IO ($99) — "never miss a lead" is obvious pain\n• Flagship: UltraLead.AI ($499) — after they've seen ROI from the above\n• Free viral: VideoSite.AI (FREE) — creators share it, brands follow\n\n**PHASE 3 — The 12-Customer Break-Even Target**\nYour own site says: 12 customers = break even, 97% margin after that.\n• At $49/mo you need 12 LeadSite customers = $588 MRR to break even\n• At $499/mo (UltraLead) you need just 2 customers\n• Focus cold outreach on UltraLead prospects = fastest path to profitability\n\n**PHASE 4 — Channels to Run in Parallel**\n• Cold email via Instantly (120/day capacity — start today)\n• LinkedIn outreach via ClientContact.IO (F08 — once verified)\n• VideoSite.AI content driving inbound (zero cost)\n• Bundle pricing: Starter $79 · Pro $199 to increase ACV\n\n**Your immediate next action:** Activate both Instantly campaigns. The infrastructure is 100% ready — warmup complete, accounts live, lists loaded.`;
+  }
+
+  if (lq.includes('lead') && (lq.includes('list') || lq.includes('prospect') || lq.includes('target'))) {
+    return `**🎯 Lead Lists & Prospecting (Instantly MCP — live)**\n\n26 lists ready across 2 types:\n\n**Supersearch Lists (5)** — Dec 25, 2025\nBroad ICP searches across Apollo.io 275M+ database. These are your highest-volume top-of-funnel prospects.\n\n**Enriched Company Lists (21 entries across 6 companies):**\n• Fairmont Consulting Group × 5 leads\n• Bonifacio Consulting Services × 1 lead\n• Pristine Property Management × 3 leads\n• Tesla × 8 leads (test lists)\n• Chargeback Expertz Boston × 2 leads\n\n**Best targeting strategy for your platforms:**\n• LeadSite.IO → target: small businesses, local services, solo founders, agencies\n• LeadSite.AI → target: SDRs, sales managers, B2B SaaS teams, recruiters\n• ClientContact.IO → target: customer support leads, social media managers, e-commerce\n• UltraLead.AI → target: VPs of Sales, revenue operations, sales team leads\n\nAdd the Supersearch lists to both active campaigns first — they give you the widest immediate reach.`;
+  }
+
+  if (lq.includes('email') || lq.includes('copy') || lq.includes('sequence') || lq.includes('message') || lq.includes('subject')) {
+    return `**✍️ Email & Copy Strategy**\n\n**Your 2 active campaigns:**\n• "AI Lead Strategies Introduction" — good for cold awareness, attach to all 4 senders\n• "LeadSite Master Campaign" — needs {{personalization}} + {{custom_pitch}} filled in\n\n**Proven cold email structure for SaaS:**\nSubject: "[First name], [company] is leaving [X] on the table"\nLine 1: Hyper-specific observation about their company\nLine 2: The pain you solve in one sentence\nLine 3: Social proof — "+400% avg ROI, 97% margin"\nCTA: Single, low-friction ask — "Worth a 15-min look?"\n\n**Variables to use:**\n• {{firstName}} {{lastName}} {{companyName}} — standard\n• {{personalization}} — custom hook about their specific business\n• {{custom_pitch}} — which platform is most relevant to them\n\n**Sending cadence with 4 accounts:**\n• 30 emails/account/day = 120/day total\n• Warm up with 3-step sequences: Day 1 → Day 4 → Day 9\n• stop_on_reply: true (already default)\n• Best send time: 8–10am recipient local time\n\nThe Copy Writer AI Agent (UltraLead) can generate personalized variants at scale once the platform is fully verified.`;
+  }
+
+  if (lq.includes('videosite') || lq.includes('video') || lq.includes('creator') || lq.includes('$1 per view') || lq.includes('monetiz')) {
+    return `**🎬 VideoSite.AI — Creator Monetization**\n\nDomain: videositeai.com · Price: FREE for creators\n\n**How it works:**\n• Creators upload videos (MP4/MOV/AVI/MKV, up to 5GB)\n• Viewers watch 30+ seconds = "qualified view"\n• Creator earns $1.00 per qualified view\n• Payout via Stripe Connect, minimum $10, instant transfer\n\n**Qualified view requirements:**\n1. Minimum 30 seconds watch time\n2. Unique viewer (1 count per viewer per video per day)\n3. Human viewer (bot detection active)\n4. Valid session (full player load)\n\n**vs YouTube:** $1.00/view vs $0.002–0.005. No follower minimum vs 1,000 subs + 4,000 watch hours required.\n\n**Current status:** Upload & listing WORKING. Playback needs R2 public URL verification. Earnings/payouts need Stripe flow verification.\n\n**R2 Storage:** bucket: videosite · pub-00746658f70a4185a900f207b96d9e3b.r2.dev\n\n**GTM angle:** VideoSite is your free viral product — creators share it, which builds brand awareness for all 5 platforms organically.`;
+  }
+
+  if (lq.includes('stripe') || lq.includes('payment') || lq.includes('billing') || lq.includes('checkout')) {
+    return `**💳 Stripe & Payments**\n\nCurrent status (CLAUDE.md, Feb 16 2026):\n✅ Stripe API keys configured in Railway environment variables\n⚪ Checkout flow — NOT yet tested end-to-end\n\n**Platform pricing to configure in Stripe:**\n• LeadSite.AI: $49 / $149 / $349 / month\n• LeadSite.IO: $49 / $149 / $349 / month\n• ClientContact.IO: $99 / $149 / $399 / month\n• UltraLead.AI: $499 / month\n• VideoSite.AI: FREE (advertiser billing only)\n\n**Annual discounts:** 20% off — configure as separate Stripe price IDs\n\n**Bundle pricing to add:**\n• Starter bundle: $79/mo (LeadSite.AI + LeadSite.IO)\n• Professional: $199/mo (all except VideoSite)\n• Enterprise: $249/mo (all 5 platforms)\n\n**To verify Stripe flow (follow Rule 1 — one file at a time):**\nTarget ONLY the Stripe webhook handler or checkout session route. Test with Stripe CLI: stripe listen --forward-to localhost:3001/api/stripe/webhook`;
+  }
+
+  return `**✦ AI Assistant — Ask me anything about AI Lead Strategies**\n\nI have full context on:\n\n**GTM & Sales:** "best way to bring products to market" · "email copy strategy" · "which platform to sell first"\n**Infrastructure:** production status · API health · database · Railway · Cloudflare R2\n**Campaigns:** activation steps · sender accounts · lead lists · email sequences\n**Platforms:** pricing · status · features for all 5 platforms\n**Dev Rules:** all 7 rules · locked files · Cursor templates · rollback procedure\n**AI Agents:** all 7 UltraLead agents · what each one does\n\nWhat would you like to know?`;
+};
+
+// ── MESSAGE RENDERING ──
+function addMsg(role, content, isOffline) {
+  const div = document.createElement('div');
+  const offlineClass = (role === 'ai' && isOffline) ? ' msg-offline' : '';
+  div.className = `px-4 py-3 rounded-xl msg-${role}${offlineClass} ${role === 'user' ? 'ml-12' : 'mr-12'}`;
+
+  const formatted = content
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-white">$1</strong>')
+    .replace(/`([^`]+)`/g, '<code class="bg-black/40 text-purple-300 px-1.5 py-0.5 rounded mono text-[10px]">$1</code>')
+    .split('\n').map(line => `<div class="text-[11px] ${role === 'user' ? 'text-neutral-200' : 'text-neutral-300'} leading-relaxed font-light">${line || '&nbsp;'}</div>`).join('');
+
+  const label = role === 'user' ? 'MICHAEL' : (isOffline ? '✦ AI ASSISTANT · OFFLINE' : '✦ AI ASSISTANT · LIVE');
+  const labelColor = role === 'user' ? 'text-neutral-600' : (isOffline ? 'text-amber-500' : 'text-indigo-500');
+
+  div.innerHTML = `
+    <div class="text-[9px] mono ${labelColor} mb-1.5">${label}</div>
+    ${formatted}`;
+  document.getElementById('chat-messages').appendChild(div);
+  document.getElementById('chat-messages').scrollTop = 999999;
+
+  // Voice output — speak AI responses if enabled
+  if (role === 'ai' && speakerEnabled) {
+    speakText(content.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1').replace(/[#•→✅⚪🔴🟢🚨⚡🌐📬🏆🎬💰🏗️📋🔒📧🚀💻🤖💳✍️🎯✦]/g, ''));
+  }
+}
+
+// ── LIVE API CHAT ──
+async function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  addMsg('user', q);
+
+  // Add to history
+  chatHistory.push({ role: 'user', content: q });
+
+  document.getElementById('typing-ind').classList.remove('hidden');
+
+  const token = getAuthToken();
+
+  // Try live API first
+  if (token) {
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/copilot/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          message: q,
+          context: {}
+        })
+      });
+
+      document.getElementById('typing-ind').classList.add('hidden');
+
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data.data?.response || data.data?.message || 'No response received.';
+        chatHistory.push({ role: 'assistant', content: reply });
+        // Keep history manageable (last 20 exchanges)
+        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+        addMsg('ai', reply, false);
+        return;
+      }
+      // Non-OK response — fall through to offline
+      console.warn('Copilot API returned', res.status, '— falling back to offline');
+    } catch (err) {
+      console.warn('Copilot API unreachable — falling back to offline:', err.message);
+    }
+  }
+
+  // Offline fallback
+  document.getElementById('typing-ind').classList.add('hidden');
+  const offlineReply = RESPOND(q);
+  chatHistory.push({ role: 'assistant', content: offlineReply });
+  if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+  addMsg('ai', offlineReply, true);
+}
+
+function quickChat(q) {
+  document.getElementById('chat-input').value = q;
+  sendChat();
+}
+
+// ── VOICE INPUT (SpeechRecognition — browser native) ──
+function toggleVoiceInput() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    addMsg('ai', '**Voice input not supported** in this browser. Try Chrome or Edge.', true);
+    return;
+  }
+
+  const micBtn = document.getElementById('mic-btn');
+
+  if (isRecording && recognition) {
+    recognition.stop();
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    micBtn.classList.add('mic-active');
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = Array.from(event.results)
+      .map(r => r[0].transcript)
+      .join('');
+    document.getElementById('chat-input').value = transcript;
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove('mic-active');
+    // Auto-send if we got text
+    const inp = document.getElementById('chat-input');
+    if (inp.value.trim()) {
+      sendChat();
+    }
+  };
+
+  recognition.onerror = (event) => {
+    isRecording = false;
+    micBtn.classList.remove('mic-active');
+    if (event.error !== 'no-speech') {
+      console.warn('Speech recognition error:', event.error);
+    }
+  };
+
+  recognition.start();
+}
+
+// ── VOICE OUTPUT (SpeechSynthesis — browser native, no backend needed) ──
+function toggleSpeaker() {
+  speakerEnabled = !speakerEnabled;
+  document.getElementById('speaker-icon-on').classList.toggle('hidden', !speakerEnabled);
+  document.getElementById('speaker-icon-off').classList.toggle('hidden', speakerEnabled);
+  document.getElementById('speaker-btn').classList.toggle('text-indigo-400', speakerEnabled);
+  document.getElementById('speaker-btn').classList.toggle('border-indigo-500/30', speakerEnabled);
+}
+
+function speakText(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel(); // stop any current speech
+  const utterance = new SpeechSynthesisUtterance(text.substring(0, 500)); // cap at 500 chars
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  utterance.volume = 0.8;
+  window.speechSynthesis.speak(utterance);
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('bg-white/5', 'text-white'));
+  document.getElementById(`tab-${id}`).classList.remove('hidden');
+  const navEl = document.getElementById(`nav-${id}`);
+  if (navEl) { navEl.classList.add('bg-white/5', 'text-white'); }
+
+  // Tab-specific inits
+  if (id === 'agents') renderAgents();
+  if (id === 'blueprint') { renderBlueprint(); initNexusRefresh(); }
+  else if (nexusRefreshInterval) { clearInterval(nexusRefreshInterval); nexusRefreshInterval = null; }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderAccounts();
+renderGTMSteps();
+renderStatusWorking();
+renderStatusPending();
+renderLockedFiles();
+renderInfra();
+startStatusAutoRefresh();
+renderCampaigns();
+renderLeadLists();
+renderPlatforms();
+renderRules();
+
+// Set Overview as default active tab
+switchTab('overview');
+</script>
+</body>
+</html>

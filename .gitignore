@@ -38,3 +38,6 @@ Thumbs.db
 
 # Diagnostics (runtime output)
 scripts/diagnostics-results.json
+
+# NEXUS file uploads
+uploads/

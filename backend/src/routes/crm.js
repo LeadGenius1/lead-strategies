@@ -319,7 +319,7 @@ router.get('/deals', async (req, res) => {
     const where = { userId: req.user.id };
     if (stage) where.stage = stage;
     if (company) where.companyId = company;
-    if (contact) where.contactId = contact;
+    if (contact) where.contacts = { some: { id: contact } };
 
     const [deals, total] = await Promise.all([
       db.deal.findMany({
@@ -327,7 +327,7 @@ router.get('/deals', async (req, res) => {
         take: parseInt(limit),
         skip: parseInt(offset),
         orderBy: { updatedAt: 'desc' },
-        include: { company: true, contact: true }
+        include: { company: true, contacts: true }
       }),
       db.deal.count({ where })
     ]);
@@ -363,7 +363,7 @@ router.post('/deals', async (req, res) => {
         expectedCloseDate: expectedCloseDate ? new Date(expectedCloseDate) : null,
         customFields: customFields || {}
       },
-      include: { company: true, contact: true }
+      include: { company: true, contacts: true }
     });
 
     res.status(201).json({ success: true, data: deal });
@@ -392,7 +392,7 @@ router.put('/deals/:id', async (req, res) => {
     const updated = await db.deal.update({
       where: { id: req.params.id },
       data: updateData,
-      include: { company: true, contact: true }
+      include: { company: true, contacts: true }
     });
 
     res.json({ success: true, data: updated });
@@ -426,7 +426,7 @@ router.put('/deals/:id/stage', async (req, res) => {
         probability,
         closedAt: ['won', 'lost'].includes(stage) ? new Date() : null
       },
-      include: { company: true, contact: true }
+      include: { company: true, contacts: true }
     });
 
     // Log activity
@@ -498,7 +498,7 @@ router.get('/pipeline', async (req, res) => {
         userId: req.user.id,
         stage: { notIn: ['won', 'lost'] } // Only active deals
       },
-      include: { company: true, contact: true },
+      include: { company: true, contacts: true },
       orderBy: { updatedAt: 'desc' }
     });
 

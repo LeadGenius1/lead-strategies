@@ -235,6 +235,16 @@ async function getMasterContext() {
     console.warn('NEXUS Blueprint queries failed (tables may not exist yet):', err.message);
   }
 
+  // Load deployment context (latest changes, marketing implications)
+  let deploymentContext = null;
+  try {
+    const contextPath = path.join(__dirname, '../../../public/nexus-data/system-context.json');
+    const raw = await fs.readFile(contextPath, 'utf-8');
+    deploymentContext = JSON.parse(raw);
+  } catch (err) {
+    console.warn('Deployment context not found:', err.message);
+  }
+
   return {
     current_system_status: liveStatus,
     rules_loaded: !!claudeRules,
@@ -304,6 +314,7 @@ async function getMasterContext() {
         m.status === 'IN_PROGRESS' || m.priority === 'STRATEGIC'
       )
     },
+    latestDeployment: deploymentContext,
   };
 }
 
@@ -458,6 +469,11 @@ You CAN and SHOULD update NEXUS when:
 
 Use update_nexus_module and create_nexus_recommendation tools.
 
+LATEST DEPLOYMENT CONTEXT:
+${masterContext.latestDeployment ? JSON.stringify(masterContext.latestDeployment, null, 2) : 'No deployment context available.'}
+
+When asked about recent changes, system status, or what was deployed today — use the deployment context above. Include marketing implications and competitive advantages when relevant.
+
 STRATEGIC FRAMEWORK:
 When asked about priorities/strategy/"what next":
 1. Analyze NEXUS state
@@ -467,7 +483,7 @@ When asked about priorities/strategy/"what next":
 5. Coordinate relevant agents
 6. Update NEXUS with decisions
 
-${JSON.stringify({...masterContext, _claudeRules: undefined, nexus: undefined}, null, 2)}`;
+${JSON.stringify({...masterContext, _claudeRules: undefined, nexus: undefined, latestDeployment: undefined}, null, 2)}`;
 
     console.log('🤖 Calling Anthropic API...');
     const chatMessage = await breakers.anthropic.execute(() =>

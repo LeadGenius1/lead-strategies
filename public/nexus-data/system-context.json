@@ -1,0 +1,124 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-22T16:00:00Z",
+  "systemStatus": "ACTIVE",
+  "deployment": {
+    "date": "2026-02-22",
+    "name": "Simplified Signup + AI Website Extraction",
+    "commits": [
+      "d90b32a6 - feat(auth): Simplify signup to email+password only, add AI website extraction",
+      "13349368 - feat(auth): tier-based redirect + dedicated LeadSite.AI website setup page",
+      "f93c3e0f - fix(auth): add timeout, logging, and abort handling to auth proxy routes",
+      "9b16f2e0 - fix(auth): simplify login proxy - pass through backend errors directly",
+      "f6aa7020 - fix(auth): add debug logging to authFetch + fix endpoint references"
+    ],
+    "summary": "Signup reduced from 10 fields to 3 (email, password, confirm). Business info collection moved to post-signup onboarding. AI website extraction added for LeadSite.AI users. Auth proxy routes hardened with timeouts and error handling."
+  },
+  "signupFlow": {
+    "before": {
+      "fields": 10,
+      "fieldNames": ["name", "email", "company", "password", "confirmPassword", "industry", "services", "location", "targetMarket", "tier"],
+      "estimatedTime": "3-5 minutes",
+      "issues": ["businessInfo object caused crashes", "too many required fields", "high abandonment"]
+    },
+    "after": {
+      "fields": 3,
+      "fieldNames": ["email", "password", "confirmPassword"],
+      "plusTierSelection": true,
+      "estimatedTime": "30 seconds",
+      "redirects": {
+        "leadsite-ai": "/onboarding/website-setup",
+        "all-other-tiers": "/dashboard"
+      }
+    }
+  },
+  "aiWebsiteExtraction": {
+    "endpoint": "POST /api/v1/copilot/extract-business",
+    "description": "User pastes their website URL, AI scrapes it and extracts structured business info",
+    "extractedFields": ["company", "industry", "services", "location", "targetMarket"],
+    "technology": "Website scraper (cheerio) + Anthropic Claude (claude-sonnet-4-20250514)",
+    "pages": [
+      "/onboarding/website-setup (dedicated LeadSite.AI page)",
+      "/onboarding (general onboarding with extraction option)"
+    ],
+    "verified": true,
+    "testResult": "Successfully extracted AI Lead Strategies business info from aileadstrategies.com"
+  },
+  "authProxyHardening": {
+    "files": ["app/api/auth/signup/route.js", "app/api/auth/login/route.js"],
+    "improvements": [
+      "15-second AbortController timeout",
+      "504 response on timeout instead of hanging",
+      "Structured [SIGNUP]/[LOGIN] logging",
+      "User-Agent header for backend identification",
+      "Environment variable priority: API_URL > NEXT_PUBLIC_API_URL > hardcoded"
+    ]
+  },
+  "platforms": {
+    "leadsiteAI": {
+      "status": "active",
+      "signupFlow": "email+password → /onboarding/website-setup → AI extracts business info → /prospects",
+      "pricing": "$49/mo"
+    },
+    "leadsiteIO": {
+      "status": "active",
+      "signupFlow": "email+password → /dashboard",
+      "pricing": "$49/mo"
+    },
+    "clientcontactIO": {
+      "status": "active",
+      "signupFlow": "email+password → /dashboard",
+      "pricing": "$99/mo"
+    },
+    "ultralead": {
+      "status": "active",
+      "signupFlow": "email+password → /dashboard",
+      "pricing": "$499/mo"
+    },
+    "videositeAI": {
+      "status": "active",
+      "signupFlow": "email+password → /dashboard",
+      "pricing": "FREE"
+    }
+  },
+  "marketingImplications": {
+    "messagingUpdates": [
+      "Emphasize 'Sign up in 30 seconds' - down from 3-5 minutes",
+      "Showcase 'AI reads your website' - paste URL, instant business profile",
+      "Highlight zero-friction onboarding vs competitor lengthy forms",
+      "LeadSite.AI differentiator: AI-powered website analysis at signup"
+    ],
+    "competitiveAdvantage": "Only B2B lead gen platform with AI website extraction during onboarding. Competitors (Apollo, Hunter, Instantly) require manual company data entry.",
+    "conversionExpectation": "Signup completion rate expected to increase significantly due to reduced form friction (10 fields → 3)"
+  },
+  "smokeTestResults": {
+    "date": "2026-02-22",
+    "totalEndpoints": 24,
+    "passing": 15,
+    "fixedToday": 3,
+    "remaining": 6,
+    "criticalFixes": [
+      "Campaign create: 500 → 201 (schema mismatch fixed)",
+      "CRM deals: 500 → 200 (relation name fixed)",
+      "Signup: 500 → 201 (20 missing User fields added to Prisma schema)"
+    ]
+  },
+  "knownWorking": [
+    "Email/password signup (201 + JWT)",
+    "Frontend proxy signup (200 + JWT)",
+    "Frontend proxy login (200 + JWT)",
+    "AI website extraction (200 + structured data)",
+    "Email sending via Mailgun",
+    "AI Copilot / Chat (NEXUS context)",
+    "Campaign listing and creation",
+    "Lead listing",
+    "CRM Contacts and Companies",
+    "CRM Deals",
+    "Dashboard Stats",
+    "Templates (60+)",
+    "AI Agents config (7 agents)",
+    "Conversations (inbox)",
+    "Canned Responses",
+    "NEXUS Blueprint API (8 modules)"
+  ]
+}

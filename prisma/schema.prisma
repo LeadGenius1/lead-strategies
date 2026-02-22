@@ -54,14 +54,14 @@ model User {
   conversationNotes ConversationNote[]
 
   // UltraLead Relations (Tier 5)
-  companies         Company[]
-  contacts          Contact[]
-  deals             Deal[]
-  activities        Activity[]
-  calls             Call[]
-  meetings          Meeting[]
-  documents         Document[]
-  teamMemberships   TeamMember[]
+  companies       Company[]
+  contacts        Contact[]
+  deals           Deal[]
+  activities      Activity[]
+  calls           Call[]
+  meetings        Meeting[]
+  documents       Document[]
+  teamMemberships TeamMember[]
 
   // User Email Delivery System (Two-Tier)
   emailAccounts         UserEmailAccount[]
@@ -257,7 +257,7 @@ model Website {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   forms Form[]
 
   @@index([userId])
@@ -268,13 +268,13 @@ model Website {
 // ==================== FORMS (Tier 2+ - LeadSite.IO) ====================
 
 model Form {
-  id        String @id @default(uuid())
-  userId    String @map("user_id")
+  id        String  @id @default(uuid())
+  userId    String  @map("user_id")
   websiteId String? @map("website_id")
 
-  name    String
-  fields  Json // Array of form field definitions
-  settings Json @default("{}") // Redirect URL, success message, email notifications, etc.
+  name     String
+  fields   Json // Array of form field definitions
+  settings Json   @default("{}") // Redirect URL, success message, email notifications, etc.
 
   isActive Boolean @default(true) @map("is_active")
 
@@ -282,9 +282,9 @@ model Form {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  website      Website?        @relation(fields: [websiteId], references: [id], onDelete: SetNull)
-  submissions  FormSubmission[]
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  website     Website?         @relation(fields: [websiteId], references: [id], onDelete: SetNull)
+  submissions FormSubmission[]
 
   @@index([userId])
   @@index([websiteId])
@@ -328,18 +328,18 @@ model Video {
   aspectRatio  String? @default("16:9") @map("aspect_ratio") // 16:9, 9:16, 1:1
 
   // Video Content
-  script  String? // AI-generated script
-  scenes  Json?   // Array of scene definitions
-  settings Json?  @default("{}") // Style, music, voiceover settings
+  script   String? // AI-generated script
+  scenes   Json? // Array of scene definitions
+  settings Json?   @default("{}") // Style, music, voiceover settings
 
   // Analytics
-  views      Int     @default(0)
-  watchTime  Int     @default(0) @map("watch_time") // Total watch time in seconds
-  engagement Decimal @default(0) @db.Decimal(5, 2) // Engagement percentage
-  clicks     Int     @default(0)
-  shares     Int     @default(0)
-  platformViews Json? @map("platform_views") // Views per platform
-  heatmap    Json?   // Engagement heatmap data
+  views         Int     @default(0)
+  watchTime     Int     @default(0) @map("watch_time") // Total watch time in seconds
+  engagement    Decimal @default(0) @db.Decimal(5, 2) // Engagement percentage
+  clicks        Int     @default(0)
+  shares        Int     @default(0)
+  platformViews Json?   @map("platform_views") // Views per platform
+  heatmap       Json? // Engagement heatmap data
 
   // Monetization
   isMonetized Boolean @default(false) @map("is_monetized")
@@ -596,7 +596,7 @@ model Channel {
   credentials Json // OAuth tokens, API keys, etc.
 
   // Settings
-  settings Json @default("{}") // enabled, autoSync, syncInterval, etc.
+  settings Json   @default("{}") // enabled, autoSync, syncInterval, etc.
   status   String @default("connected") // connected, disconnected, error
 
   // Sync Info
@@ -851,31 +851,31 @@ model AdminSession {
 
 // Companies - B2B company profiles
 model Company {
-  id       String @id @default(uuid())
-  userId   String @map("user_id")
+  id     String @id @default(uuid())
+  userId String @map("user_id")
 
   // Company Info
   name        String
   domain      String?
   industry    String?
-  size        String?   // 1-10, 11-50, 51-200, 201-500, 501-1000, 1000+
-  revenue     String?   // Revenue range
+  size        String? // 1-10, 11-50, 51-200, 201-500, 501-1000, 1000+
+  revenue     String? // Revenue range
   website     String?
-  linkedinUrl String?   @map("linkedin_url")
+  linkedinUrl String? @map("linkedin_url")
   phone       String?
   address     String?
   city        String?
   state       String?
   country     String?
-  postalCode  String?   @map("postal_code")
+  postalCode  String? @map("postal_code")
 
   // Enrichment Data
   description    String?
-  foundedYear    Int?      @map("founded_year")
-  employeeCount  Int?      @map("employee_count")
-  technologies   String[]  @default([])
+  foundedYear    Int?     @map("founded_year")
+  employeeCount  Int?     @map("employee_count")
+  technologies   String[] @default([])
   funding        String?
-  socialProfiles Json?     @map("social_profiles")
+  socialProfiles Json?    @map("social_profiles")
 
   // Relationship
   accountOwner String?  @map("account_owner")
@@ -888,9 +888,9 @@ model Company {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  contacts  Contact[]
-  deals     Deal[]
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts   Contact[]
+  deals      Deal[]
   activities Activity[]
 
   @@index([userId])
@@ -961,11 +961,11 @@ model Deal {
 
   // Deal Info
   name        String
-  value       Decimal   @db.Decimal(15, 2)
-  currency    String    @default("USD")
-  stage       String    @default("lead") // lead, qualified, proposal, negotiation, closed_won, closed_lost
-  probability Int?      @default(0) // 0-100
-  priority    String?   @default("medium") // low, medium, high, urgent
+  value       Decimal @db.Decimal(15, 2)
+  currency    String  @default("USD")
+  stage       String  @default("lead") // lead, qualified, proposal, negotiation, closed_won, closed_lost
+  probability Int?    @default(0) // 0-100
+  priority    String? @default("medium") // low, medium, high, urgent
 
   // Deal Details
   description   String?
@@ -977,10 +977,10 @@ model Deal {
   competitor    String?
 
   // Ownership
-  ownerId     String?  @map("owner_id")
-  teamId      String?  @map("team_id")
-  tags        String[] @default([])
-  customFields Json?   @map("custom_fields")
+  ownerId      String?  @map("owner_id")
+  teamId       String?  @map("team_id")
+  tags         String[] @default([])
+  customFields Json?    @map("custom_fields")
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
@@ -1017,11 +1017,11 @@ model Activity {
   outcome     String? // completed, no_answer, left_voicemail, scheduled, cancelled
 
   // Scheduling
-  dueDate       DateTime? @map("due_date")
-  completedAt   DateTime? @map("completed_at")
-  duration      Int?      // Duration in minutes
-  isCompleted   Boolean   @default(false) @map("is_completed")
-  reminderAt    DateTime? @map("reminder_at")
+  dueDate     DateTime? @map("due_date")
+  completedAt DateTime? @map("completed_at")
+  duration    Int? // Duration in minutes
+  isCompleted Boolean   @default(false) @map("is_completed")
+  reminderAt  DateTime? @map("reminder_at")
 
   // Assignment
   assignedTo String? @map("assigned_to")
@@ -1056,37 +1056,37 @@ model Call {
   contactId String? @map("contact_id")
 
   // Call Info
-  direction   String // inbound, outbound
-  status      String // initiated, ringing, in-progress, completed, busy, no-answer, failed
-  fromNumber  String @map("from_number")
-  toNumber    String @map("to_number")
-  duration    Int?   // Duration in seconds
-  startedAt   DateTime? @map("started_at")
-  endedAt     DateTime? @map("ended_at")
+  direction  String // inbound, outbound
+  status     String // initiated, ringing, in-progress, completed, busy, no-answer, failed
+  fromNumber String    @map("from_number")
+  toNumber   String    @map("to_number")
+  duration   Int? // Duration in seconds
+  startedAt  DateTime? @map("started_at")
+  endedAt    DateTime? @map("ended_at")
 
   // Twilio Data
-  twilioSid      String? @unique @map("twilio_sid")
-  twilioStatus   String? @map("twilio_status")
-  twilioPrice    Decimal? @map("twilio_price") @db.Decimal(10, 4)
+  twilioSid    String?  @unique @map("twilio_sid")
+  twilioStatus String?  @map("twilio_status")
+  twilioPrice  Decimal? @map("twilio_price") @db.Decimal(10, 4)
 
   // Recording & Transcription
-  recordingUrl    String? @map("recording_url")
-  recordingSid    String? @map("recording_sid")
-  transcription   String?
+  recordingUrl        String? @map("recording_url")
+  recordingSid        String? @map("recording_sid")
+  transcription       String?
   transcriptionStatus String? @map("transcription_status") // pending, completed, failed
 
   // AI Analysis
-  aiAnalysis      String?  @map("ai_analysis")
-  analyzedAt      DateTime? @map("analyzed_at")
-  sentiment       String?  // positive, neutral, negative
-  keywords        String[] @default([])
-  summary         String?
-  actionItems     String[] @default([]) @map("action_items")
-  coachingNotes   String?  @map("coaching_notes")
+  aiAnalysis    String?   @map("ai_analysis")
+  analyzedAt    DateTime? @map("analyzed_at")
+  sentiment     String? // positive, neutral, negative
+  keywords      String[]  @default([])
+  summary       String?
+  actionItems   String[]  @default([]) @map("action_items")
+  coachingNotes String?   @map("coaching_notes")
 
   // Metadata
   notes    String?
-  outcome  String?  // interested, not_interested, follow_up, wrong_number, voicemail
+  outcome  String? // interested, not_interested, follow_up, wrong_number, voicemail
   metadata Json?
 
   // Timestamps
@@ -1112,23 +1112,23 @@ model Document {
   dealId String? @map("deal_id")
 
   // Document Info
-  name        String
-  type        String   // proposal, contract, quote, invoice, presentation, other
-  mimeType    String?  @map("mime_type")
-  size        Int?     // File size in bytes
-  url         String
-  storageKey  String?  @map("storage_key")
+  name       String
+  type       String // proposal, contract, quote, invoice, presentation, other
+  mimeType   String? @map("mime_type")
+  size       Int? // File size in bytes
+  url        String
+  storageKey String? @map("storage_key")
 
   // Document Status
-  status      String   @default("draft") // draft, sent, viewed, signed, expired
-  version     Int      @default(1)
-  parentId    String?  @map("parent_id") // For versioning
+  status   String  @default("draft") // draft, sent, viewed, signed, expired
+  version  Int     @default(1)
+  parentId String? @map("parent_id") // For versioning
 
   // E-Signature (DocuSign integration)
-  signatureStatus  String?   @map("signature_status") // pending, signed, declined, expired
-  signatureId      String?   @map("signature_id")
-  signedAt         DateTime? @map("signed_at")
-  expiresAt        DateTime? @map("expires_at")
+  signatureStatus String?   @map("signature_status") // pending, signed, declined, expired
+  signatureId     String?   @map("signature_id")
+  signedAt        DateTime? @map("signed_at")
+  expiresAt       DateTime? @map("expires_at")
 
   // Analytics
   viewCount     Int       @default(0) @map("view_count")
@@ -1152,7 +1152,7 @@ model Document {
 
 // Team - Sales teams for collaboration
 model Team {
-  id     String @id @default(uuid())
+  id String @id @default(uuid())
 
   // Team Info
   name        String
@@ -1183,9 +1183,9 @@ model TeamMember {
   permissions String[] @default([])
 
   // Performance Tracking
-  quota         Decimal? @db.Decimal(15, 2) // Sales quota
-  quotaPeriod   String?  @map("quota_period") // monthly, quarterly, yearly
-  isActive      Boolean  @default(true) @map("is_active")
+  quota       Decimal? @db.Decimal(15, 2) // Sales quota
+  quotaPeriod String?  @map("quota_period") // monthly, quarterly, yearly
+  isActive    Boolean  @default(true) @map("is_active")
 
   // Timestamps
   joinedAt  DateTime @default(now()) @map("joined_at")
@@ -1230,10 +1230,10 @@ model PipelineStage {
 
   // Stage Info
   name        String
-  position    Int      @default(0)
-  probability Int      @default(0) // Default probability for deals in this stage
+  position    Int     @default(0)
+  probability Int     @default(0) // Default probability for deals in this stage
   color       String?
-  rottingDays Int?     @map("rotting_days") // Days until deal is considered "rotting"
+  rottingDays Int?    @map("rotting_days") // Days until deal is considered "rotting"
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
@@ -1262,13 +1262,13 @@ model Sequence {
   timezone     String?
   sendingDays  String[] @default(["mon", "tue", "wed", "thu", "fri"]) @map("sending_days")
   sendingStart String?  @map("sending_start") // "09:00"
-  sendingEnd   String?  @map("sending_end")   // "17:00"
+  sendingEnd   String?  @map("sending_end") // "17:00"
 
   // Analytics
-  enrolledCount   Int @default(0) @map("enrolled_count")
-  completedCount  Int @default(0) @map("completed_count")
-  repliedCount    Int @default(0) @map("replied_count")
-  bouncedCount    Int @default(0) @map("bounced_count")
+  enrolledCount  Int @default(0) @map("enrolled_count")
+  completedCount Int @default(0) @map("completed_count")
+  repliedCount   Int @default(0) @map("replied_count")
+  bouncedCount   Int @default(0) @map("bounced_count")
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
@@ -1288,10 +1288,10 @@ model SequenceStep {
   sequenceId String @map("sequence_id")
 
   // Step Info
-  position    Int     @default(0)
-  channel     String  // email, sms, linkedin, call, task
-  delayDays   Int     @default(1) @map("delay_days")
-  delayHours  Int     @default(0) @map("delay_hours")
+  position   Int    @default(0)
+  channel    String // email, sms, linkedin, call, task
+  delayDays  Int    @default(1) @map("delay_days")
+  delayHours Int    @default(0) @map("delay_hours")
 
   // Content
   subject  String?
@@ -1325,16 +1325,16 @@ model Meeting {
   // Scheduling
   scheduledAt DateTime @map("scheduled_at")
   endAt       DateTime @map("end_at")
-  duration    Int      // Duration in minutes
+  duration    Int // Duration in minutes
   timezone    String   @default("UTC")
 
   // Location
-  location  String? // Physical location
+  location   String? // Physical location
   meetingUrl String? @map("meeting_url") // Video call URL
 
   // Calendar Integration
   calendarId String? @map("calendar_id") // Google Calendar, Outlook, etc.
-  sendInvite  Boolean @default(true) @map("send_invite")
+  sendInvite Boolean @default(true) @map("send_invite")
 
   // Status
   status String @default("scheduled") // scheduled, completed, cancelled, no_show
@@ -1363,43 +1363,44 @@ model Meeting {
 // ============================================
 
 model UserEmailAccount {
-  id              String        @id @default(cuid())
-  userId          String
-  email           String
-  displayName     String?
-  provider        EmailProvider
-  status          AccountStatus @default(WARMING)
-  tier            EmailTier     @default(FREE)
-  accessToken     String?       @db.Text
-  refreshToken    String?       @db.Text
-  tokenExpiresAt  DateTime?
-  scopes          String?
-  smtpHost        String?
-  smtpPort        Int?
-  smtpUsername    String?
-  smtpPassword    String?       @db.Text
-  imapHost        String?
-  imapPort        Int?
+  id                 String                 @id @default(cuid())
+  userId             String
+  email              String
+  displayName        String?
+  provider           EmailProvider
+  status             AccountStatus          @default(WARMING)
+  tier               EmailTier              @default(FREE)
+  accessToken        String?                @db.Text
+  refreshToken       String?                @db.Text
+  tokenExpiresAt     DateTime?
+  scopes             String?
+  smtpHost           String?
+  smtpPort           Int?
+  smtpUsername       String?
+  smtpPassword       String?                @db.Text
+  imapHost           String?
+  imapPort           Int?
   poolSubscriptionId String?
   poolRotationOrder  Int?
-  dailyLimit          Int     @default(50)
-  dailySentCount      Int     @default(0)
-  dailySentResetAt    DateTime @default(now())
-  totalSent           Int     @default(0)
-  bounceCount         Int     @default(0)
-  bounceRate          Float   @default(0)
-  spamComplaintCount  Int     @default(0)
-  spamComplaintRate   Float   @default(0)
-  reputationScore     Int     @default(100)
-  lastHealthCheck     DateTime?
-  lastSentAt          DateTime?
-  warmupStartedAt     DateTime?
-  warmupDailyLimit    Int     @default(5)
-  warmupCurrentDay    Int     @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  poolSubscription EmailPoolSubscription? @relation(fields: [poolSubscriptionId], references: [id])
+  dailyLimit         Int                    @default(50)
+  dailySentCount     Int                    @default(0)
+  dailySentResetAt   DateTime               @default(now())
+  totalSent          Int                    @default(0)
+  bounceCount        Int                    @default(0)
+  bounceRate         Float                  @default(0)
+  spamComplaintCount Int                    @default(0)
+  spamComplaintRate  Float                  @default(0)
+  reputationScore    Int                    @default(100)
+  lastHealthCheck    DateTime?
+  lastSentAt         DateTime?
+  warmupStartedAt    DateTime?
+  warmupDailyLimit   Int                    @default(5)
+  warmupCurrentDay   Int                    @default(0)
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poolSubscription   EmailPoolSubscription? @relation(fields: [poolSubscriptionId], references: [id])
+
   @@unique([userId, email])
   @@index([userId])
   @@index([status])
@@ -1409,21 +1410,22 @@ model UserEmailAccount {
 }
 
 model EmailPoolSubscription {
-  id                   String   @id @default(cuid())
-  userId               String   @unique
+  id                   String                 @id @default(cuid())
+  userId               String                 @unique
   stripeCustomerId     String?
   stripeSubscriptionId String?
   stripePriceId        String?
   status               PoolSubscriptionStatus @default(PENDING)
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean  @default(false)
-  poolSize             Int      @default(4)
-  totalDailyLimit      Int      @default(800)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  poolAccounts UserEmailAccount[]
+  cancelAtPeriodEnd    Boolean                @default(false)
+  poolSize             Int                    @default(4)
+  totalDailyLimit      Int                    @default(800)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poolAccounts         UserEmailAccount[]
+
   @@index([stripeSubscriptionId])
   @@index([status])
 }
@@ -1454,4 +1456,73 @@ enum PoolSubscriptionStatus {
   PAST_DUE
   CANCELED
   EXPIRED
+}
+
+// ============================================================================
+// NEXUS BLUEPRINT SYSTEM
+// ============================================================================
+
+model NexusModule {
+  id             String   @id @default(cuid())
+  moduleNumber   Int      @unique
+  title          String
+  description    String
+  category       String
+  priority       String
+  effort         String
+  status         String   @default("NOT_STARTED")
+  progress       Int      @default(0)
+  currentState   String   @db.Text
+  targetState    String   @db.Text
+  dependencies   String[]
+  initiatives    Json
+  metrics        Json
+  assignedAgents String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  updates NexusUpdate[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([moduleNumber])
+}
+
+model NexusUpdate {
+  id            String      @id @default(cuid())
+  moduleId      String
+  module        NexusModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  updateType    String
+  content       String      @db.Text
+  previousValue String?     @db.Text
+  newValue      String?     @db.Text
+  aiGenerated   Boolean     @default(false)
+  agentName     String?
+  metadata      Json?
+  createdAt     DateTime    @default(now())
+
+  @@index([moduleId])
+  @@index([createdAt])
+  @@index([aiGenerated])
+}
+
+model NexusRecommendation {
+  id              String    @id @default(cuid())
+  moduleId        String?
+  title           String
+  rationale       String    @db.Text
+  impact          String    @db.Text
+  effort          String
+  priority        Int
+  status          String    @default("PENDING")
+  aiConfidence    Float
+  generatedBy     String
+  actionItems     Json
+  expectedOutcome String    @db.Text
+  createdAt       DateTime  @default(now())
+  reviewedAt      DateTime?
+
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
 }

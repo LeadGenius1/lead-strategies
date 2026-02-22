@@ -20,18 +20,39 @@ model User {
   company      String?
 
   // Tier System (1-5)
-  // 1 = LeadSite.AI ($79/mo) - 50 leads, email campaigns
-  // 2 = LeadSite.IO ($149/mo) - 100 leads, website builder
-  // 3 = ClientContact.IO ($249/mo) - 500 leads, 22+ channels
-  // 4 = VideoSite.IO ($99/mo) - 1000 leads, video monetization
-  // 5 = UltraLead ($599/mo) - 10000 leads, all features + API
   tier Int @default(1)
 
+  // Auth & Identity
+  google_id       String?
+  microsoft_id    String?
+  linkedin_id     String?
+  auth_provider   String?  @default("email")
+  profile_picture String?
+  avatar_url      String?
+  email_verified  Boolean? @default(false)
+
   // Subscription
-  stripeCustomerId     String?   @map("stripe_customer_id")
-  stripeSubscriptionId String?   @map("stripe_subscription_id")
-  subscriptionStatus   String?   @default("trial") @map("subscription_status")
-  trialEndsAt          DateTime? @map("trial_ends_at")
+  stripeCustomerId        String?   @map("stripe_customer_id")
+  stripeSubscriptionId    String?   @map("stripe_subscription_id")
+  subscriptionStatus      String?   @default("trial") @map("subscription_status")
+  trialEndsAt             DateTime? @map("trial_ends_at")
+  subscription_tier       String?
+  plan_tier               String?
+  trial_start_date        DateTime?
+  trial_end_date          DateTime?
+  subscription_start_date DateTime?
+  subscription_end_date   DateTime?
+  last_payment_date       DateTime?
+  payment_reminder_sent   Boolean?  @default(false)
+
+  // Admin & Metadata
+  is_admin Boolean? @default(false)
+  metadata Json?
+
+  // VideoSite.AI Creator Earnings
+  total_earnings    Decimal? @default(0) @db.Decimal(15, 2)
+  balance_available Decimal? @default(0) @db.Decimal(15, 2)
+  stripe_account_id String?
 
   // Timestamps
   createdAt   DateTime  @default(now()) @map("created_at")

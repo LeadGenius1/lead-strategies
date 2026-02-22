@@ -81,6 +81,9 @@ const masterValidationRoutes = require('./routes/master-validation');
 const statusRoutes = require('./routes/status');
 const usersRoutes = require('./routes/users');
 
+// NEXUS Blueprint Routes
+const nexusRoutes = require('./routes/nexus');
+
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
 
@@ -386,6 +389,7 @@ app.use('/api/status', statusRoutes);       // Backward compat
 app.use('/api/v1/clips', clipsRoutes);      // Video clips management
 app.use('/api/v1/publish', publishRoutes);  // Social media publishing
 app.use('/api/v1/products', productRoutes); // VideoSite.AI Product Promotions
+app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System
 
 // 404 handler
 app.use((req, res) => {

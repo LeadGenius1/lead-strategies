@@ -10,7 +10,6 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 
 function getPrisma() { return require('../config/database').prisma; }
-}
 
 function hashPassword(plain) {
   const salt = crypto.randomBytes(16).toString('hex');

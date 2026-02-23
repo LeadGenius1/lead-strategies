@@ -7,11 +7,12 @@ import { logout } from '@/lib/auth'
 import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 import { 
-  MessageSquare, 
+  MessageSquare,
   LogOut,
   BrainCircuit,
   Menu,
   X,
+  User,
   Settings
 } from 'lucide-react'
 
@@ -19,6 +20,7 @@ import {
 const navigation = [
   { name: 'Lead Hunter', href: '/lead-hunter', icon: BrainCircuit, highlight: true },
   { name: 'Inbox', href: '/inbox', icon: MessageSquare },
+  { name: 'Profile', href: '/profile', icon: User },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
 

@@ -1663,17 +1663,19 @@ async function sendChat() {
 
       if (res.ok) {
         const data = await res.json();
-        const reply = data.data?.response || data.data?.message || 'No response received.';
+        console.log('NEXUS API Response:', data);
+        const reply = data.response || data.data?.response || data.message || 'No response received.';
         chatHistory.push({ role: 'assistant', content: reply });
+        if (data.sessionId) window.__nexusSessionId = data.sessionId;
         // Keep history manageable (last 20 exchanges)
         if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
         addMsg('ai', reply, false);
         return;
       }
       // Non-OK response — fall through to offline
-      console.warn('Copilot API returned', res.status, '— falling back to offline');
+      console.warn('NEXUS API returned', res.status, '— falling back to offline');
     } catch (err) {
-      console.warn('Copilot API unreachable — falling back to offline:', err.message);
+      console.warn('NEXUS API unreachable — falling back to offline:', err.message);
     }
   }
 

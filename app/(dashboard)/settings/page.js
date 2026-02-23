@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Settings, CreditCard, Sun, Moon, Mail, Loader2, ExternalLink } from 'lucide-react';
-import EmailAccountsSection from '@/components/profile/EmailAccountsSection';
+import { Settings, CreditCard, Sun, Moon, Loader2, ExternalLink } from 'lucide-react';
 
 const CHAT_STYLE = {
   container: 'bg-black min-h-screen',
@@ -208,11 +207,6 @@ export default function SettingsPage() {
               </button>
             </div>
           </div>
-        </div>
-
-        {/* ── Email Sending ───────────────────────────────────── */}
-        <div>
-          <EmailAccountsSection />
         </div>
 
         {/* ── Appearance ──────────────────────────────────────── */}

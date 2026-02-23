@@ -1,6 +1,6 @@
 # CLAUDE.md — AI Lead Strategies LLC
 # This file is read by Claude Code at the start of every session.
-# Last Updated: February 16, 2026
+# Last Updated: February 22, 2026
 
 ## IDENTITY
 
@@ -10,7 +10,7 @@ You have full context of this codebase — use it. Never guess.
 
 ---
 
-## THE 7 RULES (Non-Negotiable — Violation = Immediate Revert)
+## THE 11 RULES (Non-Negotiable — Violation = Immediate Revert)
 
 ### RULE 1: ONE FILE AT A TIME
 Every change targets ONE file or ONE route. Never "fix all auth" or "update all platforms."
@@ -69,6 +69,48 @@ Before ANY `git push origin main`:
 4. Merge and push: `git checkout main && git merge [branch] && git push origin main`
 5. Wait 90 seconds for Railway auto-deploy
 6. Verify production: run the 3 curl tests from Rule 4
+
+### RULE 8: FEATURE FLAGS (MANDATORY)
+Every platform feature MUST be wrapped in a feature flag. New features default OFF.
+```javascript
+// backend/src/config/feature-flags.js — Single source of truth
+// Core platforms: process.env.ENABLE_X !== 'false' (ON by default)
+// New features:   process.env.ENABLE_X === 'true'  (OFF by default)
+```
+- Route mounting in `index.js` MUST check `featureFlags.ENABLE_X` before `app.use()`
+- Never mount routes for disabled features
+- Toggle features via Railway environment variables — zero code changes needed
+
+### RULE 9: COMPREHENSIVE HEALTH CHECK
+The `/health` endpoint MUST verify all active platform models:
+```bash
+curl https://api.aileadstrategies.com/health
+# Must return: { status: "ok", checks: { database: "ok", prisma_user: "ok", ... }, features: { ... } }
+```
+- Database connectivity check
+- `prisma.user.count()` (core — always checked)
+- Platform model checks gated by feature flags (only checks enabled platforms)
+- Returns 503 if ANY check fails — do NOT deploy if health returns 503
+
+### RULE 10: AUTOMATED TESTING REQUIRED
+Before deploying, run the comprehensive test suite:
+```bash
+bash tests/comprehensive-platform-tests.sh
+```
+- Layer 1: Health endpoint + feature flags verification
+- Layer 2: API endpoint tests (auth 400, protected routes 401)
+- Layer 3: Frontend page tests (homepage, login, signup return 200)
+- Layer 4: Database model tests via /health checks
+- ALL tests must pass (exit code 0) before deploying. NO EXCEPTIONS.
+
+### RULE 11: GRADUAL FEATURE ROLLOUT
+New features follow this deployment sequence:
+1. **Code with flag OFF** — Merge feature code with `ENABLE_X === 'true'` (defaults OFF)
+2. **Deploy** — Push to main, Railway deploys, existing features unaffected
+3. **Run tests** — `bash tests/comprehensive-platform-tests.sh` — all must pass
+4. **Enable flag** — Set `ENABLE_X=true` in Railway environment variables
+5. **Verify** — Run tests again after flag is enabled
+6. **If broken** — Set `ENABLE_X=false` in Railway — instant rollback, no code change needed
 
 ---
 
@@ -193,11 +235,25 @@ The backend serves all platforms. The frontend uses domain-based feature flags.
 3. Use AETHER UI components for dashboard pages
 4. Test that auth redirects work for protected routes
 
-### Deploying
-1. `git push origin main` (from a merged branch, per Rule 2)
-2. Wait 90 seconds for Railway auto-deploy
-3. Verify: `curl https://api.aileadstrategies.com/health`
-4. Check Railway logs if issues
+### Deploying (STANDARD_EXECUTION_POLICY v2.0)
+```bash
+# 1. Branch and make changes (Rule 2)
+git checkout -b feat/descriptive-name
+
+# 2. Make changes, commit
+git add [files] && git commit -m "feat(scope): description"
+
+# 3. Merge to main and push
+git checkout main && git merge feat/descriptive-name && git push origin main
+
+# 4. Wait for Railway auto-deploy
+sleep 90
+
+# 5. Run comprehensive tests (Rule 10)
+bash tests/comprehensive-platform-tests.sh
+
+# 6. Verify: ALL tests must pass. If any fail → git revert HEAD && git push origin main
+```
 
 ### Emergency Rollback
 ```bash
@@ -215,12 +271,14 @@ curl -X POST https://api.aileadstrategies.com/api/auth/signup -H "Content-Type: 
 
 ---
 
-## KNOWN WORKING (Verified Feb 16, 2026)
+## KNOWN WORKING (Verified Feb 22, 2026)
 - ✅ Email/password signup → 201 with JWT token
 - ✅ Plan tier selection (Starter/Pro/Enterprise per platform)
 - ✅ 14-day trial with countdown in sidebar
 - ✅ JWT authentication on protected routes
-- ✅ Backend health check (200 OK)
+- ✅ Backend health check (200 OK) with comprehensive model verification
+- ✅ Feature flags system (7 flags, all core platforms enabled)
+- ✅ Automated test suite (18/18 tests passing)
 - ✅ Frontend builds and deploys successfully
 - ✅ Database queries via Prisma
 - ✅ Cloudflare R2 video upload via presigned URLs

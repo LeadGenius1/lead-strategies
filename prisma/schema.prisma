@@ -260,22 +260,20 @@ model EmailEvent {
 // ==================== WEBSITES (Tier 2+) ====================
 
 model Website {
-  id     String @id @default(uuid())
-  userId String @map("user_id")
-
-  name      String
-  domain    String?
-  subdomain String? @unique
-
-  // Website Builder Data
-  pages    Json?   @default("[]")
-  settings Json?   @default("{}")
-  theme    String? @default("default")
-
+  id          String  @id @default(uuid())
+  userId      String  @map("user_id")
+  name        String
+  slug        String?
+  template    String?
+  content     Json?
+  htmlContent String? @map("html_content") @db.Text
+  status      String  @default("draft")
+  isFreeWebsite Boolean @default(false) @map("is_free_website")
   isPublished Boolean @default(false) @map("is_published")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  purchaseId  String? @map("purchase_id")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   // Relations
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)

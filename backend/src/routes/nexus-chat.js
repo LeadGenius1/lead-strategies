@@ -4,6 +4,27 @@ const { authenticate } = require('../middleware/auth');
 const { prisma } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
+const { FirecrawlAgent } = require('../services/firecrawl-agent');
+const { PerplexityAgent } = require('../services/perplexity-agent');
+const { ChatGPTAgent } = require('../services/chatgpt-agent');
+
+// Lazy-initialized agent instances
+let firecrawlAgent = null;
+let perplexityAgent = null;
+let chatgptAgent = null;
+
+function getFirecrawlAgent() {
+  if (!firecrawlAgent) firecrawlAgent = new FirecrawlAgent();
+  return firecrawlAgent;
+}
+function getPerplexityAgent() {
+  if (!perplexityAgent) perplexityAgent = new PerplexityAgent();
+  return perplexityAgent;
+}
+function getChatGPTAgent() {
+  if (!chatgptAgent) chatgptAgent = new ChatGPTAgent();
+  return chatgptAgent;
+}
 
 // Lazy-initialize Anthropic client
 function getAnthropicClient() {
@@ -178,6 +199,104 @@ Pending AI Recommendations: ${ctx.pendingRecommendations.length}
 - For system status requests: show ALL live service statuses with the timestamp`;
 }
 
+// Tools available to NEXUS via Anthropic tool_use
+const nexusTools = [
+  {
+    name: 'web_research',
+    description: 'Research a topic using real-time web data with citations',
+    input_schema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Research query' }
+      },
+      required: ['query']
+    }
+  },
+  {
+    name: 'scrape_website',
+    description: 'Scrape and extract content from a specific URL',
+    input_schema: {
+      type: 'object',
+      properties: {
+        url: { type: 'string', description: 'Full URL to scrape' }
+      },
+      required: ['url']
+    }
+  },
+  {
+    name: 'market_analysis',
+    description: 'Get market intelligence and industry analysis on a topic',
+    input_schema: {
+      type: 'object',
+      properties: {
+        topic: { type: 'string', description: 'Market or industry topic' }
+      },
+      required: ['topic']
+    }
+  },
+  {
+    name: 'competitor_analysis',
+    description: 'Scrape competitor website for pricing and features',
+    input_schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'Competitor name' },
+        url: { type: 'string', description: 'Competitor URL' }
+      },
+      required: ['name', 'url']
+    }
+  },
+  {
+    name: 'generate_email',
+    description: 'Generate a personalized outreach email using AI',
+    input_schema: {
+      type: 'object',
+      properties: {
+        recipient: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            company: { type: 'string' },
+            title: { type: 'string' }
+          },
+          required: ['name', 'company']
+        },
+        context: {
+          type: 'object',
+          properties: {
+            objective: { type: 'string' },
+            keyPoints: { type: 'array', items: { type: 'string' } }
+          },
+          required: ['objective']
+        }
+      },
+      required: ['recipient', 'context']
+    }
+  }
+];
+
+// Execute a tool call from Claude
+async function executeTool(toolName, toolInput) {
+  try {
+    switch (toolName) {
+      case 'web_research':
+        return await getPerplexityAgent().research(toolInput.query);
+      case 'scrape_website':
+        return await getFirecrawlAgent().scrapePage(toolInput.url);
+      case 'market_analysis':
+        return await getPerplexityAgent().getMarketIntelligence(toolInput.topic);
+      case 'competitor_analysis':
+        return await getFirecrawlAgent().scrapeCompetitorPricing(toolInput.name, toolInput.url);
+      case 'generate_email':
+        return await getChatGPTAgent().generateEmail(toolInput.recipient, toolInput.context);
+      default:
+        return { error: `Unknown tool: ${toolName}` };
+    }
+  } catch (error) {
+    return { error: `Tool execution failed: ${error.message}` };
+  }
+}
+
 /**
  * POST /api/v1/nexus/chat
  * Process NEXUS conversation message via Claude AI
@@ -231,15 +350,52 @@ router.post('/chat', authenticate, async (req, res) => {
     }
 
     console.log(`🤖 NEXUS chat: calling Claude for user ${userId}...`);
-    const chatMessage = await anthropic.messages.create({
+    let chatMessage = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: systemPrompt,
       messages: conversationHistory,
+      tools: nexusTools,
     });
 
-    const responseText = chatMessage.content[0].text;
-    console.log('✅ NEXUS response received');
+    // Tool-use loop: if Claude wants to call tools, execute them and continue
+    const MAX_TOOL_ROUNDS = 5;
+    let toolRound = 0;
+    while (chatMessage.stop_reason === 'tool_use' && toolRound < MAX_TOOL_ROUNDS) {
+      toolRound++;
+      console.log(`🔧 NEXUS tool round ${toolRound}: Claude requested tool calls`);
+
+      // Collect all tool_use blocks from the response
+      const toolUseBlocks = chatMessage.content.filter(b => b.type === 'tool_use');
+      const toolResults = [];
+
+      for (const toolBlock of toolUseBlocks) {
+        console.log(`  → Executing tool: ${toolBlock.name}`, JSON.stringify(toolBlock.input).substring(0, 200));
+        const result = await executeTool(toolBlock.name, toolBlock.input);
+        toolResults.push({
+          type: 'tool_result',
+          tool_use_id: toolBlock.id,
+          content: JSON.stringify(result).substring(0, 10000), // Cap tool result size
+        });
+      }
+
+      // Add assistant response + tool results to conversation, then call Claude again
+      conversationHistory.push({ role: 'assistant', content: chatMessage.content });
+      conversationHistory.push({ role: 'user', content: toolResults });
+
+      chatMessage = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: conversationHistory,
+        tools: nexusTools,
+      });
+    }
+
+    // Extract final text response
+    const textBlock = chatMessage.content.find(b => b.type === 'text');
+    const responseText = textBlock ? textBlock.text : 'No response generated.';
+    console.log(`✅ NEXUS response received (${toolRound} tool round${toolRound !== 1 ? 's' : ''})`);
 
     // Save conversation to DB
     try {

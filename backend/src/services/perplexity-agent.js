@@ -32,7 +32,7 @@ class PerplexityAgent {
   async research(query, options = {}) {
     try {
       const response = await this._getClient().chat.completions.create({
-        model: options.model || 'llama-3.1-sonar-large-128k-online',
+        model: options.model || 'sonar-pro',
         messages: [
           {
             role: 'system',

@@ -646,187 +646,250 @@ AFTER CHANGES:
       <div id="nexus-modules" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- PLATFORM VERIFICATION DASHBOARD -->
+      <!-- PLATFORM VERIFICATION DASHBOARD - UPGRADED DESIGN -->
+      <!-- Matches AETHER theme with modern icons, animations, glassmorphism -->
       <!-- ═══════════════════════════════════════════════════════════════ -->
+
       <section style="margin-top: 4rem;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
           <div>
-            <h2 style="font-size: 1.5rem; font-weight: 600; color: white; margin: 0;">
+            <h2 style="
+              font-size: 1.75rem;
+              font-weight: 700;
+              background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              margin: 0;
+              letter-spacing: -0.025em;
+            ">
               Platform Verification Status
             </h2>
             <p style="color: #94a3b8; margin-top: 0.5rem; font-size: 0.875rem;">
-              Real-time testing of all 5 platforms - 23 features total
+              Real-time health monitoring &bull; 5 platforms &bull; 23 features total
             </p>
           </div>
-          <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
             <div style="text-align: right;">
-              <div style="font-size: 2rem; font-weight: bold; color: #10b981;" id="verification-percentage">0%</div>
-              <div style="font-size: 0.75rem; color: #64748b;">VERIFIED</div>
+              <div style="
+                font-size: 2.5rem;
+                font-weight: bold;
+                background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              " id="verification-percentage">0%</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; letter-spacing: 0.05em;">VERIFIED</div>
             </div>
             <button onclick="startFullVerification()" style="
               background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
               color: white;
               border: none;
-              padding: 0.75rem 1.5rem;
-              border-radius: 0.5rem;
+              padding: 1rem 2rem;
+              border-radius: 0.75rem;
               cursor: pointer;
-              font-weight: 600;
+              font-weight: 700;
               font-size: 0.875rem;
-            ">
-              RUN FULL VERIFICATION
+              box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+              letter-spacing: 0.025em;
+              text-transform: uppercase;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 20px 40px -10px rgba(99, 102, 241, 0.5)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px -5px rgba(99, 102, 241, 0.4)'">
+              Run Full Verification
             </button>
           </div>
         </div>
 
-        <!-- Verification Matrix Table -->
+        <!-- Platform Cards Grid -->
         <div style="
-          background: rgba(30, 41, 59, 0.5);
-          border: 1px solid rgba(71, 85, 105, 0.3);
-          border-radius: 1rem;
-          overflow: hidden;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
         ">
-          <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-              <tr style="background: rgba(15, 23, 42, 0.5);">
-                <th style="padding: 1rem; text-align: left; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Platform</th>
-                <th style="padding: 1rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Features</th>
-                <th style="padding: 1rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Tested</th>
-                <th style="padding: 1rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Working</th>
-                <th style="padding: 1rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Broken</th>
-                <th style="padding: 1rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Status</th>
-                <th style="padding: 1rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="verification-table-body">
-              <!-- LeadSite.IO -->
-              <tr style="border-top: 1px solid rgba(71, 85, 105, 0.2);">
-                <td style="padding: 1rem;">
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="font-size: 1.5rem;">W</div>
-                    <div>
-                      <div style="color: white; font-weight: 500;">LeadSite.IO</div>
-                      <div style="color: #64748b; font-size: 0.75rem;">AI Website Builder</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="padding: 1rem; text-align: center; color: #94a3b8;">5</td>
-                <td style="padding: 1rem; text-align: center;"><span id="leadsite-io-tested" style="color: #64748b;">0/5</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="leadsite-io-working" style="color: #10b981;">0</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="leadsite-io-broken" style="color: #ef4444;">0</span></td>
-                <td style="padding: 1rem; text-align: center;">
-                  <span id="leadsite-io-status" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">NOT STARTED</span>
-                </td>
-                <td style="padding: 1rem; text-align: center;">
-                  <button onclick="testPlatform('leadsite-io')" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">TEST NOW</button>
-                </td>
-              </tr>
+          <!-- LeadSite.IO Card -->
+          <div class="platform-card" style="
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+          "
+          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(99, 102, 241, 0.5)'; this.style.boxShadow='0 20px 40px -10px rgba(99, 102, 241, 0.3)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(99, 102, 241, 0.2)'; this.style.boxShadow='none'">
+            <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; position: relative;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.4);">&#127760;</div>
+                <div>
+                  <h3 style="color: white; font-weight: 600; font-size: 1.125rem; margin: 0; letter-spacing: -0.025em;">LeadSite.IO</h3>
+                  <p style="color: #94a3b8; font-size: 0.8125rem; margin: 0.25rem 0 0 0;">AI Website Builder</p>
+                </div>
+              </div>
+              <div id="leadsite-io-status-badge" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(100, 116, 139, 0.3);">Not Started</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem;">
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Features</div><div style="color: white; font-size: 1.25rem; font-weight: 700;">5</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Tested</div><div id="leadsite-io-tested" style="color: #94a3b8; font-size: 1.25rem; font-weight: 700;">0/5</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Working</div><div id="leadsite-io-working" style="color: #10b981; font-size: 1.25rem; font-weight: 700;">0</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Broken</div><div id="leadsite-io-broken" style="color: #ef4444; font-size: 1.25rem; font-weight: 700;">0</div></div>
+            </div>
+            <button onclick="testPlatform('leadsite-io')" style="width: 100%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; padding: 0.875rem; border-radius: 0.75rem; cursor: pointer; font-size: 0.8125rem; font-weight: 700; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.025em;" onmouseover="this.style.background='rgba(99, 102, 241, 0.2)'; this.style.borderColor='rgba(99, 102, 241, 0.5)'" onmouseout="this.style.background='rgba(99, 102, 241, 0.1)'; this.style.borderColor='rgba(99, 102, 241, 0.3)'">Test Now</button>
+          </div>
 
-              <!-- LeadSite.AI -->
-              <tr style="border-top: 1px solid rgba(71, 85, 105, 0.2);">
-                <td style="padding: 1rem;">
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="font-size: 1.5rem;">E</div>
-                    <div>
-                      <div style="color: white; font-weight: 500;">LeadSite.AI</div>
-                      <div style="color: #64748b; font-size: 0.75rem;">Email Lead Generation</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="padding: 1rem; text-align: center; color: #94a3b8;">5</td>
-                <td style="padding: 1rem; text-align: center;"><span id="leadsite-ai-tested" style="color: #64748b;">0/5</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="leadsite-ai-working" style="color: #10b981;">0</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="leadsite-ai-broken" style="color: #ef4444;">0</span></td>
-                <td style="padding: 1rem; text-align: center;">
-                  <span id="leadsite-ai-status" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">NOT STARTED</span>
-                </td>
-                <td style="padding: 1rem; text-align: center;">
-                  <button onclick="testPlatform('leadsite-ai')" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">TEST NOW</button>
-                </td>
-              </tr>
+          <!-- LeadSite.AI Card -->
+          <div class="platform-card" style="
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+          "
+          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(168, 85, 247, 0.5)'; this.style.boxShadow='0 20px 40px -10px rgba(168, 85, 247, 0.3)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(168, 85, 247, 0.2)'; this.style.boxShadow='none'">
+            <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; position: relative;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 8px 16px -4px rgba(168, 85, 247, 0.4);">&#128231;</div>
+                <div>
+                  <h3 style="color: white; font-weight: 600; font-size: 1.125rem; margin: 0; letter-spacing: -0.025em;">LeadSite.AI</h3>
+                  <p style="color: #94a3b8; font-size: 0.8125rem; margin: 0.25rem 0 0 0;">Email Lead Generation</p>
+                </div>
+              </div>
+              <div id="leadsite-ai-status-badge" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(100, 116, 139, 0.3);">Not Started</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem;">
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Features</div><div style="color: white; font-size: 1.25rem; font-weight: 700;">5</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Tested</div><div id="leadsite-ai-tested" style="color: #94a3b8; font-size: 1.25rem; font-weight: 700;">0/5</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Working</div><div id="leadsite-ai-working" style="color: #10b981; font-size: 1.25rem; font-weight: 700;">0</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Broken</div><div id="leadsite-ai-broken" style="color: #ef4444; font-size: 1.25rem; font-weight: 700;">0</div></div>
+            </div>
+            <button onclick="testPlatform('leadsite-ai')" style="width: 100%; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; padding: 0.875rem; border-radius: 0.75rem; cursor: pointer; font-size: 0.8125rem; font-weight: 700; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.025em;" onmouseover="this.style.background='rgba(168, 85, 247, 0.2)'; this.style.borderColor='rgba(168, 85, 247, 0.5)'" onmouseout="this.style.background='rgba(168, 85, 247, 0.1)'; this.style.borderColor='rgba(168, 85, 247, 0.3)'">Test Now</button>
+          </div>
 
-              <!-- ClientContact.IO -->
-              <tr style="border-top: 1px solid rgba(71, 85, 105, 0.2);">
-                <td style="padding: 1rem;">
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="font-size: 1.5rem;">C</div>
-                    <div>
-                      <div style="color: white; font-weight: 500;">ClientContact.IO</div>
-                      <div style="color: #64748b; font-size: 0.75rem;">Unified Inbox</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="padding: 1rem; text-align: center; color: #94a3b8;">3</td>
-                <td style="padding: 1rem; text-align: center;"><span id="clientcontact-io-tested" style="color: #64748b;">0/3</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="clientcontact-io-working" style="color: #10b981;">0</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="clientcontact-io-broken" style="color: #ef4444;">0</span></td>
-                <td style="padding: 1rem; text-align: center;">
-                  <span id="clientcontact-io-status" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">NOT STARTED</span>
-                </td>
-                <td style="padding: 1rem; text-align: center;">
-                  <button onclick="testPlatform('clientcontact-io')" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">TEST NOW</button>
-                </td>
-              </tr>
+          <!-- ClientContact.IO Card -->
+          <div class="platform-card" style="
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+          "
+          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(59, 130, 246, 0.5)'; this.style.boxShadow='0 20px 40px -10px rgba(59, 130, 246, 0.3)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(59, 130, 246, 0.2)'; this.style.boxShadow='none'">
+            <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; position: relative;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.4);">&#128236;</div>
+                <div>
+                  <h3 style="color: white; font-weight: 600; font-size: 1.125rem; margin: 0; letter-spacing: -0.025em;">ClientContact.IO</h3>
+                  <p style="color: #94a3b8; font-size: 0.8125rem; margin: 0.25rem 0 0 0;">Unified Inbox</p>
+                </div>
+              </div>
+              <div id="clientcontact-io-status-badge" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(100, 116, 139, 0.3);">Not Started</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem;">
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Features</div><div style="color: white; font-size: 1.25rem; font-weight: 700;">3</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Tested</div><div id="clientcontact-io-tested" style="color: #94a3b8; font-size: 1.25rem; font-weight: 700;">0/3</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Working</div><div id="clientcontact-io-working" style="color: #10b981; font-size: 1.25rem; font-weight: 700;">0</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Broken</div><div id="clientcontact-io-broken" style="color: #ef4444; font-size: 1.25rem; font-weight: 700;">0</div></div>
+            </div>
+            <button onclick="testPlatform('clientcontact-io')" style="width: 100%; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 0.875rem; border-radius: 0.75rem; cursor: pointer; font-size: 0.8125rem; font-weight: 700; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.025em;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderColor='rgba(59, 130, 246, 0.5)'" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.borderColor='rgba(59, 130, 246, 0.3)'">Test Now</button>
+          </div>
 
-              <!-- VideoSite.AI -->
-              <tr style="border-top: 1px solid rgba(71, 85, 105, 0.2);">
-                <td style="padding: 1rem;">
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="font-size: 1.5rem;">V</div>
-                    <div>
-                      <div style="color: white; font-weight: 500;">VideoSite.AI</div>
-                      <div style="color: #64748b; font-size: 0.75rem;">Creator Monetization</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="padding: 1rem; text-align: center; color: #94a3b8;">3</td>
-                <td style="padding: 1rem; text-align: center;"><span id="videosite-ai-tested" style="color: #64748b;">0/3</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="videosite-ai-working" style="color: #10b981;">0</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="videosite-ai-broken" style="color: #ef4444;">0</span></td>
-                <td style="padding: 1rem; text-align: center;">
-                  <span id="videosite-ai-status" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">NOT STARTED</span>
-                </td>
-                <td style="padding: 1rem; text-align: center;">
-                  <button onclick="testPlatform('videosite-ai')" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">TEST NOW</button>
-                </td>
-              </tr>
+          <!-- VideoSite.AI Card -->
+          <div class="platform-card" style="
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(236, 72, 153, 0.2);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+          "
+          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(236, 72, 153, 0.5)'; this.style.boxShadow='0 20px 40px -10px rgba(236, 72, 153, 0.3)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(236, 72, 153, 0.2)'; this.style.boxShadow='none'">
+            <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; position: relative;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 8px 16px -4px rgba(236, 72, 153, 0.4);">&#127916;</div>
+                <div>
+                  <h3 style="color: white; font-weight: 600; font-size: 1.125rem; margin: 0; letter-spacing: -0.025em;">VideoSite.AI</h3>
+                  <p style="color: #94a3b8; font-size: 0.8125rem; margin: 0.25rem 0 0 0;">Creator Monetization</p>
+                </div>
+              </div>
+              <div id="videosite-ai-status-badge" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(100, 116, 139, 0.3);">Not Started</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem;">
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Features</div><div style="color: white; font-size: 1.25rem; font-weight: 700;">3</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Tested</div><div id="videosite-ai-tested" style="color: #94a3b8; font-size: 1.25rem; font-weight: 700;">0/3</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Working</div><div id="videosite-ai-working" style="color: #10b981; font-size: 1.25rem; font-weight: 700;">0</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Broken</div><div id="videosite-ai-broken" style="color: #ef4444; font-size: 1.25rem; font-weight: 700;">0</div></div>
+            </div>
+            <button onclick="testPlatform('videosite-ai')" style="width: 100%; background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.3); color: #f9a8d4; padding: 0.875rem; border-radius: 0.75rem; cursor: pointer; font-size: 0.8125rem; font-weight: 700; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.025em;" onmouseover="this.style.background='rgba(236, 72, 153, 0.2)'; this.style.borderColor='rgba(236, 72, 153, 0.5)'" onmouseout="this.style.background='rgba(236, 72, 153, 0.1)'; this.style.borderColor='rgba(236, 72, 153, 0.3)'">Test Now</button>
+          </div>
 
-              <!-- UltraLead -->
-              <tr style="border-top: 1px solid rgba(71, 85, 105, 0.2);">
-                <td style="padding: 1rem;">
-                  <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="font-size: 1.5rem;">U</div>
-                    <div>
-                      <div style="color: white; font-weight: 500;">UltraLead</div>
-                      <div style="color: #64748b; font-size: 0.75rem;">Flagship CRM</div>
-                    </div>
-                  </div>
-                </td>
-                <td style="padding: 1rem; text-align: center; color: #94a3b8;">7</td>
-                <td style="padding: 1rem; text-align: center;"><span id="ultralead-tested" style="color: #64748b;">0/7</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="ultralead-working" style="color: #10b981;">0</span></td>
-                <td style="padding: 1rem; text-align: center;"><span id="ultralead-broken" style="color: #ef4444;">0</span></td>
-                <td style="padding: 1rem; text-align: center;">
-                  <span id="ultralead-status" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">NOT STARTED</span>
-                </td>
-                <td style="padding: 1rem; text-align: center;">
-                  <button onclick="testPlatform('ultralead')" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #818cf8; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">TEST NOW</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- UltraLead Card -->
+          <div class="platform-card" style="
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+          "
+          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(251, 191, 36, 0.5)'; this.style.boxShadow='0 20px 40px -10px rgba(251, 191, 36, 0.3)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(251, 191, 36, 0.2)'; this.style.boxShadow='none'">
+            <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%); pointer-events: none;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; position: relative;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 8px 16px -4px rgba(251, 191, 36, 0.4);">&#127942;</div>
+                <div>
+                  <h3 style="color: white; font-weight: 600; font-size: 1.125rem; margin: 0; letter-spacing: -0.025em;">UltraLead</h3>
+                  <p style="color: #94a3b8; font-size: 0.8125rem; margin: 0.25rem 0 0 0;">Flagship CRM</p>
+                </div>
+              </div>
+              <div id="ultralead-status-badge" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 0.375rem 0.875rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(100, 116, 139, 0.3);">Not Started</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem;">
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Features</div><div style="color: white; font-size: 1.25rem; font-weight: 700;">7</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Tested</div><div id="ultralead-tested" style="color: #94a3b8; font-size: 1.25rem; font-weight: 700;">0/7</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Working</div><div id="ultralead-working" style="color: #10b981; font-size: 1.25rem; font-weight: 700;">0</div></div>
+              <div style="text-align: center;"><div style="color: #64748b; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Broken</div><div id="ultralead-broken" style="color: #ef4444; font-size: 1.25rem; font-weight: 700;">0</div></div>
+            </div>
+            <button onclick="testPlatform('ultralead')" style="width: 100%; background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); color: #fcd34d; padding: 0.875rem; border-radius: 0.75rem; cursor: pointer; font-size: 0.8125rem; font-weight: 700; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 0.025em;" onmouseover="this.style.background='rgba(251, 191, 36, 0.2)'; this.style.borderColor='rgba(251, 191, 36, 0.5)'" onmouseout="this.style.background='rgba(251, 191, 36, 0.1)'; this.style.borderColor='rgba(251, 191, 36, 0.3)'">Test Now</button>
+          </div>
         </div>
 
         <!-- Test Results Display -->
         <div id="test-results" style="
-          margin-top: 2rem;
-          background: rgba(15, 23, 42, 0.5);
-          border: 1px solid rgba(71, 85, 105, 0.3);
-          border-radius: 1rem;
-          padding: 1.5rem;
+          background: rgba(15, 23, 42, 0.8);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(99, 102, 241, 0.2);
+          border-radius: 1.25rem;
+          padding: 2rem;
           display: none;
+          box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
         ">
-          <h3 style="color: white; margin: 0 0 1rem 0; font-size: 1.125rem;">Test Results</h3>
-          <div id="test-results-content" style="color: #94a3b8; font-family: monospace; font-size: 0.875rem; line-height: 1.6;"></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+            <h3 style="color: white; margin: 0; font-size: 1.25rem; font-weight: 700; background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Test Results</h3>
+            <button onclick="document.getElementById('test-results').style.display='none'" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.75rem; font-weight: 600;">Close</button>
+          </div>
+          <div id="test-results-content" style="color: #94a3b8; font-family: 'Courier New', monospace; font-size: 0.875rem; line-height: 1.8; max-height: 400px; overflow-y: auto;"></div>
         </div>
       </section>
 
@@ -1997,7 +2060,7 @@ setInterval(updateLiveTime, 1000);
 updateLiveTime();
 
 // ═══════════════════════════════════════════════════
-// PLATFORM VERIFICATION
+// PLATFORM VERIFICATION (Upgraded Card Design)
 // ═══════════════════════════════════════════════════
 const platformData = {
   'leadsite-io': { total: 5, tested: 0, working: 0, broken: 0 },
@@ -2017,29 +2080,36 @@ function updateVerificationPercentage() {
   document.getElementById('verification-percentage').textContent = percentage + '%';
 }
 
-function updatePlatformRow(platformId) {
+function updatePlatformCard(platformId) {
   const data = platformData[platformId];
+
+  // Update stats
   document.getElementById(platformId + '-tested').textContent = data.tested + '/' + data.total;
   document.getElementById(platformId + '-working').textContent = data.working;
   document.getElementById(platformId + '-broken').textContent = data.broken;
 
-  const statusElement = document.getElementById(platformId + '-status');
+  // Update status badge
+  const statusBadge = document.getElementById(platformId + '-status-badge');
   if (data.tested === 0) {
-    statusElement.textContent = 'NOT STARTED';
-    statusElement.style.background = 'rgba(100, 116, 139, 0.2)';
-    statusElement.style.color = '#94a3b8';
+    statusBadge.textContent = 'Not Started';
+    statusBadge.style.background = 'rgba(100, 116, 139, 0.2)';
+    statusBadge.style.color = '#94a3b8';
+    statusBadge.style.borderColor = 'rgba(100, 116, 139, 0.3)';
   } else if (data.broken > 0) {
-    statusElement.textContent = 'ISSUES FOUND';
-    statusElement.style.background = 'rgba(239, 68, 68, 0.2)';
-    statusElement.style.color = '#f87171';
+    statusBadge.textContent = 'Issues Found';
+    statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+    statusBadge.style.color = '#f87171';
+    statusBadge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
   } else if (data.tested === data.total && data.working === data.total) {
-    statusElement.textContent = 'VERIFIED';
-    statusElement.style.background = 'rgba(16, 185, 129, 0.2)';
-    statusElement.style.color = '#10b981';
+    statusBadge.textContent = 'Verified';
+    statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+    statusBadge.style.color = '#10b981';
+    statusBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
   } else {
-    statusElement.textContent = 'TESTING...';
-    statusElement.style.background = 'rgba(251, 191, 36, 0.2)';
-    statusElement.style.color = '#fbbf24';
+    statusBadge.textContent = 'Testing...';
+    statusBadge.style.background = 'rgba(251, 191, 36, 0.2)';
+    statusBadge.style.color = '#fbbf24';
+    statusBadge.style.borderColor = 'rgba(251, 191, 36, 0.3)';
   }
   updateVerificationPercentage();
 }
@@ -2052,8 +2122,8 @@ function showTestResults(message) {
 }
 
 async function testPlatform(platformId) {
-  showTestResults('<span style="color: #818cf8;">--- Testing ' + platformId + ' ---</span>');
-  showTestResults('Initiating automated verification for ' + platformId + '...');
+  showTestResults('<span style="color: #818cf8; font-weight: 700;">--- Testing ' + platformId.toUpperCase() + ' ---</span>');
+  showTestResults('<span style="color: #94a3b8;">Initiating automated verification...</span>');
 
   try {
     const response = await fetch(API_BASE + '/api/v1/nexus/verify-platform', {
@@ -2068,31 +2138,35 @@ async function testPlatform(platformId) {
       platformData[platformId].tested = data.tested || 0;
       platformData[platformId].working = data.working || 0;
       platformData[platformId].broken = data.broken || 0;
-      updatePlatformRow(platformId);
-      showTestResults('<span style="color: #10b981;">Verification complete</span>');
-      showTestResults('Tested: ' + data.tested + ', Working: ' + data.working + ', Broken: ' + data.broken);
+      updatePlatformCard(platformId);
+      showTestResults('<span style="color: #10b981; font-weight: 700;">Verification complete</span>');
+      showTestResults('<span style="color: #cbd5e1;">Tested: ' + data.tested + ', Working: ' + data.working + ', Broken: ' + data.broken + '</span>');
       if (data.issues && data.issues.length > 0) {
-        showTestResults('<span style="color: #f87171;">Issues found:</span>');
+        showTestResults('<span style="color: #f87171; font-weight: 700;">Issues detected:</span>');
         data.issues.forEach(function(issue) {
-          showTestResults('  - ' + issue);
+          showTestResults('<span style="color: #fca5a5;">  &bull; ' + issue + '</span>');
         });
       }
     } else {
-      showTestResults('<span style="color: #f87171;">Error: ' + data.error + '</span>');
+      showTestResults('<span style="color: #f87171; font-weight: 700;">Error: ' + data.error + '</span>');
     }
   } catch (error) {
-    showTestResults('<span style="color: #f87171;">Error: ' + error.message + '</span>');
+    showTestResults('<span style="color: #f87171; font-weight: 700;">Connection error: ' + error.message + '</span>');
   }
+  showTestResults('');
 }
 
 async function startFullVerification() {
-  showTestResults('<span style="color: #a855f7; font-weight: bold;">FULL PLATFORM VERIFICATION INITIATED</span>');
+  document.getElementById('test-results-content').innerHTML = '';
+  showTestResults('<span style="color: #a855f7; font-weight: 700; font-size: 1.1em;">FULL PLATFORM VERIFICATION INITIATED</span>');
+  showTestResults('');
   const platforms = ['leadsite-io', 'leadsite-ai', 'clientcontact-io', 'videosite-ai', 'ultralead'];
   for (const platform of platforms) {
     await testPlatform(platform);
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
-  showTestResults('<span style="color: #10b981; font-weight: bold;">FULL VERIFICATION COMPLETE</span>');
+  showTestResults('');
+  showTestResults('<span style="color: #10b981; font-weight: 700; font-size: 1.1em;">FULL VERIFICATION COMPLETE</span>');
 }
 </script>
 </body>

@@ -2,9 +2,9 @@
 -- Stores all messages for persistent memory across sessions
 
 CREATE TABLE IF NOT EXISTS "conversation_history" (
-  "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "user_id" UUID NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
-  "session_id" UUID NOT NULL,
+  "id" TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  "user_id" TEXT NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+  "session_id" TEXT NOT NULL,
   "role" TEXT NOT NULL,
   "content" TEXT NOT NULL,
   "metadata" JSONB DEFAULT '{}',
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS "conversation_history" (
   "tool_calls" JSONB,
 
   -- Thread relationships
-  "parent_message_id" UUID REFERENCES "conversation_history"("id") ON DELETE SET NULL
+  "parent_message_id" TEXT REFERENCES "conversation_history"("id") ON DELETE SET NULL
 );
 
 -- Indexes for performance
@@ -27,9 +27,9 @@ CREATE INDEX IF NOT EXISTS "idx_conversation_agent" ON "conversation_history"("a
 
 -- File uploads table (linked to conversation)
 CREATE TABLE IF NOT EXISTS "conversation_files" (
-  "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "conversation_id" UUID NOT NULL REFERENCES "conversation_history"("id") ON DELETE CASCADE,
-  "file_id" UUID NOT NULL,
+  "id" TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  "conversation_id" TEXT NOT NULL REFERENCES "conversation_history"("id") ON DELETE CASCADE,
+  "file_id" TEXT NOT NULL,
   "filename" TEXT NOT NULL,
   "filepath" TEXT NOT NULL,
   "mimetype" TEXT NOT NULL,

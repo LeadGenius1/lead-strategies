@@ -206,6 +206,7 @@ app.get('/health', (req, res) => {
     version: '1.0.0',
     service: 'leadsite-backend',
     platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.ai', 'ultralead.ai'],
+    featureFlags,
     selfHealing: {
       enabled: selfHealingSystem?.running || false,
       agents: selfHealingSystem?.running ? Object.keys(selfHealingSystem.getAgentStatus()).length : 0

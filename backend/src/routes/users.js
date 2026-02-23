@@ -102,7 +102,7 @@ router.put('/profile', async (req, res) => {
       where: { id: req.user.id },
       data: {
         ...(name !== undefined && { name }),
-        ...(companyName !== undefined && { company }),
+        ...(companyName !== undefined && { company: companyName }),
         ...(Object.keys(updatedMeta).length > 0 && { metadata: updatedMeta }),
       },
     });

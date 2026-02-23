@@ -87,6 +87,8 @@ const nexusRoutes = require('./routes/nexus');
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
 
+const featureFlags = require('./config/feature-flags');
+
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
 const { initializeRedis, getRedisStore, checkRedisHealth } = require('./config/redis');
@@ -320,76 +322,105 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// API Routes (v1)
-app.use('/api/v1/status', statusRoutes);   // Integration status (public)
+// ===========================================
+// CORE ROUTES (always enabled)
+// ===========================================
+app.use('/api/v1/status', statusRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', usersRoutes);
-app.use('/api/forms', formRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
-app.use('/api/v1/campaigns', campaignRoutes);
-app.use('/api/v1/leads', leadRoutes);
-app.use('/api/v1/emails', emailRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/stripe', stripeRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
-if (websitePublicRoutes) {
-  app.use('/api/v1/websites', websitePublicRoutes); // Public subdomain route (no auth)
-}
-app.use('/api/v1/websites', websiteRoutes);
-app.use('/api/v1/forms', formRoutes);
-app.use('/api/v1/conversations', conversationRoutes);
-app.use('/api/v1/canned-responses', cannedResponseRoutes);
-app.use('/api/v1/auto-responses', autoResponseRoutes);
-app.use('/api/v1/conversation-notes', conversationNoteRoutes);
+app.use('/api/v1/email-sentinel', emailSentinelRoutes);
 
-// UltraLead.AI Routes (Tier 5)
-app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
-
-// New Platform Routes (Multi-Agent Build)
-app.use('/api/v1/copilot', copilotRoutes);         // LeadSite.AI AI Email Generation
-app.use('/api/v1/templates', templateRoutes);       // LeadSite.IO 60 Templates
-app.use('/api/v1/crm', crmRoutes);                  // UltraLead CRM (Contacts, Companies, Deals)
-app.use('/api/v1/agents', agentRoutes);
-app.use('/api/v1/ai', aiAgentRoutes);             // UltraLead 7 AI Agents Control
-app.use('/api/v1/videosite', videositeRoutes);      // VideoSite.AI Monetization
-app.use('/api/v1/advertiser', advertiserRoutes);   // VideoSite.AI Advertiser Platform
-app.use('/api/v1/ads', adsRoutes);                 // VideoSite.AI Ad Serving (public)
-app.use('/api/v1/channels', channelRoutes);
-app.use('/api/v1/oauth/channels', oauthChannelsRoutes);         // ClientContact.IO Channels
-app.use('/api/v1/email-sentinel', emailSentinelRoutes);  // Email Sentinel (Redis backend only)
-
-// Admin Routes (Internal AI Lead Strategies staff only)
-app.use('/admin', adminRoutes);
-app.use('/api/admin', adminRoutes);  // Also at /api/admin for frontend fetch('/api/admin/login')
-
-// Master Orchestrator Routes (Agent 6)
-app.use('/api/master', masterValidationRoutes);
-
-// Also support /api/ routes for backward compatibility
+// Backward compat for core routes
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/campaigns', campaignRoutes);
-app.use('/api/leads', leadRoutes);
-app.use('/api/emails', emailRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/webhooks', webhookRoutes);
-app.use('/api/websites', websiteRoutes);
-app.use('/api/forms', formRoutes);
-app.use('/api/conversations', conversationRoutes);
-app.use('/api/channels', channelRoutes);
-app.use('/api/oauth/channels', oauthChannelsRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/v1/videos', videoRoutes);
-app.use('/api/canned-responses', cannedResponseRoutes);
-app.use('/api/auto-responses', autoResponseRoutes);
-app.use('/api/conversation-notes', conversationNoteRoutes);
-app.use('/api/v1/payouts', payoutsRoutes);  // VideoSite earnings payouts
-app.use('/api/status', statusRoutes);       // Backward compat
-app.use('/api/v1/clips', clipsRoutes);      // Video clips management
-app.use('/api/v1/publish', publishRoutes);  // Social media publishing
-app.use('/api/v1/products', productRoutes); // VideoSite.AI Product Promotions
-app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System
+app.use('/api/status', statusRoutes);
+
+// Admin Routes (Internal AI Lead Strategies staff only)
+app.use('/admin', adminRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Master Orchestrator Routes
+app.use('/api/master', masterValidationRoutes);
+
+// ===========================================
+// FEATURE-FLAGGED PLATFORM ROUTES
+// ===========================================
+
+// LeadSite.AI (Tier 1) — leads, campaigns, emails, copilot
+if (featureFlags.ENABLE_LEADSITE_AI) {
+  app.use('/api/v1/leads', leadRoutes);
+  app.use('/api/v1/campaigns', campaignRoutes);
+  app.use('/api/v1/emails', emailRoutes);
+  app.use('/api/v1/copilot', copilotRoutes);
+  app.use('/api/leads', leadRoutes);
+  app.use('/api/campaigns', campaignRoutes);
+  app.use('/api/emails', emailRoutes);
+}
+
+// LeadSite.IO (Tier 2) — websites, forms, templates
+if (featureFlags.ENABLE_LEADSITE_IO) {
+  if (websitePublicRoutes) {
+    app.use('/api/v1/websites', websitePublicRoutes);
+  }
+  app.use('/api/v1/websites', websiteRoutes);
+  app.use('/api/v1/forms', formRoutes);
+  app.use('/api/forms', formRoutes);
+  app.use('/api/v1/templates', templateRoutes);
+  app.use('/api/websites', websiteRoutes);
+  app.use('/api/forms', formRoutes);
+}
+
+// ClientContact.IO (Tier 3) — inbox, channels, conversations
+if (featureFlags.ENABLE_CLIENT_CONTACT) {
+  app.use('/api/v1/conversations', conversationRoutes);
+  app.use('/api/v1/channels', channelRoutes);
+  app.use('/api/v1/oauth/channels', oauthChannelsRoutes);
+  app.use('/api/v1/canned-responses', cannedResponseRoutes);
+  app.use('/api/v1/auto-responses', autoResponseRoutes);
+  app.use('/api/v1/conversation-notes', conversationNoteRoutes);
+  app.use('/api/conversations', conversationRoutes);
+  app.use('/api/channels', channelRoutes);
+  app.use('/api/oauth/channels', oauthChannelsRoutes);
+  app.use('/api/canned-responses', cannedResponseRoutes);
+  app.use('/api/auto-responses', autoResponseRoutes);
+  app.use('/api/conversation-notes', conversationNoteRoutes);
+}
+
+// VideoSite.AI (Tier 4) — videos, clips, ads, payouts
+if (featureFlags.ENABLE_VIDEOSITE_AI) {
+  app.use('/api/v1/videos', videoRoutes);
+  app.use('/api/v1/videosite', videositeRoutes);
+  app.use('/api/v1/advertiser', advertiserRoutes);
+  app.use('/api/v1/ads', adsRoutes);
+  app.use('/api/v1/payouts', payoutsRoutes);
+  app.use('/api/v1/clips', clipsRoutes);
+  app.use('/api/v1/publish', publishRoutes);
+  app.use('/api/v1/products', productRoutes);
+  app.use('/api/videos', videoRoutes);
+}
+
+// UltraLead.AI (Tier 5) — CRM, agents, AI
+if (featureFlags.ENABLE_ULTRALEAD) {
+  app.use('/api/v1/crm', crmRoutes);
+  app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
+  app.use('/api/v1/agents', agentRoutes);
+  app.use('/api/v1/ai', aiAgentRoutes);
+}
+
+// NEXUS (disabled by default — enable with ENABLE_NEXUS=true)
+if (featureFlags.ENABLE_NEXUS) {
+  app.use('/api/v1/nexus', nexusRoutes);
+}
+
+// Log active feature flags
+console.log('Feature flags:', Object.entries(featureFlags).map(([k, v]) => `${k}=${v}`).join(', '));
 
 // 404 handler
 app.use((req, res) => {

@@ -42,6 +42,10 @@ export default function ProfilePage() {
     testimonialHighlight: '',
   });
 
+  const hasEmptyRequired = !profile.name || !profile.companyName || !profile.industry ||
+    !profile.productsServices || !profile.idealCustomerProfile || !profile.painPointsSolved ||
+    !profile.preferredTone || !profile.callToAction;
+
   useEffect(() => {
     loadProfile();
   }, []);
@@ -133,7 +137,11 @@ export default function ProfilePage() {
           <User className="w-5 h-5 text-neutral-500" />
           <h1 className="text-lg font-medium text-white">Business Profile</h1>
         </div>
-        <p className="text-sm text-neutral-500 -mt-4 mb-4">For AI personalization across Lead Hunter, campaigns, and copywriter</p>
+        <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-lg px-4 py-3 -mt-2 mb-6">
+          <p className="text-sm text-indigo-300 font-light">
+            Your AI agents read this profile to write your emails and build your website. Complete all fields to activate your agents.
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className={CHAT_STYLE.card}>
@@ -367,10 +375,10 @@ export default function ProfilePage() {
                   className={CHAT_STYLE.input}
                 >
                   <option value="professional">Professional</option>
-                  <option value="friendly">Friendly</option>
-                  <option value="formal">Formal</option>
                   <option value="casual">Casual</option>
-                  <option value="direct">Direct</option>
+                  <option value="friendly">Friendly</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="consultative">Consultative</option>
                 </select>
               </div>
               <div>
@@ -399,7 +407,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className={`${CHAT_STYLE.button} disabled:opacity-50`}
+            className={`${CHAT_STYLE.button} disabled:opacity-50${hasEmptyRequired ? ' animate-pulse' : ''}`}
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

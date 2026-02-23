@@ -192,27 +192,8 @@ app.use('/admin/login', authLimiter);
 // ROUTES (always registered, regardless of Redis)
 // ===========================================
 
-// Health check
-app.get('/health', (req, res) => {
-  // Get self-healing system status if available
-  const selfHealingSystem = getSystem();
-  const systemHealth = selfHealingSystem?.running
-    ? selfHealingSystem.getHealthSummary()
-    : { status: 'disabled' };
-
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0',
-    service: 'leadsite-backend',
-    platforms: ['leadsite.ai', 'leadsite.io', 'clientcontact.io', 'videosite.ai', 'ultralead.ai'],
-    featureFlags,
-    selfHealing: {
-      enabled: selfHealingSystem?.running || false,
-      agents: selfHealingSystem?.running ? Object.keys(selfHealingSystem.getAgentStatus()).length : 0
-    }
-  });
-});
+// Health check — comprehensive DB + model verification (Layer 2)
+app.get('/health', require('./routes/health'));
 
 app.get('/api/v1/health', async (req, res) => {
   const redisHealth = await checkRedisHealth();

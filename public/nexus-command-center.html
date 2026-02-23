@@ -159,8 +159,7 @@
         <span class="text-[10px] mono text-neutral-400">api.aileadstrategies.com <span class="text-emerald-400">HEALTHY</span></span>
       </div>
       <div class="hidden md:flex items-center gap-2 text-[10px] mono text-neutral-600">
-        <span>FETCHED</span>
-        <span class="text-neutral-400">Feb 18, 2026</span>
+        <span id="live-timestamp">LIVE — Loading...</span>
       </div>
     </div>
   </div>
@@ -307,7 +306,7 @@
           <div class="flex items-center justify-between mb-5">
             <div>
               <div class="text-xs font-medium text-white">🌐 aileadstrategies.com</div>
-              <div class="text-[10px] text-neutral-500 mt-0.5">Fetched live — Feb 18, 2026</div>
+              <div class="text-[10px] text-neutral-500 mt-0.5" id="live-timestamp-card">LIVE — Loading...</div>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] mono">LIVE</span>
           </div>
@@ -1648,7 +1647,7 @@ async function sendChat() {
   // Try live API first
   if (token) {
     try {
-      const res = await fetch(`${API_BASE}/api/v1/copilot/chat`, {
+      const res = await fetch(`${API_BASE}/api/v1/nexus/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1793,6 +1792,22 @@ renderRules();
 
 // Set Overview as default active tab
 switchTab('overview');
+
+// Live timestamp updater
+function updateLiveTime() {
+  const now = new Date();
+  const formatted = now.toLocaleString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: 'numeric', minute: '2-digit', hour12: true,
+    timeZone: 'America/New_York'
+  });
+  const el = document.getElementById('live-timestamp');
+  const el2 = document.getElementById('live-timestamp-card');
+  if (el) el.textContent = 'LIVE — ' + formatted;
+  if (el2) el2.textContent = 'LIVE — ' + formatted;
+}
+setInterval(updateLiveTime, 1000);
+updateLiveTime();
 </script>
 </body>
 </html>

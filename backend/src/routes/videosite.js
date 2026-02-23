@@ -94,8 +94,8 @@ router.get('/videos', async (req, res) => {
     ]);
 
     const videos = rawVideos.map((v) => {
-      const publicUrl = toPublicVideoUrl(v.file_url) || v.file_url;
-      return { ...v, file_url: publicUrl, videoUrl: publicUrl };
+      const publicUrl = toPublicVideoUrl(v.videoUrl) || v.videoUrl;
+      return { ...v, videoUrl: publicUrl };
     });
 
     res.json({
@@ -119,10 +119,9 @@ router.get('/videos/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Video not found' });
     }
 
-    const publicFileUrl = toPublicVideoUrl(video.file_url) || video.file_url;
+    const publicFileUrl = toPublicVideoUrl(video.videoUrl) || video.videoUrl;
     const data = {
       ...video,
-      file_url: publicFileUrl,
       videoUrl: publicFileUrl
     };
     res.json({ success: true, data });
@@ -168,8 +167,8 @@ router.post('/upload/presign', async (req, res) => {
     });
     const presignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
 
-    // Construct file_url (full R2 URL for playback, or key if no public URL configured)
-    const fileUrl = R2_PUBLIC_URL ? `${R2_PUBLIC_URL}/${key}` : key;
+    // Construct videoUrl (full R2 URL for playback, or key if no public URL configured)
+    const videoUrl = R2_PUBLIC_URL ? `${R2_PUBLIC_URL}/${key}` : key;
 
     // Create pending video record (use connect for user relation)
     const video = await prisma.video.create({
@@ -177,7 +176,7 @@ router.post('/upload/presign', async (req, res) => {
         user: { connect: { id: req.userId } },
         title: filename.replace(/\.[^/.]+$/, ''),
         filename,
-        file_url: fileUrl,
+        videoUrl,
         status: 'uploading',
         fileSize: fileSize || 0
       }

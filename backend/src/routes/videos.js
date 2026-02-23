@@ -48,7 +48,7 @@ function toPublicVideoUrl(url) {
 // ---- PUBLIC ROUTES (no auth) - for /watch/[id] full-page viewing ----
 function toPublicVideo(v, creator = null) {
   if (!v) return null;
-  const rawUrl = v.file_url || v.fileUrl || v.videoUrl;
+  const rawUrl = v.videoUrl;
   const videoUrl = toPublicVideoUrl(rawUrl) || rawUrl;
   const result = {
     id: v.id,
@@ -95,7 +95,7 @@ router.get(['/browse', '/public/all'], async (req, res) => {
         ? { createdAt: 'asc' }
         : { createdAt: 'desc' };
 
-    const where = { status: 'ready', file_url: { not: null } };
+    const where = { status: 'ready', videoUrl: { not: null } };
 
     // Server-side search by title
     const search = req.query.search?.trim();
@@ -146,7 +146,7 @@ router.get('/:id/public', async (req, res) => {
     });
     if (!video) return res.status(404).json({ error: 'Video not found' });
 
-    const viewable = ['ready', 'processing'].includes(video.status) && video.file_url;
+    const viewable = ['ready', 'processing'].includes(video.status) && video.videoUrl;
     if (!viewable) return res.status(404).json({ error: 'Video not found or not yet available' });
 
     res.json({ success: true, data: toPublicVideo(video, video.user) });
@@ -198,7 +198,7 @@ router.get('/:id/related', async (req, res) => {
         userId: video.userId,
         id: { not: videoId },
         status: 'ready',
-        file_url: { not: null }
+        videoUrl: { not: null }
       },
       orderBy: { createdAt: 'desc' },
       take: 6

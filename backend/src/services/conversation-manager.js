@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 /**
  * Conversation Manager
@@ -18,7 +18,7 @@ class ConversationManager {
     if (sessionId) {
       this.currentSessionId = sessionId;
     } else {
-      this.currentSessionId = uuidv4();
+      this.currentSessionId = crypto.randomUUID();
     }
     return this.currentSessionId;
   }

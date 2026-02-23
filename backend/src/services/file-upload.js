@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs/promises');
@@ -46,7 +46,7 @@ async function saveUploadedFile(file, userId) {
   // Create user upload directory if doesn't exist
   await fs.mkdir(uploadDir, { recursive: true });
 
-  const fileId = uuidv4();
+  const fileId = crypto.randomUUID();
   const ext = path.extname(file.originalname);
   const filename = `${fileId}${ext}`;
   const filepath = path.join(uploadDir, filename);

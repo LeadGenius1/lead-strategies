@@ -87,7 +87,12 @@ const nexusRoutes = require('./routes/nexus');
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
 
+// Feature Flags
 const featureFlags = require('./config/feature-flags');
+
+// NEXUS Chat & Upload Routes (gated by ENABLE_NEXUS feature flag)
+const nexusChatRoutes = require('./routes/nexus-chat');
+const nexusUploadRoutes = require('./routes/nexus-upload');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
@@ -398,7 +403,10 @@ if (featureFlags.ENABLE_ULTRALEAD) {
 
 // NEXUS (disabled by default — enable with ENABLE_NEXUS=true)
 if (featureFlags.ENABLE_NEXUS) {
-  app.use('/api/v1/nexus', nexusRoutes);
+  app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System
+  app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
+  app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions
+  console.log('NEXUS routes enabled');
 }
 
 // Log active feature flags

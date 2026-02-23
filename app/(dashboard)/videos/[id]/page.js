@@ -209,9 +209,9 @@ export default function VideoDetailPage() {
     return null;
   }
 
-  const videoUrl = video.videoUrl || video.video_url || video.file_url;
+  const videoUrl = video.fileUrl || video.file_url || video.videoUrl;
   const thumbnailUrl = video.thumbnailUrl || video.thumbnail_url;
-  const views = video.views ?? video.qualifiedViews ?? video.view_count ?? 0;
+  const views = video.viewCount ?? video.view_count ?? video.views ?? 0;
   const earnings = Number(video.earnings ?? video.totalEarnings ?? 0);
   const duration = video.duration ?? video.durationSeconds;
   const createdAt = video.createdAt || video.created_at;

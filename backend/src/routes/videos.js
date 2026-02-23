@@ -48,7 +48,7 @@ function toPublicVideoUrl(url) {
 // ---- PUBLIC ROUTES (no auth) - for /watch/[id] full-page viewing ----
 function toPublicVideo(v, creator = null) {
   if (!v) return null;
-  const rawUrl = v.videoUrl;
+  const rawUrl = v.fileUrl;
   const videoUrl = toPublicVideoUrl(rawUrl) || rawUrl;
   const result = {
     id: v.id,
@@ -57,8 +57,8 @@ function toPublicVideo(v, creator = null) {
     videoUrl,
     thumbnailUrl: v.thumbnailUrl || v.thumbnail_url,
     duration: v.duration,
-    viewCount: v.view_count ?? 0,
-    views: v.view_count ?? 0,
+    viewCount: v.viewCount ?? 0,
+    views: v.viewCount ?? 0,
     earnings: v.earnings,
     totalEarnings: v.earnings,
     isMonetized: v.isMonetized ?? v.is_monetized ?? false,
@@ -95,7 +95,7 @@ router.get(['/browse', '/public/all'], async (req, res) => {
         ? { createdAt: 'asc' }
         : { createdAt: 'desc' };
 
-    const where = { status: 'ready', videoUrl: { not: null } };
+    const where = { status: 'ready', fileUrl: { not: null } };
 
     // Server-side search by title
     const search = req.query.search?.trim();
@@ -146,7 +146,7 @@ router.get('/:id/public', async (req, res) => {
     });
     if (!video) return res.status(404).json({ error: 'Video not found' });
 
-    const viewable = ['ready', 'processing'].includes(video.status) && video.videoUrl;
+    const viewable = ['ready', 'processing'].includes(video.status) && video.fileUrl;
     if (!viewable) return res.status(404).json({ error: 'Video not found or not yet available' });
 
     res.json({ success: true, data: toPublicVideo(video, video.user) });
@@ -198,7 +198,7 @@ router.get('/:id/related', async (req, res) => {
         userId: video.userId,
         id: { not: videoId },
         status: 'ready',
-        videoUrl: { not: null }
+        fileUrl: { not: null }
       },
       orderBy: { createdAt: 'desc' },
       take: 6
@@ -249,7 +249,6 @@ router.get('/', async (req, res) => {
 
     const where = { userId: req.user.id };
     if (status) where.status = status;
-    if (template) where.templateId = template;
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -428,20 +427,10 @@ Return JSON with:
         userId: req.user.id,
         title: prompt.substring(0, 100),
         description: prompt,
-        templateId,
-        aspectRatio,
         duration,
-        status: 'generating',
-        script: videoData.script,
-        scenes: videoData.scenes,
-        settings: {
-          style: style || 'professional',
-          music: videoData.music,
-          voiceover: videoData.voiceover
-        },
-        // In production, this would trigger actual video generation
-        // For now, mark as pending
-        videoUrl: null,
+        status: 'processing',
+        // File URL set later when video generation completes
+        fileUrl: null,
         thumbnailUrl: null
       }
     });
@@ -482,20 +471,12 @@ router.put('/:id', async (req, res) => {
 
     const {
       title,
-      description,
-      script,
-      scenes,
-      settings,
-      aspectRatio
+      description
     } = req.body;
 
     const updateData = {};
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
-    if (script !== undefined) updateData.script = script;
-    if (scenes !== undefined) updateData.scenes = scenes;
-    if (settings !== undefined) updateData.settings = settings;
-    if (aspectRatio !== undefined) updateData.aspectRatio = aspectRatio;
 
     const updatedVideo = await db.video.update({
       where: { id: req.params.id },
@@ -529,7 +510,7 @@ router.post('/:id/publish', async (req, res) => {
       return res.status(404).json({ error: 'Video not found' });
     }
 
-    if (!video.videoUrl) {
+    if (!video.fileUrl) {
       return res.status(400).json({ error: 'Video not ready for publishing' });
     }
 
@@ -575,13 +556,10 @@ router.get('/:id/analytics', async (req, res) => {
 
     // In production, fetch analytics from CDN/analytics service
     const analytics = {
-      views: video.views || 0,
-      watchTime: video.watchTime || 0,
-      engagement: video.engagement ? Number(video.engagement) : 0,
-      clicks: video.clicks || 0,
-      shares: video.shares || 0,
-      platformViews: video.platformViews || {},
-      heatmap: video.heatmap || []
+      views: video.viewCount || 0,
+      viewCount: video.viewCount || 0,
+      earnings: video.earnings ? Number(video.earnings) : 0,
+      isMonetized: video.isMonetized || false
     };
 
     res.json({

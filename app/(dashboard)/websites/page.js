@@ -55,7 +55,7 @@ export default function WebsitesPage() {
       }
       const list = [
         ...backendList.map((s) => ({ ...s, _source: 'backend' })),
-        ...aiList.map((s) => ({ ...s, id: s.id, name: s.name, isPublished: s.status === 'published', subdomain: s.subdomain, _source: 'ai' })),
+        ...aiList.map((s) => ({ ...s, id: s.id, name: s.name, isPublished: s.status === 'published', slug: s.slug || s.subdomain, _source: 'ai' })),
       ]
       setWebsites(list)
     } catch (error) {
@@ -154,11 +154,11 @@ export default function WebsitesPage() {
                 </div>
                 <h3 className="font-medium text-white mb-1">{site.name || site.title || 'Untitled Site'}</h3>
                 <p className="text-xs text-neutral-500 mb-4 truncate">
-                  {site.subdomain ? `aileadstrategies.com/sites/${site.subdomain}` : '—'}
+                  {(site.slug || site.subdomain) ? `aileadstrategies.com/sites/${site.slug || site.subdomain}` : '—'}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href={site._source === 'ai' ? `/preview/${site.id}` : (site.subdomain ? `https://aileadstrategies.com/sites/${site.subdomain}` : `/preview/${site.id}`)}
+                    href={site._source === 'ai' ? `/preview/${site.id}` : ((site.slug || site.subdomain) ? `https://aileadstrategies.com/sites/${site.slug || site.subdomain}` : `/preview/${site.id}`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-500/50 rounded-lg transition-all"

@@ -266,16 +266,17 @@ model Website {
   id     String @id @default(uuid())
   userId String @map("user_id")
 
-  name      String
-  domain    String?
-  subdomain String? @unique
+  name          String
+  content       Json     @default("{}")
+  htmlContent   String?  @map("html_content")
+  template      String   @default("aether")
+  slug          String?
+  status        String   @default("draft")
 
-  // Website Builder Data
-  pages    Json?   @default("[]")
-  settings Json?   @default("{}")
-  theme    String? @default("default")
-
-  isPublished Boolean @default(false) @map("is_published")
+  isPublished   Boolean   @default(false) @map("is_published")
+  isFreeWebsite Boolean   @default(false) @map("is_free_website")
+  publishedAt   DateTime? @map("published_at")
+  purchaseId    String?   @map("purchase_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -339,38 +340,21 @@ model Video {
   id     String @id @default(uuid())
   userId String @map("user_id")
 
-  title       String
-  description String?
-  templateId  String? @map("template_id")
-
-  // Video File
+  title        String
+  description  String?
   filename     String?
-  videoUrl     String? @map("video_url")
-  thumbnailUrl String? @map("thumbnail_url")
-  duration     Int? // Duration in seconds
-  fileSize     Int?    @map("file_size")
-  aspectRatio  String? @default("16:9") @map("aspect_ratio") // 16:9, 9:16, 1:1
-
-  // Video Content
-  script   String? // AI-generated script
-  scenes   Json? // Array of scene definitions
-  settings Json?   @default("{}") // Style, music, voiceover settings
+  fileUrl      String?  @map("file_url")
+  thumbnailUrl String?  @map("thumbnail_url")
+  duration     Int?
+  fileSize     Int?     @map("file_size")
 
   // Analytics
-  views         Int     @default(0)
-  watchTime     Int     @default(0) @map("watch_time") // Total watch time in seconds
-  engagement    Decimal @default(0) @db.Decimal(5, 2) // Engagement percentage
-  clicks        Int     @default(0)
-  shares        Int     @default(0)
-  platformViews Json?   @map("platform_views") // Views per platform
-  heatmap       Json? // Engagement heatmap data
-
-  // Monetization
   isMonetized Boolean @default(false) @map("is_monetized")
+  viewCount   Int     @default(0) @map("view_count")
   earnings    Decimal @default(0) @db.Decimal(10, 2)
 
   // Status
-  status String @default("generating") // generating, ready, published, private
+  status String @default("processing")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

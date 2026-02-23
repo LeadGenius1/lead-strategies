@@ -406,6 +406,7 @@ if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System
   app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
   app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions
+  app.use('/api/v1/nexus', require('./routes/platform-verification')); // Platform Verification
   console.log('NEXUS routes enabled');
 }
 

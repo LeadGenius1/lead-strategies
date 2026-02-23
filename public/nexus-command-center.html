@@ -2056,7 +2056,7 @@ async function testPlatform(platformId) {
   showTestResults('Initiating automated verification for ' + platformId + '...');
 
   try {
-    const response = await fetch('/api/v1/nexus/verify-platform', {
+    const response = await fetch(API_BASE + '/api/v1/nexus/verify-platform', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ platform: platformId })

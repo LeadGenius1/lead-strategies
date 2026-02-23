@@ -994,9 +994,9 @@ const GTM_STEPS = [
   { step:2, label:"Controller Agent",             icon:"◈", color:"indigo" },
   { step:3, label:"ICP Research",                 icon:"◉", color:"purple" },
   { step:4, label:"Offer + Copy (Claude AI)",     icon:"◉", color:"purple" },
-  { step:5, label:"Outbound — LeadSite.AI",       icon:"⚡", color:"blue"   },
-  { step:6, label:"Conversations — ClientContact",icon:"📬", color:"cyan"   },
-  { step:7, label:"Analytics Feedback Loop",      icon:"🧠", color:"emerald"},
+  { step:5, label:"Outbound — LeadSite.AI",       icon:"zap", color:"blue"   },
+  { step:6, label:"Conversations — ClientContact",icon:"inbox", color:"cyan"   },
+  { step:7, label:"Analytics Feedback Loop",      icon:"cpu", color:"emerald"},
 ];
 
 const BLUEPRINT_STATS = [
@@ -1018,7 +1018,7 @@ const BLUEPRINT_ROADMAP = [
 const BLUEPRINT_ENHANCEMENTS = [
   {
     id:"persistent-memory", number:"01", title:"Persistent Agent Memory Layer",
-    priority:"CRITICAL", priorityColor:"rose", category:"Architecture", icon:"🧠",
+    priority:"CRITICAL", priorityColor:"rose", category:"Architecture", icon:"cpu",
     impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 1-3",
     currentState:"NEXUS currently operates statelessly — each session starts fresh. No memory of past scans, decisions, lead outcomes, or campaign performance history.",
     enhancements:[
@@ -1033,7 +1033,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"a2a-protocol", number:"02", title:"Agent-to-Agent Protocol (A2A)",
-    priority:"CRITICAL", priorityColor:"rose", category:"Interoperability", icon:"🔗",
+    priority:"CRITICAL", priorityColor:"rose", category:"Interoperability", icon:"link",
     impact:"TRANSFORMATIVE", effort:"HIGH", timeline:"Weeks 2-6",
     currentState:"7 agents operate as concepts within NEXUS but can't independently communicate or delegate.",
     enhancements:[
@@ -1048,7 +1048,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"feedback-loops", number:"03", title:"Continuous Learning Feedback Loops",
-    priority:"HIGH", priorityColor:"amber", category:"Intelligence", icon:"🔄",
+    priority:"HIGH", priorityColor:"amber", category:"Intelligence", icon:"refresh-cw",
     impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 2-4",
     currentState:"NEXUS provides recommendations but has no mechanism to track outcomes.",
     enhancements:[
@@ -1063,7 +1063,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"autonomous-workflows", number:"04", title:"Bounded Autonomous Workflows",
-    priority:"HIGH", priorityColor:"amber", category:"Automation", icon:"⚡",
+    priority:"HIGH", priorityColor:"amber", category:"Automation", icon:"zap",
     impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 3-5",
     currentState:"NEXUS requires Michael to initiate every action. Cannot execute multi-step workflows autonomously.",
     enhancements:[
@@ -1078,7 +1078,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"revenue-intelligence", number:"05", title:"Revenue Intelligence Engine",
-    priority:"HIGH", priorityColor:"amber", category:"Analytics", icon:"📊",
+    priority:"HIGH", priorityColor:"amber", category:"Analytics", icon:"bar-chart-2",
     impact:"HIGH", effort:"MEDIUM", timeline:"Weeks 3-6",
     currentState:"Analytics Brain exists conceptually but lacks real data pipeline. No forecasting.",
     enhancements:[
@@ -1093,7 +1093,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"multi-agent-governance", number:"06", title:"Agent Governance & Observability",
-    priority:"STRATEGIC", priorityColor:"indigo", category:"Governance", icon:"🛡️",
+    priority:"STRATEGIC", priorityColor:"indigo", category:"Governance", icon:"shield-check",
     impact:"MEDIUM-HIGH", effort:"MEDIUM", timeline:"Weeks 4-6",
     currentState:"No audit trail of agent actions. No policy enforcement. No explainability.",
     enhancements:[
@@ -1108,7 +1108,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"customer-facing-agents", number:"07", title:"Customer-Facing AI Agents",
-    priority:"STRATEGIC", priorityColor:"indigo", category:"Product", icon:"🤖",
+    priority:"STRATEGIC", priorityColor:"indigo", category:"Product", icon:"bot",
     impact:"TRANSFORMATIVE", effort:"HIGH", timeline:"Weeks 5-8",
     currentState:"NEXUS is internal only. Customers get static dashboards, no AI capabilities.",
     enhancements:[
@@ -1123,7 +1123,7 @@ const BLUEPRINT_ENHANCEMENTS = [
   },
   {
     id:"marketplace", number:"08", title:"Agent Marketplace & Ecosystem",
-    priority:"STRATEGIC", priorityColor:"indigo", category:"Platform", icon:"🏪",
+    priority:"STRATEGIC", priorityColor:"indigo", category:"Platform", icon:"layers",
     impact:"TRANSFORMATIVE", effort:"HIGH", timeline:"Weeks 8-12",
     currentState:"Closed ecosystem. 7 internal agents only. No third-party extensions.",
     enhancements:[
@@ -1517,6 +1517,7 @@ let expandedBlueprint = null;
 function toggleBlueprintCard(id) {
   expandedBlueprint = expandedBlueprint === id ? null : id;
   renderBlueprintEnhancements();
+  if (window.lucide) lucide.createIcons();
 }
 
 function renderBlueprint() {
@@ -1719,7 +1720,7 @@ function renderBlueprintEnhancements() {
         <div class="p-5">
           <!-- Header -->
           <div class="flex items-start gap-3 mb-3">
-            <div class="w-10 h-10 rounded-xl ${pc.bg} border ${pc.border} flex items-center justify-center text-xl flex-shrink-0">${e.icon}</div>
+            <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400 flex-shrink-0"><i data-lucide="${e.icon}" class="w-5 h-5"></i></div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-0.5">
                 <span class="text-[9px] mono text-neutral-600">#${e.number}</span>
@@ -2026,7 +2027,7 @@ function switchTab(id) {
   // Tab-specific inits
   if (id === 'agents') { renderAgents(); if (window.lucide) lucide.createIcons(); }
   if (id === 'platforms' || id === 'verification') { if (window.lucide) lucide.createIcons(); }
-  if (id === 'blueprint') { renderBlueprint(); initNexusRefresh(); }
+  if (id === 'blueprint') { renderBlueprint(); if (window.lucide) lucide.createIcons(); initNexusRefresh(); }
   else if (nexusRefreshInterval) { clearInterval(nexusRefreshInterval); nexusRefreshInterval = null; }
 }
 

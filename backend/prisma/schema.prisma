@@ -88,9 +88,6 @@ model User {
   emailAccounts         UserEmailAccount[]
   emailPoolSubscription EmailPoolSubscription?
 
-  // NEXUS Conversation History
-  nexusConversations ConversationHistory[]
-
   @@index([subscriptionStatus])
   @@index([stripeCustomerId])
   @@index([createdAt])
@@ -1549,55 +1546,4 @@ model NexusRecommendation {
   @@index([status])
   @@index([priority])
   @@index([createdAt])
-}
-
-// ============================================================================
-// NEXUS CONVERSATION HISTORY (Persistent Memory)
-// ============================================================================
-
-model ConversationHistory {
-  id              String    @id @default(uuid())
-  userId          String    @map("user_id")
-  sessionId       String    @map("session_id")
-  role            String    // 'user', 'assistant', 'system', 'tool'
-  content         String    @db.Text
-  metadata        Json      @default("{}")
-  timestamp       DateTime  @default(now())
-
-  // Agent tracking
-  agentName       String?   @map("agent_name")
-  agentAction     String?   @map("agent_action")
-  toolCalls       Json?     @map("tool_calls")
-
-  // Thread relationships
-  parentMessageId String?   @map("parent_message_id")
-  parent          ConversationHistory?  @relation("MessageThread", fields: [parentMessageId], references: [id])
-  children        ConversationHistory[] @relation("MessageThread")
-
-  // Relations
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  files           ConversationFile[]
-
-  @@index([userId, sessionId])
-  @@index([timestamp(sort: Desc)])
-  @@index([sessionId])
-  @@index([agentName])
-  @@map("conversation_history")
-}
-
-model ConversationFile {
-  id             String   @id @default(uuid())
-  conversationId String   @map("conversation_id")
-  fileId         String   @map("file_id")
-  filename       String
-  filepath       String
-  mimetype       String
-  size           Int
-  extractedText  String?  @map("extracted_text") @db.Text
-  uploadedAt     DateTime @default(now()) @map("uploaded_at")
-
-  conversation   ConversationHistory @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  @@index([conversationId])
-  @@map("conversation_files")
 }

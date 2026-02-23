@@ -1973,7 +1973,29 @@ export async function POST(request) {
       );
     }
 
-    // --- Website limit check: 1 free, then $19.99 each ---
+    // --- Subscription / trial gate ---
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { subscriptionStatus: true, trialEndsAt: true },
+    });
+
+    const now = new Date();
+    const isTrialActive = user?.subscriptionStatus === 'trial' && user?.trialEndsAt && new Date(user.trialEndsAt) > now;
+    const isSubscribed = user?.subscriptionStatus === 'active';
+
+    if (!isTrialActive && !isSubscribed) {
+      return NextResponse.json(
+        {
+          error: 'subscription_required',
+          message: 'A LeadSite.IO subscription ($49/mo) is required to build websites.',
+          subscriptionStatus: user?.subscriptionStatus || 'none',
+          priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_LEADSITE_IO_STARTER || null,
+        },
+        { status: 402 }
+      );
+    }
+
+    // --- Website limit: trial = 1 free, subscribers = $19 each additional ---
     const existingWebsites = await prisma.website.count({ where: { userId } });
     const hasFreeWebsite = await prisma.website.findFirst({
       where: { userId, isFreeWebsite: true },
@@ -1983,9 +2005,9 @@ export async function POST(request) {
       return NextResponse.json(
         {
           error: 'payment_required',
-          message: 'Additional websites are $19.99 each (includes hosting)',
+          message: 'Additional websites are $19.00 each (includes hosting)',
           existingCount: existingWebsites,
-          price: 19.99,
+          price: 19.00,
           currency: 'usd',
         },
         { status: 402 }

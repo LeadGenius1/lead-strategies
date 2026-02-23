@@ -145,6 +145,7 @@ function answersToFormData(answers) {
 export default function WebsiteBuilderChat({ onWebsiteCreated }) {
   const [hasAccess, setHasAccess] = useState(true);
   const [paymentRequired, setPaymentRequired] = useState(false);
+  const [subscriptionRequired, setSubscriptionRequired] = useState(false);
   const [websiteCount, setWebsiteCount] = useState(0);
   const [profileData, setProfileData] = useState(null);
   const [profileComplete, setProfileComplete] = useState(false);
@@ -353,8 +354,12 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
       const json = await res.json();
       if (!res.ok) {
         if (res.status === 402) {
-          setPaymentRequired(true);
-          setWebsiteCount(json.existingCount || 1);
+          if (json.error === 'subscription_required') {
+            setSubscriptionRequired(true);
+          } else {
+            setPaymentRequired(true);
+            setWebsiteCount(json.existingCount || 1);
+          }
           setGenerating(false);
           setLoading(false);
           return;
@@ -438,6 +443,59 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
     );
   }
 
+  if (subscriptionRequired) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-8">
+        <div className="max-w-md text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+            <Lock className="w-8 h-8 text-amber-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-3">Subscription Required</h2>
+          <p className="text-slate-400 mb-6">
+            Your free trial has ended. Subscribe to <strong className="text-white">LeadSite.IO Starter</strong> to keep building websites and keep your sites active.
+          </p>
+          <div className="bg-black/30 rounded-xl p-4 mb-6">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-500">LeadSite.IO Starter</span>
+              <span className="text-white font-medium">$49/mo</span>
+            </div>
+            <div className="border-t border-white/10 mt-2 pt-2 space-y-1">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">AI website builder</span>
+                <span className="text-cyan-400">Included</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Website hosting</span>
+                <span className="text-cyan-400">Included</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Lead generation</span>
+                <span className="text-cyan-400">Included</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Additional websites</span>
+                <span className="text-cyan-400">$19 each</span>
+              </div>
+            </div>
+          </div>
+          <Link
+            href="/settings"
+            className="w-full inline-flex px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all items-center justify-center gap-2"
+          >
+            <CreditCard className="w-4 h-4" />
+            Subscribe — $49/mo
+          </Link>
+          <button
+            onClick={() => { setSubscriptionRequired(false); setCurrentQuestionIndex(0); setAnswers({}); }}
+            className="mt-3 block w-full text-sm text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            Go back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (paymentRequired) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center p-8">
@@ -447,7 +505,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">Additional Website</h2>
           <p className="text-slate-400 mb-6">
-            You&apos;ve used your free website. Additional websites are just <strong className="text-white">$19.99</strong> each, including hosting.
+            You&apos;ve used your included website. Additional websites are just <strong className="text-white">$19.00</strong> each, including hosting.
           </p>
           <div className="bg-black/30 rounded-xl p-4 mb-6">
             <div className="flex justify-between text-sm mb-2">
@@ -456,7 +514,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
             </div>
             <div className="flex justify-between text-sm mb-2">
               <span className="text-slate-500">Additional website</span>
-              <span className="text-white font-medium">$19.99</span>
+              <span className="text-white font-medium">$19.00</span>
             </div>
             <div className="border-t border-white/10 mt-2 pt-2 flex justify-between text-sm">
               <span className="text-slate-400">Includes</span>
@@ -473,7 +531,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
             ) : (
               <CreditCard className="w-4 h-4" />
             )}
-            Purchase Website — $19.99
+            Purchase Website — $19.00
           </button>
           <button
             onClick={() => { setPaymentRequired(false); setCurrentQuestionIndex(0); setAnswers({}); }}

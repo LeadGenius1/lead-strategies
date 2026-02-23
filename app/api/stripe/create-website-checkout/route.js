@@ -57,7 +57,7 @@ export async function POST(request) {
               name: 'Additional Website',
               description: 'AI-generated website with hosting included',
             },
-            unit_amount: 1999,
+            unit_amount: 1900,
           },
           quantity: 1,
         },

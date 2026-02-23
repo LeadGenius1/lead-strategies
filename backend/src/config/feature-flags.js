@@ -13,4 +13,5 @@ module.exports = {
   // New features (disabled by default — set to 'true' in Railway to enable)
   ENABLE_NEXUS: process.env.ENABLE_NEXUS === 'true',
   ENABLE_AI_WEBSITE_EXTRACTION: process.env.ENABLE_AI_WEBSITE_EXTRACTION === 'true',
+  ENABLE_PLATFORM_VERIFICATION: process.env.ENABLE_PLATFORM_VERIFICATION === 'true' || true,
 };

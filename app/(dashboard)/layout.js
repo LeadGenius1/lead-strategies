@@ -194,7 +194,7 @@ export default function DashboardLayout({ children }) {
 
         const hrefs = [];
         if (!profileComplete) {
-          hrefs.push('/settings'); // Profile first - critical for Lead Hunter
+          hrefs.push('/profile'); // Profile first - critical for Lead Hunter
         } else if (tier === 4) {
           hrefs.push('/videos/upload'); // VideoSite: upload first video
         } else if (leadsCount === 0) {
@@ -206,7 +206,7 @@ export default function DashboardLayout({ children }) {
         }
         setSuggestedHrefs(hrefs);
       } catch (e) {
-        setSuggestedHrefs(['/settings']); // Default: complete profile
+        setSuggestedHrefs(['/profile']); // Default: complete profile
       }
     }
 

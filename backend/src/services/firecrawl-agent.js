@@ -30,7 +30,7 @@ class FirecrawlAgent {
    */
   async scrapePage(url, options = {}) {
     try {
-      const result = await this._getClient().scrapeUrl(url, {
+      const result = await this._getClient().scrape(url, {
         formats: ['markdown', 'html'],
         onlyMainContent: options.mainContentOnly !== false,
         includeTags: options.includeTags || [],
@@ -97,7 +97,7 @@ class FirecrawlAgent {
    */
   async crawlSite(url, maxPages = 10) {
     try {
-      const result = await this._getClient().crawlUrl(url, {
+      const result = await this._getClient().crawl(url, {
         limit: maxPages,
         scrapeOptions: {
           formats: ['markdown'],

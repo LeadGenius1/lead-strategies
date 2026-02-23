@@ -13,6 +13,7 @@
     _warn(...args);
   };
 </script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -936,13 +937,13 @@ const PLATFORMS = [
 ];
 
 const AGENTS = [
-  { emoji:"🎯", name:"Lead Hunter",          role:"F01",        color:"indigo", desc:"Searches Apollo.io 275M+ contacts matching your ICP criteria. Runs daily + manual trigger. Delivers 10–50 qualified leads/day." },
-  { emoji:"✍️", name:"Copy Writer",          role:"F18",        color:"purple", desc:"Claude AI writes personalized emails per lead, subject line variants for A/B testing, and tone adjustment. Unlimited emails generated." },
-  { emoji:"⚖️", name:"Compliance Guardian",  role:"compliance", color:"cyan",   desc:"Enforces CAN-SPAM, GDPR, CASL before every send. Verifies unsubscribe links, physical address, sender identity. Score 0–100." },
-  { emoji:"🔥", name:"Warmup Conductor",     role:"warmup",     color:"orange", desc:"Monitors domain reputation via Instantly.ai. Manages warmup volume ramp. All 4 domains currently at 100% — pool: premium-v1." },
-  { emoji:"📊", name:"Engagement Analyzer",  role:"analytics",  color:"emerald",desc:"Tracks opens, clicks, reply sentiment (positive/neutral/negative). Scores lead engagement. Recommends next action per prospect." },
-  { emoji:"🧠", name:"Analytics Brain",      role:"forecasting",color:"blue",   desc:"Revenue forecasting, pipeline health reports, deal risk flags. Weekly automated reports. 85%+ accuracy after 90 days of data." },
-  { emoji:"🛡️", name:"Healing Sentinel",     role:"self_heal",  color:"rose",   desc:"Auto-detects failed sends, stale deals (no activity), API health issues. Creates follow-up tasks. Alerts on critical failures." },
+  { icon:"brain-circuit", name:"Lead Hunter",          role:"F01",        color:"indigo", desc:"Searches Apollo.io 275M+ contacts matching your ICP criteria. Runs daily + manual trigger. Delivers 10–50 qualified leads/day." },
+  { icon:"pen-tool",      name:"Copy Writer",          role:"F18",        color:"purple", desc:"Claude AI writes personalized emails per lead, subject line variants for A/B testing, and tone adjustment. Unlimited emails generated." },
+  { icon:"shield-check",  name:"Compliance Guardian",  role:"compliance", color:"cyan",   desc:"Enforces CAN-SPAM, GDPR, CASL before every send. Verifies unsubscribe links, physical address, sender identity. Score 0–100." },
+  { icon:"flame",         name:"Warmup Conductor",     role:"warmup",     color:"orange", desc:"Monitors domain reputation via Instantly.ai. Manages warmup volume ramp. All 4 domains currently at 100% — pool: premium-v1." },
+  { icon:"bar-chart-2",   name:"Engagement Analyzer",  role:"analytics",  color:"emerald",desc:"Tracks opens, clicks, reply sentiment (positive/neutral/negative). Scores lead engagement. Recommends next action per prospect." },
+  { icon:"cpu",           name:"Analytics Brain",      role:"forecasting",color:"blue",   desc:"Revenue forecasting, pipeline health reports, deal risk flags. Weekly automated reports. 85%+ accuracy after 90 days of data." },
+  { icon:"activity",      name:"Healing Sentinel",     role:"self_heal",  color:"rose",   desc:"Auto-detects failed sends, stale deals (no activity), API health issues. Creates follow-up tasks. Alerts on critical failures." },
 ];
 
 const RULES = [
@@ -1456,7 +1457,7 @@ function renderAgents() {
       <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden" id="agent-card-${i}">
         <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-${a.color}-500/40 to-transparent"></div>
         <div class="flex items-start gap-4">
-          <div class="w-10 h-10 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center text-xl flex-shrink-0">${a.emoji}</div>
+          <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400 flex-shrink-0"><i data-lucide="${a.icon}" class="w-5 h-5"></i></div>
           <div class="flex-1">
             <div class="flex items-center justify-between mb-1">
               <div class="text-sm font-medium text-white">${a.name}</div>
@@ -1482,6 +1483,7 @@ function renderAgents() {
       );
     current = Math.floor(Math.random() * AGENTS.length);
     renderAgents();
+    if (window.lucide) lucide.createIcons();
   }, 5000);
 }
 
@@ -2022,7 +2024,7 @@ function switchTab(id) {
   if (navEl) { navEl.classList.add('bg-white/5', 'text-white'); }
 
   // Tab-specific inits
-  if (id === 'agents') renderAgents();
+  if (id === 'agents') { renderAgents(); if (window.lucide) lucide.createIcons(); }
   if (id === 'blueprint') { renderBlueprint(); initNexusRefresh(); }
   else if (nexusRefreshInterval) { clearInterval(nexusRefreshInterval); nexusRefreshInterval = null; }
 }

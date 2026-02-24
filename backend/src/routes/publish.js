@@ -1,6 +1,7 @@
 // Publish Routes (Social Media Publishing)
 const express = require('express');
 const { authenticate } = require('../middleware/auth');
+const prisma = require('../config/database');
 
 const router = express.Router();
 
@@ -42,24 +43,83 @@ router.post('/connect/:platform', async (req, res) => {
   });
 });
 
-// POST /api/v1/publish - Publish video to platforms
+// POST /api/v1/publish - Publish content to platforms
 router.post('/', async (req, res) => {
-  const { videoId, platforms, scheduledFor } = req.body;
+  const { videoId, platforms, content, scheduledFor } = req.body;
 
-  if (!videoId || !platforms || platforms.length === 0) {
-    return res.status(400).json({ success: false, error: 'videoId and platforms are required' });
+  if (!platforms || platforms.length === 0) {
+    return res.status(400).json({ success: false, error: 'platforms array is required' });
   }
 
-  const results = platforms.map(p => ({
-    platform: p,
-    status: scheduledFor ? 'scheduled' : 'published',
-    scheduledFor: scheduledFor || null,
-    publishedAt: scheduledFor ? null : new Date()
-  }));
+  const results = [];
+
+  for (const p of platforms) {
+    if (p === 'facebook') {
+      // Real Facebook Graph API publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'facebook', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'facebook', success: false, error: 'Facebook not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.pageAccessToken || !creds.pageId) {
+          results.push({ platform: 'facebook', success: false, error: 'Facebook token invalid' });
+          continue;
+        }
+
+        const graphRes = await fetch(
+          `https://graph.facebook.com/v18.0/${creds.pageId}/feed`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: content || '',
+              access_token: creds.pageAccessToken,
+            }),
+          }
+        );
+
+        const graphData = await graphRes.json();
+
+        if (!graphRes.ok || graphData.error) {
+          results.push({
+            platform: 'facebook',
+            success: false,
+            error: graphData.error?.message || 'Facebook API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'facebook',
+          success: true,
+          postId: graphData.id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('Facebook publish error:', err);
+        results.push({ platform: 'facebook', success: false, error: 'Failed to publish to Facebook' });
+      }
+    } else {
+      // Mock for all other platforms
+      results.push({
+        platform: p,
+        status: scheduledFor ? 'scheduled' : 'published',
+        scheduledFor: scheduledFor || null,
+        publishedAt: scheduledFor ? null : new Date(),
+      });
+    }
+  }
 
   res.json({
     success: true,
-    data: { results }
+    data: { results },
   });
 });
 

@@ -7,6 +7,7 @@ const path = require('path');
 const { FirecrawlAgent } = require('../services/firecrawl-agent');
 const { PerplexityAgent } = require('../services/perplexity-agent');
 const { ChatGPTAgent } = require('../services/chatgpt-agent');
+const instantlyService = require('../services/instantly');
 
 // Lazy-initialized agent instances
 let firecrawlAgent = null;
@@ -272,6 +273,64 @@ const nexusTools = [
       },
       required: ['recipient', 'context']
     }
+  },
+  {
+    name: 'get_campaigns',
+    description: 'Get all Instantly.ai email campaigns and their status',
+    input_schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'string', description: 'Filter by status: active, paused, completed' }
+      }
+    }
+  },
+  {
+    name: 'add_leads_to_campaign',
+    description: 'Add leads to an Instantly.ai campaign for email outreach',
+    input_schema: {
+      type: 'object',
+      properties: {
+        campaignId: { type: 'string', description: 'Campaign ID' },
+        leads: {
+          type: 'array',
+          description: 'Array of leads to add',
+          items: {
+            type: 'object',
+            properties: {
+              email: { type: 'string' },
+              firstName: { type: 'string' },
+              lastName: { type: 'string' },
+              company: { type: 'string' }
+            },
+            required: ['email']
+          }
+        }
+      },
+      required: ['campaignId', 'leads']
+    }
+  },
+  {
+    name: 'launch_campaign',
+    description: 'Launch or pause an Instantly.ai email campaign',
+    input_schema: {
+      type: 'object',
+      properties: {
+        campaignId: { type: 'string', description: 'Campaign ID' },
+        action: { type: 'string', enum: ['launch', 'pause'], description: 'Action to take' }
+      },
+      required: ['campaignId', 'action']
+    }
+  },
+  {
+    name: 'get_campaign_analytics',
+    description: 'Get performance metrics for an email campaign',
+    input_schema: {
+      type: 'object',
+      properties: {
+        campaignId: { type: 'string', description: 'Campaign ID' }
+      },
+      required: ['campaignId']
+    }
   }
 ];
 
@@ -289,6 +348,18 @@ async function executeTool(toolName, toolInput) {
         return await getFirecrawlAgent().scrapeCompetitorPricing(toolInput.name, toolInput.url);
       case 'generate_email':
         return await getChatGPTAgent().generateEmail(toolInput.recipient, toolInput.context);
+      case 'get_campaigns':
+        return await instantlyService.getCampaigns({ status: toolInput.status });
+      case 'add_leads_to_campaign':
+        return await instantlyService.addLeadsBatch(toolInput.campaignId, toolInput.leads);
+      case 'launch_campaign':
+        if (toolInput.action === 'launch') {
+          return await instantlyService.launchCampaign(toolInput.campaignId);
+        } else {
+          return await instantlyService.pauseCampaign(toolInput.campaignId);
+        }
+      case 'get_campaign_analytics':
+        return await instantlyService.getCampaignAnalytics(toolInput.campaignId);
       default:
         return { error: `Unknown tool: ${toolName}` };
     }

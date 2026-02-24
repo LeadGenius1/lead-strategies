@@ -8,6 +8,7 @@ const { FirecrawlAgent } = require('../services/firecrawl-agent');
 const { PerplexityAgent } = require('../services/perplexity-agent');
 const { ChatGPTAgent } = require('../services/chatgpt-agent');
 const instantlyService = require('../services/instantly');
+const { sendEmail: mailgunSendEmail } = require('../services/mailgun');
 
 // Lazy-initialized agent instances
 let firecrawlAgent = null;
@@ -331,6 +332,20 @@ const nexusTools = [
       },
       required: ['campaignId']
     }
+  },
+  {
+    name: 'send_email',
+    description: 'Send an email via Mailgun (from noreply@leadsite.ai)',
+    input_schema: {
+      type: 'object',
+      properties: {
+        to: { type: 'string', description: 'Recipient email address' },
+        subject: { type: 'string', description: 'Email subject line' },
+        body: { type: 'string', description: 'HTML email body' },
+        text: { type: 'string', description: 'Plain text fallback (optional)' }
+      },
+      required: ['to', 'subject', 'body']
+    }
   }
 ];
 
@@ -360,6 +375,13 @@ async function executeTool(toolName, toolInput) {
         }
       case 'get_campaign_analytics':
         return await instantlyService.getCampaignAnalytics(toolInput.campaignId);
+      case 'send_email':
+        return await mailgunSendEmail({
+          to: toolInput.to,
+          subject: toolInput.subject,
+          body: toolInput.body,
+          text: toolInput.text
+        });
       default:
         return { error: `Unknown tool: ${toolName}` };
     }

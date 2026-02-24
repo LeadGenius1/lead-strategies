@@ -106,6 +106,58 @@ router.post('/', async (req, res) => {
         console.error('Facebook publish error:', err);
         results.push({ platform: 'facebook', success: false, error: 'Failed to publish to Facebook' });
       }
+    } else if (p === 'twitter' || p === 'x') {
+      // Real Twitter v2 API publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'twitter', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'twitter', success: false, error: 'Twitter not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.accessToken) {
+          results.push({ platform: 'twitter', success: false, error: 'Twitter token invalid' });
+          continue;
+        }
+
+        const twitterRes = await fetch(
+          'https://api.twitter.com/2/tweets',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${creds.accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: content || '' }),
+          }
+        );
+
+        const twitterData = await twitterRes.json();
+
+        if (!twitterRes.ok || twitterData.errors) {
+          results.push({
+            platform: 'twitter',
+            success: false,
+            error: twitterData.detail || twitterData.errors?.[0]?.message || 'Twitter API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'twitter',
+          success: true,
+          postId: twitterData.data?.id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('Twitter publish error:', err);
+        results.push({ platform: 'twitter', success: false, error: 'Failed to publish to Twitter' });
+      }
     } else {
       // Mock for all other platforms
       results.push({

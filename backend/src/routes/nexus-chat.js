@@ -191,6 +191,74 @@ ${JSON.stringify(ctx.nexusModules.map(m => ({
 Summary: ${ctx.nexusSummary.total} modules, ${ctx.nexusSummary.completed} completed, ${ctx.nexusSummary.inProgress} in progress, avg ${ctx.nexusSummary.avgProgress}% progress
 Pending AI Recommendations: ${ctx.pendingRecommendations.length}
 
+## ANALYTICS BRAIN REFERENCE: SMB TARGETING PLAYBOOK
+
+### AUDIENCE MATH
+- Quantify reachable market: Pull SMB counts by NAICS/category from Google Maps + directories (Yelp, Angi, Thumbtack, HomeAdvisor)
+- Target 50% reach: 40% email, 20% SMS/phone, 20% GBP/search, 20% retargeting
+
+### LIST BUILDING FORMULA
+Tier 1: Ad spenders, high review count, franchises (highest priority)
+Tier 2: Active but not ad spenders
+Tier 3: Sparse presence (cheaper channels only)
+
+Sources: Google Business Profiles, Yelp/Angi/HomeAdvisor, franchise directories, industry association member lists
+
+Data points to capture: business name, owner name, website, email, phone, GBP URL, category, city, review count, rating, ad flags
+
+### COMPETITOR TRAFFIC CAPTURE
+1. Keyword hijack: Google Ads on "near me" + competitor brand keywords
+   Landing page angle: "Before you lock into another long-term contract, see how AI Lead Strategies compares"
+2. Audience hijack: Target visitors to competitor comparison pages + people searching competitor pricing/demo/reviews
+3. Listing piggyback: "[Competitor] vs AI Lead Strategies" content for SEO + paid search. Use VideoSite.AI for video versions
+
+### THREE OUTBOUND LOOPS
+
+LOOP 1 - Outbound at Scale (LeadSite.AI + UltraLead + ClientContact):
+- Build sequences per segment:
+  * "Cleaning company, has GMB, 10-100 reviews"
+  * "Franchise owner, multiple locations"
+  * "Solo operator, weak website, no booking system"
+- 5-7 touch email sequences per segment:
+  * Touch 1: Relevance + fast win
+  * Touch 2-3: Proof + simple explanation
+  * Touch 4-5: Objection handling
+  * Touch 6-7: Deadline/limited slot offer
+- Add SMS steps via ClientContact.IO for contacts with mobile numbers
+- UltraLead manages pipeline: Curious→Interested→Demo→Trial→Customer
+
+LOOP 2 - Inbound (GBP + Directory):
+- Rank for "AI lead generation for [industry]" queries
+- CTA: "Get a free AI outreach map for your Google listing in 24hrs"
+- Partner with directories for white-label widgets
+- VideoSite.AI short videos: "How to turn 30% more quotes into contracts using AI follow-up"
+
+LOOP 3 - Retargeting:
+- Pixel: main site, all product pages, blog, comparison pages
+- Pain-specific ads by segment:
+  * Cleaning: "Stop losing jobs because you respond 2 hours late"
+  * Franchises: "One AI system across all locations"
+  * Solo operators: "Turn your Google listing into a 24/7 sales rep"
+- Weekly micro case study emails by industry via LeadSite.AI
+
+### 90-DAY EXECUTION CADENCE
+Week 1-2: Build/clean master list + define 3-5 segment offers
+Week 3-4: Launch email sequences + competitor keyword campaigns
+Week 5-8: Kill low performers, double winners, expand to 5-7 segments
+Week 9-12: Catch-all campaign to non-openers with bold time-bound offer. Cross-pollinate segments. Audit TAM coverage gaps.
+
+### KEY METRICS TO TRACK
+- Unique businesses touched (not impressions)
+- Demo booking rate per segment
+- CAC by channel
+- Open rate target: 35-45%
+- Click rate target: 3-7%
+- Reply rate target: 2-5%
+- Meeting booking rate: 0.5-1.5%
+
+### HERO STAT FOR SALES
+LeadSite.AI at $49/month vs typical SDR at $60K/year = 100x cost advantage with 24/7 autonomous operation
+
 ## RESPONSE STYLE
 - Lead with data and current state
 - Provide numbered recommendations with specific actions

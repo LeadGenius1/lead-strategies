@@ -517,15 +517,29 @@ router.get('/context', async (req, res) => {
 });
 
 /**
- * Provider fallback chain: Claude → GPT-4o → Perplexity → null (degraded)
+ * Smart model routing: Sonnet for simple queries, Opus for complex ones
  */
-async function tryProviders(messages, systemPrompt, tools) {
-  // Provider 1: Anthropic Claude (with tool-use loop)
+function selectModel(message) {
+  const isComplex = message.length > 200 ||
+    /analyz|debug|build|create|fix|strateg|compare|why|explain|how|optim|improv|suggest|diagnos|plan|review/i.test(message);
+  return isComplex
+    ? 'claude-opus-4-5-20251101'
+    : 'claude-sonnet-4-5-20250929';
+}
+
+/**
+ * Provider fallback chain: Claude (smart routing) → GPT-4o → Perplexity → null (degraded)
+ */
+async function tryProviders(messages, systemPrompt, tools, userMessage) {
+  // Provider 1: Anthropic Claude — smart model routing + tool-use loop
   const anthropic = getAnthropicClient();
   if (anthropic) {
     try {
+      const model = selectModel(userMessage);
+      console.log(`[NEXUS] Smart routing → ${model} (msg length: ${userMessage.length})`);
+
       let chatMessage = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model,
         max_tokens: 2048,
         system: systemPrompt,
         messages,
@@ -548,7 +562,7 @@ async function tryProviders(messages, systemPrompt, tools) {
         messages.push({ role: 'assistant', content: chatMessage.content });
         messages.push({ role: 'user', content: toolResults });
         chatMessage = await anthropic.messages.create({
-          model: 'claude-sonnet-4-20250514',
+          model,
           max_tokens: 2048,
           system: systemPrompt,
           messages,
@@ -557,7 +571,7 @@ async function tryProviders(messages, systemPrompt, tools) {
       }
 
       const textBlock = chatMessage.content.find(b => b.type === 'text');
-      return { text: textBlock ? textBlock.text : 'No response generated.', provider: 'claude', toolRounds: toolRound };
+      return { text: textBlock ? textBlock.text : 'No response generated.', provider: 'claude', model, toolRounds: toolRound };
     } catch (err) {
       if (err.status !== 529 && !(err.error && err.error.type === 'overloaded_error') && !(err.message && err.message.includes('overloaded'))) throw err;
       console.warn('[NEXUS] Claude overloaded — trying GPT-4o');
@@ -578,7 +592,7 @@ async function tryProviders(messages, systemPrompt, tools) {
         messages: openaiMessages,
         max_tokens: 2048,
       });
-      return { text: response.choices[0].message.content, provider: 'gpt-4o', toolRounds: 0 };
+      return { text: response.choices[0].message.content, provider: 'gpt-4o', model: 'gpt-4o', toolRounds: 0 };
     } catch (err) {
       console.warn('[NEXUS] GPT-4o failed:', err.message, '— trying Perplexity');
     }
@@ -598,7 +612,7 @@ async function tryProviders(messages, systemPrompt, tools) {
       });
       const data = await resp.json();
       if (data.choices && data.choices[0]) {
-        return { text: data.choices[0].message.content, provider: 'perplexity', toolRounds: 0 };
+        return { text: data.choices[0].message.content, provider: 'perplexity', model: 'sonar-large', toolRounds: 0 };
       }
     } catch (err) {
       console.warn('[NEXUS] Perplexity failed:', err.message, '— all providers exhausted');
@@ -722,9 +736,9 @@ End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
     // Add current message
     conversationHistory.push({ role: 'user', content: message });
 
-    // Run provider fallback chain: Claude → GPT-4o → Perplexity → degraded
+    // Run provider fallback chain: Claude (smart routing) → GPT-4o → Perplexity → degraded
     console.log(`🤖 NEXUS chat: calling provider chain for user ${userId}...`);
-    const result = await tryProviders(conversationHistory, systemPrompt, nexusTools);
+    const result = await tryProviders(conversationHistory, systemPrompt, nexusTools, message);
 
     if (!result) {
       // All providers exhausted
@@ -769,6 +783,7 @@ End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
       success: true,
       response: responseText,
       provider: result.provider,
+      model: result.model,
       history: conversationHistory,
       sessionId: currentSessionId,
     });

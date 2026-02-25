@@ -430,7 +430,7 @@ export default function WebsiteBuilderChat({ onWebsiteCreated }) {
               </div>
               <div className="text-center">
                 <p className="text-white font-medium">UltraLead.AI</p>
-                <p className="text-xs text-cyan-400">$99/mo</p>
+                <p className="text-xs text-cyan-400">$499/mo</p>
                 <p className="text-xs text-slate-500">1 Free Website</p>
               </div>
             </div>

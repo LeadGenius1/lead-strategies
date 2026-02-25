@@ -467,6 +467,13 @@ router.post('/run-agent', async (req, res) => {
         break;
       }
 
+      case 'warmup-conductor': {
+        const instantlyService = require('../services/instantly');
+        result = await instantlyService.getWarmupStatus(agentData?.email);
+        modelUsed = 'instantly';
+        break;
+      }
+
       default:
         return res.status(400).json({
           success: false,
@@ -474,6 +481,7 @@ router.post('/run-agent', async (req, res) => {
           availableAgents: [
             'lead-hunter', 'copy-writer', 'analytics-brain',
             'compliance-guardian', 'engagement-analyzer', 'healing-sentinel',
+            'warmup-conductor',
           ],
         });
     }

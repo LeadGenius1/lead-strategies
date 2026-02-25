@@ -194,7 +194,7 @@ export default function DashboardLayout({ children }) {
         const profileComplete = hasCompany && hasIndustry && hasServices && hasContact;
 
         // Hard redirect if profile incomplete and not on exempt route
-        const exemptRoutes = ['/profile', '/settings', '/logout'];
+        const exemptRoutes = ['/profile', '/settings', '/logout', '/inbox/settings'];
         const isExempt = exemptRoutes.some(r => pathname === r || pathname.startsWith(r + '/'));
         if (!profileComplete && !isExempt) {
           router.push('/profile');
@@ -229,7 +229,7 @@ export default function DashboardLayout({ children }) {
   }, [user]);
 
   // Block rendering until auth + profile check complete (prevents content flash)
-  const exemptFromProfileCheck = ['/profile', '/settings', '/logout'].some(
+  const exemptFromProfileCheck = ['/profile', '/settings', '/logout', '/inbox/settings'].some(
     r => pathname === r || pathname.startsWith(r + '/')
   );
   if (loading || (!profileChecked && !exemptFromProfileCheck)) {

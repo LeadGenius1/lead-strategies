@@ -469,35 +469,77 @@ When asked about priorities/strategy/"what next":
 
 ${JSON.stringify({...masterContext, _claudeRules: undefined, nexus: undefined}, null, 2)}`;
 
-    console.log('🤖 Calling Anthropic API...');
-    const chatMessage = await breakers.anthropic.execute(() =>
-      anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2048,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: fullMessage }],
-      })
-    );
+    const wantStream = req.query.stream === 'true' || req.body.stream === true;
+    const apiParams = {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2048,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: fullMessage }],
+    };
 
-    const content = chatMessage.content[0].text;
-    console.log('✅ Lead Hunter response received');
+    if (wantStream) {
+      // SSE streaming response
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders();
 
-    res.json({
-      success: true,
-      data: {
-        response: content,
-        message: content,
-        suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy for a specific lead', 'Fetch a website and write an email'],
-        usage: chatMessage.usage,
-      }
-    });
+      console.log('🤖 Calling Anthropic API (streaming)...');
+      const stream = anthropic.messages.stream(apiParams);
+      let usage = null;
+
+      stream.on('text', (text) => {
+        res.write(`data: ${JSON.stringify({ type: 'content', text })}\n\n`);
+      });
+
+      stream.on('message', (msg) => {
+        usage = msg.usage || null;
+      });
+
+      stream.on('end', () => {
+        res.write(`data: ${JSON.stringify({
+          type: 'done',
+          suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy for a specific lead', 'Fetch a website and write an email'],
+          usage,
+        })}\n\n`);
+        console.log('✅ Lead Hunter stream completed');
+        res.end();
+      });
+
+      stream.on('error', (err) => {
+        console.error('❌ Lead Hunter stream error:', err);
+        res.write(`data: ${JSON.stringify({ type: 'error', error: err.message })}\n\n`);
+        res.end();
+      });
+    } else {
+      // Non-streaming JSON response (backwards compatible)
+      console.log('🤖 Calling Anthropic API...');
+      const chatMessage = await breakers.anthropic.execute(() =>
+        anthropic.messages.create(apiParams)
+      );
+
+      const content = chatMessage.content[0].text;
+      console.log('✅ Lead Hunter response received');
+
+      res.json({
+        success: true,
+        data: {
+          response: content,
+          message: content,
+          suggestions: ['Find 100 CTOs at SaaS companies', 'Create a warmup campaign', 'Generate email copy for a specific lead', 'Fetch a website and write an email'],
+          usage: chatMessage.usage,
+        }
+      });
+    }
   } catch (error) {
     console.error('❌ Lead Hunter chat error:', error);
-    res.status(500).json({
-      success: false,
-      error: `AI service error: ${error.message}`,
-      data: { response: `Sorry, I encountered an error: ${error.message}. Please try again.` }
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        error: `AI service error: ${error.message}`,
+        data: { response: `Sorry, I encountered an error: ${error.message}. Please try again.` }
+      });
+    }
   }
 });
 

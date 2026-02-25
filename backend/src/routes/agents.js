@@ -292,12 +292,39 @@ async function runAgent(agentId, userId, params = {}) {
         addLog(agentId, 'info', 'Analytics generated');
         break;
 
-      case 'healing-sentinel':
-        // Run self-healing checks
+      case 'healing-sentinel': {
         addLog(agentId, 'info', 'Running system health checks...');
-        result = { healthy: true, issues: [] };
-        addLog(agentId, 'info', 'Health check completed');
+        const issues = [];
+        const autoFixed = [];
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        const staleLeads = await prisma.lead.count({
+          where: { updatedAt: { lt: sevenDaysAgo } }
+        });
+        if (staleLeads > 0) {
+          issues.push(`${staleLeads} stale leads with no activity in 7+ days`);
+        }
+
+        const bouncedEmails = await prisma.emailEvent.count({
+          where: { eventType: 'bounced', createdAt: { gt: twentyFourHoursAgo } }
+        });
+        if (bouncedEmails > 0) {
+          issues.push(`${bouncedEmails} bounced emails in last 24 hours`);
+        }
+
+        const errorAgents = Object.entries(agentStatuses)
+          .filter(([, s]) => s.status === 'error')
+          .map(([id]) => id);
+        if (errorAgents.length > 0) {
+          issues.push(`Agents in error state: ${errorAgents.join(', ')}`);
+        }
+
+        const healthy = issues.length === 0;
+        result = { healthy, issues, autoFixed };
+        addLog(agentId, 'info', `Health check completed: healthy=${healthy}, issues=${issues.length}`);
         break;
+      }
 
       default:
         addLog(agentId, 'warn', 'Unknown agent type');

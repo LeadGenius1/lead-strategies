@@ -405,8 +405,301 @@ router.post('/', async (req, res) => {
         console.error('Telegram publish error:', err);
         results.push({ platform: 'telegram', success: false, error: 'Failed to publish to Telegram' });
       }
+    } else if (p === 'linkedin') {
+      // Real LinkedIn UGC API publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'linkedin', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'linkedin', success: false, error: 'LinkedIn not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.accessToken || !creds.personId) {
+          results.push({ platform: 'linkedin', success: false, error: 'LinkedIn token invalid' });
+          continue;
+        }
+
+        const linkedinRes = await fetch(
+          'https://api.linkedin.com/v2/ugcPosts',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${creds.accessToken}`,
+              'Content-Type': 'application/json',
+              'X-Restli-Protocol-Version': '2.0.0',
+            },
+            body: JSON.stringify({
+              author: `urn:li:person:${creds.personId}`,
+              lifecycleState: 'PUBLISHED',
+              specificContent: {
+                'com.linkedin.ugc.ShareContent': {
+                  shareCommentary: { text: content || '' },
+                  shareMediaCategory: 'NONE',
+                },
+              },
+              visibility: {
+                'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
+              },
+            }),
+          }
+        );
+
+        const linkedinData = await linkedinRes.json();
+
+        if (!linkedinRes.ok) {
+          results.push({
+            platform: 'linkedin',
+            success: false,
+            error: linkedinData.message || linkedinData.error?.message || 'LinkedIn API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'linkedin',
+          success: true,
+          postId: linkedinData.id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('LinkedIn publish error:', err);
+        results.push({ platform: 'linkedin', success: false, error: 'Failed to publish to LinkedIn' });
+      }
+    } else if (p === 'pinterest') {
+      // Real Pinterest API v5 publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'pinterest', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'pinterest', success: false, error: 'Pinterest not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.accessToken || !creds.boardId) {
+          results.push({ platform: 'pinterest', success: false, error: 'Pinterest token invalid' });
+          continue;
+        }
+
+        const pinterestRes = await fetch(
+          'https://api.pinterest.com/v5/pins',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${creds.accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              board_id: creds.boardId,
+              title: (content || '').substring(0, 100),
+              description: content || '',
+              media_source: {
+                source_type: 'image_url',
+                url: 'https://aileadstrategies.com/og-image.png',
+              },
+            }),
+          }
+        );
+
+        const pinterestData = await pinterestRes.json();
+
+        if (!pinterestRes.ok) {
+          results.push({
+            platform: 'pinterest',
+            success: false,
+            error: pinterestData.message || pinterestData.error?.message || 'Pinterest API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'pinterest',
+          success: true,
+          postId: pinterestData.id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('Pinterest publish error:', err);
+        results.push({ platform: 'pinterest', success: false, error: 'Failed to publish to Pinterest' });
+      }
+    } else if (p === 'discord') {
+      // Real Discord Bot API publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'discord', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'discord', success: false, error: 'Discord not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.botToken || !creds.channelId) {
+          results.push({ platform: 'discord', success: false, error: 'Discord token invalid' });
+          continue;
+        }
+
+        const discordRes = await fetch(
+          `https://discord.com/api/v10/channels/${creds.channelId}/messages`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bot ${creds.botToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content: content || '' }),
+          }
+        );
+
+        const discordData = await discordRes.json();
+
+        if (!discordRes.ok) {
+          results.push({
+            platform: 'discord',
+            success: false,
+            error: discordData.message || 'Discord API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'discord',
+          success: true,
+          postId: discordData.id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('Discord publish error:', err);
+        results.push({ platform: 'discord', success: false, error: 'Failed to publish to Discord' });
+      }
+    } else if (p === 'slack') {
+      // Real Slack Web API publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'slack', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'slack', success: false, error: 'Slack not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.accessToken || !creds.channelId) {
+          results.push({ platform: 'slack', success: false, error: 'Slack token invalid' });
+          continue;
+        }
+
+        const slackRes = await fetch(
+          'https://slack.com/api/chat.postMessage',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${creds.accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              channel: creds.channelId,
+              text: content || '',
+            }),
+          }
+        );
+
+        const slackData = await slackRes.json();
+
+        if (!slackData.ok) {
+          results.push({
+            platform: 'slack',
+            success: false,
+            error: slackData.error || 'Slack API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'slack',
+          success: true,
+          postId: slackData.ts,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('Slack publish error:', err);
+        results.push({ platform: 'slack', success: false, error: 'Failed to publish to Slack' });
+      }
+    } else if (p === 'tiktok') {
+      // Real TikTok Content Posting API publish
+      try {
+        const channel = await prisma.channel.findFirst({
+          where: { userId: req.user.id, type: 'tiktok', status: 'connected' },
+        });
+
+        if (!channel) {
+          results.push({ platform: 'tiktok', success: false, error: 'TikTok not connected' });
+          continue;
+        }
+
+        const creds = channel.credentials || {};
+        if (!creds.accessToken) {
+          results.push({ platform: 'tiktok', success: false, error: 'TikTok token invalid' });
+          continue;
+        }
+
+        const tiktokRes = await fetch(
+          'https://open.tiktokapis.com/v2/post/publish/text/check/',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${creds.accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              post_info: {
+                title: (content || '').substring(0, 150),
+                privacy_level: 'PUBLIC_TO_EVERYONE',
+                disable_comment: false,
+              },
+              source_info: {
+                source: 'FILE_UPLOAD',
+              },
+            }),
+          }
+        );
+
+        const tiktokData = await tiktokRes.json();
+
+        if (!tiktokRes.ok || tiktokData.error?.code) {
+          results.push({
+            platform: 'tiktok',
+            success: false,
+            error: tiktokData.error?.message || 'TikTok API error',
+          });
+          continue;
+        }
+
+        results.push({
+          platform: 'tiktok',
+          success: true,
+          postId: tiktokData.data?.publish_id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+      } catch (err) {
+        console.error('TikTok publish error:', err);
+        results.push({ platform: 'tiktok', success: false, error: 'Failed to publish to TikTok' });
+      }
     } else {
-      // Mock for all other platforms
+      // Mock for remaining platforms
       results.push({
         platform: p,
         status: scheduledFor ? 'scheduled' : 'published',

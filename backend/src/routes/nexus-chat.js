@@ -589,6 +589,17 @@ router.post('/chat', async (req, res) => {
     });
   } catch (error) {
     console.error('NEXUS chat error:', error);
+
+    // Anthropic overloaded — return 200 so Command Center stays LIVE
+    if (error.status === 529 || (error.error && error.error.type === 'overloaded_error') || (error.message && error.message.includes('overloaded'))) {
+      return res.status(200).json({
+        success: true,
+        response: "I'm experiencing high demand right now. Please try again in a moment.",
+        status: 'degraded',
+        retryAfter: 10,
+      });
+    }
+
     return res.status(500).json({ error: error.message || 'NEXUS chat failed' });
   }
 });

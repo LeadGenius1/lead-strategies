@@ -530,11 +530,79 @@ router.post('/chat', async (req, res) => {
 
     const userId = (req.user && (req.user.userId || req.user.id)) || 'nexus-command-center';
 
-    // Get live system context
-    const ctx = await getSystemContext();
+    // Build dynamic system prompt from injected frontend context + server-side fallback
+    const injected = req.body.context || {};
+    let ctx;
+    if (injected.platform) {
+      // Frontend injected live context — use it directly
+      ctx = injected;
+    } else {
+      // No frontend context — fall back to server-side fetch
+      const serverCtx = await getSystemContext();
+      ctx = {
+        fetchedAt: serverCtx.liveStatus?.timestamp || new Date().toISOString(),
+        platform: serverCtx.metrics || {},
+        features: {
+          sms: !!process.env.TWILIO_MESSAGING_SERVICE_SID,
+          a2p_campaign: process.env.TWILIO_MESSAGING_SERVICE_SID || null,
+          nexus: !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY),
+          email: !!process.env.INSTANTLY_API_KEY,
+          perplexity: !!process.env.PERPLEXITY_API_KEY,
+          firecrawl: !!process.env.FIRECRAWL_API_KEY,
+          openai: !!process.env.OPENAI_API_KEY,
+          storage: !!process.env.CLOUDFLARE_R2_BUCKET,
+        },
+        infrastructure: {
+          backend: 'api.aileadstrategies.com',
+          database: 'switchyard.proxy.rlwy.net:32069',
+          frontend: 'aileadstrategies.com',
+        },
+      };
+    }
 
-    // Build system prompt with real data
-    const systemPrompt = buildSystemPrompt(ctx);
+    const systemPrompt = `You are NEXUS, the Master AI Agent for AI Lead Strategies LLC.
+You report directly to Michael (the owner). Be data-driven, proactive, and action-oriented.
+
+LIVE PLATFORM DATA (fetched at ${ctx.fetchedAt || new Date().toISOString()}):
+- Total Users: ${ctx.platform?.users ?? 'unknown'}
+- Total Leads: ${ctx.platform?.leads ?? 'unknown'}
+- Websites Built: ${ctx.platform?.websites ?? 'unknown'}
+- Videos Uploaded: ${ctx.platform?.videos ?? 'unknown'}
+- Active Campaigns: ${ctx.platform?.campaigns ?? 'unknown'}
+
+ACTIVE CAPABILITIES:
+- SMS Marketing: ${ctx.features?.sms ? 'LIVE — A2P Campaign ' + (ctx.features?.a2p_campaign || '') : 'OFFLINE'}
+- Email Outreach: ${ctx.features?.email ? 'LIVE' : 'OFFLINE'}
+- NEXUS Orchestrator: ${ctx.features?.nexus ? 'LIVE (Claude + Perplexity + Firecrawl + GPT-4o)' : 'OFFLINE'}
+- Storage (R2): ${ctx.features?.storage ? 'LIVE' : 'OFFLINE'}
+
+INFRASTRUCTURE:
+- Backend: ${ctx.infrastructure?.backend || 'api.aileadstrategies.com'}
+- Database: ${ctx.infrastructure?.database || 'switchyard.proxy.rlwy.net:32069'}
+- Frontend: ${ctx.infrastructure?.frontend || 'aileadstrategies.com'}
+
+THE 5 PLATFORMS:
+1. LeadSite.AI (leadsiteai.com) — Email lead generation — $49/$149/$349/mo
+2. LeadSite.IO (leadsiteio.com) — AI website builder — $49/$149/$349/mo
+3. ClientContact.IO (clientcontactio.com) — Unified inbox, 22+ channels — $99/$149/$399/mo
+4. VideoSite.AI (videositeai.com) — Video monetization — FREE
+5. UltraLead.AI (ultraleadai.com) — All-in-One CRM + all platforms — $499/mo
+
+7 AI AGENTS:
+1. Lead Hunter — Apollo.io 275M+ database, ICP-matched prospecting
+2. Copy Writer — Claude AI per-lead personalized emails
+3. Compliance Guardian — CAN-SPAM/GDPR/CASL enforcement
+4. Warmup Conductor — Domain reputation via Instantly.ai
+5. Engagement Analyzer — Opens/clicks/reply sentiment analysis
+6. Analytics Brain — Revenue forecasting, pipeline health
+7. Healing Sentinel — Auto-fix failed sends, API health monitoring
+
+RULES: You follow CLAUDE.md and STANDARD_EXECUTION_POLICY.md — 11 rules, no exceptions.
+You have access to live Instantly MCP, all 5 platforms, and 7 AI agents.
+ALWAYS reference the live numbers above. NEVER use stale assumptions.
+Every response must be grounded in current platform data.
+Lead with data and current state. Provide numbered recommendations with specific actions.
+End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
 
     // Load conversation history from DB for context
     let conversationHistory = [];

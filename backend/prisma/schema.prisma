@@ -88,6 +88,10 @@ model User {
   emailAccounts         UserEmailAccount[]
   emailPoolSubscription EmailPoolSubscription?
 
+  // SMS Marketing
+  smsMessages  SmsMessage[]
+  smsSequences SmsSequence[]
+
   // NEXUS Conversation History
   nexusConversations ConversationHistory[]
 
@@ -1571,4 +1575,40 @@ model ConversationFile {
   conversation   ConversationHistory @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   @@index([conversationId])
   @@map("conversation_files")
+}
+
+// ==================== SMS MARKETING ====================
+
+model SmsMessage {
+  id         String   @id @default(cuid())
+  userId     String
+  contactId  String?
+  to         String
+  from       String
+  body       String
+  messageSid String?  @unique
+  status     String   @default("sent")
+  direction  String   @default("outbound")
+  campaignId String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([direction])
+  @@index([messageSid])
+  @@map("sms_messages")
+}
+
+model SmsSequence {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  steps      Json
+  contactIds Json
+  status     String   @default("active")
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("sms_sequences")
 }

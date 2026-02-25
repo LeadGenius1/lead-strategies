@@ -67,22 +67,30 @@ export default function LeadHunterPage() {
     }
   }
 
-  const bgStyle = {
-    backgroundSize: '40px 40px',
-    backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
-  };
-
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
-      <div className="fixed inset-0 pointer-events-none opacity-20" style={bgStyle} />
+    <div className="min-h-screen bg-black text-white antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+      {/* AETHER Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundSize: '40px 40px',
+            backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                             linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+          }}
+        />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] aether-glow-blob" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] aether-glow-blob aether-glow-delay" />
+      </div>
 
-      <div className="relative z-10 p-4 md:p-6">
-        <div className="max-w-4xl lg:max-w-5xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-lg font-medium text-white flex items-center gap-2">
-              <Search className="w-5 h-5 text-indigo-400" />
-              Lead Hunter
-            </h1>
+      <div className="relative z-10 p-8 max-w-6xl mx-auto">
+        <div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500 mb-2">Lead Hunter</h1>
+              <p className="text-neutral-400 text-sm font-light">AI-powered lead discovery and campaign creation</p>
+            </div>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -114,7 +122,8 @@ export default function LeadHunterPage() {
           ) : (
             <div className="space-y-6">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-2 text-red-400 text-sm">
+                <div className="relative bg-red-900/10 border border-red-500/30 rounded-2xl px-4 py-3 text-red-400 text-sm overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
                   {error}
                 </div>
               )}
@@ -137,7 +146,8 @@ export default function LeadHunterPage() {
               </div>
 
               {step === 'search' && (
-                <div className="bg-neutral-900/50 border border-white/10 rounded-xl p-6">
+                <div className="relative bg-neutral-900/30 border border-white/10 rounded-2xl p-6 overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
                   <h2 className="text-base font-medium text-white mb-4">Find Leads</h2>
                   <div className="space-y-4">
                     <input
@@ -170,7 +180,8 @@ export default function LeadHunterPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
                     <h2 className="text-base font-medium text-white mb-4">Found {leads.length} Leads</h2>
-                    <div className="bg-neutral-900/50 border border-white/10 rounded-xl p-6 max-h-96 overflow-y-auto space-y-2">
+                    <div className="relative bg-neutral-900/30 border border-white/10 rounded-2xl p-6 max-h-96 overflow-y-auto space-y-2">
+                      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
                       {leads.map((lead) => (
                         <div key={lead.id} className="p-3 bg-white/5 rounded-lg border border-white/5">
                           <p className="text-white font-medium text-sm">{lead.name || lead.email}</p>
@@ -203,7 +214,8 @@ export default function LeadHunterPage() {
               )}
 
               {step === 'confirm' && schedule && (
-                <div className="bg-neutral-900/50 border border-white/10 rounded-xl p-6">
+                <div className="relative bg-neutral-900/30 border border-white/10 rounded-2xl p-6 overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
                   <h2 className="text-base font-medium text-white mb-4">Ready to Launch</h2>
                   <div className="space-y-2 text-neutral-300 text-sm font-light mb-6">
                     <p>{leads.length} leads selected</p>

@@ -91,13 +91,28 @@ export default function ProspectsPage() {
   }
 
   return (
-    <div className="relative min-h-screen p-6 font-sans">
-      <div className="relative z-10 max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-black text-white antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+      {/* AETHER Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundSize: '40px 40px',
+            backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                             linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+          }}
+        />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] aether-glow-blob" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] aether-glow-blob aether-glow-delay" />
+      </div>
+
+      <div className="relative z-10 p-8 max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-medium tracking-tight text-white">Prospects</h1>
-            <p className="text-neutral-400 mt-1 text-sm font-light">Manage and track your leads</p>
+            <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500 mb-2">Prospects</h1>
+            <p className="text-neutral-400 text-sm font-light">Manage and track your leads</p>
           </div>
           <button
             onClick={() => toast.success('Use Lead Hunter to find new prospects!')}
@@ -109,7 +124,8 @@ export default function ProspectsPage() {
         </div>
 
         {/* Lead Hunter / AI search */}
-        <div className="rounded-2xl bg-neutral-900/50 border border-white/10 p-5">
+        <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-5 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-purple-400" />
             <h2 className="text-base font-semibold text-white">Lead Hunter</h2>
@@ -173,15 +189,17 @@ export default function ProspectsPage() {
 
         {/* Prospects Grid */}
         {loading ? (
-          <div className="p-12 rounded-2xl bg-neutral-900/50 border border-white/10 text-center">
+          <div className="relative p-12 rounded-2xl bg-neutral-900/30 border border-white/10 text-center overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
             <Loader2 className="w-8 h-8 text-indigo-400 animate-spin mx-auto mb-3" />
-            <p className="text-neutral-500 text-sm">Loading prospects...</p>
+            <p className="text-neutral-500 text-sm font-light">Loading prospects...</p>
           </div>
         ) : prospects.length === 0 ? (
-          <div className="p-12 rounded-2xl bg-neutral-900/50 border border-white/10 text-center">
+          <div className="relative p-12 rounded-2xl bg-neutral-900/30 border border-white/10 text-center overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
             <Target className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
             <p className="text-neutral-400 mb-2">No prospects found</p>
-            <p className="text-neutral-600 text-sm">Use Lead Hunter to discover new leads</p>
+            <p className="text-neutral-600 text-sm font-light">Use Lead Hunter to discover new leads</p>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -190,8 +208,9 @@ export default function ProspectsPage() {
               return (
                 <div
                   key={prospect.id}
-                  className="group p-6 rounded-2xl bg-neutral-900/50 border border-white/10 hover:border-indigo-500/30 transition-all duration-300"
+                  className="group relative p-6 rounded-2xl bg-neutral-900/30 border border-white/10 hover:border-indigo-500/30 transition-all duration-300 overflow-hidden"
                 >
+                  <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="relative z-10 flex items-start justify-between">
                     <div className="flex gap-4">
                       <div className={`w-12 h-12 rounded-xl bg-${color}-500/20 border border-${color}-500/30 flex items-center justify-center text-lg font-medium text-${color}-400`}>

@@ -1,5 +1,29 @@
 // System Agents - 7 AI Agents for Lead Generation Platform
 
+// Shared compliance check — single source of truth for rule-based checks
+function checkCompliance(emailBody, subject) {
+  const body = (emailBody || '').toLowerCase();
+  const issues = [];
+
+  if (body && !body.includes('unsubscribe')) {
+    issues.push('Missing unsubscribe link (CAN-SPAM required)');
+  }
+  if (body && !/\d{5}/.test(body)) {
+    issues.push('Missing physical address with zip code (CAN-SPAM required)');
+  }
+  const spamWords = ['free', 'guaranteed', 'no risk', 'act now', 'limited time'];
+  const foundSpam = spamWords.filter(w => body.includes(w));
+  if (foundSpam.length > 0) {
+    issues.push(`Spam trigger words detected: ${foundSpam.join(', ')}`);
+  }
+  if (subject && subject.length > 60) {
+    issues.push(`Subject line too long (${subject.length} chars, max 60)`);
+  }
+
+  const score = Math.max(0, 100 - (issues.length * 25));
+  return { checked: true, score, issues };
+}
+
 class BaseAgent {
   constructor(name, description) {
     this.name = name;
@@ -46,11 +70,18 @@ class LeadHunterAgent extends BaseAgent {
 
   async run(params = {}) {
     await super.run();
-    this.log(`Searching for leads with criteria: ${JSON.stringify(params)}`);
-    // Integration with Apollo.io service
-    this.log('Lead search completed');
-    this.status = 'idle';
-    return { found: 0, qualified: 0 };
+    try {
+      this.log(`Searching for leads with criteria: ${JSON.stringify(params)}`);
+      const apolloService = require('./services/apollo');
+      const result = await apolloService.searchPeople(params.query || '', params.filters || {});
+      this.log(`Lead search completed: found ${result.people?.length || 0} prospects`);
+      this.status = 'completed';
+      return result;
+    } catch (error) {
+      this.log(`Lead search failed: ${error.message}`);
+      this.status = 'error';
+      return { found: 0, qualified: 0, error: error.message };
+    }
   }
 }
 
@@ -62,11 +93,18 @@ class CopyWriterAgent extends BaseAgent {
 
   async run(params = {}) {
     await super.run();
-    this.log(`Generating copy for campaign: ${params.campaignId || 'new'}`);
-    // Integration with Claude API
-    this.log('Copy generation completed');
-    this.status = 'idle';
-    return { generated: 0 };
+    try {
+      this.log(`Generating copy for campaign: ${params.campaignId || 'new'}`);
+      const { CampaignAI } = require('./services/ultraleadAgents');
+      const result = await CampaignAI.optimizeCampaign(params.campaignId, params.userId);
+      this.log('Copy generation completed');
+      this.status = 'completed';
+      return result || { generated: 0 };
+    } catch (error) {
+      this.log(`Copy generation failed: ${error.message}`);
+      this.status = 'error';
+      return { generated: 0, error: error.message };
+    }
   }
 }
 
@@ -79,10 +117,10 @@ class ComplianceGuardianAgent extends BaseAgent {
   async run(params = {}) {
     await super.run();
     this.log('Running compliance checks');
-    // Check CAN-SPAM, GDPR compliance
-    this.log('Compliance check completed');
-    this.status = 'idle';
-    return { checked: 0, issues: 0 };
+    const result = checkCompliance(params.emailBody, params.subject);
+    this.log(`Compliance check completed: score=${result.score}, issues=${result.issues.length}`);
+    this.status = 'completed';
+    return result;
   }
 }
 
@@ -94,11 +132,18 @@ class WarmupConductorAgent extends BaseAgent {
 
   async run(params = {}) {
     await super.run();
-    this.log('Managing email warmup schedules');
-    // Integration with Instantly warmup
-    this.log('Warmup cycle completed');
-    this.status = 'idle';
-    return { accounts: 0, emails_sent: 0 };
+    try {
+      this.log('Managing email warmup schedules');
+      const instantlyService = require('./services/instantly');
+      const result = await instantlyService.getWarmupStatus(params.email);
+      this.log(`Warmup status: ${result.warmup?.status || 'unknown'}`);
+      this.status = 'completed';
+      return result;
+    } catch (error) {
+      this.log(`Warmup check failed: ${error.message}`);
+      this.status = 'error';
+      return { accounts: 0, emails_sent: 0, error: error.message };
+    }
   }
 }
 
@@ -110,11 +155,18 @@ class EngagementAnalyzerAgent extends BaseAgent {
 
   async run(params = {}) {
     await super.run();
-    this.log('Analyzing engagement metrics');
-    // Analyze opens, clicks, replies
-    this.log('Engagement analysis completed');
-    this.status = 'idle';
-    return { analyzed: 0, positive: 0, negative: 0 };
+    try {
+      this.log('Analyzing engagement metrics');
+      const { AnalyticsAI } = require('./services/ultraleadAgents');
+      const result = await AnalyticsAI.generateInsights(params.userId);
+      this.log('Engagement analysis completed');
+      this.status = 'completed';
+      return result || { analyzed: 0, positive: 0, negative: 0 };
+    } catch (error) {
+      this.log(`Engagement analysis failed: ${error.message}`);
+      this.status = 'error';
+      return { analyzed: 0, positive: 0, negative: 0, error: error.message };
+    }
   }
 }
 
@@ -126,11 +178,18 @@ class AnalyticsBrainAgent extends BaseAgent {
 
   async run(params = {}) {
     await super.run();
-    this.log('Processing analytics data');
-    // Generate insights and recommendations
-    this.log('Analytics processing completed');
-    this.status = 'idle';
-    return { insights: [], recommendations: [] };
+    try {
+      this.log('Processing analytics data');
+      const { AnalyticsAI } = require('./services/ultraleadAgents');
+      const result = await AnalyticsAI.generateInsights(params.userId);
+      this.log('Analytics processing completed');
+      this.status = 'completed';
+      return result || { insights: [], recommendations: [] };
+    } catch (error) {
+      this.log(`Analytics processing failed: ${error.message}`);
+      this.status = 'error';
+      return { insights: [], recommendations: [], error: error.message };
+    }
   }
 }
 
@@ -142,11 +201,29 @@ class HealingSentinelAgent extends BaseAgent {
 
   async run(params = {}) {
     await super.run();
-    this.log('Running system health checks');
-    // Check API connections, database, queues
-    this.log('Health check completed');
-    this.status = 'idle';
-    return { healthy: true, issues_fixed: 0 };
+    try {
+      this.log('Running system health checks');
+      const { prisma } = require('./config/database');
+      const issues = [];
+      const autoFixed = [];
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+      const staleLeads = await prisma.lead.count({ where: { updatedAt: { lt: sevenDaysAgo } } });
+      if (staleLeads > 0) issues.push(`${staleLeads} stale leads with no activity in 7+ days`);
+
+      const bouncedEmails = await prisma.emailEvent.count({ where: { eventType: 'bounced', createdAt: { gt: twentyFourHoursAgo } } });
+      if (bouncedEmails > 0) issues.push(`${bouncedEmails} bounced emails in last 24 hours`);
+
+      const healthy = issues.length === 0;
+      this.log(`Health check completed: healthy=${healthy}, issues=${issues.length}`);
+      this.status = 'completed';
+      return { healthy, issues, autoFixed };
+    } catch (error) {
+      this.log(`Health check failed: ${error.message}`);
+      this.status = 'error';
+      return { healthy: false, issues: [error.message], autoFixed: [] };
+    }
   }
 }
 
@@ -223,5 +300,6 @@ module.exports = {
   stopAgent,
   getAgentLogs,
   startAgents,
-  getSystem
+  getSystem,
+  checkCompliance
 };

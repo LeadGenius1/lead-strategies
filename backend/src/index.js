@@ -94,6 +94,7 @@ const featureFlags = require('./config/feature-flags');
 // NEXUS Chat & Upload Routes (gated by ENABLE_NEXUS feature flag)
 const nexusChatRoutes = require('./routes/nexus-chat');
 const nexusUploadRoutes = require('./routes/nexus-upload');
+const nexusOrchestratorRoutes = require('./routes/nexus-orchestrator');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
@@ -409,6 +410,7 @@ if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System
   app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
   app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions
+  app.use('/api/v1/nexus/orchestrator', nexusOrchestratorRoutes); // NEXUS Multi-Agent Orchestrator
   console.log('NEXUS routes enabled');
 }
 

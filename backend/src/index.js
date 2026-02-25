@@ -76,6 +76,7 @@ const aiAgentRoutes = require('./routes/ai-agents');
 const clipsRoutes = require('./routes/clips');
 const publishRoutes = require('./routes/publish');
 const productRoutes = require('./routes/products');
+const smsRoutes = require('./routes/sms');
 const emailSentinelRoutes = require('./routes/emailSentinel');
 const masterValidationRoutes = require('./routes/master-validation');
 const statusRoutes = require('./routes/status');
@@ -399,6 +400,7 @@ if (featureFlags.ENABLE_ULTRALEAD) {
   app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
   app.use('/api/v1/agents', agentRoutes);
   app.use('/api/v1/ai', aiAgentRoutes);
+  app.use('/api/v1/sms', smsRoutes);
 }
 
 // NEXUS (disabled by default — enable with ENABLE_NEXUS=true)

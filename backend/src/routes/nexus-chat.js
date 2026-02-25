@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
-const { prisma } = require('../config/database');
+const prisma = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
 const { FirecrawlAgent } = require('../services/firecrawl-agent');

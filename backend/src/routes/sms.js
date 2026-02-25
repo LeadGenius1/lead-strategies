@@ -86,6 +86,24 @@ router.post('/send', async (req, res) => {
       return res.status(502).json(result);
     }
 
+    // Persist outbound message to DB
+    try {
+      await prisma.smsMessage.create({
+        data: {
+          userId: req.user.id,
+          to: phoneNumber,
+          from: process.env.TWILIO_PHONE_NUMBER || '',
+          body: message,
+          messageSid: result.messageSid,
+          status: 'sent',
+          direction: 'outbound',
+          contactId: contactId || null,
+        },
+      });
+    } catch (dbErr) {
+      console.error('SMS DB persist error (send):', dbErr);
+    }
+
     res.json({
       success: true,
       messageSid: result.messageSid,
@@ -136,6 +154,23 @@ router.post('/broadcast', async (req, res) => {
       const result = await sendTwilioSms(phoneNumber, personalizedMessage);
 
       if (result.success) {
+        // Persist outbound message to DB
+        try {
+          await prisma.smsMessage.create({
+            data: {
+              userId: req.user.id,
+              to: phoneNumber,
+              from: process.env.TWILIO_PHONE_NUMBER || '',
+              body: personalizedMessage,
+              messageSid: result.messageSid,
+              status: 'sent',
+              direction: 'outbound',
+              contactId: contact.id,
+            },
+          });
+        } catch (dbErr) {
+          console.error('SMS DB persist error (broadcast):', dbErr);
+        }
         results.push({ contactId: contact.id, success: true, messageSid: result.messageSid });
         sent++;
       } else {
@@ -260,7 +295,22 @@ router.post('/webhook', async (req, res) => {
       console.log(`SMS START received from ${from} — resubscribed`);
     }
 
-    // TODO: Save inbound message to SmsMessage table when schema is added
+    // Persist inbound message to DB
+    try {
+      await prisma.smsMessage.create({
+        data: {
+          userId: '',
+          to: process.env.TWILIO_PHONE_NUMBER || '',
+          from: from,
+          body: body,
+          messageSid: messageSid,
+          status: 'received',
+          direction: 'inbound',
+        },
+      });
+    } catch (dbErr) {
+      console.error('SMS DB persist error (webhook):', dbErr);
+    }
 
     // Return TwiML empty response
     res.set('Content-Type', 'text/xml');

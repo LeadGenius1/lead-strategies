@@ -76,6 +76,7 @@ export default function DashboardLayout({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [suggestedHrefs, setSuggestedHrefs] = useState([]);
+  const [profileChecked, setProfileChecked] = useState(false);
 
   // Detect platform: use user tier on main domain, else domain-based
   const getPlatform = () => {
@@ -185,9 +186,22 @@ export default function DashboardLayout({ children }) {
         const profile = profileRes.ok ? (await profileRes.json()).data : null;
         const stats = statsRes.ok ? (await statsRes.json()).data?.stats : null;
 
-        const productsOk = !!profile?.productsServices?.trim();
-        const targetOk = !!profile?.targetAudience?.trim();
-        const profileComplete = productsOk && targetOk;
+        // Profile completeness — matches WebsiteBuilderChat.js 4-field check
+        const hasCompany = !!(profile?.companyName?.trim() || profile?.company?.trim());
+        const hasIndustry = !!profile?.industry?.trim();
+        const hasServices = !!profile?.productsServices?.trim();
+        const hasContact = !!(profile?.email?.trim() || profile?.phone?.trim());
+        const profileComplete = hasCompany && hasIndustry && hasServices && hasContact;
+
+        // Hard redirect if profile incomplete and not on exempt route
+        const exemptRoutes = ['/profile', '/settings', '/logout'];
+        const isExempt = exemptRoutes.some(r => pathname === r || pathname.startsWith(r + '/'));
+        if (!profileComplete && !isExempt) {
+          router.push('/profile');
+          return;
+        }
+        setProfileChecked(true);
+
         const leadsCount = stats?.leads ?? stats?.totalLeads ?? 0;
         const campaignsCount = stats?.campaigns ?? stats?.totalCampaigns ?? 0;
         const tier = Number(user?.tier);
@@ -206,6 +220,7 @@ export default function DashboardLayout({ children }) {
         }
         setSuggestedHrefs(hrefs);
       } catch (e) {
+        setProfileChecked(true); // Don't block on fetch failure
         setSuggestedHrefs(['/profile']); // Default: complete profile
       }
     }
@@ -213,7 +228,11 @@ export default function DashboardLayout({ children }) {
     loadNextStep();
   }, [user]);
 
-  if (loading) {
+  // Block rendering until auth + profile check complete (prevents content flash)
+  const exemptFromProfileCheck = ['/profile', '/settings', '/logout'].some(
+    r => pathname === r || pathname.startsWith(r + '/')
+  );
+  if (loading || (!profileChecked && !exemptFromProfileCheck)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black">
         <div className="flex flex-col items-center gap-4">

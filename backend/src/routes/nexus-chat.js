@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
 const prisma = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
@@ -462,7 +461,7 @@ async function executeTool(toolName, toolInput) {
  * POST /api/v1/nexus/chat
  * Process NEXUS conversation message via Claude AI
  */
-router.post('/chat', authenticate, async (req, res) => {
+router.post('/chat', async (req, res) => {
   try {
     const { message, sessionId } = req.body;
 
@@ -470,7 +469,7 @@ router.post('/chat', authenticate, async (req, res) => {
       return res.status(400).json({ error: 'Message required' });
     }
 
-    const userId = req.user.userId || req.user.id;
+    const userId = (req.user && (req.user.userId || req.user.id)) || 'nexus-command-center';
 
     // Get live system context
     const ctx = await getSystemContext();
@@ -598,10 +597,10 @@ router.post('/chat', authenticate, async (req, res) => {
  * GET /api/v1/nexus/chat?sessionId=xxx
  * Get conversation history
  */
-router.get('/chat', authenticate, async (req, res) => {
+router.get('/chat', async (req, res) => {
   try {
     const { sessionId } = req.query;
-    const userId = req.user.userId || req.user.id;
+    const userId = (req.user && (req.user.userId || req.user.id)) || 'nexus-command-center';
 
     if (!sessionId) {
       return res.json({ success: true, history: [], sessionId: null });
@@ -628,9 +627,9 @@ router.get('/chat', authenticate, async (req, res) => {
  * GET /api/v1/nexus/sessions
  * Get recent conversation sessions
  */
-router.get('/sessions', authenticate, async (req, res) => {
+router.get('/sessions', async (req, res) => {
   try {
-    const userId = req.user.userId || req.user.id;
+    const userId = (req.user && (req.user.userId || req.user.id)) || 'nexus-command-center';
 
     const sessions = await prisma.conversationHistory.findMany({
       where: { userId: String(userId), agentName: 'NEXUS' },

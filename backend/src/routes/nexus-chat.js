@@ -517,8 +517,100 @@ router.get('/context', async (req, res) => {
 });
 
 /**
+ * Provider fallback chain: Claude → GPT-4o → Perplexity → null (degraded)
+ */
+async function tryProviders(messages, systemPrompt, tools) {
+  // Provider 1: Anthropic Claude (with tool-use loop)
+  const anthropic = getAnthropicClient();
+  if (anthropic) {
+    try {
+      let chatMessage = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages,
+        tools,
+      });
+
+      // Tool-use loop
+      const MAX_TOOL_ROUNDS = 5;
+      let toolRound = 0;
+      while (chatMessage.stop_reason === 'tool_use' && toolRound < MAX_TOOL_ROUNDS) {
+        toolRound++;
+        console.log(`🔧 NEXUS tool round ${toolRound}: Claude requested tool calls`);
+        const toolUseBlocks = chatMessage.content.filter(b => b.type === 'tool_use');
+        const toolResults = [];
+        for (const toolBlock of toolUseBlocks) {
+          console.log(`  → Executing tool: ${toolBlock.name}`, JSON.stringify(toolBlock.input).substring(0, 200));
+          const result = await executeTool(toolBlock.name, toolBlock.input);
+          toolResults.push({ type: 'tool_result', tool_use_id: toolBlock.id, content: JSON.stringify(result).substring(0, 10000) });
+        }
+        messages.push({ role: 'assistant', content: chatMessage.content });
+        messages.push({ role: 'user', content: toolResults });
+        chatMessage = await anthropic.messages.create({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2048,
+          system: systemPrompt,
+          messages,
+          tools,
+        });
+      }
+
+      const textBlock = chatMessage.content.find(b => b.type === 'text');
+      return { text: textBlock ? textBlock.text : 'No response generated.', provider: 'claude', toolRounds: toolRound };
+    } catch (err) {
+      if (err.status !== 529 && !(err.error && err.error.type === 'overloaded_error') && !(err.message && err.message.includes('overloaded'))) throw err;
+      console.warn('[NEXUS] Claude overloaded — trying GPT-4o');
+    }
+  }
+
+  // Provider 2: OpenAI GPT-4o
+  if (process.env.OPENAI_API_KEY) {
+    try {
+      const OpenAI = require('openai');
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const openaiMessages = [{ role: 'system', content: systemPrompt }];
+      for (const m of messages) {
+        if (typeof m.content === 'string') openaiMessages.push({ role: m.role, content: m.content });
+      }
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: openaiMessages,
+        max_tokens: 2048,
+      });
+      return { text: response.choices[0].message.content, provider: 'gpt-4o', toolRounds: 0 };
+    } catch (err) {
+      console.warn('[NEXUS] GPT-4o failed:', err.message, '— trying Perplexity');
+    }
+  }
+
+  // Provider 3: Perplexity
+  if (process.env.PERPLEXITY_API_KEY) {
+    try {
+      const pplxMessages = [{ role: 'system', content: systemPrompt }];
+      for (const m of messages) {
+        if (typeof m.content === 'string') pplxMessages.push({ role: m.role, content: m.content });
+      }
+      const resp = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}` },
+        body: JSON.stringify({ model: 'llama-3.1-sonar-large-128k-online', messages: pplxMessages, max_tokens: 2048 }),
+      });
+      const data = await resp.json();
+      if (data.choices && data.choices[0]) {
+        return { text: data.choices[0].message.content, provider: 'perplexity', toolRounds: 0 };
+      }
+    } catch (err) {
+      console.warn('[NEXUS] Perplexity failed:', err.message, '— all providers exhausted');
+    }
+  }
+
+  return null; // All providers exhausted → degraded mode
+}
+
+/**
  * POST /api/v1/nexus/chat
- * Process NEXUS conversation message via Claude AI
+ * Process NEXUS conversation message via multi-provider AI chain
  */
 router.post('/chat', async (req, res) => {
   try {
@@ -630,59 +722,24 @@ End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
     // Add current message
     conversationHistory.push({ role: 'user', content: message });
 
-    // Call Anthropic
-    const anthropic = getAnthropicClient();
-    if (!anthropic) {
-      return res.status(503).json({ error: 'AI service not configured (ANTHROPIC_API_KEY missing)' });
-    }
+    // Run provider fallback chain: Claude → GPT-4o → Perplexity → degraded
+    console.log(`🤖 NEXUS chat: calling provider chain for user ${userId}...`);
+    const result = await tryProviders(conversationHistory, systemPrompt, nexusTools);
 
-    console.log(`🤖 NEXUS chat: calling Claude for user ${userId}...`);
-    let chatMessage = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages: conversationHistory,
-      tools: nexusTools,
-    });
-
-    // Tool-use loop: if Claude wants to call tools, execute them and continue
-    const MAX_TOOL_ROUNDS = 5;
-    let toolRound = 0;
-    while (chatMessage.stop_reason === 'tool_use' && toolRound < MAX_TOOL_ROUNDS) {
-      toolRound++;
-      console.log(`🔧 NEXUS tool round ${toolRound}: Claude requested tool calls`);
-
-      // Collect all tool_use blocks from the response
-      const toolUseBlocks = chatMessage.content.filter(b => b.type === 'tool_use');
-      const toolResults = [];
-
-      for (const toolBlock of toolUseBlocks) {
-        console.log(`  → Executing tool: ${toolBlock.name}`, JSON.stringify(toolBlock.input).substring(0, 200));
-        const result = await executeTool(toolBlock.name, toolBlock.input);
-        toolResults.push({
-          type: 'tool_result',
-          tool_use_id: toolBlock.id,
-          content: JSON.stringify(result).substring(0, 10000), // Cap tool result size
-        });
-      }
-
-      // Add assistant response + tool results to conversation, then call Claude again
-      conversationHistory.push({ role: 'assistant', content: chatMessage.content });
-      conversationHistory.push({ role: 'user', content: toolResults });
-
-      chatMessage = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2048,
-        system: systemPrompt,
-        messages: conversationHistory,
-        tools: nexusTools,
+    if (!result) {
+      // All providers exhausted
+      return res.status(200).json({
+        success: true,
+        response: "All AI providers are currently unavailable. Please try again in a moment.",
+        status: 'degraded',
+        provider: null,
+        retryAfter: 10,
+        sessionId: currentSessionId,
       });
     }
 
-    // Extract final text response
-    const textBlock = chatMessage.content.find(b => b.type === 'text');
-    const responseText = textBlock ? textBlock.text : 'No response generated.';
-    console.log(`✅ NEXUS response received (${toolRound} tool round${toolRound !== 1 ? 's' : ''})`);
+    const responseText = result.text;
+    console.log(`✅ NEXUS response via ${result.provider} (${result.toolRounds} tool round${result.toolRounds !== 1 ? 's' : ''})`);
 
     // Save conversation to DB
     try {
@@ -711,22 +768,12 @@ End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
     return res.json({
       success: true,
       response: responseText,
+      provider: result.provider,
       history: conversationHistory,
       sessionId: currentSessionId,
     });
   } catch (error) {
     console.error('NEXUS chat error:', error);
-
-    // Anthropic overloaded — return 200 so Command Center stays LIVE
-    if (error.status === 529 || (error.error && error.error.type === 'overloaded_error') || (error.message && error.message.includes('overloaded'))) {
-      return res.status(200).json({
-        success: true,
-        response: "I'm experiencing high demand right now. Please try again in a moment.",
-        status: 'degraded',
-        retryAfter: 10,
-      });
-    }
-
     return res.status(500).json({ error: error.message || 'NEXUS chat failed' });
   }
 });

@@ -2036,7 +2036,17 @@ const RESPOND = q => {
 };
 
 // ── MESSAGE RENDERING ──
-function addMsg(role, content, isOffline) {
+function getProviderBadge(provider, isDegraded) {
+  if (isDegraded) return '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[9px] mono mt-1">&#9888;&#65039; Degraded Mode</span>';
+  switch (provider) {
+    case 'claude':     return '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[9px] mono mt-1">&#128995; Claude (Primary)</span>';
+    case 'gpt-4o':     return '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] mono mt-1">&#128994; GPT-4o (Backup)</span>';
+    case 'perplexity': return '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] mono mt-1">&#128309; Perplexity (Tertiary)</span>';
+    default:           return '';
+  }
+}
+
+function addMsg(role, content, isOffline, provider) {
   const div = document.createElement('div');
   const offlineClass = (role === 'ai' && isOffline) ? ' msg-offline' : '';
   div.className = `px-4 py-3 rounded-xl msg-${role}${offlineClass} ${role === 'user' ? 'ml-12' : 'mr-12'}`;
@@ -2048,10 +2058,12 @@ function addMsg(role, content, isOffline) {
 
   const label = role === 'user' ? 'MICHAEL' : (isOffline ? '✦ AI ASSISTANT · OFFLINE' : '✦ AI ASSISTANT · LIVE');
   const labelColor = role === 'user' ? 'text-neutral-600' : (isOffline ? 'text-amber-500' : 'text-indigo-500');
+  const badge = (role === 'ai') ? getProviderBadge(provider, isOffline) : '';
 
   div.innerHTML = `
     <div class="text-[9px] mono ${labelColor} mb-1.5">${label}</div>
-    ${formatted}`;
+    ${formatted}
+    ${badge ? `<div class="mt-2">${badge}</div>` : ''}`;
   document.getElementById('chat-messages').appendChild(div);
   document.getElementById('chat-messages').scrollTop = 999999;
 
@@ -2104,7 +2116,7 @@ async function sendChat() {
       if (data.sessionId) window.__nexusSessionId = data.sessionId;
       // Keep history manageable (last 20 exchanges)
       if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
-      addMsg('ai', reply, data.status === 'degraded');
+      addMsg('ai', reply, data.status === 'degraded', data.provider || (data.status === 'degraded' ? null : 'claude'));
       return;
     }
     // Non-OK response — fall through to offline

@@ -468,7 +468,7 @@ router.get('/context', async (req, res) => {
       leadCount,
       websiteCount,
       videoCount,
-      campaignCount,
+      campaignStats,
       recentLeads,
       recentUsers
     ] = await Promise.all([
@@ -476,10 +476,19 @@ router.get('/context', async (req, res) => {
       prisma.lead.count().catch(() => 0),
       prisma.website.count().catch(() => 0),
       prisma.video.count().catch(() => 0),
-      prisma.campaign.count().catch(() => 0),
+      prisma.campaign.groupBy({ by: ['status'], _count: { id: true } }).catch(() => []),
       prisma.lead.findMany({ take: 5, orderBy: { createdAt: 'desc' } }).catch(() => []),
       prisma.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan: true } }).catch(() => [])
     ]);
+
+    const campaignBreakdown = {
+      total: campaignStats.reduce((sum, s) => sum + s._count.id, 0),
+      active: campaignStats.find(s => s.status === 'active')?._count.id || 0,
+      paused: campaignStats.find(s => s.status === 'paused')?._count.id || 0,
+      draft: campaignStats.find(s => s.status === 'draft')?._count.id || 0,
+      scheduled: campaignStats.find(s => s.status === 'scheduled')?._count.id || 0,
+      completed: campaignStats.find(s => s.status === 'completed')?._count.id || 0,
+    };
 
     res.json({
       success: true,
@@ -489,7 +498,7 @@ router.get('/context', async (req, res) => {
         leads: leadCount,
         websites: websiteCount,
         videos: videoCount,
-        campaigns: campaignCount
+        campaigns: campaignBreakdown
       },
       recent: {
         leads: recentLeads,
@@ -674,7 +683,7 @@ LIVE PLATFORM DATA (fetched at ${ctx.fetchedAt || new Date().toISOString()}):
 - Total Leads: ${ctx.platform?.leads ?? 'unknown'}
 - Websites Built: ${ctx.platform?.websites ?? 'unknown'}
 - Videos Uploaded: ${ctx.platform?.videos ?? 'unknown'}
-- Active Campaigns: ${ctx.platform?.campaigns ?? 'unknown'}
+- Campaigns: ${ctx.platform?.campaigns?.total ?? ctx.platform?.campaigns ?? 0} total | ${ctx.platform?.campaigns?.active ?? 0} active | ${ctx.platform?.campaigns?.paused ?? 0} paused | ${ctx.platform?.campaigns?.draft ?? 0} draft
 
 ACTIVE CAPABILITIES:
 - SMS Marketing: ${ctx.features?.sms ? 'LIVE — A2P Campaign ' + (ctx.features?.a2p_campaign || '') : 'OFFLINE'}

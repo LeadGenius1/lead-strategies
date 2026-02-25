@@ -318,6 +318,7 @@
           <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Total Leads</div>
           <div id="card-lead-count" class="text-3xl font-medium text-white mb-1">--</div>
           <div id="card-lead-sub" class="text-[10px] text-neutral-500">Loading...</div>
+          <div id="campaign-breakdown" class="text-[10px] mt-1"></div>
         </div>
 
         <!-- Campaigns + Websites + Videos -->
@@ -1867,9 +1868,19 @@ async function refreshPlatformContext() {
     if (uc) uc.textContent = data.platform.users;
     if (us) us.textContent = `${data.platform.websites} websites · ${data.platform.videos} videos`;
     if (lc) lc.textContent = data.platform.leads;
-    if (ls) ls.textContent = `${data.platform.campaigns} campaigns active`;
-    if (ac) ac.textContent = data.platform.websites + data.platform.videos + data.platform.campaigns;
-    if (as2) as2.textContent = `${data.platform.websites}W · ${data.platform.videos}V · ${data.platform.campaigns}C`;
+    if (ls) ls.textContent = `${data.platform.campaigns?.total ?? data.platform.campaigns ?? 0} campaigns`;
+    if (ac) ac.textContent = data.platform.websites + data.platform.videos;
+    if (as2) as2.textContent = `${data.platform.websites} websites · ${data.platform.videos} videos`;
+
+    // Campaign status breakdown
+    const campData = data.platform?.campaigns;
+    const campBreakdown = document.getElementById('campaign-breakdown');
+    if (campBreakdown && campData && typeof campData === 'object') {
+      campBreakdown.innerHTML =
+        '<span class="text-emerald-400">● ' + (campData.active || 0) + ' active</span>' +
+        ' <span class="text-amber-400">⏸ ' + (campData.paused || 0) + ' paused</span>' +
+        ' <span class="text-neutral-400">✎ ' + (campData.draft || 0) + ' draft</span>';
+    }
 
     // Update context timestamp in nav
     const ctxTs = document.getElementById('context-refresh-ts');

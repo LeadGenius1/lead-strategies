@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const prisma = require('../config/database');
+const { prisma } = require('../config/database');
 const fs = require('fs').promises;
 const path = require('path');
 const { FirecrawlAgent } = require('../services/firecrawl-agent');
@@ -463,7 +463,6 @@ async function executeTool(toolName, toolInput) {
  */
 router.get('/context', async (req, res) => {
   try {
-    const db = prisma.prisma || prisma;
     const [
       userCount,
       leadCount,
@@ -473,13 +472,13 @@ router.get('/context', async (req, res) => {
       recentLeads,
       recentUsers
     ] = await Promise.all([
-      db.user.count(),
-      db.lead.count().catch(() => 0),
-      db.website.count().catch(() => 0),
-      db.video.count().catch(() => 0),
-      db.campaign.count().catch(() => 0),
-      db.lead.findMany({ take: 5, orderBy: { createdAt: 'desc' } }).catch(() => []),
-      db.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan: true } }).catch(() => [])
+      prisma.user.count(),
+      prisma.lead.count().catch(() => 0),
+      prisma.website.count().catch(() => 0),
+      prisma.video.count().catch(() => 0),
+      prisma.campaign.count().catch(() => 0),
+      prisma.lead.findMany({ take: 5, orderBy: { createdAt: 'desc' } }).catch(() => []),
+      prisma.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan: true } }).catch(() => [])
     ]);
 
     res.json({

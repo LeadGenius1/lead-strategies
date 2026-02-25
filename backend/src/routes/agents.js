@@ -242,12 +242,32 @@ async function runAgent(agentId, userId, params = {}) {
         addLog(agentId, 'info', 'Email content generated');
         break;
 
-      case 'compliance-guardian':
-        // Run compliance check
+      case 'compliance-guardian': {
         addLog(agentId, 'info', 'Checking compliance...');
-        result = { checked: true, issues: [] };
-        addLog(agentId, 'info', 'Compliance check completed');
+        const emailBody = (params.emailBody || '').toLowerCase();
+        const subject = params.subject || '';
+        const issues = [];
+
+        if (emailBody && !emailBody.includes('unsubscribe')) {
+          issues.push('Missing unsubscribe link (CAN-SPAM required)');
+        }
+        if (emailBody && !/\d{5}/.test(emailBody)) {
+          issues.push('Missing physical address with zip code (CAN-SPAM required)');
+        }
+        const spamWords = ['free', 'guaranteed', 'no risk', 'act now', 'limited time'];
+        const foundSpam = spamWords.filter(w => emailBody.includes(w));
+        if (foundSpam.length > 0) {
+          issues.push(`Spam trigger words detected: ${foundSpam.join(', ')}`);
+        }
+        if (subject.length > 60) {
+          issues.push(`Subject line too long (${subject.length} chars, max 60)`);
+        }
+
+        const score = Math.max(0, 100 - (issues.length * 25));
+        result = { checked: true, score, issues };
+        addLog(agentId, 'info', `Compliance check completed: score=${score}, issues=${issues.length}`);
         break;
+      }
 
       case 'warmup-conductor':
         // Check warmup status

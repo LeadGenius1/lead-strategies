@@ -407,10 +407,10 @@ if (featureFlags.ENABLE_ULTRALEAD) {
 // NEXUS (disabled by default — enable with ENABLE_NEXUS=true)
 if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/nexus', require('./routes/platform-verification')); // Platform Verification (no auth)
+  app.use('/api/v1/nexus/orchestrator', nexusOrchestratorRoutes); // NEXUS Multi-Agent Orchestrator (before auth-gated routes)
   app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System
   app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
   app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions
-  app.use('/api/v1/nexus/orchestrator', nexusOrchestratorRoutes); // NEXUS Multi-Agent Orchestrator
   console.log('NEXUS routes enabled');
 }
 

@@ -152,15 +152,18 @@
 
     <!-- Live status -->
     <div class="flex items-center gap-6">
-      <div class="flex items-center gap-2">
-        <span class="relative flex h-2 w-2">
+      <div id="nav-health-indicator" class="flex items-center gap-2">
+        <span id="nav-health-dot" class="relative flex h-2 w-2">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        <span class="text-[10px] mono text-neutral-400">api.aileadstrategies.com <span class="text-emerald-400">HEALTHY</span></span>
+        <span class="text-[10px] mono text-neutral-400">api.aileadstrategies.com <span id="nav-health-text" class="text-emerald-400">HEALTHY</span></span>
       </div>
       <div class="hidden md:flex items-center gap-2 text-[10px] mono text-neutral-600">
         <span id="live-timestamp">LIVE — Loading...</span>
+      </div>
+      <div class="hidden md:flex items-center gap-1.5 text-[10px] mono text-neutral-700">
+        <span id="context-refresh-ts">Context: --</span>
       </div>
     </div>
   </div>
@@ -222,6 +225,34 @@
       </button>
     </nav>
 
+    <!-- Refresh Engine Status -->
+    <div class="p-4 border-t border-white/5 space-y-1.5">
+      <div class="flex items-center justify-between mb-1">
+        <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest">Auto-Refresh</div>
+        <button onclick="forceRefreshAll()" class="text-[9px] mono text-indigo-400 hover:text-indigo-300 transition-colors" title="Force refresh all data">REFRESH ALL</button>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Health</span>
+        <span id="refresh-health-cd" class="text-[10px] mono text-neutral-600">60s</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Platform</span>
+        <span id="refresh-platform-cd" class="text-[10px] mono text-neutral-600">5m</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Instantly</span>
+        <span id="refresh-instantly-cd" class="text-[10px] mono text-neutral-600">15m</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Status</span>
+        <span id="refresh-status-cd" class="text-[10px] mono text-neutral-600">30m</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-neutral-500">Blueprint</span>
+        <span id="refresh-blueprint-cd" class="text-[10px] mono text-neutral-600">60m</span>
+      </div>
+    </div>
+
     <!-- Infra quick ref -->
     <div class="p-4 border-t border-white/5 space-y-2">
       <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-2">Infrastructure</div>
@@ -263,38 +294,38 @@
       <!-- Metric Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <!-- API Health -->
-        <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
+        <div id="card-api-health" class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
           <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">API Status</div>
           <div class="flex items-center gap-2 mb-1">
-            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
-            <span class="text-xl font-medium text-emerald-400">HEALTHY</span>
+            <span id="card-health-dot" class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+            <span id="card-health-label" class="text-xl font-medium text-emerald-400">HEALTHY</span>
           </div>
           <div class="text-[10px] mono text-neutral-600">api.aileadstrategies.com</div>
         </div>
 
-        <!-- Accounts -->
+        <!-- Platform Users -->
         <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Sender Accounts</div>
-          <div class="text-3xl font-medium text-white mb-1">4</div>
-          <div class="text-[10px] text-neutral-500">120 emails / day capacity</div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Platform Users</div>
+          <div id="card-user-count" class="text-3xl font-medium text-white mb-1">--</div>
+          <div id="card-user-sub" class="text-[10px] text-neutral-500">Loading...</div>
         </div>
 
-        <!-- Warmup -->
+        <!-- Leads -->
         <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Warmup Score</div>
-          <div class="text-3xl font-medium text-white mb-1">100%</div>
-          <div class="text-[10px] text-neutral-500">All domains · pool: premium-v1</div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Total Leads</div>
+          <div id="card-lead-count" class="text-3xl font-medium text-white mb-1">--</div>
+          <div id="card-lead-sub" class="text-[10px] text-neutral-500">Loading...</div>
         </div>
 
-        <!-- Lead Lists -->
+        <!-- Campaigns + Websites + Videos -->
         <div class="relative p-5 rounded-2xl bg-neutral-900/30 border border-white/10 glow-card overflow-hidden">
           <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
-          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Lead Lists</div>
-          <div class="text-3xl font-medium text-white mb-1">26</div>
-          <div class="text-[10px] text-neutral-500">Supersearch + enriched companies</div>
+          <div class="text-[9px] mono text-neutral-600 uppercase tracking-widest mb-3">Assets</div>
+          <div id="card-assets-count" class="text-3xl font-medium text-white mb-1">--</div>
+          <div id="card-assets-sub" class="text-[10px] text-neutral-500">Loading...</div>
         </div>
       </div>
 
@@ -1769,9 +1800,159 @@ function renderBlueprintEnhancements() {
   }).join('');
 }
 
-// ── CHAT ─────────────────────────────────────────────────────────────────────
+// ── MULTI-INTERVAL AUTO-REFRESH ENGINE ────────────────────────────────────────
 
 const API_BASE = 'https://api.aileadstrategies.com';
+
+// Live context store — injected into every chat message
+window.NEXUS_LIVE_CONTEXT = null;
+
+// Refresh tracking: { lastRun: timestamp, intervalMs, intervalId, countdown }
+const REFRESH_ENGINE = {
+  health:    { intervalMs: 60 * 1000,       lastRun: 0, intervalId: null, cdEl: 'refresh-health-cd' },
+  platform:  { intervalMs: 5 * 60 * 1000,  lastRun: 0, intervalId: null, cdEl: 'refresh-platform-cd' },
+  instantly: { intervalMs: 15 * 60 * 1000, lastRun: 0, intervalId: null, cdEl: 'refresh-instantly-cd' },
+  status:    { intervalMs: 30 * 60 * 1000, lastRun: 0, intervalId: null, cdEl: 'refresh-status-cd' },
+  blueprint: { intervalMs: 60 * 60 * 1000, lastRun: 0, intervalId: null, cdEl: 'refresh-blueprint-cd' },
+};
+
+// 1. Health check — every 60 seconds
+async function refreshHealth() {
+  REFRESH_ENGINE.health.lastRun = Date.now();
+  try {
+    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(8000) });
+    const ok = res.ok;
+    const navDot = document.getElementById('nav-health-dot');
+    const navText = document.getElementById('nav-health-text');
+    const cardLabel = document.getElementById('card-health-label');
+    const cardDot = document.getElementById('card-health-dot');
+    if (ok) {
+      if (navDot) navDot.innerHTML = '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>';
+      if (navText) { navText.textContent = 'HEALTHY'; navText.className = 'text-emerald-400'; }
+      if (cardLabel) { cardLabel.textContent = 'HEALTHY'; cardLabel.className = 'text-xl font-medium text-emerald-400'; }
+      if (cardDot) cardDot.innerHTML = '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>';
+    } else {
+      if (navDot) navDot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
+      if (navText) { navText.textContent = 'DOWN'; navText.className = 'text-rose-400'; }
+      if (cardLabel) { cardLabel.textContent = 'DOWN'; cardLabel.className = 'text-xl font-medium text-rose-400'; }
+      if (cardDot) cardDot.innerHTML = '<span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>';
+    }
+  } catch (e) {
+    const navText = document.getElementById('nav-health-text');
+    const cardLabel = document.getElementById('card-health-label');
+    if (navText) { navText.textContent = 'UNREACHABLE'; navText.className = 'text-rose-400'; }
+    if (cardLabel) { cardLabel.textContent = 'UNREACHABLE'; cardLabel.className = 'text-xl font-medium text-rose-400'; }
+  }
+}
+
+// 2. Platform context — every 5 minutes + before every chat message
+async function refreshPlatformContext() {
+  REFRESH_ENGINE.platform.lastRun = Date.now();
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/nexus/context`, { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success) return;
+
+    window.NEXUS_LIVE_CONTEXT = data;
+
+    // Update overview metric cards
+    const uc = document.getElementById('card-user-count');
+    const us = document.getElementById('card-user-sub');
+    const lc = document.getElementById('card-lead-count');
+    const ls = document.getElementById('card-lead-sub');
+    const ac = document.getElementById('card-assets-count');
+    const as2 = document.getElementById('card-assets-sub');
+
+    if (uc) uc.textContent = data.platform.users;
+    if (us) us.textContent = `${data.platform.websites} websites · ${data.platform.videos} videos`;
+    if (lc) lc.textContent = data.platform.leads;
+    if (ls) ls.textContent = `${data.platform.campaigns} campaigns active`;
+    if (ac) ac.textContent = data.platform.websites + data.platform.videos + data.platform.campaigns;
+    if (as2) as2.textContent = `${data.platform.websites}W · ${data.platform.videos}V · ${data.platform.campaigns}C`;
+
+    // Update context timestamp in nav
+    const ctxTs = document.getElementById('context-refresh-ts');
+    if (ctxTs) {
+      const t = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      ctxTs.textContent = `Context: ${t}`;
+    }
+  } catch (e) {
+    console.warn('Platform context refresh failed:', e.message);
+  }
+}
+
+// 3. Instantly MCP — every 15 minutes (uses existing data/functions if available)
+async function refreshInstantly() {
+  REFRESH_ENGINE.instantly.lastRun = Date.now();
+  if (typeof renderAccounts === 'function') renderAccounts();
+}
+
+// 4. System Status — every 30 minutes
+async function refreshStatus() {
+  REFRESH_ENGINE.status.lastRun = Date.now();
+  if (typeof fetchSystemStatus === 'function') fetchSystemStatus();
+  if (typeof renderStatusWorking === 'function') renderStatusWorking();
+  if (typeof renderStatusPending === 'function') renderStatusPending();
+}
+
+// 5. Blueprint — every 60 minutes
+async function refreshBlueprint() {
+  REFRESH_ENGINE.blueprint.lastRun = Date.now();
+  if (typeof loadNexusData === 'function') {
+    try { await loadNexusData(); } catch (e) { /* ignore */ }
+  }
+}
+
+// Force refresh all intervals
+function forceRefreshAll() {
+  refreshHealth();
+  refreshPlatformContext();
+  refreshInstantly();
+  refreshStatus();
+  refreshBlueprint();
+}
+
+// Countdown ticker — updates sidebar countdown displays every second
+function updateRefreshCountdowns() {
+  const now = Date.now();
+  for (const [key, cfg] of Object.entries(REFRESH_ENGINE)) {
+    const el = document.getElementById(cfg.cdEl);
+    if (!el) continue;
+    if (cfg.lastRun === 0) { el.textContent = 'pending'; continue; }
+    const elapsed = now - cfg.lastRun;
+    const remaining = Math.max(0, cfg.intervalMs - elapsed);
+    if (remaining <= 0) {
+      el.textContent = 'now';
+    } else if (remaining < 60000) {
+      el.textContent = Math.ceil(remaining / 1000) + 's';
+    } else {
+      el.textContent = Math.ceil(remaining / 60000) + 'm';
+    }
+  }
+}
+
+// Start all refresh intervals
+function startRefreshEngine() {
+  // Initial runs
+  refreshHealth();
+  refreshPlatformContext();
+  refreshInstantly();
+  // status & blueprint handled by existing startStatusAutoRefresh / initNexusRefresh
+
+  // Set intervals
+  REFRESH_ENGINE.health.intervalId = setInterval(refreshHealth, REFRESH_ENGINE.health.intervalMs);
+  REFRESH_ENGINE.platform.intervalId = setInterval(refreshPlatformContext, REFRESH_ENGINE.platform.intervalMs);
+  REFRESH_ENGINE.instantly.intervalId = setInterval(refreshInstantly, REFRESH_ENGINE.instantly.intervalMs);
+  REFRESH_ENGINE.status.intervalId = setInterval(refreshStatus, REFRESH_ENGINE.status.intervalMs);
+  REFRESH_ENGINE.blueprint.intervalId = setInterval(refreshBlueprint, REFRESH_ENGINE.blueprint.intervalMs);
+
+  // Countdown ticker
+  setInterval(updateRefreshCountdowns, 1000);
+}
+
+// ── CHAT ─────────────────────────────────────────────────────────────────────
+
 let chatHistory = [];          // {role, content} pairs for context
 let speakerEnabled = false;    // voice output toggle
 let isRecording = false;       // voice input state
@@ -1893,42 +2074,43 @@ async function sendChat() {
 
   document.getElementById('typing-ind').classList.remove('hidden');
 
+  // Fetch fresh context before EVERY message
+  try { await refreshPlatformContext(); } catch (e) { /* use cached */ }
+
   const token = getAuthToken();
 
-  // Try live API first
-  if (token) {
-    try {
-      const res = await fetch(`${API_BASE}/api/v1/nexus/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          message: q,
-          sessionId: window.__nexusSessionId || undefined,
-          context: {}
-        })
-      });
+  // Try live API (works with or without auth token now)
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      document.getElementById('typing-ind').classList.add('hidden');
+    const res = await fetch(`${API_BASE}/api/v1/nexus/chat`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        message: q,
+        sessionId: window.__nexusSessionId || undefined,
+        context: window.NEXUS_LIVE_CONTEXT || {}
+      })
+    });
 
-      if (res.ok) {
-        const data = await res.json();
-        console.log('NEXUS API Response:', data);
-        const reply = data.response || data.data?.response || data.message || 'No response received.';
-        chatHistory.push({ role: 'assistant', content: reply });
-        if (data.sessionId) window.__nexusSessionId = data.sessionId;
-        // Keep history manageable (last 20 exchanges)
-        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
-        addMsg('ai', reply, false);
-        return;
-      }
-      // Non-OK response — fall through to offline
-      console.warn('NEXUS API returned', res.status, '— falling back to offline');
-    } catch (err) {
-      console.warn('NEXUS API unreachable — falling back to offline:', err.message);
+    document.getElementById('typing-ind').classList.add('hidden');
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log('NEXUS API Response:', data);
+      const reply = data.response || data.data?.response || data.message || 'No response received.';
+      chatHistory.push({ role: 'assistant', content: reply });
+      if (data.sessionId) window.__nexusSessionId = data.sessionId;
+      // Keep history manageable (last 20 exchanges)
+      if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+      addMsg('ai', reply, data.status === 'degraded');
+      return;
     }
+    // Non-OK response — fall through to offline
+    console.warn('NEXUS API returned', res.status, '— falling back to offline');
+  } catch (err) {
+    console.warn('NEXUS API unreachable — falling back to offline:', err.message);
   }
 
   // Offline fallback
@@ -2045,6 +2227,7 @@ renderLeadLists();
 renderPlatforms();
 if (window.lucide) lucide.createIcons();
 renderRules();
+startRefreshEngine();
 
 // Set Overview as default active tab
 switchTab('overview');

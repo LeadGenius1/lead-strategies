@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import {
   Mail, MessageSquare, Phone, Settings, CheckCircle2, X,
-  RefreshCw, Facebook, Instagram, Twitter, Linkedin,
+  Facebook, Instagram, Twitter, Linkedin,
   Slack, Video, Globe, Plus, ChevronDown, ExternalLink,
-  ArrowRight, Zap, Hash, Youtube
+  Zap, Hash, Youtube, Send
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -48,10 +48,10 @@ const CHANNEL_CATEGORIES = [
     label: 'Email & SMS',
     emoji: '\u{1F4E7}',
     channels: [
-      { id: 'gmail', name: 'Gmail', desc: 'Send and receive emails from your Gmail inbox', signupUrl: 'https://gmail.com', live: false },
-      { id: 'outlook', name: 'Outlook', desc: 'Connect Microsoft 365 or Outlook email', signupUrl: 'https://outlook.com', live: false },
-      { id: 'imap', name: 'IMAP Email', desc: 'Connect any custom email account via IMAP', signupUrl: null, live: false, configForm: true },
-      { id: 'sms', name: 'SMS / Twilio', desc: 'Send and receive text messages via Twilio', signupUrl: 'https://twilio.com/try-twilio', live: false },
+      { id: 'gmail', name: 'Gmail', desc: 'Send and receive emails from your Gmail inbox', signupUrl: 'https://gmail.com', dashboardUrl: 'https://mail.google.com' },
+      { id: 'outlook', name: 'Outlook', desc: 'Connect Microsoft 365 or Outlook email', signupUrl: 'https://outlook.com', dashboardUrl: 'https://outlook.live.com' },
+      { id: 'imap', name: 'IMAP Email', desc: 'Connect any custom email account via IMAP', signupUrl: null, dashboardUrl: null },
+      { id: 'sms', name: 'SMS / Twilio', desc: 'Send and receive text messages via Twilio', signupUrl: 'https://twilio.com/try-twilio', dashboardUrl: 'https://console.twilio.com' },
     ],
   },
   {
@@ -59,14 +59,14 @@ const CHANNEL_CATEGORIES = [
     label: 'Social Media',
     emoji: '\u{1F4F1}',
     channels: [
-      { id: 'facebook', name: 'Facebook Messenger', desc: 'Respond to Facebook Page messages', signupUrl: 'https://www.facebook.com/business', live: true },
-      { id: 'instagram', name: 'Instagram', desc: 'Handle Instagram DMs and comments', signupUrl: 'https://business.instagram.com', live: false },
-      { id: 'linkedin', name: 'LinkedIn', desc: 'Manage messages and connection requests', signupUrl: 'https://www.linkedin.com/business', live: false },
-      { id: 'twitter', name: 'Twitter / X', desc: 'Manage DMs and mentions', signupUrl: 'https://twitter.com', live: true },
-      { id: 'tiktok', name: 'TikTok', desc: 'Monitor TikTok comments and DMs', signupUrl: 'https://www.tiktok.com/business', live: false },
-      { id: 'youtube', name: 'YouTube', desc: 'Manage YouTube video comments', signupUrl: 'https://youtube.com', live: false },
-      { id: 'pinterest', name: 'Pinterest', desc: 'Manage Pinterest business messages', signupUrl: 'https://pinterest.com/business', live: false },
-      { id: 'snapchat', name: 'Snapchat', desc: 'Connect Snapchat for Business', signupUrl: 'https://forbusiness.snapchat.com', live: false },
+      { id: 'facebook', name: 'Facebook Messenger', desc: 'Respond to Facebook Page messages', signupUrl: 'https://www.facebook.com/business', dashboardUrl: 'https://business.facebook.com' },
+      { id: 'instagram', name: 'Instagram', desc: 'Handle Instagram DMs and comments', signupUrl: 'https://business.instagram.com', dashboardUrl: 'https://www.instagram.com/accounts/login' },
+      { id: 'linkedin', name: 'LinkedIn', desc: 'Manage messages and connection requests', signupUrl: 'https://www.linkedin.com/business', dashboardUrl: 'https://www.linkedin.com/messaging' },
+      { id: 'twitter', name: 'Twitter / X', desc: 'Manage DMs and mentions', signupUrl: 'https://twitter.com', dashboardUrl: 'https://twitter.com/messages' },
+      { id: 'tiktok', name: 'TikTok', desc: 'Monitor TikTok comments and DMs', signupUrl: 'https://www.tiktok.com/business', dashboardUrl: 'https://www.tiktok.com/creator-center' },
+      { id: 'youtube', name: 'YouTube', desc: 'Manage YouTube video comments', signupUrl: 'https://youtube.com', dashboardUrl: 'https://studio.youtube.com' },
+      { id: 'pinterest', name: 'Pinterest', desc: 'Manage Pinterest business messages', signupUrl: 'https://pinterest.com/business', dashboardUrl: 'https://analytics.pinterest.com' },
+      { id: 'snapchat', name: 'Snapchat', desc: 'Connect Snapchat for Business', signupUrl: 'https://forbusiness.snapchat.com', dashboardUrl: 'https://ads.snapchat.com' },
     ],
   },
   {
@@ -74,10 +74,10 @@ const CHANNEL_CATEGORIES = [
     label: 'Messaging',
     emoji: '\u{1F4AC}',
     channels: [
-      { id: 'whatsapp', name: 'WhatsApp Business', desc: 'Two-way WhatsApp messaging via Twilio', signupUrl: 'https://business.whatsapp.com', live: false },
-      { id: 'telegram', name: 'Telegram', desc: 'Connect a Telegram bot to your inbox', signupUrl: 'https://telegram.org', live: false },
-      { id: 'discord', name: 'Discord', desc: 'Monitor Discord server messages', signupUrl: 'https://discord.com/developers', live: false },
-      { id: 'slack', name: 'Slack', desc: 'Receive Slack messages as inbox threads', signupUrl: 'https://slack.com/intl/en-us/get-started', live: false },
+      { id: 'whatsapp', name: 'WhatsApp Business', desc: 'Two-way WhatsApp messaging via Twilio', signupUrl: 'https://business.whatsapp.com', dashboardUrl: 'https://business.whatsapp.com' },
+      { id: 'telegram', name: 'Telegram', desc: 'Connect a Telegram bot to your inbox', signupUrl: 'https://telegram.org', dashboardUrl: 'https://web.telegram.org' },
+      { id: 'discord', name: 'Discord', desc: 'Monitor Discord server messages', signupUrl: 'https://discord.com/developers', dashboardUrl: 'https://discord.com/app' },
+      { id: 'slack', name: 'Slack', desc: 'Receive Slack messages as inbox threads', signupUrl: 'https://slack.com/intl/en-us/get-started', dashboardUrl: 'https://app.slack.com' },
     ],
   },
   {
@@ -85,12 +85,12 @@ const CHANNEL_CATEGORIES = [
     label: 'Integrations',
     emoji: '\u{1F527}',
     channels: [
-      { id: 'hubspot', name: 'HubSpot', desc: 'Sync HubSpot contact conversations', signupUrl: 'https://app.hubspot.com/signup', live: false },
-      { id: 'salesforce', name: 'Salesforce', desc: 'Pull Salesforce case and email activity', signupUrl: 'https://www.salesforce.com/form/signup', live: false },
-      { id: 'zapier', name: 'Zapier', desc: 'Trigger inbox actions from Zapier workflows', signupUrl: 'https://zapier.com/sign-up', live: false },
-      { id: 'intercom', name: 'Intercom', desc: 'Pull in Intercom conversations', signupUrl: 'https://app.intercom.com/a/signup', live: false },
-      { id: 'zendesk', name: 'Zendesk', desc: 'Sync Zendesk support tickets', signupUrl: 'https://www.zendesk.com/register', live: false },
-      { id: 'webhook', name: 'Custom Webhook', desc: 'Receive messages from any external source', signupUrl: null, live: false, configForm: true },
+      { id: 'hubspot', name: 'HubSpot', desc: 'Sync HubSpot contact conversations', signupUrl: 'https://app.hubspot.com/signup', dashboardUrl: 'https://app.hubspot.com' },
+      { id: 'salesforce', name: 'Salesforce', desc: 'Pull Salesforce case and email activity', signupUrl: 'https://www.salesforce.com/form/signup', dashboardUrl: 'https://login.salesforce.com' },
+      { id: 'zapier', name: 'Zapier', desc: 'Trigger inbox actions from Zapier workflows', signupUrl: 'https://zapier.com/sign-up', dashboardUrl: 'https://zapier.com/app/dashboard' },
+      { id: 'intercom', name: 'Intercom', desc: 'Pull in Intercom conversations', signupUrl: 'https://app.intercom.com/a/signup', dashboardUrl: 'https://app.intercom.com' },
+      { id: 'zendesk', name: 'Zendesk', desc: 'Sync Zendesk support tickets', signupUrl: 'https://www.zendesk.com/register', dashboardUrl: 'https://www.zendesk.com/login' },
+      { id: 'webhook', name: 'Custom Webhook', desc: 'Receive messages from any external source', signupUrl: null, dashboardUrl: null },
     ],
   },
 ];
@@ -99,8 +99,8 @@ export default function ChannelsSettingsPage() {
   const [channels, setChannels] = useState([]);
   const [connections, setConnections] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [connecting, setConnecting] = useState(null);
   const [showAddChannel, setShowAddChannel] = useState(false);
+  const [postContent, setPostContent] = useState('');
 
   useEffect(() => {
     fetchChannels();
@@ -131,36 +131,6 @@ export default function ChannelsSettingsPage() {
     }
   };
 
-  const connectChannel = async (channelId) => {
-    setConnecting(channelId);
-    try {
-      const res = await api.get(`/api/v1/channels/oauth/${channelId}/authorize`);
-      const data = res.data?.data || res.data || {};
-
-      if (data.authUrl) {
-        const width = 600;
-        const height = 700;
-        const left = (window.screen.width - width) / 2;
-        const top = (window.screen.height - height) / 2;
-
-        window.open(
-          data.authUrl,
-          'OAuth',
-          `width=${width},height=${height},left=${left},top=${top}`
-        );
-
-        setTimeout(() => {
-          fetchConnections();
-          setConnecting(null);
-        }, 3000);
-      }
-    } catch (err) {
-      console.error('Connect error:', err);
-      alert('Failed to connect channel: ' + (err.response?.data?.error || err.message));
-      setConnecting(null);
-    }
-  };
-
   const disconnectChannel = async (channelId) => {
     if (!confirm(`Disconnect from ${channelId}?`)) return;
 
@@ -175,10 +145,6 @@ export default function ChannelsSettingsPage() {
 
   const isConnected = (channelId) => {
     return connections.some(c => c.channel === channelId && c.isActive);
-  };
-
-  const getConnectionForChannel = (channelId) => {
-    return connections.find(c => c.channel === channelId && c.isActive);
   };
 
   // Find channel display info from categories
@@ -239,8 +205,8 @@ export default function ChannelsSettingsPage() {
 
         {/* ── CONNECTED CHANNELS ── */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-400" />
+          <h2 className="text-neutral-400 text-xs font-medium uppercase tracking-widest mb-4 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-green-400" />
             Connected Channels
           </h2>
 
@@ -249,23 +215,22 @@ export default function ChannelsSettingsPage() {
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
               <Settings className="w-10 h-10 text-neutral-600 mx-auto mb-3" />
               <p className="text-neutral-400 text-sm">No channels connected yet.</p>
-              <p className="text-neutral-500 text-xs mt-1 font-light">Click "Add a Channel" below to get started.</p>
+              <p className="text-neutral-500 text-xs mt-1 font-light">Click &quot;Add a Channel&quot; below to get started.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {connectedChannels.map((conn) => {
-                const info = getChannelInfo(conn.channel);
-                const Icon = CHANNEL_ICONS[conn.channel] || Globe;
-                const isDisconnecting = connecting === conn.channel;
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {connectedChannels.map((conn) => {
+                  const info = getChannelInfo(conn.channel);
+                  const Icon = CHANNEL_ICONS[conn.channel] || Globe;
 
-                return (
-                  <div
-                    key={conn.id || conn.channel}
-                    className="relative rounded-2xl bg-neutral-900/30 border border-green-500/20 p-5 group hover:border-green-500/40 transition-all overflow-hidden"
-                  >
-                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
+                  return (
+                    <div
+                      key={conn.id || conn.channel}
+                      className="relative rounded-2xl bg-green-500/5 border border-green-500/30 p-4 group hover:border-green-500/50 transition-all overflow-hidden"
+                    >
+                      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
+                      <div className="flex items-center gap-3 mb-3">
                         <div className="p-2 rounded-lg bg-green-500/10">
                           <Icon className="w-5 h-5 text-green-400" />
                         </div>
@@ -279,22 +244,55 @@ export default function ChannelsSettingsPage() {
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <button
-                      onClick={() => disconnectChannel(conn.channel)}
-                      disabled={isDisconnecting}
-                      className="w-full mt-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
-                    >
-                      {isDisconnecting ? (
-                        <><RefreshCw className="w-3 h-3 animate-spin" /> Disconnecting...</>
-                      ) : (
-                        <><X className="w-3 h-3" /> Disconnect</>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
+                      <div className="flex items-center gap-2">
+                        {info?.dashboardUrl && (
+                          <a
+                            href={info.dashboardUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500/10 text-green-300 border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-1.5"
+                          >
+                            Open Account <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => disconnectChannel(conn.channel)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all flex items-center justify-center gap-1.5"
+                        >
+                          <X className="w-3 h-3" /> Disconnect
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Post to All Channels */}
+              <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-6 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+                <div className="flex items-center gap-2 mb-1">
+                  <Send className="w-4 h-4 text-purple-400" />
+                  <h3 className="text-white font-medium text-sm">Post to All Channels</h3>
+                </div>
+                <p className="text-neutral-500 text-xs font-light mb-4">
+                  AI agent will format and publish your content to all connected channels.
+                </p>
+                <textarea
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
+                  placeholder="Write your post content here..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 bg-black/50 border border-white/10 rounded-lg text-white text-sm font-light placeholder-neutral-500 focus:outline-none focus:border-purple-500/50 resize-none mb-3"
+                />
+                <button
+                  disabled={!postContent.trim() || connectedChannels.length === 0}
+                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send className="w-4 h-4" />
+                  Publish to {connectedChannels.length} Channel{connectedChannels.length !== 1 ? 's' : ''}
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -328,7 +326,7 @@ export default function ChannelsSettingsPage() {
             <div className="space-y-8">
               {CHANNEL_CATEGORIES.map((category) => (
                 <div key={category.id}>
-                  <h3 className="text-sm font-semibold text-neutral-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <h3 className="text-neutral-400 text-xs font-medium uppercase tracking-widest mb-3 flex items-center gap-2">
                     <span>{category.emoji}</span>
                     {category.label}
                   </h3>
@@ -337,17 +335,23 @@ export default function ChannelsSettingsPage() {
                     {category.channels.map((channel) => {
                       const Icon = CHANNEL_ICONS[channel.id] || Globe;
                       const connected = isConnected(channel.id);
-                      const isConnecting = connecting === channel.id;
 
                       return (
                         <div
                           key={channel.id}
-                          className={`rounded-2xl border p-4 transition-all ${
+                          className={`relative rounded-2xl border p-4 transition-all overflow-hidden ${
                             connected
-                              ? 'bg-green-500/5 border-green-500/20'
+                              ? 'bg-green-500/5 border-green-500/30'
                               : 'bg-neutral-900/30 border-white/10 hover:border-indigo-500/30'
                           }`}
                         >
+                          {connected && (
+                            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
+                          )}
+                          {!connected && (
+                            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+                          )}
+
                           <div className="flex items-start gap-3">
                             <div className={`p-2 rounded-lg flex-shrink-0 ${
                               connected ? 'bg-green-500/10' : 'bg-white/5'
@@ -360,50 +364,39 @@ export default function ChannelsSettingsPage() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-0.5">
                                 <h4 className="text-white text-sm font-medium truncate">{channel.name}</h4>
-                                {channel.live ? (
-                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30 flex-shrink-0">
-                                    Live
-                                  </span>
-                                ) : (
-                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20 flex-shrink-0">
-                                    Coming Soon
-                                  </span>
-                                )}
                                 {connected && (
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                                  <>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0" />
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+                                  </>
                                 )}
                               </div>
                               <p className="text-neutral-500 text-xs leading-relaxed">{channel.desc}</p>
 
-                              {/* Action buttons */}
+                              {/* Action button */}
                               <div className="flex items-center gap-2 mt-3">
-                                {channel.signupUrl && (
-                                  <a
-                                    href={channel.signupUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white/5 text-neutral-300 border border-white/10 hover:bg-white/10 hover:text-white transition-all flex items-center gap-1"
-                                  >
-                                    Sign Up <ExternalLink className="w-3 h-3" />
-                                  </a>
-                                )}
-
                                 {connected ? (
-                                  <span className="px-2.5 py-1 rounded-lg text-[11px] font-medium text-green-400">
-                                    Connected
-                                  </span>
+                                  channel.dashboardUrl && (
+                                    <a
+                                      href={channel.dashboardUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-500/10 text-green-300 border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center gap-1.5"
+                                    >
+                                      Open Account <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  )
                                 ) : (
-                                  <button
-                                    onClick={() => connectChannel(channel.id)}
-                                    disabled={isConnecting}
-                                    className="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-indigo-500/15 text-indigo-300 border border-indigo-500/25 hover:bg-indigo-500/25 transition-all flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                                  >
-                                    {isConnecting ? (
-                                      <><RefreshCw className="w-3 h-3 animate-spin" /> Connecting...</>
-                                    ) : (
-                                      <>Connect <ArrowRight className="w-3 h-3" /></>
-                                    )}
-                                  </button>
+                                  channel.signupUrl && (
+                                    <a
+                                      href={channel.signupUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-3 py-1.5 rounded-lg text-sm font-medium bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/30 text-indigo-300 transition-all flex items-center gap-1.5"
+                                    >
+                                      Sign Up <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  )
                                 )}
                               </div>
                             </div>

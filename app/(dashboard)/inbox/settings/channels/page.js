@@ -192,8 +192,8 @@ export default function ChannelsSettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black p-6 flex items-center justify-center">
-        <div className="text-neutral-500">Loading channels...</div>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-indigo-500 border-t-transparent" />
       </div>
     );
   }
@@ -201,18 +201,35 @@ export default function ChannelsSettingsPage() {
   const connectedChannels = connections.filter(c => c.isActive);
 
   return (
-    <div className="min-h-screen bg-black p-6">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-black text-white antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+      {/* AETHER Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundSize: '40px 40px',
+            backgroundImage: `linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                             linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+          }}
+        />
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px] aether-glow-blob" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] aether-glow-blob aether-glow-delay" />
+      </div>
+
+      <div className="relative z-10 p-8 max-w-5xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-12">
           <Link
             href="/inbox"
-            className="text-neutral-400 hover:text-white mb-4 inline-flex items-center gap-2 text-sm"
+            className="text-neutral-400 hover:text-white mb-4 inline-flex items-center gap-2 text-sm group"
           >
-            &larr; Back to Inbox
+            <span className="group-hover:-translate-x-1 transition-transform">&larr;</span> Back to Inbox
           </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">Channel Hub</h1>
-          <p className="text-neutral-400">
+          <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-neutral-500 mb-2">
+            Channel Hub
+          </h1>
+          <p className="text-neutral-400 text-sm font-light">
             Connect your communication channels to the unified inbox.
             {connectedChannels.length > 0 && (
               <span className="text-indigo-400 ml-2">{connectedChannels.length} connected</span>
@@ -228,10 +245,11 @@ export default function ChannelsSettingsPage() {
           </h2>
 
           {connectedChannels.length === 0 ? (
-            <div className="bg-neutral-900/50 rounded-xl border border-white/5 p-8 text-center">
+            <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 p-8 text-center overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
               <Settings className="w-10 h-10 text-neutral-600 mx-auto mb-3" />
               <p className="text-neutral-400 text-sm">No channels connected yet.</p>
-              <p className="text-neutral-500 text-xs mt-1">Click "Add a Channel" below to get started.</p>
+              <p className="text-neutral-500 text-xs mt-1 font-light">Click "Add a Channel" below to get started.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -243,8 +261,9 @@ export default function ChannelsSettingsPage() {
                 return (
                   <div
                     key={conn.id || conn.channel}
-                    className="bg-neutral-900 rounded-xl border border-green-500/20 p-5 group hover:border-green-500/40 transition-all"
+                    className="relative rounded-2xl bg-neutral-900/30 border border-green-500/20 p-5 group hover:border-green-500/40 transition-all overflow-hidden"
                   >
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-green-500/10">
@@ -294,7 +313,8 @@ export default function ChannelsSettingsPage() {
 
         {/* ── ADD CHANNEL DROPDOWN ── */}
         {showAddChannel && (
-          <div className="bg-neutral-900/80 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-8 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="relative bg-neutral-900/30 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-8 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-white">All Channels</h2>
               <button
@@ -322,10 +342,10 @@ export default function ChannelsSettingsPage() {
                       return (
                         <div
                           key={channel.id}
-                          className={`rounded-xl border p-4 transition-all ${
+                          className={`rounded-2xl border p-4 transition-all ${
                             connected
                               ? 'bg-green-500/5 border-green-500/20'
-                              : 'bg-neutral-800/50 border-white/5 hover:border-white/15'
+                              : 'bg-neutral-900/30 border-white/10 hover:border-indigo-500/30'
                           }`}
                         >
                           <div className="flex items-start gap-3">

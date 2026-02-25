@@ -458,6 +458,65 @@ async function executeTool(toolName, toolInput) {
 }
 
 /**
+ * GET /api/v1/nexus/context
+ * Live platform data for agent injection — no auth required
+ */
+router.get('/context', async (req, res) => {
+  try {
+    const [
+      userCount,
+      leadCount,
+      websiteCount,
+      videoCount,
+      campaignCount,
+      recentLeads,
+      recentUsers
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.lead.count().catch(() => 0),
+      prisma.website.count().catch(() => 0),
+      prisma.video.count().catch(() => 0),
+      prisma.campaign.count().catch(() => 0),
+      prisma.lead.findMany({ take: 5, orderBy: { createdAt: 'desc' } }).catch(() => []),
+      prisma.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan: true } }).catch(() => [])
+    ]);
+
+    res.json({
+      success: true,
+      fetchedAt: new Date().toISOString(),
+      platform: {
+        users: userCount,
+        leads: leadCount,
+        websites: websiteCount,
+        videos: videoCount,
+        campaigns: campaignCount
+      },
+      recent: {
+        leads: recentLeads,
+        users: recentUsers
+      },
+      features: {
+        sms: !!process.env.TWILIO_MESSAGING_SERVICE_SID,
+        a2p_campaign: process.env.TWILIO_MESSAGING_SERVICE_SID || null,
+        nexus: !!process.env.ANTHROPIC_API_KEY,
+        email: !!process.env.INSTANTLY_API_KEY,
+        perplexity: !!process.env.PERPLEXITY_API_KEY,
+        firecrawl: !!process.env.FIRECRAWL_API_KEY,
+        openai: !!process.env.OPENAI_API_KEY,
+        storage: !!process.env.CLOUDFLARE_R2_BUCKET
+      },
+      infrastructure: {
+        backend: 'api.aileadstrategies.com',
+        database: 'switchyard.proxy.rlwy.net:32069',
+        frontend: 'aileadstrategies.com'
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * POST /api/v1/nexus/chat
  * Process NEXUS conversation message via Claude AI
  */

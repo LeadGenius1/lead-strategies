@@ -312,7 +312,7 @@ export default function WatchVideoPage() {
                       poster={video.thumbnailUrl}
                       muted
                       playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-contain"
                     />
                     {showPaywall && (
                       <>

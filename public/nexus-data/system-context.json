@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-02-26T00:00:00Z",
+  "systemStatus": "ACTIVE",
+  "platforms": {
+    "leadsite_ai": { "status": "ACTIVE", "price": "$49/$149/$349" },
+    "leadsite_io": { "status": "ACTIVE", "price": "$49/$149/$349" },
+    "clientcontact_io": { "status": "ACTIVE", "price": "$99/$149/$399" },
+    "ultralead": { "status": "ACTIVE", "price": "$499" },
+    "videosite_ai": { "status": "ACTIVE", "price": "Free + $12 viewer pass" }
+  },
+  "features": {
+    "campaign_wizard": "ACTIVE",
+    "advertiser_portal": "ACTIVE",
+    "viewer_pass": "ACTIVE",
+    "policy_center": "ACTIVE",
+    "ai_agents": 7
+  },
+  "launch_date": "2026-03-01",
+  "company": "AI Lead Strategies LLC",
+  "address": "600 Eagleview Blvd, Suite 317, Exton PA 19341"
+}

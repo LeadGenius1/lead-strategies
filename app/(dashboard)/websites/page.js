@@ -112,9 +112,7 @@ export default function WebsitesPage() {
             <h2 className="text-xl font-medium text-white mb-2">Website Builder Unlocked with LeadSite.IO</h2>
             <p className="text-neutral-400 mb-6 max-w-md mx-auto">{upgradeMessage}</p>
             <Link
-              href="https://aileadstrategies.com/leadsite-io"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/leadsite-io"
               className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-amber-300 rounded-xl font-medium transition-all"
             >
               Learn about LeadSite.IO
@@ -158,7 +156,7 @@ export default function WebsitesPage() {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href={site._source === 'ai' ? `/preview/${site.id}` : ((site.slug || site.subdomain) ? `https://aileadstrategies.com/sites/${site.slug || site.subdomain}` : `/preview/${site.id}`)}
+                    href={site._source === 'ai' ? `/preview/${site.id}` : ((site.slug || site.subdomain) ? `/sites/${site.slug || site.subdomain}` : `/preview/${site.id}`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-indigo-400 hover:text-indigo-300 border border-indigo-500/30 hover:border-indigo-500/50 rounded-lg transition-all"

@@ -734,4 +734,89 @@ router.get('/analytics', async (req, res) => {
   }
 });
 
+// =====================
+// VIEWER PASS SYSTEM
+// =====================
+
+// GET /api/v1/videosite/pass/status - Check viewer's remaining views
+router.get('/pass/status', async (req, res) => {
+  try {
+    const activePass = await prisma.viewerPass.findFirst({
+      where: { userId: req.userId, status: 'active', viewsRemaining: { gt: 0 } },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json({
+      success: true,
+      data: {
+        hasActivePass: !!activePass,
+        viewsRemaining: activePass?.viewsRemaining || 0,
+        viewsTotal: activePass?.viewsTotal || 0,
+        passId: activePass?.id || null,
+      },
+    });
+  } catch (error) {
+    console.error('Get pass status error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/v1/videosite/pass/purchase - Create Stripe $11 checkout for 10-view pass
+router.post('/pass/purchase', async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({ success: false, error: 'Payments not configured' });
+    }
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'VideoSite.AI Viewer Pass', description: '10 video views' },
+          unit_amount: 1100,
+        },
+        quantity: 1,
+      }],
+      metadata: { userId: req.userId, type: 'viewer_pass' },
+      success_url: `${process.env.FRONTEND_URL || 'https://aileadstrategies.com'}/watch?pass=success`,
+      cancel_url: `${process.env.FRONTEND_URL || 'https://aileadstrategies.com'}/watch?pass=canceled`,
+    });
+    res.json({ success: true, data: { checkoutUrl: session.url, sessionId: session.id } });
+  } catch (error) {
+    console.error('Pass purchase error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/v1/videosite/pass/use-view - Deduct 1 view when video watched
+router.post('/pass/use-view', async (req, res) => {
+  try {
+    const { videoId } = req.body;
+    if (!videoId) {
+      return res.status(400).json({ success: false, error: 'videoId is required' });
+    }
+    const activePass = await prisma.viewerPass.findFirst({
+      where: { userId: req.userId, status: 'active', viewsRemaining: { gt: 0 } },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!activePass) {
+      return res.status(402).json({ success: false, error: 'No active pass. Purchase a Viewer Pass to watch.' });
+    }
+    const updated = await prisma.viewerPass.update({
+      where: { id: activePass.id },
+      data: {
+        viewsRemaining: { decrement: 1 },
+        status: activePass.viewsRemaining <= 1 ? 'exhausted' : 'active',
+      },
+    });
+    res.json({
+      success: true,
+      data: { viewsRemaining: updated.viewsRemaining, status: updated.status },
+    });
+  } catch (error) {
+    console.error('Use view error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;

@@ -1,259 +1,293 @@
-// Advertiser Platform Routes
-// Campaign management and analytics for advertisers
+// Advertiser Platform Routes — Separate auth system for advertisers
+// Uses AdvertiserAccount model (not User model)
 
 const express = require('express');
-const { authenticate } = require('../middleware/auth');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
+
+const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-change-in-production';
 
 let prisma = null;
 function getPrisma() {
   if (!process.env.DATABASE_URL) return null;
   if (!prisma) {
-
     prisma = require('../config/database').prisma;
   }
   return prisma;
 }
 
-// CPV rates per tier
-const TIER_CPV = { STARTER: 0.05, PROFESSIONAL: 0.10, PREMIUM: 0.20 };
+// --- Password helpers (same pattern as auth.js) ---
 
-// All advertiser routes require auth
-router.use(authenticate);
+function hashPassword(plain) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(plain, salt, 100000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+}
 
-// POST /api/v1/advertiser/register - Create advertiser account
-router.post('/register', async (req, res) => {
+function verifyPassword(plain, stored) {
+  if (!stored || !stored.includes(':')) return false;
+  const [salt, hash] = stored.split(':');
+  const derived = crypto.pbkdf2Sync(plain, salt, 100000, 64, 'sha512').toString('hex');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(derived, 'hex'), Buffer.from(hash, 'hex'));
+  } catch {
+    return false;
+  }
+}
+
+// --- Advertiser auth middleware ---
+
+function authenticateAdvertiser(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.advertiser_token;
+  if (!token) {
+    return res.status(401).json({ success: false, error: 'Not authenticated' });
+  }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== 'advertiser') {
+      return res.status(401).json({ success: false, error: 'Invalid token' });
+    }
+    req.advertiserId = decoded.id;
+    req.advertiserEmail = decoded.email;
+    next();
+  } catch {
+    return res.status(401).json({ success: false, error: 'Invalid or expired token' });
+  }
+}
+
+// --- 10-point auto-review ---
+
+function autoReview({ videoUrl, landingUrl, budgetCents, name, category, tier }) {
+  const prohibited = ['adult', 'xxx', 'porn', 'casino', 'gambling', 'weapon', 'drug'];
+  const nameLower = (name || '').toLowerCase();
+
+  const checks = [
+    { name: 'videoUrl_https', pass: !!videoUrl && videoUrl.startsWith('https://') },
+    { name: 'landingUrl_https', pass: !!landingUrl && landingUrl.startsWith('https://') },
+    { name: 'budget_min', pass: budgetCents >= 10000 },
+    { name: 'name_length', pass: (name || '').length > 3 },
+    { name: 'category_provided', pass: !!category },
+    { name: 'valid_tier', pass: ['starter', 'professional', 'premium'].includes((tier || '').toLowerCase()) },
+    { name: 'no_prohibited', pass: !prohibited.some(w => nameLower.includes(w)) },
+    { name: 'no_competitor', pass: true },
+    { name: 'budget_max', pass: budgetCents <= 100000000 },
+    { name: 'agreement_verified', pass: true },
+  ];
+
+  const score = checks.filter(c => c.pass).length;
+  return { score, details: JSON.stringify(checks) };
+}
+
+// ========================================
+// PUBLIC ROUTES (no auth)
+// ========================================
+
+// POST /api/v1/advertiser/signup
+router.post('/signup', async (req, res) => {
   try {
     const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
+    if (!db) return res.status(503).json({ success: false, error: 'Database not configured' });
 
-    const { companyName, contactEmail, contactPhone, website } = req.body;
-    if (!companyName || !contactEmail) {
-      return res.status(400).json({ error: 'companyName and contactEmail are required' });
+    const { email, password, businessName, contactName, phone, website } = req.body || {};
+
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid email is required' });
+    }
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+    }
+    if (!businessName || typeof businessName !== 'string' || businessName.trim().length < 2) {
+      return res.status(400).json({ success: false, error: 'Business name is required' });
+    }
+    if (!contactName || typeof contactName !== 'string' || contactName.trim().length < 2) {
+      return res.status(400).json({ success: false, error: 'Contact name is required' });
     }
 
-    const existing = await db.advertiser.findUnique({ where: { userId: req.user.id } });
+    const emailNorm = email.toLowerCase().trim();
+    const existing = await db.advertiserAccount.findUnique({ where: { email: emailNorm } });
     if (existing) {
-      return res.status(400).json({ error: 'Advertiser account already exists' });
+      return res.status(400).json({ success: false, error: 'An account with this email already exists' });
     }
 
-    const advertiser = await db.advertiser.create({
+    const passwordHash = hashPassword(password);
+
+    const advertiser = await db.advertiserAccount.create({
       data: {
-        userId: req.user.id,
-        companyName,
-        contactEmail,
-        contactPhone: contactPhone || null,
+        email: emailNorm,
+        passwordHash,
+        businessName: businessName.trim(),
+        contactName: contactName.trim(),
+        phone: phone || null,
         website: website || null,
       },
     });
 
-    res.status(201).json({ success: true, data: advertiser });
+    const token = jwt.sign(
+      { id: advertiser.id, email: advertiser.email, role: 'advertiser' },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      success: true,
+      token,
+      advertiser: { id: advertiser.id, email: advertiser.email, businessName: advertiser.businessName },
+    });
   } catch (error) {
-    console.error('Advertiser register error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
+    console.error('Advertiser signup error:', error);
+    if (error?.code === 'P2002') {
+      return res.status(400).json({ success: false, error: 'An account with this email already exists' });
+    }
+    res.status(500).json({ success: false, error: 'Registration failed' });
   }
 });
 
-// GET /api/v1/advertiser/profile - Get advertiser profile
-router.get('/profile', async (req, res) => {
+// POST /api/v1/advertiser/login
+router.post('/login', async (req, res) => {
   try {
     const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
+    if (!db) return res.status(503).json({ success: false, error: 'Database not configured' });
 
-    const advertiser = await db.advertiser.findUnique({
-      where: { userId: req.user.id },
-      include: { campaigns: { select: { id: true, status: true, budgetTotal: true, budgetSpent: true } } },
+    const { email, password } = req.body || {};
+    if (!email || !password) {
+      return res.status(400).json({ success: false, error: 'Email and password required' });
+    }
+
+    const advertiser = await db.advertiserAccount.findUnique({ where: { email: email.toLowerCase().trim() } });
+    if (!advertiser) {
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+    }
+    if (!verifyPassword(password, advertiser.passwordHash)) {
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+    }
+
+    const token = jwt.sign(
+      { id: advertiser.id, email: advertiser.email, role: 'advertiser' },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      success: true,
+      token,
+      advertiser: { id: advertiser.id, email: advertiser.email, businessName: advertiser.businessName },
+    });
+  } catch (error) {
+    console.error('Advertiser login error:', error);
+    res.status(500).json({ success: false, error: 'Login failed' });
+  }
+});
+
+// ========================================
+// AUTHENTICATED ROUTES
+// ========================================
+
+// POST /api/v1/advertiser/accept-agreement
+router.post('/accept-agreement', authenticateAdvertiser, async (req, res) => {
+  try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not configured' });
+
+    const advertiser = await db.advertiserAccount.update({
+      where: { id: req.advertiserId },
+      data: { agreementAccepted: true, agreementAcceptedAt: new Date() },
+    });
+
+    res.json({ success: true, agreementAccepted: advertiser.agreementAccepted, agreementAcceptedAt: advertiser.agreementAcceptedAt });
+  } catch (error) {
+    console.error('Accept agreement error:', error);
+    res.status(500).json({ success: false, error: 'Failed to accept agreement' });
+  }
+});
+
+// GET /api/v1/advertiser/me
+router.get('/me', authenticateAdvertiser, async (req, res) => {
+  try {
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not configured' });
+
+    const advertiser = await db.advertiserAccount.findUnique({
+      where: { id: req.advertiserId },
+      include: { campaigns: { orderBy: { createdAt: 'desc' } } },
     });
     if (!advertiser) {
-      return res.status(404).json({ error: 'No advertiser account found' });
+      return res.status(404).json({ success: false, error: 'Account not found' });
     }
 
-    res.json({ success: true, data: advertiser });
+    const { passwordHash, ...profile } = advertiser;
+    res.json({ success: true, data: profile });
   } catch (error) {
     console.error('Get advertiser profile error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
+    res.status(500).json({ success: false, error: 'Failed to load profile' });
   }
 });
 
-// POST /api/v1/advertiser/campaigns - Create ad campaign
-router.post('/campaigns', async (req, res) => {
+// POST /api/v1/advertiser/campaigns
+router.post('/campaigns', authenticateAdvertiser, async (req, res) => {
   try {
     const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
+    if (!db) return res.status(503).json({ success: false, error: 'Database not configured' });
 
-    const advertiser = await db.advertiser.findUnique({ where: { userId: req.user.id } });
-    if (!advertiser) {
-      return res.status(403).json({ error: 'Register as an advertiser first' });
+    // Verify agreement accepted
+    const advertiser = await db.advertiserAccount.findUnique({ where: { id: req.advertiserId } });
+    if (!advertiser?.agreementAccepted) {
+      return res.status(403).json({ success: false, error: 'You must accept the advertiser agreement before creating campaigns' });
     }
 
-    const { name, title, description, videoUrl, thumbnailUrl, clickUrl, tier, budgetTotal, startDate, endDate, callToAction, targetCategories } = req.body;
-    if (!name || !title || !videoUrl || !clickUrl || !budgetTotal || !startDate) {
-      return res.status(400).json({ error: 'name, title, videoUrl, clickUrl, budgetTotal, and startDate are required' });
+    const { name, videoUrl, landingUrl, budgetCents, tier, category, targeting } = req.body || {};
+    if (!name || !videoUrl || !landingUrl || !budgetCents) {
+      return res.status(400).json({ success: false, error: 'name, videoUrl, landingUrl, and budgetCents are required' });
     }
 
-    const tierKey = (tier || 'PROFESSIONAL').toUpperCase();
-    const costPerView = TIER_CPV[tierKey] || TIER_CPV.PROFESSIONAL;
+    // Auto-review
+    const { score, details } = autoReview({ videoUrl, landingUrl, budgetCents, name, category, tier });
+    const status = score >= 8 ? 'active' : 'rejected';
 
-    if (budgetTotal < 100) {
-      return res.status(400).json({ error: 'Minimum budget is $100' });
-    }
+    // CPV rates per tier (in cents)
+    const tierLower = (tier || 'starter').toLowerCase();
+    const cpvMap = { starter: 5, professional: 10, premium: 20 };
+    const cpvCents = cpvMap[tierLower] || 5;
 
     const campaign = await db.adCampaign.create({
       data: {
-        advertiserId: advertiser.id,
+        advertiserId: req.advertiserId,
         name,
-        title,
-        description: description || null,
         videoUrl,
-        thumbnailUrl: thumbnailUrl || null,
-        clickUrl,
-        callToAction: callToAction || 'Learn More',
-        tier: tierKey,
-        costPerView,
-        budgetTotal,
-        startDate: new Date(startDate),
-        endDate: endDate ? new Date(endDate) : null,
-        targetCategories: targetCategories || [],
+        landingUrl,
+        budgetCents: parseInt(budgetCents),
+        tier: tierLower,
+        cpvCents,
+        category: category || null,
+        targeting: targeting || null,
+        status,
+        reviewScore: score,
+        reviewDetails: details,
       },
     });
 
-    res.status(201).json({ success: true, data: campaign });
+    res.status(201).json({ success: true, campaign, reviewScore: score, reviewDetails: JSON.parse(details) });
   } catch (error) {
     console.error('Create campaign error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
+    res.status(500).json({ success: false, error: 'Failed to create campaign' });
   }
 });
 
-// GET /api/v1/advertiser/campaigns - List campaigns
-router.get('/campaigns', async (req, res) => {
+// GET /api/v1/advertiser/campaigns
+router.get('/campaigns', authenticateAdvertiser, async (req, res) => {
   try {
     const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
-
-    const advertiser = await db.advertiser.findUnique({ where: { userId: req.user.id } });
-    if (!advertiser) {
-      return res.status(403).json({ error: 'Register as an advertiser first' });
-    }
-
-    const { status, limit = 50, offset = 0 } = req.query;
-    const where = { advertiserId: advertiser.id };
-    if (status) where.status = status.toUpperCase();
+    if (!db) return res.status(503).json({ success: false, error: 'Database not configured' });
 
     const campaigns = await db.adCampaign.findMany({
-      where,
+      where: { advertiserId: req.advertiserId },
       orderBy: { createdAt: 'desc' },
-      skip: parseInt(offset),
-      take: Math.min(50, parseInt(limit)),
     });
 
     res.json({ success: true, data: campaigns });
   } catch (error) {
     console.error('List campaigns error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
-  }
-});
-
-// GET /api/v1/advertiser/campaigns/:id - Get campaign details
-router.get('/campaigns/:id', async (req, res) => {
-  try {
-    const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
-
-    const advertiser = await db.advertiser.findUnique({ where: { userId: req.user.id } });
-    if (!advertiser) {
-      return res.status(403).json({ error: 'Register as an advertiser first' });
-    }
-
-    const campaign = await db.adCampaign.findFirst({
-      where: { id: req.params.id, advertiserId: advertiser.id },
-    });
-    if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
-    }
-
-    res.json({ success: true, data: campaign });
-  } catch (error) {
-    console.error('Get campaign error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
-  }
-});
-
-// PATCH /api/v1/advertiser/campaigns/:id - Update campaign
-router.patch('/campaigns/:id', async (req, res) => {
-  try {
-    const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
-
-    const advertiser = await db.advertiser.findUnique({ where: { userId: req.user.id } });
-    if (!advertiser) {
-      return res.status(403).json({ error: 'Register as an advertiser first' });
-    }
-
-    const campaign = await db.adCampaign.findFirst({
-      where: { id: req.params.id, advertiserId: advertiser.id },
-    });
-    if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
-    }
-
-    if (!['PENDING', 'PAUSED', 'APPROVED'].includes(campaign.status)) {
-      return res.status(400).json({ error: `Cannot update campaign with status ${campaign.status}` });
-    }
-
-    const { status, budgetTotal, endDate } = req.body;
-    const updateData = {};
-    if (status) updateData.status = status.toUpperCase();
-    if (budgetTotal !== undefined) updateData.budgetTotal = budgetTotal;
-    if (endDate !== undefined) updateData.endDate = endDate ? new Date(endDate) : null;
-
-    const updated = await db.adCampaign.update({
-      where: { id: req.params.id },
-      data: updateData,
-    });
-
-    res.json({ success: true, data: updated });
-  } catch (error) {
-    console.error('Update campaign error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
-  }
-});
-
-// GET /api/v1/advertiser/analytics - Overall advertiser performance
-router.get('/analytics', async (req, res) => {
-  try {
-    const db = getPrisma();
-    if (!db) return res.status(503).json({ error: 'Database not configured' });
-
-    const advertiser = await db.advertiser.findUnique({ where: { userId: req.user.id } });
-    if (!advertiser) {
-      return res.status(403).json({ error: 'Register as an advertiser first' });
-    }
-
-    const campaigns = await db.adCampaign.findMany({
-      where: { advertiserId: advertiser.id },
-      select: { budgetSpent: true, views: true, clicks: true, impressions: true },
-    });
-
-    const totalSpent = campaigns.reduce((sum, c) => sum + c.budgetSpent, 0);
-    const totalViews = campaigns.reduce((sum, c) => sum + c.views, 0);
-    const totalClicks = campaigns.reduce((sum, c) => sum + c.clicks, 0);
-    const totalImpressions = campaigns.reduce((sum, c) => sum + c.impressions, 0);
-
-    res.json({
-      success: true,
-      data: {
-        totalCampaigns: campaigns.length,
-        totalSpent: Math.round(totalSpent * 100) / 100,
-        totalViews,
-        totalClicks,
-        totalImpressions,
-        avgCPV: totalViews > 0 ? Math.round((totalSpent / totalViews) * 100) / 100 : 0,
-        ctr: totalImpressions > 0 ? Math.round((totalClicks / totalImpressions) * 10000) / 100 : 0,
-      },
-    });
-  } catch (error) {
-    console.error('Advertiser analytics error:', error);
-    res.status(500).json({ error: 'Internal server error', message: error.message });
+    res.status(500).json({ success: false, error: 'Failed to load campaigns' });
   }
 });
 

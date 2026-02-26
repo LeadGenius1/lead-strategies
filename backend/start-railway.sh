@@ -15,8 +15,5 @@ sleep 5
 echo "Running prisma generate..."
 npx prisma generate
 
-echo "Running prisma db push..."
-npx prisma db push --accept-data-loss
-
 echo "Starting server..."
 exec npm start

@@ -77,9 +77,27 @@ export default function NexusDashboard() {
   const [moduleStats, setModuleStats] = useState(null);
   const [platforms, setPlatforms] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [integrity, setIntegrity] = useState(null);
 
   useEffect(() => {
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const checkIntegrity = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
+        const token = document.cookie.match(/token=([^;]+)/)?.[1];
+        const res = await fetch(`${apiUrl}/api/v1/system/integrity`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        const data = await res.json();
+        setIntegrity(data);
+      } catch (e) { console.error('Integrity check failed', e); }
+    };
+    checkIntegrity();
+    const interval = setInterval(checkIntegrity, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   async function loadData() {
@@ -119,6 +137,29 @@ export default function NexusDashboard() {
   return (
     <div className="min-h-screen bg-[#050505] text-white antialiased selection:bg-indigo-500/30 p-6 md:p-8">
       <div className="max-w-6xl mx-auto space-y-10">
+
+        {/* System Integrity Banner */}
+        {integrity && (
+          <div className={`rounded-lg border px-4 py-3 flex items-center gap-3 ${
+            integrity.status === 'ok'
+              ? 'bg-emerald-500/10 border-emerald-500/20'
+              : 'bg-red-500/10 border-red-500/20'
+          }`}>
+            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
+              integrity.status === 'ok' ? 'bg-emerald-400' : 'bg-red-400 animate-pulse'
+            }`} />
+            {integrity.status === 'ok' ? (
+              <span className="text-sm text-emerald-400 font-medium">All Systems Operational</span>
+            ) : (
+              <span className="text-sm text-red-400 font-medium">
+                SYSTEM INTEGRITY ALERT: {integrity.alerts?.join(' | ') || 'Unknown issue'}
+              </span>
+            )}
+            <span className="ml-auto text-[10px] text-neutral-500">
+              AI: {integrity.ai_model} | DB: {integrity.database} | Model: {integrity.model_id}
+            </span>
+          </div>
+        )}
 
         {/* Header */}
         <div>

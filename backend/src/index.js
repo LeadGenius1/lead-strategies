@@ -1,44 +1,16 @@
 // LeadSite.AI Backend - Main Entry Point
-// Unified API for 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, UltraLead.AI
+// Unified API for all 4 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI
 
-// Polyfill for undici/fetch compatibility (Node < 20 or undici webidl expects File)
-if (typeof globalThis.File === 'undefined') {
-  globalThis.File = class File {
-    constructor(bits, name, options = {}) {
-      this._bits = bits;
-      this.name = name;
-      this.type = options.type || '';
-      this.lastModified = options.lastModified || Date.now();
-    }
-  };
-}
-if (typeof globalThis.Blob === 'undefined') {
-  globalThis.Blob = class Blob {
-    constructor(parts = [], options = {}) {
-      this._parts = parts;
-      this.type = options.type || '';
-    }
-  };
-}
-
+console.log('[STARTUP] Loading environment variables...');
 require('dotenv').config();
-
-// Railway Postgres fix: use public URL when internal (*.railway.internal) unreachable
-if (process.env.DATABASE_PUBLIC_URL && process.env.DATABASE_URL?.includes('railway.internal')) {
-  console.log('Using DATABASE_PUBLIC_URL (Railway public connection - internal host unreachable)');
-  process.env.DATABASE_URL = process.env.DATABASE_PUBLIC_URL;
-}
-// Startup log: DB host for sanity check (no credentials)
-try {
-  const dbHost = process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL).hostname : 'not set';
-  console.log('Database host:', dbHost);
-} catch (_) { /* ignore malformed URL */ }
+console.log('[STARTUP] Environment loaded');
 
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
@@ -47,68 +19,82 @@ const leadRoutes = require('./routes/leads');
 const analyticsRoutes = require('./routes/analytics');
 const stripeRoutes = require('./routes/stripe');
 const webhookRoutes = require('./routes/webhooks');
-const websiteRoutesModule = require('./routes/websites');
-const websiteRoutes = websiteRoutesModule.default || websiteRoutesModule;
-const websitePublicRoutes = websiteRoutesModule.publicRouter;
-const formRoutes = require('./routes/forms');
+const websiteRoutes = require('./routes/websites');
+const websitePublicRoutes = require('./routes/websites').publicRouter;
 const conversationRoutes = require('./routes/conversations');
-const channelRoutes = require('./routes/channels');
-const oauthChannelsRoutes = require('./routes/oauth-channels');
 const cannedResponseRoutes = require('./routes/cannedResponses');
 const autoResponseRoutes = require('./routes/autoResponses');
 const conversationNoteRoutes = require('./routes/conversationNotes');
-const emailRoutes = require('./routes/emails');
+const inboxAiRoutes = require('./routes/inbox-ai');
+const userRoutes = require('./routes/users');
+const automationRoutes = require('./routes/automations');
+const enrichmentRoutes = require('./routes/enrichment');
+const leadsiteApiRoutes = require('./routes/leadsite-api');
+const leadsiteDashboardRoutes = require('./routes/leadsite-dashboard');
+const webSearchRoutes = require('./routes/web-search');
 
-// UltraLead.AI Routes (Tier 5)
-const clientcontactCrmRoutes = require('./routes/ultralead');
+// VideoSite.AI Routes (Tier 4)
+console.log('[VIDEOSITE] Loading video routes modules...');
+let videoRoutes, clipRoutes, renderRoutes, publishRoutes, publishOAuthRoutes, stripePayoutRoutes, videoAnalyticsRoutes, videoAIRoutes;
 
-// New Platform Routes
-const copilotRoutes = require('./routes/copilot');
-const templateRoutes = require('./routes/templates');
-const crmRoutes = require('./routes/crm');
-const agentRoutes = require('./routes/agents');
-const videositeRoutes = require('./routes/videosite');
-const videoRoutes = require('./routes/videos');
-const advertiserRoutes = require('./routes/advertiser');
-const adsRoutes = require('./routes/ads');
-const payoutsRoutes = require('./routes/payouts');
-const creatorPayoutRoutes = require('./routes/creator-payouts');
-const aiAgentRoutes = require('./routes/ai-agents');
-const clipsRoutes = require('./routes/clips');
-const publishRoutes = require('./routes/publish');
-const productRoutes = require('./routes/products');
-const smsRoutes = require('./routes/sms');
-const emailSentinelRoutes = require('./routes/emailSentinel');
-const masterValidationRoutes = require('./routes/master-validation');
-const statusRoutes = require('./routes/status');
-const usersRoutes = require('./routes/users');
+try {
+  videoRoutes = require('./routes/videos');
+  console.log('✅ [VIDEOSITE] videos.js loaded');
+} catch (error) {
+  console.error('❌ [VIDEOSITE] Failed to load videos.js:', error.message);
+  console.error('Stack:', error.stack);
+}
 
-// NEXUS Blueprint Routes
-const nexusRoutes = require('./routes/nexus');
+try {
+  clipRoutes = require('./routes/clips');
+  console.log('✅ [VIDEOSITE] clips.js loaded');
+} catch (error) {
+  console.error('❌ [VIDEOSITE] Failed to load clips.js:', error.message);
+}
+
+try {
+  renderRoutes = require('./routes/render');
+  console.log('✅ [VIDEOSITE] render.js loaded');
+} catch (error) {
+  console.error('❌ [VIDEOSITE] Failed to load render.js:', error.message);
+}
+
+try {
+  publishRoutes = require('./routes/publish');
+  publishOAuthRoutes = require('./routes/publishOAuth');
+  stripePayoutRoutes = require('./routes/stripePayouts');
+  videoAnalyticsRoutes = require('./routes/videoAnalytics');
+  videoAIRoutes = require('./routes/videoAI');
+  console.log('✅ [VIDEOSITE] All other video routes loaded');
+} catch (error) {
+  console.error('❌ [VIDEOSITE] Failed to load other video routes:', error.message);
+}
+
+// ClientContact.IO CRM Routes (Tier 5 - Enterprise CRM features)
+const clientcontactCrmRoutes = require('./routes/clientcontact-crm');
 
 // Admin Routes (Internal only)
 const adminRoutes = require('./routes/adminRoutes');
-
-// Feature Flags
-const featureFlags = require('./config/feature-flags');
-
-// NEXUS Chat & Upload Routes (gated by ENABLE_NEXUS feature flag)
-const nexusChatRoutes = require('./routes/nexus-chat');
-const nexusUploadRoutes = require('./routes/nexus-upload');
-const nexusOrchestratorRoutes = require('./routes/nexus-orchestrator');
+const adminMigrateRoutes = require('./routes/admin-migrate');
 
 const { errorHandler } = require('./middleware/errorHandler');
+const { authenticate } = require('./middleware/auth');
 const { requestLogger } = require('./middleware/logger');
+const { performanceMonitor } = require('./middleware/performanceMonitor');
 const { initializeRedis, getRedisStore, checkRedisHealth } = require('./config/redis');
+const settings = require('./config/settings');
+const { createLogger } = require('./utils/logger');
+const monitoringService = require('./services/monitoringService');
+
+const logger = createLogger('server');
 
 // Self-Healing System (Monitors all 5 platforms)
 const { startAgents, getSystem } = require('./system-agents');
 
+console.log('[STARTUP] Creating Express app...');
 const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Trust proxy when behind Railway/load balancer (fixes X-Forwarded-For / express-rate-limit)
-app.set('trust proxy', 1);
+const PORT = settings.PORT;
+console.log('[STARTUP] Express app created, PORT:', PORT);
 
 // ===========================================
 // MIDDLEWARE
@@ -117,37 +103,35 @@ app.set('trust proxy', 1);
 // Security headers
 app.use(helmet());
 
-// CORS configuration - all platform domains (Scenario A: single app serving multiple domains)
-const defaultOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'https://aileadstrategies.com',
-  'https://www.aileadstrategies.com',
-  'https://leadsite.ai',
-  'https://www.leadsite.ai',
-  'https://app.leadsite.ai',
-  'https://leadsite.io',
-  'https://clientcontact.io',
-  'https://www.clientcontact.io',
-  'https://videosite.io',
-  'https://videosite.ai',
-  'https://www.videosite.ai',
-  'https://ultralead.ai',
-  'https://www.ultralead.ai',
-];
-const envOrigins = process.env.CORS_ORIGINS?.split(',').map(o => o.trim()).filter(Boolean) || [];
-const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
+// Response compression (gzip/brotli)
+app.use(compression({
+  level: 6, // Compression level (1-9)
+  filter: (req, res) => {
+    // Don't compress if client doesn't support it
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    // Use compression for all responses
+    return compression.filter(req, res);
+  }
+}));
 
+// CORS configuration (using settings from config)
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
+    
+    if (settings.CORS_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn(`CORS rejected origin: ${origin}`);
-      callback(new Error(`Origin ${origin} not allowed by CORS`));
+      logger.warn(`CORS blocked origin: ${origin}`, { origin, allowedOrigins: settings.CORS_ORIGINS });
+      // In production, be strict; in dev, be permissive
+      if (settings.ENVIRONMENT === 'production') {
+        callback(new Error(`CORS: Origin ${origin} not allowed`));
+      } else {
+        callback(null, true); // Be permissive for development
+      }
     }
   },
   credentials: true,
@@ -168,256 +152,204 @@ app.use(express.urlencoded({ extended: true }));
 // Request logging
 app.use(requestLogger);
 
-// Per-endpoint rate limiting (tiered by operation type)
-const { authLimiter, signupLimiter, aiLimiter, writeLimiter } = require('./middleware/rateLimiter');
+// Performance monitoring
+app.use(performanceMonitor);
 
-// Global fallback rate limit
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX || '500', 10),
+// Rate limiting - start with in-memory, upgrade to Redis if available
+const limiterConfig = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
   message: { error: 'Too many requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    if (req.path.includes('/webhooks/') && req.method === 'POST') return true;
-    if (req.path === '/health' || req.path === '/api/health' || req.path === '/api/v1/health') return true;
-    return false;
+    return req.path.includes('/webhooks/') && req.method === 'POST';
   },
-});
-app.use('/api/', globalLimiter);
+};
 
-// Targeted rate limits (applied before route handlers)
-app.use('/api/v1/auth/login', authLimiter);
-app.use('/api/v1/auth/signup', signupLimiter);
-app.use('/api/v1/auth/register', signupLimiter);
-app.use('/api/auth/login', authLimiter);
-app.use('/api/auth/signup', signupLimiter);
-app.use('/api/v1/copilot', aiLimiter);
-app.use('/api/v1/websites/generate', aiLimiter);
-app.use('/admin/login', authLimiter);
+
+// Start with in-memory rate limiting (always available)
+const limiter = rateLimit(limiterConfig);
+app.use('/api/', limiter);
+
+// Rate limit for lead search (prevent abuse) - must be before routes
+const searchLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // 50 search requests per 15 minutes
+  message: { error: 'Too many search requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/leadsite/search', searchLimiter);
 
 // ===========================================
 // ROUTES (always registered, regardless of Redis)
 // ===========================================
 
-// Health check — comprehensive DB + model verification (Layer 2)
-app.get('/health', require('./routes/health'));
+// Health check - MUST be simple and never fail
+// This endpoint is critical for Railway healthchecks - it must always respond quickly
+app.get('/health', (req, res) => {
+  // Ultra-simple health check - no dependencies, no async operations
+  // Railway healthcheck timeout is 100ms, so this must be instant
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString() 
+  });
+});
 
 app.get('/api/v1/health', async (req, res) => {
-  const redisHealth = await checkRedisHealth();
-  const selfHealingSystem = getSystem();
-  const systemHealth = selfHealingSystem?.running
-    ? selfHealingSystem.getHealthSummary()
-    : null;
-
-  res.json({
-    status: 'ok',
+  // Always return 200 - don't fail health check if Redis is down
+  const healthStatus = {
+    status: 'healthy',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    redis: redisHealth,
-    selfHealing: systemHealth
-  });
+    services: {}
+  };
+
+  try {
+    // Check database with timeout
+    const { PrismaClient } = require('@prisma/client');
+    const prisma = new PrismaClient();
+    await Promise.race([
+      prisma.$queryRaw`SELECT 1`,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 1000))
+    ]);
+    await prisma.$disconnect();
+    healthStatus.services.database = 'connected';
+  } catch (error) {
+    healthStatus.services.database = 'unavailable';
+  }
+
+  // Check Redis (non-blocking, don't fail if unavailable)
+  try {
+    const redisHealthy = await Promise.race([
+      checkRedisHealth(),
+      new Promise((resolve) => setTimeout(() => resolve(false), 500))
+    ]);
+    healthStatus.services.redis = redisHealthy ? 'connected' : 'unavailable';
+  } catch (error) {
+    healthStatus.services.redis = 'unavailable';
+  }
+
+  // Check self-healing system
+  try {
+    const selfHealingSystem = getSystem();
+    healthStatus.services.selfHealing = selfHealingSystem?.running ? 'active' : 'inactive';
+  } catch (error) {
+    healthStatus.services.selfHealing = 'unavailable';
+  }
+
+  // Always return 200 - service is healthy even if dependencies are down
+  res.status(200).json(healthStatus);
 });
 
-// Comprehensive /api/health - full system checks (database, redis, stripe, r2, memory, cpu)
-app.get('/api/health', async (req, res) => {
-  const criticalIssues = [];
-  const checks = {};
-
-  // Database
-  try {
-    if (process.env.DATABASE_URL) {
-      const { checkDatabaseHealth } = require('./config/database');
-      const dbHealth = await checkDatabaseHealth();
-      if (dbHealth.status !== 'healthy') throw new Error(dbHealth.error || 'DB check failed');
-
-      checks.database = { status: 'healthy', message: 'Connected' };
-    } else {
-      checks.database = { status: 'not_configured', message: 'DATABASE_URL not set' };
-    }
-  } catch (err) {
-    checks.database = { status: 'unhealthy', error: err.message };
-    criticalIssues.push(`database: ${err.message}`);
-  }
-
-  // Redis
-  try {
-    const redis = await checkRedisHealth();
-    checks.redis = redis.available
-      ? { status: 'healthy', message: 'Connected' }
-      : { status: redis.status || 'unhealthy', message: redis.error || 'Disconnected' };
-    if (!redis.available) criticalIssues.push('redis: not available');
-  } catch (err) {
-    checks.redis = { status: 'unhealthy', error: err.message };
-    criticalIssues.push(`redis: ${err.message}`);
-  }
-
-  // Stripe (configured = healthy; no API ping to avoid rate limits)
-  checks.stripe = process.env.STRIPE_SECRET_KEY
-    ? { status: 'healthy', message: 'Configured' }
-    : { status: 'not_configured', message: 'STRIPE_SECRET_KEY not set' };
-
-  // R2 Storage (Cloudflare R2)
-  const r2Configured = process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_R2_ACCESS_KEY && process.env.CLOUDFLARE_R2_SECRET_KEY;
-  if (r2Configured) {
-    try {
-      const { S3Client, HeadBucketCommand } = require('@aws-sdk/client-s3');
-      const client = new S3Client({
-        region: 'auto',
-        endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-        credentials: {
-          accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY,
-          secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_KEY
-        }
-      });
-      await client.send(new HeadBucketCommand({ Bucket: process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos' }));
-      checks.r2Storage = { status: 'healthy', message: 'Connected' };
-    } catch (err) {
-      checks.r2Storage = { status: 'unhealthy', error: err.message };
-      criticalIssues.push(`r2Storage: ${err.message}`);
-    }
-  } else {
-    checks.r2Storage = { status: 'not_configured', message: 'R2 credentials not set' };
-  }
-
-  // Anthropic (Lead Hunter / Copilot AI)
-  checks.anthropic = (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY)
-    ? { status: 'configured', message: 'ANTHROPIC_API_KEY set' }
-    : { status: 'not_configured', message: 'ANTHROPIC_API_KEY required for Lead Hunter AI' };
-
-  // Memory
-  const mem = process.memoryUsage();
-  const heapMB = Math.round(mem.heapUsed / 1024 / 1024);
-  checks.memory = heapMB < 450
-    ? { status: 'healthy', heapUsedMB: heapMB }
-    : { status: 'degraded', heapUsedMB: heapMB, message: 'High memory usage' };
-
-  // CPU (informational)
-  const cpu = process.cpuUsage();
-  checks.cpu = { status: 'healthy', user: cpu.user, system: cpu.system };
-
-  // Circuit breaker status
-  try {
-    const { getAllBreakerStatus } = require('./config/circuitBreaker');
-    checks.circuitBreakers = getAllBreakerStatus();
-  } catch (_) {}
-
-  const overallStatus = criticalIssues.length === 0 ? 'healthy' : 'degraded';
-  res.json({
-    status: overallStatus,
-    timestamp: new Date().toISOString(),
-    uptime: Math.round(process.uptime()),
-    critical_issues: criticalIssues,
-    checks
-  });
-});
-
-// ===========================================
-// CORE ROUTES (always enabled)
-// ===========================================
-app.use('/api/v1/status', statusRoutes);
+// API Routes (v1)
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/campaigns', campaignRoutes);
+app.use('/api/v1/leads', leadRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/stripe', stripeRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
-app.use('/api/v1/email-sentinel', emailSentinelRoutes);
+app.use('/api/v1/websites', websiteRoutes);
+app.use('/api/v1/websites', websitePublicRoutes); // Public routes (subdomain, form submit)
+app.use('/api/v1/conversations', conversationRoutes);
+app.use('/api/v1/canned-responses', cannedResponseRoutes);
+app.use('/api/v1/auto-responses', autoResponseRoutes);
+app.use('/api/v1/conversation-notes', conversationNoteRoutes);
+app.use('/api/v1/inbox-ai', inboxAiRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/automations', automationRoutes);
+app.use('/api/v1/search', authenticate, webSearchRoutes); // Real-time web search
+app.use('/', enrichmentRoutes); // Mount enrichment routes (includes /health and /api/v1/enrichment/*)
+app.use('/', leadsiteApiRoutes); // LeadSite.AI API routes
+app.use('/', leadsiteDashboardRoutes); // LeadSite.AI Dashboard routes
 
-// Backward compat for core routes
+// UPGRADE: Route aliases for multi-agent-taskforce compatibility
+const apiAliasesRoutes = require('./routes/api-aliases');
+app.use('/', apiAliasesRoutes); // /api/search and /api/enrich aliases
+
+// AI Co-Pilot Route (7-Agent Platform)
+const { handleCopilotChat, listConversations, getConversation, clearConversation, copilotHealth } = require('./routes/copilot');
+const copilotRouter = express.Router();
+copilotRouter.get('/health', copilotHealth); // Public health check
+copilotRouter.post('/', authenticate, handleCopilotChat);
+copilotRouter.get('/conversations', authenticate, listConversations);
+copilotRouter.get('/conversations/:id', authenticate, getConversation);
+copilotRouter.delete('/conversations/:id', authenticate, clearConversation);
+app.use('/api/v1/copilot', copilotRouter);
+
+// Channels endpoint (for unified inbox)
+const { getAllChannels, getEnabledChannels } = require('./config/channels');
+app.get('/api/v1/channels', (req, res) => {
+  res.json({ success: true, data: { channels: getAllChannels(), enabled: getEnabledChannels() } });
+});
+
+// Channel OAuth routes
+const channelOAuthRoutes = require('./routes/channels/oauth');
+const channelConnectionsRoutes = require('./routes/channels/connections');
+app.use('/api/v1/channels/oauth', channelOAuthRoutes);
+app.use('/api/v1/channels/connections', channelConnectionsRoutes);
+
+// VideoSite.AI Routes (Tier 4) - Register only if loaded successfully
+console.log('[VIDEOSITE] Registering VideoSite.AI routes...');
+
+if (videoRoutes) {
+  app.use('/api/v1/videos', videoRoutes);
+  console.log('✅ [VIDEOSITE] Video routes registered at /api/v1/videos');
+} else {
+  console.error('❌ [VIDEOSITE] Video routes NOT registered (failed to load)');
+}
+
+if (clipRoutes) {
+  app.use('/api/v1/clips', clipRoutes);
+  console.log('✅ [VIDEOSITE] Clip routes registered at /api/v1/clips');
+}
+
+if (renderRoutes) {
+  app.use('/api/v1/render', renderRoutes);
+  console.log('✅ [VIDEOSITE] Render routes registered at /api/v1/render');
+}
+
+if (publishRoutes) app.use('/api/v1/publish', publishRoutes);
+if (publishOAuthRoutes) app.use('/api/v1/publish', publishOAuthRoutes);
+if (stripePayoutRoutes) app.use('/api/v1/payouts', stripePayoutRoutes);
+if (videoAnalyticsRoutes) app.use('/api/v1/analytics', videoAnalyticsRoutes);
+if (videoAIRoutes) app.use('/api/v1/videos/ai', videoAIRoutes);
+
+console.log('✅ [VIDEOSITE] VideoSite.AI route registration complete');
+
+// ClientContact.IO CRM Routes (Tier 5)
+app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
+// Legacy CRM URL redirect (path only, no trademark)
+app.use('/api/v1/tackle', (req, res) => res.redirect(308, '/api/v1/clientcontact' + (req.path === '/' ? '' : req.path)));
+
+// Monitoring Routes (Platform health)
+const monitoringRoutes = require('./routes/monitoring');
+const systemIntegrityRoutes = require('./routes/system-integrity');
+app.use('/api/v1/monitoring', monitoringRoutes);
+app.use('/api/v1', systemIntegrityRoutes);
+
+// Admin Routes (Internal AI Lead Strategies staff only)
+app.use('/admin/migrate', adminMigrateRoutes); // Must be before /admin to avoid conflict
+app.use('/admin', adminRoutes);
+
+// Also support /api/ routes for backward compatibility
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/campaigns', campaignRoutes);
+app.use('/api/leads', leadRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/webhooks', webhookRoutes);
-app.use('/api/status', statusRoutes);
-
-// Admin Routes (Internal AI Lead Strategies staff only)
-app.use('/admin', adminRoutes);
-app.use('/api/admin', adminRoutes);
-
-// Master Orchestrator Routes
-app.use('/api/master', masterValidationRoutes);
-
-// ===========================================
-// FEATURE-FLAGGED PLATFORM ROUTES
-// ===========================================
-
-// LeadSite.AI (Tier 1) — leads, campaigns, emails, copilot
-if (featureFlags.ENABLE_LEADSITE_AI) {
-  app.use('/api/v1/leads', leadRoutes);
-  app.use('/api/v1/campaigns', campaignRoutes);
-  app.use('/api/v1/emails', emailRoutes);
-  app.use('/api/v1/copilot', copilotRoutes);
-  app.use('/api/leads', leadRoutes);
-  app.use('/api/campaigns', campaignRoutes);
-  app.use('/api/emails', emailRoutes);
-}
-
-// LeadSite.IO (Tier 2) — websites, forms, templates
-if (featureFlags.ENABLE_LEADSITE_IO) {
-  if (websitePublicRoutes) {
-    app.use('/api/v1/websites', websitePublicRoutes);
-  }
-  app.use('/api/v1/websites', websiteRoutes);
-  app.use('/api/v1/forms', formRoutes);
-  app.use('/api/forms', formRoutes);
-  app.use('/api/v1/templates', templateRoutes);
-  app.use('/api/websites', websiteRoutes);
-  app.use('/api/forms', formRoutes);
-}
-
-// ClientContact.IO (Tier 3) — inbox, channels, conversations
-if (featureFlags.ENABLE_CLIENT_CONTACT) {
-  app.use('/api/v1/conversations', conversationRoutes);
-  app.use('/api/v1/channels', channelRoutes);
-  app.use('/api/v1/oauth/channels', oauthChannelsRoutes);
-  app.use('/api/v1/canned-responses', cannedResponseRoutes);
-  app.use('/api/v1/auto-responses', autoResponseRoutes);
-  app.use('/api/v1/conversation-notes', conversationNoteRoutes);
-  app.use('/api/conversations', conversationRoutes);
-  app.use('/api/channels', channelRoutes);
-  app.use('/api/oauth/channels', oauthChannelsRoutes);
-  app.use('/api/canned-responses', cannedResponseRoutes);
-  app.use('/api/auto-responses', autoResponseRoutes);
-  app.use('/api/conversation-notes', conversationNoteRoutes);
-}
-
-// VideoSite.AI (Tier 4) — videos, clips, ads, payouts
-if (featureFlags.ENABLE_VIDEOSITE_AI) {
-  app.use('/api/v1/videos', videoRoutes);
-  app.use('/api/v1/videosite', videositeRoutes);
-  app.use('/api/v1/advertiser', advertiserRoutes);
-  app.use('/api/v1/ads', adsRoutes);
-  app.use('/api/v1/payouts', payoutsRoutes);
-  app.use('/api/v1', creatorPayoutRoutes);
-  app.use('/api/v1/clips', clipsRoutes);
-  app.use('/api/v1/publish', publishRoutes);
-  app.use('/api/v1/products', productRoutes);
-  app.use('/api/videos', videoRoutes);
-}
-
-// UltraLead.AI (Tier 5) — CRM, agents, AI
-if (featureFlags.ENABLE_ULTRALEAD) {
-  app.use('/api/v1/crm', crmRoutes);
-  app.use('/api/v1/clientcontact', clientcontactCrmRoutes);
-  app.use('/api/v1/agents', agentRoutes);
-  app.use('/api/v1/ai', aiAgentRoutes);
-  app.use('/api/v1/sms', smsRoutes);
-}
-
-// NEXUS (disabled by default — enable with ENABLE_NEXUS=true)
-if (featureFlags.ENABLE_NEXUS) {
-  app.use('/api/v1/nexus', require('./routes/platform-verification')); // Platform Verification (no auth)
-  app.use('/api/v1/nexus/orchestrator', nexusOrchestratorRoutes); // NEXUS Multi-Agent Orchestrator (before auth-gated routes)
-  app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions (no auth — Command Center)
-  app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System (auth-gated)
-  app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
-  console.log('NEXUS routes enabled');
-}
-
-// Log active feature flags
-console.log('Feature flags:', Object.entries(featureFlags).map(([k, v]) => `${k}=${v}`).join(', '));
+app.use('/api/websites', websiteRoutes);
+app.use('/api/conversations', conversationRoutes);
+app.use('/api/canned-responses', cannedResponseRoutes);
+app.use('/api/auto-responses', autoResponseRoutes);
+app.use('/api/conversation-notes', conversationNoteRoutes);
+app.use('/api/inbox-ai', inboxAiRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/automations', automationRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -428,7 +360,18 @@ app.use((req, res) => {
 });
 
 // Error handler
-app.use(errorHandler);
+// Error handler with monitoring
+app.use((err, req, res, next) => {
+  // Record error in monitoring service
+  monitoringService.recordError(err, {
+    path: req.path,
+    method: req.method,
+    userId: req.user?.id
+  });
+  
+  // Use standard error handler
+  errorHandler(err, req, res, next);
+});
 
 // ===========================================
 // SERVER START
@@ -448,148 +391,227 @@ initializeRedis().then((redisConfig) => {
   console.warn('⚠️  Redis initialization failed - using in-memory rate limiting:', error.message);
 });
 
+// ===========================================
+// GLOBAL ERROR HANDLERS (Critical for Railway)
+// ===========================================
+// Catch unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  // Suppress Redis connection errors - they're expected when Redis isn't configured
+  if (reason && (reason.code === 'ECONNREFUSED' || reason.code === 'ENOTFOUND')) {
+    if (reason.syscall === 'connect' && reason.port === 6379) {
+      // Redis connection error - expected, don't log as error
+      return;
+    }
+  }
+  
+  // Suppress AggregateError with ECONNREFUSED for Redis
+  if (reason && reason.name === 'AggregateError' && reason.errors) {
+    const isRedisError = reason.errors.some(err => 
+      err.code === 'ECONNREFUSED' && err.port === 6379
+    );
+    if (isRedisError) {
+      // Redis connection error - expected, don't log as error
+      return;
+    }
+  }
+  
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  logger.error('Unhandled promise rejection', { reason: reason?.message || reason, stack: reason?.stack });
+  // Don't exit - let server continue running
+});
+
+// Catch uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  logger.error('Uncaught exception', { error: error.message, stack: error.stack });
+  // Don't exit - let server continue running for health checks
+});
+
+// ===========================================
+// SERVER START
+// ===========================================
+
+// ===========================================
+// STARTUP VALIDATION & LOGGING
+// ===========================================
+
+console.log('\n' + '='.repeat(60));
+console.log('🚀 AI LEAD STRATEGIES BACKEND - STARTUP');
+console.log('='.repeat(60));
+console.log(`📅 Timestamp: ${new Date().toISOString()}`);
+console.log(`🌍 Node Environment: ${process.env.NODE_ENV || 'not set'}`);
+console.log(`⚙️  Environment: ${settings.ENVIRONMENT}`);
+console.log(`🔢 PORT: ${process.env.PORT || PORT} (from ${process.env.PORT ? 'Railway' : 'default'})`);
+console.log(`🗄️  DATABASE_URL: ${process.env.DATABASE_URL ? '✅ SET' : '❌ NOT SET'}`);
+console.log(`🔴 REDIS_URL: ${process.env.REDIS_URL ? '✅ SET' : '⚠️  NOT SET (will use localhost)'}`);
+console.log(`🤖 ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? '✅ SET' : '❌ NOT SET'}`);
+console.log(`🔑 JWT_SECRET: ${process.env.JWT_SECRET ? '✅ SET' : '⚠️  USING DEFAULT'}`);
+console.log(`💳 STRIPE_SECRET_KEY: ${process.env.STRIPE_SECRET_KEY ? '✅ SET' : '⚠️  NOT SET'}`);
+console.log(`🌐 CORS Origins: ${settings.CORS_ORIGINS.length} configured`);
+console.log('='.repeat(60) + '\n');
+
+// Critical validation - warn but don't crash
+if (!process.env.DATABASE_URL) {
+  console.error('❌ CRITICAL: DATABASE_URL not set! Database operations will fail.');
+  console.error('   Set DATABASE_URL in Railway environment variables.');
+}
+
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.warn('⚠️  WARNING: ANTHROPIC_API_KEY not set. AI agents will have limited functionality.');
+}
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.warn('⚠️  WARNING: STRIPE_SECRET_KEY not set. Payment processing will not work.');
+}
+
 // Start server immediately (routes are already registered)
 // Bind to 0.0.0.0 to accept connections from all network interfaces (required for Railway/Docker)
-app._server = app.listen(PORT, '0.0.0.0', async () => {
-  // API Keys Status - log which services are configured (values masked)
-  const apiKeysStatus = {
-    anthropic: !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY),
-    apollo: !!process.env.APOLLO_API_KEY,
-    openai: !!process.env.OPENAI_API_KEY,
-    stripe: !!process.env.STRIPE_SECRET_KEY,
-    mailgun: !!process.env.MAILGUN_API_KEY,
-  };
-  console.log('API Keys Status:', apiKeysStatus);
+// Use process.env.PORT directly (Railway sets this)
+const serverPort = process.env.PORT || PORT;
 
-  // Test Anthropic connection on startup (non-blocking)
-  if (apiKeysStatus.anthropic) {
-    const key = process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_KEY;
+console.log('[STARTUP] Starting server on port', serverPort, 'binding to 0.0.0.0...');
+
+try {
+  const server = app.listen(serverPort, '0.0.0.0', () => {
+    // Initialize WebSocket on server (if available)
     try {
-      const Anthropic = require('@anthropic-ai/sdk');
-      const anthropic = new Anthropic({ apiKey: key });
-      const testResp = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 20,
-        messages: [{ role: 'user', content: 'Say "API Connected" in 2 words only.' }],
-      });
-      console.log('✅ Anthropic API connected:', testResp.content[0]?.text?.trim() || 'OK');
-    } catch (err) {
-      console.error('❌ Anthropic API FAILED:', err.message);
+      const websocketService = require('./services/websocketService');
+      websocketService.initialize(server);
+    } catch (error) {
+      // WebSocket service optional
+      console.log('[STARTUP] WebSocket service not available');
     }
-  } else {
-    console.warn('⚠️  ANTHROPIC_API_KEY not set - Lead Hunter will return 503 until configured');
-  }
+    console.log('[STARTUP] ✅ Server listening callback fired');
+    logger.info('🚀 AI Lead Strategies Unified Backend starting', {
+      port: serverPort,
+      environment: settings.ENVIRONMENT,
+      service: settings.RAILWAY_SERVICE_NAME || 'backend',
+    });
 
-  console.log(`
+    console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║
 ║   🚀 AI Lead Strategies Unified Backend           ║
 ║                                                   ║
-║   Server running on port ${PORT}                    ║
-║   Environment: ${process.env.NODE_ENV || 'development'}               ║
+║   Server running on port ${serverPort}                    ║
+║   Environment: ${settings.ENVIRONMENT}               ║
 ║                                                   ║
 ║   Platforms Served:                               ║
 ║   • LeadSite.AI (Tier 1)                          ║
 ║   • LeadSite.IO (Tier 2)                          ║
 ║   • ClientContact.IO (Tier 3)                     ║
-║   • VideoSite.AI (Tier 4)                         ║
-║   • UltraLead.AI (Tier 5)                        ║
+║   • VideoSite.IO (Tier 4)                         ║
+║   • ClientContact CRM (Tier 5)                    ║
 ║                                                   ║
-║   Health: http://localhost:${PORT}/health            ║
-║   API:    http://localhost:${PORT}/api/v1            ║
-║   Admin:  http://localhost:${PORT}/admin             ║
+║   Health: http://localhost:${serverPort}/health            ║
+║   API:    http://localhost:${serverPort}/api/v1            ║
+║   Copilot: http://localhost:${serverPort}/api/v1/copilot   ║
+║   Admin:  http://localhost:${serverPort}/admin             ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
-  `);
+    `);
 
-  // ===========================================
-  // SELF-HEALING SYSTEM STARTUP
-  // ===========================================
-  // Monitors all 5 platforms from single system
-  if (process.env.ENABLE_SELF_HEALING === 'true') {
-    try {
-      console.log('\n🔧 Starting Self-Healing System...');
-      console.log('   Monitoring all 5 platforms: LeadSite.AI, LeadSite.IO, ClientContact.IO, VideoSite.AI, UltraLead.AI\n');
-
-      // Start all 7 agents
-      await startAgents({
+    // ===========================================
+    // SELF-HEALING SYSTEM STARTUP (Non-blocking)
+    // ===========================================
+    // Monitors all 4 platforms from single system
+    // Start in background - don't block server startup
+    if (process.env.ENABLE_SELF_HEALING === 'true') {
+      // Don't await - start in background
+      startAgents({
         db: null,    // Will use Prisma from agents if needed
         redis: null  // Will initialize Redis if REDIS_URL is set
+      }).then(() => {
+        logger.info('✅ Self-Healing System active - 7 agents monitoring all platforms', {
+          dashboardPath: '/admin/system/dashboard',
+        });
+      }).catch((error) => {
+        logger.error('⚠️  Self-Healing System failed to start', error);
+        logger.warn('Server continues without self-healing monitoring');
       });
-
-      console.log('\n✅ Self-Healing System active - 7 agents monitoring all platforms');
-      console.log('   Access monitoring dashboard at: /admin/system/dashboard\n');
-    } catch (error) {
-      console.error('⚠️  Self-Healing System failed to start:', error.message);
-      console.log('   Server continues without self-healing monitoring\n');
+    } else {
+      logger.info('💡 Self-Healing System disabled', {
+        enableWith: 'ENABLE_SELF_HEALING=true',
+      });
     }
-  } else {
-    console.log('\n💡 Self-Healing System disabled');
-    console.log('   Enable with ENABLE_SELF_HEALING=true environment variable\n');
-  }
 
-  // Email Sentinel - backend only (Redis). Frontend never connects to Redis.
-  try {
-    const { startEmailSentinel } = require('./emailSentinel');
-    await startEmailSentinel();
-  } catch (err) {
-    console.warn('[Email Sentinel] Skip:', err.message);
-  }
-});
+    // ===========================================
+    // 14-DAY TRIAL REMINDER SYSTEM
+    // ===========================================
+    // Runs daily at 9 AM; also runs on startup
+    try {
+      const cron = require('node-cron');
+      const { checkTrialsAndSendReminders } = require('./services/emailReminders');
+      
+      // Schedule cron job FIRST
+      cron.schedule('0 9 * * *', async () => {
+        console.log('[TrialReminder] ⏰ Running daily trial reminder check...');
+        try {
+          await checkTrialsAndSendReminders();
+          console.log('[TrialReminder] ✅ Daily check completed');
+        } catch (err) {
+          console.error('[TrialReminder] ❌ Daily check failed:', err);
+        }
+      });
+      console.log('[TrialReminder] ✅ Scheduled daily at 9:00 AM');
+      
+      // Run startup check AFTER scheduling (with delay to let server stabilize)
+      setTimeout(async () => {
+        console.log('[TrialReminder] 🔍 Running initial startup check...');
+        try {
+          await checkTrialsAndSendReminders();
+          console.log('[TrialReminder] ✅ Startup check completed');
+        } catch (err) {
+          console.error('[TrialReminder] ⚠️ Startup check failed:', err.message);
+        }
+      }, 10000); // Wait 10 seconds after server starts
+      
+    } catch (err) {
+      console.warn('[TrialReminder] ⚠️ Could not start trial reminder system:', err.message);
+    }
 
-// ===========================================
-// GRACEFUL SHUTDOWN
-// ===========================================
-let isShuttingDown = false;
-
-async function gracefulShutdown(signal) {
-  if (isShuttingDown) return;
-  isShuttingDown = true;
-  console.log(`\n${signal} received. Starting graceful shutdown...`);
-
-  // Stop accepting new connections
-  const server = app._server;
-  if (server) {
-    server.close(() => {
-      console.log('HTTP server closed');
+    // Log that server is ready
+    logger.info('✅ Server ready and accepting connections', {
+      port: serverPort,
+      healthEndpoint: `/health`
     });
-  }
+  });
 
-  // Drain database connections
-  try {
-    const { disconnectDatabase } = require('./config/database');
-    await disconnectDatabase();
-    console.log('Database connections closed');
-  } catch (err) {
-    console.error('Error closing database:', err.message);
-  }
-
-  // Close Redis
-  try {
-    const { shutdownRedis } = require('./config/redis');
-    if (typeof shutdownRedis === 'function') {
-      await shutdownRedis();
-      console.log('Redis connections closed');
+  // Handle server errors
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${serverPort} is already in use`);
+      logger.error(`Port ${serverPort} already in use`, { error: error.message });
+      process.exit(1);
+    } else {
+      console.error('❌ Server error:', error);
+      logger.error('Server error', { error: error.message, stack: error.stack });
     }
-  } catch (err) {
-    // shutdownRedis may not exist yet
-  }
+  });
 
-  console.log('Graceful shutdown complete');
-  process.exit(0);
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
+  });
+
+  process.on('SIGINT', () => {
+    console.log('SIGINT received, shutting down gracefully...');
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
+  });
+
+} catch (error) {
+  console.error('❌ Failed to start server:', error);
+  logger.error('Failed to start server', { error: error.message, stack: error.stack });
+  process.exit(1);
 }
 
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
-// Catch unhandled errors (don't crash silently)
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-  gracefulShutdown('uncaughtException');
-});
-
 module.exports = app;
+
+// Deployment trigger: 2026-01-31

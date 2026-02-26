@@ -1625,7 +1625,7 @@ model ViewerPass {
   stripePaymentId String?
   viewsTotal      Int      @default(10)
   viewsRemaining  Int      @default(10)
-  amountPaid      Float    @default(11.00)
+  amountPaid      Float    @default(12.00)
   status          String   @default("active")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

@@ -760,7 +760,7 @@ router.get('/pass/status', async (req, res) => {
   }
 });
 
-// POST /api/v1/videosite/pass/purchase - Create Stripe $11 checkout for 10-view pass
+// POST /api/v1/videosite/pass/purchase - Create Stripe $12 checkout for 10-view pass
 router.post('/pass/purchase', async (req, res) => {
   try {
     if (!stripe) {
@@ -773,7 +773,7 @@ router.post('/pass/purchase', async (req, res) => {
         price_data: {
           currency: 'usd',
           product_data: { name: 'VideoSite.AI Viewer Pass', description: '10 video views' },
-          unit_amount: 1100,
+          unit_amount: 1200,
         },
         quantity: 1,
       }],

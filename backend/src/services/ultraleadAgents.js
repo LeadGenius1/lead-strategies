@@ -38,7 +38,7 @@ Content: ${campaign.content?.substring(0, 500)}
 Suggest improvements for open rates, click rates, and conversions.`;
 
       const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 500,
         messages: [{ role: 'user', content: prompt }]
       });
@@ -114,7 +114,7 @@ Provide:
 4. Deal probability assessment`;
 
       const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 500,
         messages: [{ role: 'user', content: prompt }]
       });
@@ -163,7 +163,7 @@ Notes: ${lead.notes || 'None'}
 Provide score and reasoning.`;
 
       const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       });
@@ -208,7 +208,7 @@ Provide:
 3. Recommendations for improvement`;
 
       const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-6',
         max_tokens: 500,
         messages: [{ role: 'user', content: prompt }]
       });

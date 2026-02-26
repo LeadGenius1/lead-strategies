@@ -88,11 +88,15 @@ model User {
   emailAccounts         UserEmailAccount[]
   emailPoolSubscription EmailPoolSubscription?
 
+  // SMS Marketing
+  smsMessages  SmsMessage[]
+  smsSequences SmsSequence[]
+
+  // Video Viewer Passes
+  viewerPasses ViewerPass[]
+
   // NEXUS Conversation History
   nexusConversations ConversationHistory[]
-
-  // AI Website Builder
-  aiBuilderSites AiBuilderSite[]
 
   @@index([subscriptionStatus])
   @@index([stripeCustomerId])
@@ -1576,78 +1580,57 @@ model ConversationFile {
   @@map("conversation_files")
 }
 
-// ==================== AI WEBSITE BUILDER ====================
+// ==================== SMS MARKETING ====================
 
-enum WebsiteStatus {
-  draft
-  published
-  archived
+model SmsMessage {
+  id         String   @id @default(cuid())
+  userId     String
+  contactId  String?
+  to         String
+  from       String
+  body       String
+  messageSid String?  @unique
+  status     String   @default("sent")
+  direction  String   @default("outbound")
+  campaignId String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([direction])
+  @@index([messageSid])
+  @@map("sms_messages")
 }
 
-enum LeadStatus {
-  new_lead  @map("new")
-  contacted
-  qualified
-  converted
+model SmsSequence {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  steps      Json
+  contactIds Json
+  status     String   @default("active")
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("sms_sequences")
 }
 
-model WebsiteTemplate {
-  id           String   @id @default(cuid())
-  name         String
-  slug         String   @unique
-  previewImage String?  @map("preview_image")
-  html         String
-  css          String
-  formSchema   Json?    @map("form_schema")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  sites        AiBuilderSite[]
-  @@map("website_templates")
-}
+// ==================== VIDEO VIEWER PASSES ====================
 
-model AiBuilderSite {
-  id           String        @id @default(cuid())
-  userId       String        @map("user_id")
-  templateId   String        @map("template_id")
-  name         String
-  html         String
-  css          String
-  formData     Json?         @map("form_data")
-  status       WebsiteStatus @default(draft)
-  subdomain    String?       @unique
-  customDomain String?       @map("custom_domain")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template     WebsiteTemplate @relation(fields: [templateId], references: [id])
-  leads        AiBuilderSiteLead[]
-  versions     AiBuilderSiteVersion[]
-  @@map("ai_builder_sites")
-}
+model ViewerPass {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  stripePaymentId String?
+  viewsTotal      Int      @default(10)
+  viewsRemaining  Int      @default(10)
+  amountPaid      Float    @default(11.00)
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-model AiBuilderSiteLead {
-  id        String     @id @default(cuid())
-  siteId    String     @map("site_id")
-  name      String?
-  email     String
-  phone     String?
-  message   String?
-  formData  Json?      @map("form_data")
-  status    LeadStatus @default(new_lead)
-  leadId    String?    @map("lead_id")
-  createdAt DateTime   @default(now()) @map("created_at")
-  site      AiBuilderSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  @@map("ai_builder_site_leads")
-}
-
-model AiBuilderSiteVersion {
-  id        String   @id @default(cuid())
-  siteId    String   @map("site_id")
-  html      String
-  css       String
-  formData  Json?    @map("form_data")
-  version   Int
-  createdAt DateTime @default(now()) @map("created_at")
-  site      AiBuilderSite @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  @@map("ai_builder_site_versions")
+  @@index([userId])
+  @@index([status])
+  @@map("viewer_passes")
 }

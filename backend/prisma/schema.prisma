@@ -92,6 +92,9 @@ model User {
   smsMessages  SmsMessage[]
   smsSequences SmsSequence[]
 
+  // Video Viewer Passes
+  viewerPasses ViewerPass[]
+
   // NEXUS Conversation History
   nexusConversations ConversationHistory[]
 
@@ -1611,4 +1614,23 @@ model SmsSequence {
 
   @@index([userId])
   @@map("sms_sequences")
+}
+
+// ==================== VIDEO VIEWER PASSES ====================
+
+model ViewerPass {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  stripePaymentId String?
+  viewsTotal      Int      @default(10)
+  viewsRemaining  Int      @default(10)
+  amountPaid      Float    @default(11.00)
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("viewer_passes")
 }

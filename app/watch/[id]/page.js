@@ -23,7 +23,9 @@ export default function WatchVideoPage() {
   const [passLoading, setPassLoading] = useState(true);
   const [passToast, setPassToast] = useState(false);
   const [passUsed, setPassUsed] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const watchStartRef = useRef(null);
+  const previewRef = useRef(null);
 
   useEffect(() => {
     if (videoId) {
@@ -45,6 +47,26 @@ export default function WatchVideoPage() {
       checkPassStatus();
     }
   }, [videoId]);
+
+  // Preview loop: play first 5 seconds muted, then show paywall overlay
+  useEffect(() => {
+    if (!video || passLoading || passStatus?.hasActivePass) return;
+    const el = previewRef.current;
+    if (!el) return;
+
+    const handleTimeUpdate = () => {
+      if (el.currentTime >= 5) {
+        el.currentTime = 0;
+        if (!showPaywall) setShowPaywall(true);
+      }
+    };
+
+    el.addEventListener('timeupdate', handleTimeUpdate);
+    el.muted = true;
+    el.play().catch(() => {});
+
+    return () => el.removeEventListener('timeupdate', handleTimeUpdate);
+  }, [video, passLoading, passStatus]);
 
   // Track view after 3 seconds (only when pass is active)
   useEffect(() => {
@@ -284,25 +306,34 @@ export default function WatchVideoPage() {
                   </div>
                 ) : (
                   <div className="relative w-full h-full">
-                    {video.thumbnailUrl && (
-                      <img src={video.thumbnailUrl} alt="" className="absolute inset-0 w-full h-full object-cover blur-lg scale-105 opacity-40" />
+                    <video
+                      ref={previewRef}
+                      src={video.videoUrl}
+                      poster={video.thumbnailUrl}
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    {showPaywall && (
+                      <>
+                        <div className="absolute inset-0 bg-black/60" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                          <div className="w-16 h-16 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center mb-4">
+                            <Play className="w-7 h-7 text-indigo-400" />
+                          </div>
+                          <h2 className="text-xl font-semibold text-white mb-2">Watch this video</h2>
+                          <p className="text-neutral-400 text-sm mb-5 max-w-sm">
+                            1 view = $1.20 &bull; Creator earns $1.00 per view
+                          </p>
+                          <button
+                            onClick={handleBuyPass}
+                            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-500/25"
+                          >
+                            Buy 10-view pass for $12
+                          </button>
+                        </div>
+                      </>
                     )}
-                    <div className="absolute inset-0 bg-black/60" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-                      <div className="w-16 h-16 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center mb-4">
-                        <Play className="w-7 h-7 text-indigo-400" />
-                      </div>
-                      <h2 className="text-xl font-semibold text-white mb-2">Watch this video</h2>
-                      <p className="text-neutral-400 text-sm mb-5 max-w-sm">
-                        1 view = $1.20 &bull; Creator earns $1.00 per view
-                      </p>
-                      <button
-                        onClick={handleBuyPass}
-                        className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-500/25"
-                      >
-                        Buy 10-view pass for $12
-                      </button>
-                    </div>
                   </div>
                 )}
               </div>

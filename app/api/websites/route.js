@@ -38,14 +38,15 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const sites = await prisma.aiBuilderSite.findMany({
+    const sites = await prisma.website.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
         name: true,
         status: true,
-        subdomain: true,
+        slug: true,
+        isPublished: true,
         createdAt: true,
       },
     });

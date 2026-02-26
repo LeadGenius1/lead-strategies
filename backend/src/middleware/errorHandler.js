@@ -49,6 +49,14 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
+  // JSON parse errors (malformed request body)
+  if (err.type === 'entity.parse.failed' || (err.name === 'SyntaxError' && err.status === 400)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid JSON in request body',
+    });
+  }
+
   // Validation errors
   if (err.name === 'ValidationError' || err.name === 'ZodError') {
     return res.status(400).json({
@@ -66,7 +74,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Default error — never leak internals in production
-  const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || err.status || 500;
   res.status(statusCode).json({
     success: false,
     error:

@@ -18,6 +18,10 @@ export function middleware(request) {
       '/',           // Home page
       '/watch',      // Browse videos
       '/ads',        // Advertiser platform
+      '/advertiser', // Advertiser signup/login/dashboard
+      '/policy',     // Policy center
+      '/terms',      // Terms redirect
+      '/privacy',    // Privacy redirect
     ];
 
     // Check if current path is allowed or starts with allowed prefix

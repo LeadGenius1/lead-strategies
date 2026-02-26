@@ -54,14 +54,9 @@ export default function Footer({ brandName = 'AI LEAD STRATEGIES' }) {
           <div>
             <h4 className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-4">Legal & Compliance</h4>
             <ul className="space-y-2 text-sm font-geist text-neutral-400">
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link href="/security" className="hover:text-white transition-colors">Security</Link></li>
-              <li><Link href="/compliance" className="hover:text-white transition-colors">Compliance</Link></li>
-              <li><Link href="/gdpr" className="hover:text-white transition-colors">GDPR Compliance</Link></li>
-              <li><Link href="/ccpa" className="hover:text-white transition-colors">CCPA Compliance</Link></li>
-              <li><Link href="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link></li>
-              <li><Link href="/data-processing" className="hover:text-white transition-colors">Data Processing</Link></li>
+              <li><Link href="/policy" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link href="/policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/policy" className="hover:text-white transition-colors">Acceptable Use</Link></li>
             </ul>
           </div>
         </div>

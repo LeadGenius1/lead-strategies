@@ -516,6 +516,13 @@ export default function WatchVideoPage() {
         </div>
       </div>
 
+      {/* Footer */}
+      <div className="flex items-center justify-center gap-4 text-xs text-neutral-600 mt-8 pb-6">
+        <Link href="/policy" className="hover:text-neutral-400 transition-colors">Terms of Service</Link>
+        <Link href="/policy" className="hover:text-neutral-400 transition-colors">Privacy Policy</Link>
+        <Link href="/policy" className="hover:text-neutral-400 transition-colors">Acceptable Use</Link>
+      </div>
+
       {/* Share Modal */}
       {showShare && (
         <ShareModal

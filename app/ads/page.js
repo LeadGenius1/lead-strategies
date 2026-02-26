@@ -453,11 +453,14 @@ export default function AdsLandingPage() {
               &copy; {new Date().getFullYear()} AI Lead Strategies LLC. All rights reserved.
             </div>
             <div className="flex items-center gap-6">
-              <Link href="/terms" className="text-neutral-500 hover:text-neutral-300 font-geist text-xs transition-colors">
+              <Link href="/policy" className="text-neutral-500 hover:text-neutral-300 font-geist text-xs transition-colors">
                 Terms of Service
               </Link>
-              <Link href="/privacy" className="text-neutral-500 hover:text-neutral-300 font-geist text-xs transition-colors">
+              <Link href="/policy" className="text-neutral-500 hover:text-neutral-300 font-geist text-xs transition-colors">
                 Privacy Policy
+              </Link>
+              <Link href="/policy" className="text-neutral-500 hover:text-neutral-300 font-geist text-xs transition-colors">
+                Acceptable Use
               </Link>
               <Link href="/advertiser/login" className="text-neutral-500 hover:text-neutral-300 font-geist text-xs transition-colors">
                 Advertiser Login

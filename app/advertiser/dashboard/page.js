@@ -226,9 +226,9 @@ export default function AdvertiserDashboardPage() {
 
         {/* Footer */}
         <div className="flex items-center justify-center gap-6 text-xs text-gray-600 py-4">
-          <Link href="/policy" className="hover:text-gray-400 transition-colors">Policy Center</Link>
-          <Link href="/policy" className="hover:text-gray-400 transition-colors">Terms</Link>
-          <Link href="/policy" className="hover:text-gray-400 transition-colors">Privacy</Link>
+          <Link href="/policy" className="hover:text-gray-400 transition-colors">Terms of Service</Link>
+          <Link href="/policy" className="hover:text-gray-400 transition-colors">Privacy Policy</Link>
+          <Link href="/policy" className="hover:text-gray-400 transition-colors">Acceptable Use</Link>
         </div>
       </div>
 

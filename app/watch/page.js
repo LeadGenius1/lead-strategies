@@ -257,6 +257,13 @@ export default function WatchBrowsePage() {
             </button>
           </div>
         )}
+
+        {/* Footer */}
+        <div className="flex items-center justify-center gap-4 text-xs text-neutral-600 mt-12 pb-4">
+          <Link href="/policy" className="hover:text-neutral-400 transition-colors">Terms of Service</Link>
+          <Link href="/policy" className="hover:text-neutral-400 transition-colors">Privacy Policy</Link>
+          <Link href="/policy" className="hover:text-neutral-400 transition-colors">Acceptable Use</Link>
+        </div>
       </div>
     </div>
   );

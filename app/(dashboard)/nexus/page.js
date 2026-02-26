@@ -1,148 +1,217 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 
+const STATUS_BADGE = {
+  COMPLETED: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
+  IN_PROGRESS: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/20',
+  NOT_STARTED: 'bg-neutral-500/15 text-neutral-400 border-neutral-500/20',
+  BLOCKED: 'bg-red-500/15 text-red-400 border-red-500/20',
+};
+
+const PLATFORM_META = {
+  'leadsite-io': { label: 'LeadSite.IO', features: ['AI Builder', 'Templates', 'Publishing', 'Lead Forms', 'Analytics'] },
+  'leadsite-ai': { label: 'LeadSite.AI', features: ['Lead Hunter', 'Proactive Hunter', 'Prospects', 'Campaigns', 'Replies'] },
+  'clientcontact-io': { label: 'ClientContact.IO', features: ['Unified Inbox', 'Channel Manager', 'Auto-Responder'] },
+  'videosite-ai': { label: 'VideoSite.AI', features: ['Video Upload', 'Monetization', 'Creator Payouts'] },
+  'ultralead': { label: 'UltraLead', features: ['CRM', 'Deals', 'AI Agents', 'SMS', 'Copywriter', 'Analytics', 'Teams'] },
+};
+
+function ProgressBar({ value, className = '' }) {
+  return (
+    <div className={`w-full bg-white/5 rounded-full h-1.5 ${className}`}>
+      <div
+        className="h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
+  );
+}
+
+function StatusBadge({ status }) {
+  const cls = STATUS_BADGE[status] || STATUS_BADGE.NOT_STARTED;
+  const label = (status || 'NOT_STARTED').replace(/_/g, ' ');
+  return (
+    <span className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded border ${cls}`}>
+      {label}
+    </span>
+  );
+}
+
+function BlueprintCard({ title, subtitle, status, progress, items }) {
+  return (
+    <div className="relative rounded-xl bg-neutral-900/30 border border-white/[0.06] p-5 overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+      <div className="flex items-start justify-between mb-3">
+        <div className="min-w-0 mr-3">
+          <h3 className="text-sm font-semibold text-white truncate">{title}</h3>
+          {subtitle && <p className="text-xs text-neutral-500 mt-0.5 truncate">{subtitle}</p>}
+        </div>
+        <StatusBadge status={status} />
+      </div>
+      <div className="flex items-center gap-3 mb-4">
+        <ProgressBar value={progress} className="flex-1" />
+        <span className="text-xs text-neutral-500 tabular-nums w-8 text-right">{progress}%</span>
+      </div>
+      {items && items.length > 0 && (
+        <ul className="space-y-1.5">
+          {items.map((item, i) => {
+            const done = item.status === 'COMPLETED' || item.status === 'working';
+            const inProgress = item.status === 'IN_PROGRESS';
+            return (
+              <li key={i} className="flex items-center gap-2 text-xs">
+                <span className={`w-1 h-1 rounded-full flex-shrink-0 ${done ? 'bg-emerald-400' : inProgress ? 'bg-indigo-400' : 'bg-neutral-600'}`} />
+                <span className={done ? 'text-neutral-300' : inProgress ? 'text-neutral-400' : 'text-neutral-500'}>{item.name || item}</span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function NexusDashboard() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState(null);
-  const messagesEndRef = useRef(null);
+  const [modules, setModules] = useState([]);
+  const [moduleStats, setModuleStats] = useState(null);
+  const [platforms, setPlatforms] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadHistory();
+    loadData();
   }, []);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  async function loadHistory() {
+  async function loadData() {
     try {
-      const res = await api.get('/api/v1/nexus/chat');
-      if (res.data?.success) {
-        setMessages(res.data.history || []);
-        setSessionId(res.data.sessionId);
+      const [summaryRes, verifyRes] = await Promise.allSettled([
+        api.get('/api/v1/nexus/summary'),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com'}/api/v1/nexus/verification-status`),
+      ]);
+
+      if (summaryRes.status === 'fulfilled') {
+        const d = summaryRes.value?.data?.data || summaryRes.value?.data || {};
+        setModules(Array.isArray(d.modules) ? d.modules : []);
+        setModuleStats(d.stats || null);
       }
-    } catch (error) {
-      console.error('Failed to load history:', error);
-    }
-  }
 
-  async function sendMessage() {
-    if (!input.trim() || loading) return;
-
-    setLoading(true);
-    const userMessage = input;
-    setInput('');
-
-    // Add user message optimistically
-    setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date().toISOString() }]);
-
-    try {
-      const res = await api.post('/api/v1/nexus/chat', {
-        message: userMessage,
-        sessionId,
-      });
-
-      if (res.data?.success) {
-        setMessages(res.data.history || []);
-        setSessionId(res.data.sessionId);
+      if (verifyRes.status === 'fulfilled' && verifyRes.value?.ok) {
+        const vj = await verifyRes.value.json();
+        if (vj.platforms) setPlatforms(vj.platforms);
       }
-    } catch (error) {
-      console.error('Send message failed:', error);
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'Sorry, something went wrong. Please try again.',
-        timestamp: new Date().toISOString(),
-      }]);
+    } catch (err) {
+      console.error('NEXUS load error:', err);
     } finally {
       setLoading(false);
     }
   }
 
-  function handleKeyDown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-indigo-500 border-t-transparent" />
+      </div>
+    );
   }
 
+  const overallProgress = moduleStats?.avgProgress ?? 0;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
-          <h1 className="text-2xl font-bold">NEXUS MASTER AI ASSISTANT</h1>
+    <div className="min-h-screen bg-[#050505] text-white antialiased selection:bg-indigo-500/30 p-6 md:p-8">
+      <div className="max-w-6xl mx-auto space-y-10">
+
+        {/* Header */}
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <h1 className="font-space-grotesk text-2xl md:text-3xl font-semibold tracking-tight text-white uppercase">
+              NEXUS Blueprint
+            </h1>
+          </div>
+          <p className="text-neutral-500 text-sm font-geist">
+            Platform health and strategic module progress
+          </p>
         </div>
-        <p className="text-slate-400">Autonomous Operations Manager</p>
-      </div>
 
-      {/* Chat Interface */}
-      <div className="max-w-4xl mx-auto">
-        {/* Messages */}
-        <div className="bg-slate-900 rounded-lg p-6 mb-4 h-[600px] overflow-y-auto">
-          {messages.length === 0 && !loading && (
-            <div className="text-center text-slate-500 mt-20">
-              <p className="text-lg mb-2">Welcome to NEXUS</p>
-              <p className="text-sm">Try: &quot;Research AI agent market trends&quot; or &quot;Analyze sales automation industry&quot;</p>
-            </div>
-          )}
-
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`mb-4 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}
-            >
-              <div
-                className={`inline-block px-4 py-2 rounded-lg max-w-[80%] text-left ${
-                  msg.role === 'user'
-                    ? 'bg-indigo-600'
-                    : msg.role === 'assistant'
-                    ? 'bg-slate-800'
-                    : 'bg-slate-700 text-xs'
-                }`}
-              >
-                <div className="whitespace-pre-wrap">{msg.content}</div>
-                {msg.agentName && (
-                  <div className="text-xs text-slate-400 mt-1">
-                    {msg.agentName}
-                  </div>
-                )}
+        {/* Summary Stats */}
+        {moduleStats && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { label: 'Modules', value: moduleStats.total },
+              { label: 'In Progress', value: moduleStats.inProgress },
+              { label: 'Completed', value: moduleStats.completed },
+              { label: 'Overall', value: `${overallProgress}%` },
+            ].map((s) => (
+              <div key={s.label} className="relative rounded-xl bg-neutral-900/30 border border-white/[0.06] p-4 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+                <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-medium">{s.label}</p>
+                <p className="text-xl font-semibold text-white mt-1 tabular-nums">{s.value}</p>
               </div>
+            ))}
+          </div>
+        )}
+
+        {/* Platform Verification */}
+        {platforms && (
+          <section>
+            <h2 className="font-space-grotesk text-sm font-semibold text-neutral-400 uppercase tracking-widest mb-4">
+              Platform Status
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.entries(platforms).map(([key, data]) => {
+                const meta = PLATFORM_META[key] || { label: key, features: [] };
+                const progress = data.total > 0 ? Math.round((data.working / data.total) * 100) : 0;
+                const status = data.working === data.total && data.total > 0
+                  ? 'COMPLETED'
+                  : data.working > 0
+                    ? 'IN_PROGRESS'
+                    : 'NOT_STARTED';
+                const items = meta.features.map((f) => ({ name: f, status: 'NOT_STARTED' }));
+                return (
+                  <BlueprintCard
+                    key={key}
+                    title={meta.label}
+                    subtitle={`${data.total} features`}
+                    status={status}
+                    progress={progress}
+                    items={items}
+                  />
+                );
+              })}
             </div>
-          ))}
+          </section>
+        )}
 
-          {loading && (
-            <div className="text-center text-slate-400">
-              <div className="inline-block animate-pulse">Thinking...</div>
+        {/* Strategic Modules */}
+        {modules.length > 0 && (
+          <section>
+            <h2 className="font-space-grotesk text-sm font-semibold text-neutral-400 uppercase tracking-widest mb-4">
+              Strategic Modules
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {modules.map((m) => {
+                const initiatives = Array.isArray(m.initiatives) ? m.initiatives : [];
+                return (
+                  <BlueprintCard
+                    key={m.id}
+                    title={m.title}
+                    subtitle={m.category}
+                    status={m.status}
+                    progress={m.progress}
+                    items={initiatives}
+                  />
+                );
+              })}
             </div>
-          )}
+          </section>
+        )}
 
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input */}
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Message NEXUS..."
-            className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-indigo-500"
-            disabled={loading}
-          />
-          <button
-            onClick={sendMessage}
-            disabled={loading || !input.trim()}
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium disabled:opacity-50 transition-colors"
-          >
-            Send
-          </button>
-        </div>
+        {/* Empty state */}
+        {modules.length === 0 && !platforms && (
+          <div className="text-center py-20">
+            <p className="text-neutral-500 text-sm">No blueprint data available yet.</p>
+          </div>
+        )}
       </div>
     </div>
   );

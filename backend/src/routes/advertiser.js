@@ -1,5 +1,6 @@
 // Advertiser Platform Routes — Separate auth system for advertisers
 // Uses AdvertiserAccount model (not User model)
+// v2 — requires prisma generate with updated schema
 
 const express = require('express');
 const crypto = require('crypto');

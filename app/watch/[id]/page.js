@@ -19,6 +19,10 @@ export default function WatchVideoPage() {
   const [showShare, setShowShare] = useState(false);
   const [sidebarAd, setSidebarAd] = useState(null);
   const [products, setProducts] = useState([]);
+  const [passStatus, setPassStatus] = useState(null);
+  const [passLoading, setPassLoading] = useState(true);
+  const [passToast, setPassToast] = useState(false);
+  const [passUsed, setPassUsed] = useState(false);
   const watchStartRef = useRef(null);
 
   useEffect(() => {
@@ -27,20 +31,44 @@ export default function WatchVideoPage() {
       fetchRelated();
       fetchAd();
       fetchProducts();
+      checkPassStatus();
     }
   }, [videoId]);
 
-  // Track view after 3 seconds
+  // Check for ?pass_activated=true on return from Stripe
   useEffect(() => {
-    if (video && !viewTracked) {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('pass_activated') === 'true') {
+      setPassToast(true);
+      setTimeout(() => setPassToast(false), 5000);
+      window.history.replaceState({}, '', `/watch/${videoId}`);
+      checkPassStatus();
+    }
+  }, [videoId]);
+
+  // Track view after 3 seconds (only when pass is active)
+  useEffect(() => {
+    if (video && !viewTracked && passStatus?.hasActivePass) {
       watchStartRef.current = Date.now();
-      const timer = setTimeout(() => {
+      const timer = setTimeout(async () => {
         trackView({});
         setViewTracked(true);
+        if (!passUsed) {
+          try {
+            await api.post('/api/v1/videosite/pass/use-view', { videoId });
+            setPassUsed(true);
+            setPassStatus(prev => ({
+              ...prev,
+              viewsRemaining: Math.max(0, (prev?.viewsRemaining || 1) - 1),
+            }));
+          } catch (err) {
+            console.error('Use view error:', err);
+          }
+        }
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [video, viewTracked]);
+  }, [video, viewTracked, passStatus]);
 
   // Send watch duration on page exit
   useEffect(() => {
@@ -118,6 +146,30 @@ export default function WatchVideoPage() {
       });
     } catch (err) {
       console.error('Track view error:', err);
+    }
+  };
+
+  const checkPassStatus = async () => {
+    try {
+      const res = await api.get('/api/v1/videosite/pass/status');
+      setPassStatus(res.data?.data || { hasActivePass: false, viewsRemaining: 0 });
+    } catch {
+      setPassStatus({ hasActivePass: false, viewsRemaining: 0 });
+    } finally {
+      setPassLoading(false);
+    }
+  };
+
+  const handleBuyPass = async () => {
+    try {
+      const res = await fetch('/api/stripe/create-video-pass-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      console.error('Checkout error:', err);
     }
   };
 
@@ -219,12 +271,40 @@ export default function WatchVideoPage() {
             <div className="relative rounded-2xl bg-neutral-900/30 border border-white/10 overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
               <div className="aspect-video">
-                <VideoPlayer
-                  videoUrl={video.videoUrl}
-                  thumbnailUrl={video.thumbnailUrl}
-                  title={video.title}
-                  products={products}
-                />
+                {passStatus?.hasActivePass ? (
+                  <VideoPlayer
+                    videoUrl={video.videoUrl}
+                    thumbnailUrl={video.thumbnailUrl}
+                    title={video.title}
+                    products={products}
+                  />
+                ) : passLoading ? (
+                  <div className="w-full h-full flex items-center justify-center bg-neutral-900/80">
+                    <span className="text-neutral-500 text-sm">Loading...</span>
+                  </div>
+                ) : (
+                  <div className="relative w-full h-full">
+                    {video.thumbnailUrl && (
+                      <img src={video.thumbnailUrl} alt="" className="absolute inset-0 w-full h-full object-cover blur-lg scale-105 opacity-40" />
+                    )}
+                    <div className="absolute inset-0 bg-black/60" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                      <div className="w-16 h-16 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center mb-4">
+                        <Play className="w-7 h-7 text-indigo-400" />
+                      </div>
+                      <h2 className="text-xl font-semibold text-white mb-2">Watch this video</h2>
+                      <p className="text-neutral-400 text-sm mb-5 max-w-sm">
+                        1 view = $1.20 &bull; Creator earns $1.00 per view
+                      </p>
+                      <button
+                        onClick={handleBuyPass}
+                        className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-semibold transition-all shadow-lg shadow-indigo-500/25"
+                      >
+                        Buy 10-view pass for $12
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -413,6 +493,13 @@ export default function WatchVideoPage() {
           videoDescription={video.description}
           onClose={() => setShowShare(false)}
         />
+      )}
+
+      {/* Pass Activated Toast */}
+      {passToast && (
+        <div className="fixed bottom-6 right-6 z-50 px-5 py-3 bg-emerald-500/90 backdrop-blur-sm text-white rounded-xl text-sm font-medium shadow-lg shadow-emerald-500/25">
+          Pass activated! You have 10 views
+        </div>
       )}
     </div>
   );

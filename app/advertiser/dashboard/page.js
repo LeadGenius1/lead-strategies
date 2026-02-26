@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { BarChart3, Eye, DollarSign, Zap, Plus, X, LogOut } from 'lucide-react';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.aileadstrategies.com';
@@ -225,9 +226,9 @@ export default function AdvertiserDashboardPage() {
 
         {/* Footer */}
         <div className="flex items-center justify-center gap-6 text-xs text-gray-600 py-4">
-          <span>Policy Center</span>
-          <span>Terms</span>
-          <span>Privacy</span>
+          <Link href="/policy" className="hover:text-gray-400 transition-colors">Policy Center</Link>
+          <Link href="/policy" className="hover:text-gray-400 transition-colors">Terms</Link>
+          <Link href="/policy" className="hover:text-gray-400 transition-colors">Privacy</Link>
         </div>
       </div>
 

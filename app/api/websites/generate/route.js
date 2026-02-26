@@ -2037,27 +2037,13 @@ export async function POST(request) {
     let subdomain = subdomainBase;
     let n = 1;
     while (true) {
-      const exists = await prisma.aiBuilderSite.findUnique({ where: { subdomain } });
+      const exists = await prisma.website.findFirst({ where: { slug: subdomain } });
       if (!exists) break;
       subdomain = `${subdomainBase}-${n}`;
       n++;
     }
 
-    // 5. Save to database
-    const site = await prisma.aiBuilderSite.create({
-      data: {
-        userId,
-        templateId: template.id,
-        name,
-        html,
-        css,
-        formData,
-        status: 'draft',
-        subdomain,
-      },
-    });
-
-    // 6. Save Website record for billing tracking
+    // 5. Save Website record
     const isFree = existingWebsites === 0;
     const savedWebsite = await prisma.website.create({
       data: {
@@ -2078,9 +2064,9 @@ export async function POST(request) {
       data: {
         html,
         css,
-        websiteId: site.id,
-        name: site.name,
-        subdomain: site.subdomain,
+        websiteId: savedWebsite.id,
+        name: savedWebsite.name,
+        subdomain: savedWebsite.slug,
         templateUsed: templateId,
         aiGenerated: !!aiContent,
       },

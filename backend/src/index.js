@@ -72,6 +72,7 @@ const videoRoutes = require('./routes/videos');
 const advertiserRoutes = require('./routes/advertiser');
 const adsRoutes = require('./routes/ads');
 const payoutsRoutes = require('./routes/payouts');
+const creatorPayoutRoutes = require('./routes/creator-payouts');
 const aiAgentRoutes = require('./routes/ai-agents');
 const clipsRoutes = require('./routes/clips');
 const publishRoutes = require('./routes/publish');
@@ -389,6 +390,7 @@ if (featureFlags.ENABLE_VIDEOSITE_AI) {
   app.use('/api/v1/advertiser', advertiserRoutes);
   app.use('/api/v1/ads', adsRoutes);
   app.use('/api/v1/payouts', payoutsRoutes);
+  app.use('/api/v1', creatorPayoutRoutes);
   app.use('/api/v1/clips', clipsRoutes);
   app.use('/api/v1/publish', publishRoutes);
   app.use('/api/v1/products', productRoutes);

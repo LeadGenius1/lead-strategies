@@ -17,7 +17,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 // Allowed platforms for website builder
-const ALLOWED_PLATFORMS = ['leadsiteio.com', 'ultraleadai.com', 'localhost'];
+const ALLOWED_PLATFORMS = ['leadsiteio.com', 'ultraleadai.com', 'aileadstrategies.com', 'localhost'];
 
 // 7 questions: 6 content + template picker
 const QUESTIONS = [

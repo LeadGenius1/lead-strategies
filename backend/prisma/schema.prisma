@@ -1634,3 +1634,51 @@ model ViewerPass {
   @@index([status])
   @@map("viewer_passes")
 }
+
+model AdvertiserAccount {
+  id                  String       @id @default(cuid())
+  email               String       @unique
+  passwordHash        String
+  businessName        String
+  contactName         String
+  phone               String?
+  website             String?
+  agreementAccepted   Boolean      @default(false)
+  agreementAcceptedAt DateTime?
+  status              String       @default("active")
+  stripeCustomerId    String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  campaigns           AdCampaign[]
+
+  @@index([email])
+  @@map("advertiser_accounts")
+}
+
+model AdCampaign {
+  id               String            @id @default(cuid())
+  advertiserId     String
+  advertiser       AdvertiserAccount @relation(fields: [advertiserId], references: [id])
+  name             String
+  videoUrl         String
+  landingUrl       String
+  budgetCents      Int
+  budgetSpentCents Int               @default(0)
+  tier             String            @default("starter")
+  cpvCents         Int               @default(5)
+  targeting        String?
+  category         String?
+  status           String            @default("pending")
+  reviewScore      Int               @default(0)
+  reviewDetails    String?
+  impressions      Int               @default(0)
+  qualifiedViews   Int               @default(0)
+  clicks           Int               @default(0)
+  stripePaymentId  String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([advertiserId])
+  @@index([status])
+  @@map("ad_campaigns")
+}

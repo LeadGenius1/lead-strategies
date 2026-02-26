@@ -246,7 +246,7 @@ export default function WatchVideoPage() {
           <h2 className="text-2xl font-bold text-white mb-2">Video Not Found</h2>
           <p className="text-neutral-400 mb-6">This video doesn&apos;t exist or has been removed.</p>
           <Link
-            href="/videos"
+            href="https://videosite.ai/watch"
             className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-sm font-medium transition-all inline-flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -278,7 +278,7 @@ export default function WatchVideoPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Back button */}
         <Link
-          href="/videos"
+          href="https://videosite.ai/watch"
           className="inline-flex items-center gap-2 text-neutral-400 hover:text-white text-sm transition-colors mb-6"
         >
           <ArrowLeft className="w-4 h-4" />

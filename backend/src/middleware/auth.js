@@ -58,6 +58,30 @@ const TIER_FEATURES = {
   5: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video', 'crm', 'api', 'teams'] // UltraLead
 };
 
+// Map subscription_tier / plan_tier strings to numeric tiers
+const PLAN_TIER_MAP = {
+  'free': 1,
+  'leadsite-ai': 1,
+  'leadsite-io': 2,
+  'clientcontact-io': 3,
+  'videosite-ai': 4,
+  'ultralead': 5,
+  'ultralead-ai': 5,
+};
+
+function resolveTier(user) {
+  // Use numeric tier if valid
+  if (user.tier >= 1 && user.tier <= 5) return user.tier;
+  // Fall back to subscription_tier or plan_tier string
+  const planStr = (user.subscription_tier || user.plan_tier || '').toLowerCase();
+  if (planStr.includes('ultralead')) return 5;
+  if (planStr.includes('videosite')) return 4;
+  if (planStr.includes('clientcontact')) return 3;
+  if (planStr.includes('leadsite-io')) return 2;
+  if (planStr.includes('leadsite-ai')) return 1;
+  return PLAN_TIER_MAP[planStr] || 1;
+}
+
 const requireFeature = (feature) => {
   return async (req, res, next) => {
     try {
@@ -66,14 +90,15 @@ const requireFeature = (feature) => {
 
       const user = await prisma.user.findUnique({
         where: { id: req.user.id },
-        select: { tier: true }
+        select: { tier: true, subscription_tier: true, plan_tier: true }
       });
 
       if (!user) {
         return res.status(401).json({ success: false, error: 'User not found' });
       }
 
-      const allowedFeatures = TIER_FEATURES[user.tier] || TIER_FEATURES[1];
+      const effectiveTier = resolveTier(user);
+      const allowedFeatures = TIER_FEATURES[effectiveTier] || TIER_FEATURES[1];
 
       if (!allowedFeatures.includes(feature)) {
         return res.status(403).json({
@@ -107,14 +132,14 @@ const checkLeadLimit = async (req, res, next) => {
 
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
-      select: { tier: true }
+      select: { tier: true, subscription_tier: true, plan_tier: true }
     });
 
     if (!user) {
       return res.status(401).json({ success: false, error: 'User not found' });
     }
 
-    const limit = LEAD_LIMITS[user.tier] || LEAD_LIMITS[1];
+    const limit = LEAD_LIMITS[resolveTier(user)] || LEAD_LIMITS[1];
     const currentCount = await prisma.lead.count({
       where: { userId: req.user.id }
     });

@@ -478,7 +478,7 @@ router.get('/context', async (req, res) => {
       prisma.video.count().catch(() => 0),
       prisma.campaign.groupBy({ by: ['status'], _count: { id: true } }).catch(() => []),
       prisma.lead.findMany({ take: 5, orderBy: { createdAt: 'desc' } }).catch(() => []),
-      prisma.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan: true } }).catch(() => [])
+      prisma.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan_tier: true } }).catch(() => [])
     ]);
 
     const campaignBreakdown = {

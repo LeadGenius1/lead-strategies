@@ -313,7 +313,7 @@ router.use(authenticate);
 // POST /api/v1/copilot/chat - Lead Hunter AI agent with website fetch + lead search
 router.post('/chat', async (req, res) => {
   try {
-    const { message, context = {} } = req.body;
+    const { message, context = {}, conversationHistory = [] } = req.body;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({
@@ -492,7 +492,10 @@ When writing emails or generating outreach, personalize for THIS user's business
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: systemPrompt,
-      messages: [{ role: 'user', content: fullMessage }],
+      messages: [
+        ...conversationHistory.slice(-10),
+        { role: 'user', content: fullMessage },
+      ],
     };
 
     if (wantStream) {

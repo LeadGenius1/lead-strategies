@@ -89,6 +89,9 @@ export default function CopilotChat({ selectedLead }) {
         '/api/v1/copilot/chat',
         {
           message: userMessage.content,
+          conversationHistory: messages
+            .filter(m => m.role === 'user' || m.role === 'assistant')
+            .map(m => ({ role: m.role, content: m.content })),
           context: selectedLead ? { lead: { email: selectedLead.email, name: selectedLead.name, company: selectedLead.company } } : {},
         },
         { headers: { Authorization: `Bearer ${token}` } }

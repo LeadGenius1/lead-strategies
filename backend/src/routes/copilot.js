@@ -381,6 +381,17 @@ router.post('/chat', async (req, res) => {
     const contextLead = context?.lead ? `\nCurrent lead context: ${JSON.stringify(context.lead)}` : '';
     const fullMessage = `${message}${websiteContext}${leadContext}${contextLead}`;
 
+    // Fetch requesting user's profile for personalization
+    let userProfile = null;
+    try {
+      userProfile = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: { name: true, email: true, company: true, subscription_tier: true, plan_tier: true, metadata: true },
+      });
+    } catch (err) {
+      console.warn('[Lead Hunter] Failed to fetch user profile:', err.message);
+    }
+
     // Build system prompt with full business context
     const masterContext = await getMasterContext();
     const systemPrompt = `${LEAD_HUNTER_SYSTEM_PROMPT}
@@ -467,7 +478,14 @@ When asked about priorities/strategy/"what next":
 5. Coordinate relevant agents
 6. Update NEXUS with decisions
 
-${JSON.stringify({...masterContext, _claudeRules: undefined, nexus: undefined}, null, 2)}`;
+${JSON.stringify({...masterContext, _claudeRules: undefined, nexus: undefined}, null, 2)}
+
+## CURRENT USER PROFILE (the person you are chatting with right now)
+${userProfile ? `- Name: ${userProfile.name || 'Not set'}
+- Email: ${userProfile.email || 'Unknown'}
+- Company: ${userProfile.company || 'Not set'}
+- Plan: ${userProfile.plan_tier || userProfile.subscription_tier || 'Not set'}${userProfile.metadata ? `\n- Additional Info: ${JSON.stringify(userProfile.metadata)}` : ''}` : 'User profile unavailable — ask them about their business if needed.'}
+When writing emails or generating outreach, personalize for THIS user's business context above — not the AI Lead Strategies internal context.`;
 
     const wantStream = req.query.stream === 'true' || req.body.stream === true;
     const apiParams = {

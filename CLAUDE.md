@@ -10,7 +10,7 @@ You have full context of this codebase — use it. Never guess.
 
 ---
 
-## THE 11 RULES (Non-Negotiable — Violation = Immediate Revert)
+## THE 12 RULES (Non-Negotiable — Violation = Immediate Revert)
 
 ### RULE 1: ONE FILE AT A TIME
 Every change targets ONE file or ONE route. Never "fix all auth" or "update all platforms."
@@ -111,6 +111,13 @@ New features follow this deployment sequence:
 4. **Enable flag** — Set `ENABLE_X=true` in Railway environment variables
 5. **Verify** — Run tests again after flag is enabled
 6. **If broken** — Set `ENABLE_X=false` in Railway — instant rollback, no code change needed
+
+### RULE 12: DEPENDENCY VERIFICATION (MANDATORY)
+Any time a file is copied between repos, modified with new `require()` statements, or created with imports — ALWAYS cross-check every `require()` against `backend/package.json` BEFORE committing.
+```bash
+grep "require('" [file] | grep -v "\.\/"
+```
+Then verify each against `package.json`. Missing packages must be `npm install --save` FIRST. Never commit code with unverified dependencies.
 
 ---
 

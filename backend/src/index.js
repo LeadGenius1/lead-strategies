@@ -64,6 +64,7 @@ const clientcontactCrmRoutes = require('./routes/ultralead');
 
 // New Platform Routes
 const copilotRoutes = require('./routes/copilot');
+const proactiveHunterRoutes = require('./routes/proactive-hunter');
 const templateRoutes = require('./routes/templates');
 const crmRoutes = require('./routes/crm');
 const agentRoutes = require('./routes/agents');
@@ -349,6 +350,7 @@ if (featureFlags.ENABLE_LEADSITE_AI) {
   app.use('/api/v1/campaigns', campaignRoutes);
   app.use('/api/v1/emails', emailRoutes);
   app.use('/api/v1/copilot', copilotRoutes);
+  app.use('/api/v1/proactive-hunter', proactiveHunterRoutes);
   app.use('/api/leads', leadRoutes);
   app.use('/api/campaigns', campaignRoutes);
   app.use('/api/emails', emailRoutes);

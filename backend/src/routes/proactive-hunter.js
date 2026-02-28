@@ -126,11 +126,12 @@ router.post('/trigger-run', async (req, res) => {
 
     // Save discovered leads to Lead model
     for (const lead of leads.slice(0, 10)) {
+      if (!lead.email || !lead.email.includes('@')) continue;
       await prisma.lead.upsert({
-        where: { email: lead.email || `unknown-${Date.now()}@placeholder.com` },
+        where: { userId_email: { userId: req.user.id, email: lead.email } },
         update: {},
         create: {
-          email: lead.email || '',
+          email: lead.email,
           name: lead.name || '',
           company: lead.organization?.name || '',
           title: lead.title || '',

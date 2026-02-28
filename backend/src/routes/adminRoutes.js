@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
   const adminPayload = {
     id: 'admin-1',
     email: ADMIN_EMAIL,
-    role: 'super_admin',
+    role: 'admin',
     name: 'Admin User',
   };
 
@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
   if (!db) {
     // No DB: return JWT with synthetic admin user id (works for mock mode)
     const token = jwt.sign(
-      { id: 'admin-1', email: ADMIN_EMAIL, role: 'super_admin', tier: 5 },
+      { id: 'admin-1', email: ADMIN_EMAIL, role: 'admin', tier: 5 },
       JWT_SECRET,
       { expiresIn: '8h' }
     );
@@ -100,7 +100,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: 'super_admin', tier: 5 },
+      { id: user.id, email: user.email, role: 'admin', tier: 5 },
       JWT_SECRET,
       { expiresIn: '8h' }
     );
@@ -110,7 +110,7 @@ router.post('/login', async (req, res) => {
       admin: {
         id: user.id,
         email: user.email,
-        role: 'super_admin',
+        role: 'admin',
         name: user.name || 'Admin User',
       },
       token,

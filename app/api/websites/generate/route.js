@@ -1887,8 +1887,8 @@ function buildPlaceholders(formData, aiContent) {
     accent_color: formData.accent_color || '#6366f1',
     email: formData.email || '',
     contact_email: formData.email || 'hello@example.com',
-    contact_phone: formData.phone || '',
-    contact_address: formData.address || '',
+    contact_phone: formData.phone || formData.contact_phone || 'Contact us for details',
+    contact_address: formData.address || formData.contact_address || 'Serving your local area',
     stat1_value: formData.years_experience || '5+',
     stat2_value: formData.clients_served || '100+',
     cta_destination: formData.cta_destination || '#contact',
@@ -1937,15 +1937,7 @@ async function loadTemplate(slug) {
 
   console.log('[loadTemplate] slug="' + slug + '" => canonical="' + finalSlug + '" (' + html.length + ' chars)');
 
-  const name = finalSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  const t = await prisma.websiteTemplate.upsert({
-    where: { slug: finalSlug },
-    update: { html, updatedAt: new Date() },
-    create: { name, slug: finalSlug, html, css: '' },
-  });
-
-  console.log('[loadTemplate] DB upserted: id=' + t.id + ', slug=' + t.slug);
-  return t;
+  return { html, css: '', slug: finalSlug };
 }
 
 // ============================================

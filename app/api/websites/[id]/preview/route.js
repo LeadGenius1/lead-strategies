@@ -14,16 +14,16 @@ export async function GET(request, { params }) {
       return new NextResponse('Invalid ID', { status: 400 });
     }
 
-    const site = await prisma.aiBuilderSite.findUnique({
+    const site = await prisma.website.findUnique({
       where: { id },
-      select: { html: true, status: true, name: true },
+      select: { htmlContent: true, status: true, name: true },
     });
 
-    if (!site) {
+    if (!site || !site.htmlContent) {
       return new NextResponse('Preview not found', { status: 404 });
     }
 
-    return new NextResponse(site.html, {
+    return new NextResponse(site.htmlContent, {
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
   } catch (error) {

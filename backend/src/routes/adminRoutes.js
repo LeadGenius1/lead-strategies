@@ -22,7 +22,14 @@ function verifyPassword(plain, storedHash) {
   if (!storedHash || !storedHash.includes(':')) return false;
   const [salt, hash] = storedHash.split(':');
   const testHash = crypto.pbkdf2Sync(plain, salt, 100000, 64, 'sha512').toString('hex');
-  return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(testHash, 'hex'));
+  const hashBuffer = Buffer.from(hash, 'hex');
+  const testBuffer = Buffer.from(testHash, 'hex');
+  if (hashBuffer.length !== testBuffer.length) return false;
+  try {
+    return crypto.timingSafeEqual(hashBuffer, testBuffer);
+  } catch (e) {
+    return false;
+  }
 }
 
 // POST /admin/login or /api/admin/login - Admin authentication

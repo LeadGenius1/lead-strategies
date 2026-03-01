@@ -605,24 +605,15 @@ export default function LeadSiteAIPage() {
           </div>
 
           <div className="relative aspect-video bg-[#050505] border border-subtle [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll overflow-hidden rounded-lg">
-            {/* Video Embed - Replace VIDEO_ID with actual YouTube/Loom/Vimeo video ID */}
-            {process.env.NEXT_PUBLIC_DEMO_VIDEO_URL ? (
-              <iframe
-                src={process.env.NEXT_PUBLIC_DEMO_VIDEO_URL}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title="LeadSite.AI Demo Video"
-              ></iframe>
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center cursor-pointer hover:bg-purple-500/30 transition-colors mb-4">
-                  <Icons.Play className="w-10 h-10 text-purple-400 ml-1" />
-                </div>
-                <p className="text-neutral-400 font-geist text-sm">Demo video coming soon</p>
-                <p className="text-neutral-500 font-geist text-xs mt-2">Set NEXT_PUBLIC_DEMO_VIDEO_URL to embed video</p>
-              </div>
-            )}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover rounded-xl"
+            >
+              <source src="/Leadsite.ai_Intro.v2.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import Footer from '@/components/Footer';
@@ -74,6 +74,39 @@ function LeadSiteAISEO() {
 }
 
 export default function LeadSiteAIPage() {
+  const videoRef = useRef(null);
+  const videoContainerRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    const containerEl = videoContainerRef.current;
+    if (videoEl && containerEl) {
+      const videoObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              videoEl.muted = false;
+              videoEl.play().then(() => {
+                setIsMuted(false);
+              }).catch(() => {
+                // Browser blocked unmuted autoplay — play muted instead
+                videoEl.muted = true;
+                setIsMuted(true);
+                videoEl.play();
+              });
+            } else {
+              videoEl.pause();
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      videoObserver.observe(containerEl);
+      return () => videoObserver.disconnect();
+    }
+  }, []);
+
   useEffect(() => {
     // Animation on scroll
     const observer = new IntersectionObserver(
@@ -599,21 +632,36 @@ export default function LeadSiteAIPage() {
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="text-center mb-12 [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
             <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              See LeadSite.AI <span className="text-gradient">in Action</span>
+              Introducing <span className="text-gradient">LeadSite.AI</span>
             </h2>
-            <p className="text-neutral-400 font-geist">Watch how Fortune 500 teams score 10K leads/day</p>
+            <p className="text-neutral-400 font-geist">Everything you need to know about the platform and how it works</p>
           </div>
 
-          <div className="relative aspect-video bg-[#050505] border border-subtle [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll overflow-hidden rounded-lg">
+          <div ref={videoContainerRef} className="relative aspect-video bg-[#050505] border border-subtle [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll overflow-hidden rounded-lg">
             <video
-              autoPlay
-              muted
+              ref={videoRef}
               loop
               playsInline
+              controls
               className="w-full h-full object-cover rounded-xl"
             >
               <source src="/Leadsite.ai_Intro.v2.mp4" type="video/mp4" />
             </video>
+            {isMuted && (
+              <button
+                onClick={() => {
+                  const v = videoRef.current;
+                  if (v) { v.muted = false; setIsMuted(false); v.play(); }
+                }}
+                className="absolute bottom-4 right-4 z-10 bg-purple-500/80 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-geist tracking-wide transition-colors flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                </svg>
+                Tap to Unmute
+              </button>
+            )}
           </div>
         </div>
       </section>

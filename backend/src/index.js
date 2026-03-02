@@ -418,6 +418,12 @@ if (featureFlags.ENABLE_NEXUS) {
   console.log('NEXUS routes enabled');
 }
 
+// Market Strategy Pipeline (disabled by default — enable with ENABLE_MARKET_STRATEGY=true)
+if (featureFlags.ENABLE_MARKET_STRATEGY) {
+  app.use('/api/v1/market-strategy', require('./routes/marketStrategy'));
+  console.log('Market Strategy routes enabled');
+}
+
 // System Integrity endpoint
 const systemIntegrityRoutes = require('./routes/system-integrity');
 app.use('/api/v1', systemIntegrityRoutes);

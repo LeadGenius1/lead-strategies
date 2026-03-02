@@ -100,7 +100,7 @@ const nexusOrchestratorRoutes = require('./routes/nexus-orchestrator');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/logger');
-const { initializeRedis, getRedisStore, checkRedisHealth } = require('./config/redis');
+const { initializeRedis, getRedisClient, getRedisStore, checkRedisHealth } = require('./config/redis');
 
 // Self-Healing System (Monitors all 5 platforms)
 const { startAgents, getSystem } = require('./system-agents');
@@ -415,6 +415,19 @@ if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions (no auth — Command Center)
   app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System (auth-gated)
   app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
+  app.use('/api/v1/business-profile', require('./routes/businessProfile')); // NEXUS 2.0 Business Profile
+
+  // Start Discovery Worker in-process (processes nexus-discovery BullMQ jobs)
+  try {
+    const { createWorker: createDiscoveryWorker } = require('./services/nexus2/discoveryWorker');
+    const discoveryRedis = getRedisClient();
+    if (discoveryRedis) {
+      createDiscoveryWorker(discoveryRedis);
+    }
+  } catch (err) {
+    console.warn('Discovery worker startup skipped:', err.message);
+  }
+
   console.log('NEXUS routes enabled');
 }
 

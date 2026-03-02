@@ -353,6 +353,37 @@ nav .text-sm {
   @apply relative z-10;
 }
 
+/* Aether form inputs – dark theme */
+.input-aether {
+  @apply w-full rounded-xl border border-white/10 px-4 py-3 text-sm text-white
+    placeholder:text-neutral-600 focus:outline-none focus:border-indigo-500/50
+    focus:ring-1 focus:ring-indigo-500/20 transition-colors;
+  background: rgba(23, 23, 23, 0.5);
+}
+.select-aether {
+  @apply w-full rounded-xl border border-white/10 px-4 py-3 text-sm text-white
+    focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20
+    transition-colors appearance-none;
+  background: rgba(23, 23, 23, 0.5);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23737373' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.select-aether option {
+  background: #171717;
+  color: #fff;
+}
+.stat-card-aether {
+  @apply relative p-5 rounded-2xl border border-white/10 overflow-hidden;
+  background: rgba(23, 23, 23, 0.3);
+}
+.stat-value {
+  @apply text-2xl font-semibold text-white tabular-nums;
+}
+.stat-label {
+  @apply text-xs text-neutral-500 mt-1;
+}
+
 /* Grid Background */
 .grid-overlay {
   position: fixed;

@@ -13,31 +13,11 @@ export function middleware(request) {
   // ============================================
 
   if (isVideoSiteDomain) {
-    // Allow these routes on videosite.ai
-    const allowedRoutes = [
-      '/',           // Home page
-      '/watch',      // Browse videos
-      '/ads',        // Advertiser platform
-      '/advertiser', // Advertiser signup/login/dashboard
-      '/policy',     // Policy center
-      '/terms',      // Terms redirect
-      '/privacy',    // Privacy redirect
-    ];
-
-    // Check if current path is allowed or starts with allowed prefix
-    const isAllowed = allowedRoutes.some(route =>
-      pathname === route || pathname.startsWith(route + '/')
+    // Redirect videosite.ai to hub
+    return NextResponse.redirect(
+      'https://aileadstrategies.com/videosite-ai',
+      301
     );
-
-    // Also allow Next.js internals
-    const isNextInternal = pathname.startsWith('/_next') ||
-                          pathname.startsWith('/api') ||
-                          pathname === '/favicon.ico';
-
-    // If not allowed, redirect to home
-    if (!isAllowed && !isNextInternal) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
   }
 
   // aileadstrategies.com - allow everything

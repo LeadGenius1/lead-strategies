@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import api from '@/lib/api';
 
 const STATUS_BADGE = {
@@ -173,6 +174,27 @@ export default function NexusDashboard() {
             Platform health and strategic module progress
           </p>
         </div>
+
+        {/* Market Strategy Launch Card */}
+        <Link href="/nexus/market-strategy" className="block group">
+          <div className="relative rounded-xl bg-neutral-900/30 border border-white/[0.06] p-5 overflow-hidden hover:border-indigo-500/30 transition-all">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-lg">
+                  {'\uD83C\uDFAF'}
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Market Strategy</h3>
+                  <p className="text-xs text-neutral-500">AI-powered market analysis &amp; strategy generation</p>
+                </div>
+              </div>
+              <svg className="w-5 h-5 text-neutral-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </Link>
 
         {/* Summary Stats */}
         {moduleStats && (

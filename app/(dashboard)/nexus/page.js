@@ -217,6 +217,27 @@ export default function NexusDashboard() {
           </div>
         </Link>
 
+        {/* Cockpit Launch Card */}
+        <Link href="/nexus/cockpit" className="block group">
+          <div className="relative rounded-xl bg-neutral-900/30 border border-white/[0.06] p-5 overflow-hidden hover:border-cyan-500/30 transition-all">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-lg">
+                  {'\uD83D\uDE80'}
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">AI Cockpit</h3>
+                  <p className="text-xs text-neutral-500">Live feed of all AI agent activity — approve drafts, monitor tasks</p>
+                </div>
+              </div>
+              <svg className="w-5 h-5 text-neutral-600 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </Link>
+
         {/* Summary Stats */}
         {moduleStats && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

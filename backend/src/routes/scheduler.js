@@ -68,8 +68,15 @@ router.get('/', async (req, res) => {
 });
 
 // ─── GET /feed — SSE Stream ───────────────────────────────
+// EventSource can't send Authorization headers, so accept token via query param.
+// Override authenticate middleware for this route only.
 
-router.get('/feed', async (req, res) => {
+router.get('/feed', (req, res, next) => {
+  if (!req.headers.authorization && req.query.token) {
+    req.headers.authorization = `Bearer ${req.query.token}`;
+  }
+  next();
+}, async (req, res) => {
   try {
     const userId = req.user.id;
     const redis = getRedisClient();
@@ -77,7 +84,11 @@ router.get('/feed', async (req, res) => {
       return res.status(503).json({ error: 'Redis not available' });
     }
 
-    // Use the sseManager pattern with user-scoped keys
+    // Disable Node/Express request timeout for long-lived SSE
+    req.setTimeout(0);
+    res.setTimeout(0);
+    if (req.socket) req.socket.setKeepAlive(true, 30000);
+
     // SSE headers
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
@@ -144,11 +155,11 @@ router.get('/feed', async (req, res) => {
       });
     }
 
-    // Heartbeat every 30s
+    // Heartbeat every 25s (stay well below typical proxy idle timeouts of 60s)
     heartbeatInterval = setInterval(() => {
       if (closed) return;
       res.write(`event: heartbeat\ndata: ${JSON.stringify({ ts: new Date().toISOString() })}\n\n`);
-    }, 30000);
+    }, 25000);
   } catch (err) {
     console.error('[Scheduler API] GET /feed error:', err.message);
     if (!res.headersSent) {

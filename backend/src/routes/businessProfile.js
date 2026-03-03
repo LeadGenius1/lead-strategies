@@ -171,7 +171,7 @@ router.post('/', async (req, res) => {
       },
     });
 
-    // Queue Discovery Agent job (actual worker comes in Step D)
+    // Queue Discovery Agent job via BullMQ; fall back to inline if queue unavailable
     let discoveryJobId = null;
     try {
       const q = getDiscoveryQueue();
@@ -185,11 +185,25 @@ router.post('/', async (req, res) => {
         discoveryJobId = jobRef;
         console.log(`[BusinessProfile] Discovery job queued: ${jobRef}`);
       } else {
-        console.warn('[BusinessProfile] Discovery queue not available (no REDIS_URL). Skipping auto-discovery.');
+        // Fallback: run discovery inline when Redis/BullMQ unavailable
+        console.warn('[BusinessProfile] Queue unavailable — running discovery inline');
+        const { getRedisClient } = require('../config/redis');
+        const { runDiscovery } = require('../services/nexus2/discoveryAgent');
+        const redis = getRedisClient();
+        const inlineJobId = `discovery-inline-${profile.id}-${Date.now()}`;
+        // Fire-and-forget so the response isn't blocked
+        runDiscovery(profile.id, req.user.id,
+          ['website-scrape', 'social-discovery', 'competitor-scrape', 'market-research', 'ai-synthesis'],
+          redis, inlineJobId
+        ).then(() => {
+          console.log(`[BusinessProfile] Inline discovery completed: ${inlineJobId}`);
+        }).catch((err) => {
+          console.error(`[BusinessProfile] Inline discovery failed: ${err.message}`);
+        });
+        discoveryJobId = inlineJobId;
       }
     } catch (queueErr) {
       console.error('[BusinessProfile] Failed to queue discovery job:', queueErr.message);
-      // Non-fatal — profile still created successfully
     }
 
     res.status(201).json({

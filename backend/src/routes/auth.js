@@ -452,4 +452,62 @@ router.get('/me', async (req, res) => {
   }
 });
 
+// POST /api/v1/auth/refresh — Issue a fresh 24h JWT if the current token is
+// still valid or expired within a 7-day grace window (matches cookie expiry).
+router.post('/refresh', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.token;
+    if (!token) {
+      return res.status(401).json({ success: false, error: 'No token provided' });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        // Allow refresh within 7 days of expiry
+        decoded = jwt.decode(token);
+        if (!decoded || !decoded.exp) {
+          return res.status(401).json({ success: false, error: 'Invalid token' });
+        }
+        const expiredAgo = Math.floor(Date.now() / 1000) - decoded.exp;
+        if (expiredAgo > 7 * 24 * 60 * 60) {
+          return res.status(401).json({ success: false, error: 'Token too old to refresh — please log in again' });
+        }
+      } else {
+        return res.status(401).json({ success: false, error: 'Invalid token' });
+      }
+    }
+
+    const userId = decoded.id || decoded.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Invalid token payload' });
+    }
+
+    // Verify user still exists in DB
+    const db = getPrisma();
+    if (db) {
+      const user = await db.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true, subscription_tier: true },
+      });
+      if (!user) {
+        return res.status(401).json({ success: false, error: 'User not found' });
+      }
+    }
+
+    const newToken = jwt.sign(
+      { id: decoded.id, email: decoded.email, role: decoded.role || 'user', tier: decoded.tier },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({ success: true, token: newToken });
+  } catch (err) {
+    console.error('Token refresh error:', err.message);
+    res.status(500).json({ success: false, error: 'Token refresh failed' });
+  }
+});
+
 module.exports = router;

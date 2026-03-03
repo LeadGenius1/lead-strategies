@@ -443,6 +443,9 @@ if (featureFlags.ENABLE_NEXUS) {
   // Execution Layer — routes + worker
   app.use('/api/v1/execution', require('./routes/execution'));
 
+  // AI Assistant (Phase 5) — streaming chat with tool-use
+  app.use('/api/v1/assistant', aiLimiter, require('./routes/assistant'));
+
   try {
     const { createWorker: createExecutionWorker } = require('./services/nexus2/execution/worker');
     const executionRedis = getRedisClient();

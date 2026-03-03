@@ -2,6 +2,7 @@
 import AetherBadge from '@/components/aether/AetherBadge';
 import AetherButton from '@/components/aether/AetherButton';
 import { TASKS, ALL_TASK_IDS, TASK_STATUS, TASK_COLORS, COLOR_CLASSES } from '@/lib/scheduler/constants';
+import AssistantChat from './AssistantChat';
 
 const STATUS_BADGE_MAP = {
   [TASK_STATUS.IDLE]: { variant: 'default', label: 'idle' },
@@ -125,11 +126,8 @@ export default function AgentSidebar({
         </div>
       </div>
 
-      {/* AI Chat placeholder */}
-      <div className="rounded-xl border-2 border-dashed border-white/10 p-4 text-center">
-        <p className="text-sm text-neutral-600">AI Chat</p>
-        <p className="text-[10px] text-neutral-700 mt-1">Coming soon</p>
-      </div>
+      {/* AI Assistant Chat */}
+      <AssistantChat />
     </aside>
   );
 }

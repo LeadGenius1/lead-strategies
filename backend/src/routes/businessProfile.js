@@ -313,6 +313,18 @@ router.put('/', async (req, res) => {
       }
     }
 
+    // Update scheduler if schedule-relevant fields changed
+    const scheduleFields = ['contentFreq', 'competitors', 'contentThemes', 'activeChannels', 'toneOfVoice', 'icp', 'targetMarket', 'industry'];
+    const changedFields = scheduleFields.filter(f => data[f] !== undefined);
+    if (changedFields.length > 0) {
+      try {
+        const scheduler = require('../services/nexus2/scheduler/engine');
+        await scheduler.updateSchedule(req.user.id, changedFields);
+      } catch (schedErr) {
+        console.error('[BusinessProfile] Scheduler update failed (non-fatal):', schedErr.message);
+      }
+    }
+
     res.json({
       success: true,
       data: profile,

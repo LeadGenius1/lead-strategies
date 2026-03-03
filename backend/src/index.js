@@ -416,6 +416,7 @@ if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System (auth-gated)
   app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
   app.use('/api/v1/business-profile', require('./routes/businessProfile')); // NEXUS 2.0 Business Profile
+  app.use('/api/v1/scheduler', require('./routes/scheduler')); // NEXUS 2.0 Autonomous Scheduler
 
   // Start Discovery Worker in-process (processes nexus-discovery BullMQ jobs)
   try {
@@ -426,6 +427,17 @@ if (featureFlags.ENABLE_NEXUS) {
     }
   } catch (err) {
     console.warn('Discovery worker startup skipped:', err.message);
+  }
+
+  // Start Scheduler Worker in-process (processes nexus-scheduler BullMQ jobs)
+  try {
+    const { createWorker: createSchedulerWorker } = require('./services/nexus2/scheduler/worker');
+    const schedulerRedis = getRedisClient();
+    if (schedulerRedis) {
+      createSchedulerWorker(schedulerRedis);
+    }
+  } catch (err) {
+    console.warn('Scheduler worker startup skipped:', err.message);
   }
 
   console.log('NEXUS routes enabled');

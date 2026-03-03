@@ -308,6 +308,15 @@ Required JSON structure:
 
   console.log(`${LOG_PREFIX} Discovery complete for ${profile.businessName}: ${results.completed.length} tasks OK, ${results.failed.length} failed, cost $${results.totalCost.toFixed(4)}`);
 
+  // Activate autonomous scheduler now that profile is enriched
+  try {
+    const scheduler = require('./scheduler/engine');
+    await scheduler.activateUser(userId);
+    await emitEvent(redis, jobId, 'schedule_activated', { message: 'Autonomous agents are now active' });
+  } catch (schedErr) {
+    console.error(`${LOG_PREFIX} Scheduler activation failed (non-fatal):`, schedErr.message);
+  }
+
   return results;
 }
 

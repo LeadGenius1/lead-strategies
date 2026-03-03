@@ -3,7 +3,7 @@
 // Creates a Website record via Prisma with draft status.
 // ═══════════════════════════════════════════════════════════════
 
-const prisma = require('../../../../config/database');
+const { prisma } = require('../../../../config/database');
 
 /**
  * Create a landing page for a campaign.

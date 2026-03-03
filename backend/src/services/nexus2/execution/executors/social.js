@@ -4,7 +4,7 @@
 // Graceful stubs for Instagram, LinkedIn, others.
 // ═══════════════════════════════════════════════════════════════
 
-const prisma = require('../../../../config/database');
+const { prisma } = require('../../../../config/database');
 
 /**
  * Post content to a social media channel.

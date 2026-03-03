@@ -7,7 +7,7 @@
 const firecrawl = require('../../../marketStrategy/providers/firecrawl');
 const { trackCost } = require('../../../marketStrategy/costTracker');
 const { SCHED_EVENTS } = require('../constants');
-const prisma = require('../../../../config/database');
+const { prisma } = require('../../../../config/database');
 
 /**
  * @param {object} ctx

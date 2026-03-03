@@ -11,7 +11,7 @@ const { Worker } = require('bullmq');
 const { TASKS, SCHED_KEYS, SCHED_EVENTS } = require('./constants');
 const { publishEvent } = require('../../marketStrategy/sseManager');
 const { trackCost } = require('../../marketStrategy/costTracker');
-const prisma = require('../../../config/database');
+const { prisma } = require('../../../config/database');
 
 const QUEUE_NAME = 'nexus-scheduler';
 

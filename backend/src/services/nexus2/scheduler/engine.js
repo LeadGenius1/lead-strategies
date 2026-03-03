@@ -8,7 +8,7 @@
 const IORedis = require('ioredis');
 const { Queue } = require('bullmq');
 const { TASKS, FREQUENCY_MAP, SCHED_KEYS, SCHED_EVENTS, ALL_TASK_IDS } = require('./constants');
-const prisma = require('../../../config/database');
+const { prisma } = require('../../../config/database');
 
 const QUEUE_NAME = 'nexus-scheduler';
 

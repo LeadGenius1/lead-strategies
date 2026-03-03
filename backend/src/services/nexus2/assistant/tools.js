@@ -238,6 +238,35 @@ const tools = [
       properties: {},
     },
   },
+  {
+    name: 'create_video',
+    description:
+      'Create a marketing video. Tier "auto" uses AI script + stock footage + voiceover with zero user effort. Tier "personalized" uses user photos + industry template.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        tier: {
+          type: 'string',
+          enum: ['auto', 'personalized'],
+          description: 'Video tier: auto (stock footage) or personalized (user photos + template)',
+        },
+        topic: {
+          type: 'string',
+          description: 'Topic or subject for the video script',
+        },
+        templateId: {
+          type: 'string',
+          description: 'Template ID for personalized tier (e.g. before-after, service-showcase, team-intro)',
+        },
+        channels: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Distribution channels (e.g. instagram, facebook)',
+        },
+      },
+      required: ['topic'],
+    },
+  },
 ];
 
 module.exports = { tools };

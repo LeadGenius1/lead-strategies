@@ -416,6 +416,169 @@ function MilestoneCard({ item }) {
   );
 }
 
+// ── VideoCard — video creation (draft / progress / complete) ────────
+
+const VIDEO_STAGES = ['Voice', 'Scenes', 'Footage', 'Render', 'Upload'];
+
+function videoStageIndex(status) {
+  const map = {
+    generating_voice: 0, planning_scenes: 1, fetching_footage: 2,
+    processing_media: 2, rendering: 3, uploading: 4, complete: 5, published: 5,
+  };
+  return map[status] ?? -1;
+}
+
+function VideoCard({ item, approvalMode, onApprove, onReject }) {
+  const [expanded, setExpanded] = useState(false);
+  const status = item.status || item.videoStatus || 'script_draft';
+  const isDraft = status === 'script_draft' || item.type === 'VIDEO_DRAFT';
+  const isProgress = ['generating_voice', 'planning_scenes', 'fetching_footage', 'processing_media', 'rendering', 'uploading'].includes(status) || item.type === 'VIDEO_PROGRESS';
+  const isComplete = status === 'complete' || status === 'published' || item.type === 'VIDEO_COMPLETE';
+  const isFailed = status === 'failed';
+
+  // ── DRAFT state ──
+  if (isDraft) {
+    return (
+      <div className="relative rounded-xl bg-neutral-900/30 border border-cyan-500/20 p-4 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-xl">🎬</span>
+          <span className="text-sm font-medium text-white flex-1">Video Script Draft</span>
+          <AetherBadge>{item.payload?.tier || 'auto'}</AetherBadge>
+          <AetherBadge variant="warning">review</AetherBadge>
+          <span className="text-[10px] text-neutral-600">{timeAgo(item.ts)}</span>
+        </div>
+
+        {/* Script preview (collapsible) */}
+        {(item.payload?.script || item.content) && (
+          <>
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-[10px] text-cyan-400 hover:text-cyan-300 transition-colors mb-2"
+            >
+              {expanded ? '[ - ] Hide script' : '[ + ] Preview script'}
+            </button>
+            {expanded && (
+              <div className="bg-black/30 rounded-lg p-3 border border-white/5 mb-3">
+                <p className="text-xs text-neutral-300 whitespace-pre-wrap leading-relaxed max-h-40 overflow-y-auto">
+                  {item.payload?.script || item.content}
+                </p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Upsell for Tier 1 */}
+        {(item.payload?.tier === 'auto') && (
+          <p className="text-[10px] text-neutral-500 mb-3 italic">
+            Want 10x engagement? Upload your own photos for a personalized video.
+          </p>
+        )}
+
+        {/* Approval buttons */}
+        {approvalMode === 'review' && item.outputKey && (
+          <div className="flex items-center gap-2">
+            <AetherButton variant="primary" onClick={() => onApprove?.(item.outputKey)} className="!py-1.5 !px-4 !text-xs">
+              Approve
+            </AetherButton>
+            <AetherButton variant="ghost" onClick={() => onReject?.(item.outputKey, 'skip')} className="!py-1.5 !px-4 !text-xs !text-neutral-400">
+              Skip
+            </AetherButton>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── PROGRESS state ──
+  if (isProgress) {
+    const stage = videoStageIndex(status);
+    return (
+      <div className="relative rounded-xl bg-neutral-900/30 border border-cyan-500/30 p-4 overflow-hidden animate-pulse-slow">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-xl">🎬</span>
+          <span className="text-sm font-medium text-white flex-1">
+            {item.projectName || 'Creating Video...'}
+          </span>
+          <AetherBadge variant="live">rendering</AetherBadge>
+          <span className="text-[10px] text-neutral-600">{timeAgo(item.ts)}</span>
+        </div>
+        {item.message && <p className="text-xs text-neutral-500 mb-3">{item.message}</p>}
+
+        {/* 5-stage progress bar */}
+        <div className="flex items-center gap-1">
+          {VIDEO_STAGES.map((name, i) => (
+            <div key={name} className="flex-1">
+              <div className={`h-1.5 rounded-full transition-all duration-500 ${
+                i < stage ? 'bg-cyan-500' : i === stage ? 'bg-cyan-500/50 animate-pulse' : 'bg-white/5'
+              }`} />
+              <span className={`block text-center text-[9px] mt-1 ${
+                i <= stage ? 'text-cyan-400' : 'text-neutral-600'
+              }`}>{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── COMPLETE state ──
+  if (isComplete) {
+    return (
+      <div className="relative rounded-xl bg-neutral-900/30 border border-emerald-500/20 p-4 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+        <div className="flex items-center gap-3 mb-3">
+          <span className="text-xl">🎬</span>
+          <span className="text-sm font-medium text-white flex-1">
+            {item.projectName || 'Video Ready'}
+          </span>
+          <AetherBadge variant="success">complete</AetherBadge>
+          <span className="text-[10px] text-neutral-600">{timeAgo(item.ts)}</span>
+        </div>
+
+        {/* Inline video player */}
+        {item.videoUrl && (
+          <div className="rounded-lg overflow-hidden bg-black mb-3">
+            <video controls className="w-full max-h-64" preload="metadata" src={item.videoUrl} />
+          </div>
+        )}
+
+        {/* Distribution buttons */}
+        {item.channels && item.channels.length > 0 && (
+          <div className="flex items-center gap-2">
+            {item.channels.includes('instagram') && (
+              <AetherButton variant="ghost" className="!py-1 !px-3 !text-[10px]">Post to Instagram</AetherButton>
+            )}
+            {item.channels.includes('facebook') && (
+              <AetherButton variant="ghost" className="!py-1 !px-3 !text-[10px]">Post to Facebook</AetherButton>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── FAILED state ──
+  if (isFailed) {
+    return (
+      <div className="relative rounded-xl bg-neutral-900/30 border border-red-500/20 p-4 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+        <div className="flex items-center gap-3">
+          <span className="text-xl">🎬</span>
+          <span className="text-sm font-medium text-white flex-1">{item.projectName || 'Video'}</span>
+          <AetherBadge variant="error">failed</AetherBadge>
+          <span className="text-[10px] text-neutral-600">{timeAgo(item.ts)}</span>
+        </div>
+        <p className="text-xs text-red-400 mt-2">{item.message || 'Video creation failed'}</p>
+      </div>
+    );
+  }
+
+  // Fallback
+  return <ResultCard item={item} />;
+}
+
 // ── FeedCard Dispatcher ─────────────────────────────────────────────
 
 export default function FeedCard({ item, approvalMode, onApprove, onReject, onRetry }) {
@@ -442,6 +605,8 @@ export default function FeedCard({ item, approvalMode, onApprove, onReject, onRe
       return <AlertCard item={item} />;
     case CARD_TYPE.MILESTONE:
       return <MilestoneCard item={item} />;
+    case 'VIDEO':
+      return <VideoCard item={item} approvalMode={approvalMode} onApprove={onApprove} onReject={onReject} />;
     default:
       return <ResultCard item={item} />;
   }

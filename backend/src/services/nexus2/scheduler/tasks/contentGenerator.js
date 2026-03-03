@@ -12,12 +12,13 @@ const { CHANNEL_EXEC_MAP } = require('../../execution/constants');
 
 // Platform-specific constraints
 const PLATFORM_CONFIG = {
-  facebook:  { maxLength: 500,  type: 'post',   label: 'Facebook Post' },
-  instagram: { maxLength: 2200, type: 'post',   label: 'Instagram Caption' },
-  linkedin:  { maxLength: 700,  type: 'post',   label: 'LinkedIn Post' },
-  twitter:   { maxLength: 280,  type: 'post',   label: 'Tweet' },
-  email:     { maxLength: 2000, type: 'email',  label: 'Email Newsletter' },
-  sms:       { maxLength: 160,  type: 'sms',    label: 'SMS Campaign' },
+  facebook:  { maxLength: 500,  type: 'post',         label: 'Facebook Post' },
+  instagram: { maxLength: 2200, type: 'post',         label: 'Instagram Caption' },
+  linkedin:  { maxLength: 700,  type: 'post',         label: 'LinkedIn Post' },
+  twitter:   { maxLength: 280,  type: 'post',         label: 'Tweet' },
+  email:     { maxLength: 2000, type: 'email',        label: 'Email Newsletter' },
+  sms:       { maxLength: 160,  type: 'sms',          label: 'SMS Campaign' },
+  videosite: { maxLength: 5000, type: 'video_script', label: 'Video Script' },
 };
 
 /**
@@ -68,11 +69,13 @@ Target audience: ${profile.targetMarket}.
 ICP: ${profile.icp}.
 Offer: ${profile.offer}.`;
 
-      const userPrompt = config.type === 'email'
-        ? `Write a short email newsletter about: "${currentTheme}". Include subject line, preview text, and body. Keep body under ${config.maxLength} characters.`
-        : config.type === 'sms'
-          ? `Write a brief SMS message about: "${currentTheme}". Max ${config.maxLength} characters. Include a clear CTA.`
-          : `Write a ${config.label} about: "${currentTheme}". Max ${config.maxLength} characters. Include relevant hashtags if appropriate.`;
+      const userPrompt = config.type === 'video_script'
+        ? `Write a 30-second video script about: "${currentTheme}". Structure it as 3-4 scenes. Each scene should have: a scene description in [brackets], followed by the voiceover narration. End with a strong call-to-action. Keep it under ${config.maxLength} characters.`
+        : config.type === 'email'
+          ? `Write a short email newsletter about: "${currentTheme}". Include subject line, preview text, and body. Keep body under ${config.maxLength} characters.`
+          : config.type === 'sms'
+            ? `Write a brief SMS message about: "${currentTheme}". Max ${config.maxLength} characters. Include a clear CTA.`
+            : `Write a ${config.label} about: "${currentTheme}". Max ${config.maxLength} characters. Include relevant hashtags if appropriate.`;
 
       const result = await chatgpt.chat({
         systemPrompt,
@@ -87,16 +90,37 @@ Offer: ${profile.offer}.`;
 
       const draftStatus = approvalMode === 'auto' ? 'approved' : 'draft';
 
-      drafts.push({
-        channel,
-        type: config.type,
-        label: config.label,
-        content: (result.content || '').trim(),
-        theme: currentTheme,
-        suggestedTime: getSuggestedPostTime(channel),
-        status: draftStatus,
-        executionType: CHANNEL_EXEC_MAP[channel] || 'post-generic',
-      });
+      if (config.type === 'video_script') {
+        drafts.push({
+          channel,
+          type: config.type,
+          label: config.label,
+          content: (result.content || '').trim(),
+          theme: currentTheme,
+          suggestedTime: getSuggestedPostTime(channel),
+          status: draftStatus,
+          executionType: 'queue-video',
+          cardType: 'VIDEO',
+          payload: {
+            tier: 'auto',
+            script: (result.content || '').trim(),
+            projectName: `${profile.businessName} — ${currentTheme}`,
+            tone: tone,
+            channels: ['videosite'],
+          },
+        });
+      } else {
+        drafts.push({
+          channel,
+          type: config.type,
+          label: config.label,
+          content: (result.content || '').trim(),
+          theme: currentTheme,
+          suggestedTime: getSuggestedPostTime(channel),
+          status: draftStatus,
+          executionType: CHANNEL_EXEC_MAP[channel] || 'post-generic',
+        });
+      }
     } catch (err) {
       drafts.push({
         channel,

@@ -256,6 +256,46 @@ async function executeTool(toolName, toolInput, ctx) {
         return { updated: true, field, value: parsedValue };
       }
 
+      // ─── Video Creation ─────────────────────────────
+      case 'create_video': {
+        const { tier = 'auto', topic, templateId, channels } = toolInput;
+
+        const profile = await prisma.businessProfile.findUnique({ where: { userId } });
+        const bizName = profile?.businessName || 'Your Business';
+        const tone = profile?.toneOfVoice || 'professional';
+        const industry = profile?.industry || 'general';
+
+        // Generate script via ChatGPT
+        const gpt = getChatGPT();
+        const scriptResult = await gpt.generateEmail(
+          { name: 'prospect', company: topic },
+          {
+            objective: `Write a 30-second video script about "${topic}" for ${bizName}. Structure: 3-4 scenes with [scene descriptions] and voiceover narration. End with a CTA.`,
+            keyPoints: ['video-script', industry],
+          }
+        );
+        if (redis) await trackCost(redis, 'chatgpt', 0.002);
+
+        const script = typeof scriptResult === 'string' ? scriptResult : scriptResult?.body || scriptResult?.content || JSON.stringify(scriptResult);
+
+        // Queue video job
+        const { addVideoJob } = require('../video/worker');
+        const job = await addVideoJob({
+          userId,
+          tier,
+          script,
+          projectName: `${bizName} — ${topic}`,
+          tone,
+          industry,
+          format: 'vertical',
+          templateId: templateId || null,
+          photos: [],
+          channels: channels || [],
+        });
+
+        return { status: 'queued', jobId: job.jobId, tier, topic, message: `Video "${topic}" queued for creation (${tier} tier).` };
+      }
+
       // ─── Platform Health ─────────────────────────────
       case 'check_platforms': {
         const { platform } = toolInput;

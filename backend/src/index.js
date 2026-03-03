@@ -456,6 +456,16 @@ if (featureFlags.ENABLE_NEXUS) {
     console.warn('Execution worker startup skipped:', err.message);
   }
 
+  // Video Creation Engine
+  app.use('/api/v1/video', require('./routes/videoCreate'));
+
+  try {
+    const { startVideoWorker } = require('./services/nexus2/video/worker');
+    startVideoWorker();
+  } catch (err) {
+    console.warn('Video worker startup skipped:', err.message);
+  }
+
   console.log('NEXUS routes enabled');
 }
 

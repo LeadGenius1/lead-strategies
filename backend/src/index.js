@@ -418,55 +418,20 @@ if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/business-profile', require('./routes/businessProfile')); // NEXUS 2.0 Business Profile
   app.use('/api/v1/scheduler', require('./routes/scheduler')); // NEXUS 2.0 Autonomous Scheduler
 
-  // Start Discovery Worker in-process (processes nexus-discovery BullMQ jobs)
-  try {
-    const { createWorker: createDiscoveryWorker } = require('./services/nexus2/discoveryWorker');
-    const discoveryRedis = getRedisClient();
-    if (discoveryRedis) {
-      createDiscoveryWorker(discoveryRedis);
-    }
-  } catch (err) {
-    console.warn('Discovery worker startup skipped:', err.message);
-  }
-
-  // Start Scheduler Worker in-process (processes nexus-scheduler BullMQ jobs)
-  try {
-    const { createWorker: createSchedulerWorker } = require('./services/nexus2/scheduler/worker');
-    const schedulerRedis = getRedisClient();
-    if (schedulerRedis) {
-      createSchedulerWorker(schedulerRedis);
-    }
-  } catch (err) {
-    console.warn('Scheduler worker startup skipped:', err.message);
-  }
-
-  // Execution Layer — routes + worker
+  // Execution Layer — routes
   app.use('/api/v1/execution', require('./routes/execution'));
 
   // AI Assistant (Phase 5) — streaming chat with tool-use
   app.use('/api/v1/assistant', aiLimiter, require('./routes/assistant'));
 
-  try {
-    const { createWorker: createExecutionWorker } = require('./services/nexus2/execution/worker');
-    const executionRedis = getRedisClient();
-    if (executionRedis) {
-      createExecutionWorker(executionRedis);
-    }
-  } catch (err) {
-    console.warn('Execution worker startup skipped:', err.message);
-  }
-
   // Video Creation Engine
   app.use('/api/v1/video', require('./routes/videoCreate'));
 
-  try {
-    const { startVideoWorker } = require('./services/nexus2/video/worker');
-    startVideoWorker();
-  } catch (err) {
-    console.warn('Video worker startup skipped:', err.message);
-  }
-
   console.log('NEXUS routes enabled');
+
+  // NOTE: Workers are started AFTER Redis is initialized (see startNexusWorkers below).
+  // getRedisClient() returns null until initializeRedis() completes, so workers
+  // must not be started here — they'd receive null and all provider calls would fail.
 }
 
 // Market Strategy Pipeline (disabled by default — enable with ENABLE_MARKET_STRATEGY=true)
@@ -497,16 +462,47 @@ app.use(errorHandler);
 // SERVER START
 // ===========================================
 
+// Start NEXUS workers that require a node-redis client.
+// Must be called AFTER initializeRedis() so getRedisClient() is not null.
+function startNexusWorkers() {
+  if (!featureFlags.ENABLE_NEXUS) return;
+  const redis = getRedisClient();
+  if (!redis) {
+    console.warn('[Workers] Redis not available — NEXUS workers not started');
+    return;
+  }
+
+  try {
+    const { createWorker: createDiscoveryWorker } = require('./services/nexus2/discoveryWorker');
+    createDiscoveryWorker(redis);
+  } catch (err) { console.warn('Discovery worker startup skipped:', err.message); }
+
+  try {
+    const { createWorker: createSchedulerWorker } = require('./services/nexus2/scheduler/worker');
+    createSchedulerWorker(redis);
+  } catch (err) { console.warn('Scheduler worker startup skipped:', err.message); }
+
+  try {
+    const { createWorker: createExecutionWorker } = require('./services/nexus2/execution/worker');
+    createExecutionWorker(redis);
+  } catch (err) { console.warn('Execution worker startup skipped:', err.message); }
+
+  try {
+    const { startVideoWorker } = require('./services/nexus2/video/worker');
+    startVideoWorker();
+  } catch (err) { console.warn('Video worker startup skipped:', err.message); }
+}
+
 // Initialize Redis asynchronously (non-blocking)
 // Routes are already registered, Redis will upgrade rate limiting if available
 initializeRedis().then((redisConfig) => {
   if (redisConfig.available && redisConfig.store) {
     console.log('✅ Redis connected - rate limiting upgraded to Redis-backed');
-    // Note: Rate limiting store can't be changed after initialization
-    // For production, consider restarting or using Redis from the start
   } else {
     console.log('⚠️  Redis not available - using in-memory rate limiting');
   }
+  // Start workers AFTER Redis is ready
+  startNexusWorkers();
 }).catch((error) => {
   console.warn('⚠️  Redis initialization failed - using in-memory rate limiting:', error.message);
 });

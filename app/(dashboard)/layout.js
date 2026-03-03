@@ -197,7 +197,7 @@ export default function DashboardLayout({ children }) {
         const exemptRoutes = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus'];
         const isExempt = exemptRoutes.some(r => pathname === r || pathname.startsWith(r + '/'));
         if (!profileComplete && !isExempt) {
-          router.push('/profile');
+          router.push('/nexus/setup');
           return;
         }
         setProfileChecked(true);
@@ -208,7 +208,7 @@ export default function DashboardLayout({ children }) {
 
         const hrefs = [];
         if (!profileComplete) {
-          hrefs.push('/profile'); // Profile first - critical for Lead Hunter
+          hrefs.push('/nexus/setup'); // Profile first - 3-step setup wizard
         } else if (tier === 4) {
           hrefs.push('/videos/upload'); // VideoSite: upload first video
         } else if (leadsCount === 0) {
@@ -221,7 +221,7 @@ export default function DashboardLayout({ children }) {
         setSuggestedHrefs(hrefs);
       } catch (e) {
         setProfileChecked(true); // Don't block on fetch failure
-        setSuggestedHrefs(['/profile']); // Default: complete profile
+        setSuggestedHrefs(['/nexus/setup']); // Default: complete profile
       }
     }
 

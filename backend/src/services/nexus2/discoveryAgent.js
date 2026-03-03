@@ -317,6 +317,24 @@ Required JSON structure:
     console.error(`${LOG_PREFIX} Scheduler activation failed (non-fatal):`, schedErr.message);
   }
 
+  // Auto-trigger market strategy pipeline using profile data
+  try {
+    const { profileToMissionInputs } = require('./profileBridge');
+    const { addJob } = require('../marketStrategy/worker');
+    const freshProfile = await prisma.businessProfile.findUnique({ where: { id: profileId } });
+    if (freshProfile) {
+      const missionInputs = profileToMissionInputs(freshProfile);
+      const strategyJobId = await addJob(missionInputs, userId, redis);
+      await emitEvent(redis, jobId, 'market_strategy_triggered', {
+        strategyJobId,
+        message: 'Market strategy pipeline queued automatically',
+      });
+      console.log(`${LOG_PREFIX} Auto-triggered market strategy (jobId: ${strategyJobId}) for user ${userId}`);
+    }
+  } catch (stratErr) {
+    console.error(`${LOG_PREFIX} Market strategy auto-trigger failed (non-fatal):`, stratErr.message);
+  }
+
   return results;
 }
 

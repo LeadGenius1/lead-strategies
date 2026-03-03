@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useMarketStrategy } from '@/lib/market-strategy/useMarketStrategy';
+import { getHistory, getJobStatus } from '@/lib/market-strategy/api';
+import api from '@/lib/api';
 import {
   NEXUS_AGENTS, STAGES, AGENT_MAP, AGENT_COLORS,
   BUDGET_OPTIONS, PLATFORM_OPTIONS, AGENT_STATUS,
@@ -112,7 +114,7 @@ function AgentCard({ agentId, agentState, collapsed = false }) {
 
 // ═══ STATE 1: Input Form ═══
 
-function StrategyForm({ onSubmit, isRunning }) {
+function StrategyForm({ onSubmit, isRunning, initialData, profileLoaded }) {
   const [targetMarket, setTargetMarket] = useState('');
   const [icp, setIcp] = useState('');
   const [offer, setOffer] = useState('');
@@ -124,6 +126,23 @@ function StrategyForm({ onSubmit, isRunning }) {
   const [errors, setErrors] = useState({});
 
   const competitorRef = useRef(null);
+
+  // Auto-populate from BusinessProfile
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.targetMarket) setTargetMarket(initialData.targetMarket);
+      if (initialData.icp) setIcp(initialData.icp);
+      if (initialData.offer) setOffer(initialData.offer);
+      if (initialData.budgetRange) setBudgetRange(initialData.budgetRange);
+      if (initialData.uniqueValue) setNotes(initialData.uniqueValue);
+      if (Array.isArray(initialData.competitors) && initialData.competitors.length > 0) {
+        setCompetitors(initialData.competitors);
+      }
+      if (Array.isArray(initialData.platforms) && initialData.platforms.length > 0) {
+        setPlatforms(initialData.platforms);
+      }
+    }
+  }, [initialData]);
 
   function addCompetitor() {
     const val = competitorInput.trim();
@@ -168,6 +187,12 @@ function StrategyForm({ onSubmit, isRunning }) {
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
       <h3 className="text-lg font-medium text-white mb-1">Define Your Market Strategy</h3>
       <p className="text-sm text-neutral-500 mb-6">Nexus will analyze your market and build a custom strategy across your platforms.</p>
+
+      {profileLoaded && (
+        <div className="mb-4 px-4 py-2 rounded-lg bg-indigo-600/10 border border-indigo-500/20 text-indigo-300 text-sm">
+          Pre-filled from your Nexus profile. Edit anything before running.
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -524,6 +549,46 @@ export default function MarketStrategyPage() {
     executeStrategy, retryFailed, cancel, reset,
   } = useMarketStrategy();
 
+  const [profileData, setProfileData] = useState(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [lastStrategy, setLastStrategy] = useState(null);
+
+  // Load profile + strategy history on mount
+  useEffect(() => {
+    async function loadContext() {
+      try {
+        const { data } = await api.get('/api/v1/business-profile');
+        if (data?.profile) {
+          setProfileData(data.profile);
+          setProfileLoaded(true);
+        }
+      } catch {
+        // No profile — form stays empty
+      }
+
+      try {
+        const historyData = await getHistory();
+        if (historyData?.jobs?.length > 0) {
+          const latest = historyData.jobs[0]; // sorted desc by score
+          if (latest.status === 'completed' || latest.status === 'partial') {
+            setLastStrategy(latest);
+          }
+        }
+      } catch {
+        // No history — that's fine
+      }
+    }
+    loadContext();
+  }, []);
+
+  function viewResults() {
+    if (lastStrategy?.jobId) {
+      // Load the job results into the hook by re-running with that jobId
+      window.location.hash = lastStrategy.jobId;
+      window.location.reload();
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#050505] text-white antialiased selection:bg-indigo-500/30 p-6 md:p-8">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -567,6 +632,51 @@ export default function MarketStrategyPage() {
           </div>
         )}
 
+        {/* Smart status banner: strategy already ran */}
+        {currentPhase === 'idle' && lastStrategy && (
+          <div className="p-4 rounded-lg bg-emerald-600/10 border border-emerald-500/20">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="text-emerald-300 font-medium text-sm">Strategy Generated</p>
+                <p className="text-neutral-500 text-xs mt-1">
+                  {profileLoaded ? 'Built automatically from your Nexus profile. ' : ''}
+                  Last run: {new Date(lastStrategy.createdAt).toLocaleDateString()}
+                  {lastStrategy.totalCostUsd > 0 && ` — $${lastStrategy.totalCostUsd.toFixed(4)}`}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <AetherButton size="sm" variant="secondary" onClick={viewResults}>
+                  View Results
+                </AetherButton>
+                <AetherButton size="sm" onClick={() => executeStrategy(profileData ? {
+                  targetMarket: profileData.targetMarket || '',
+                  icp: profileData.icp || '',
+                  competitors: profileData.competitors || [],
+                  offer: profileData.offer || '',
+                  budgetRange: profileData.budgetRange || '',
+                  platforms: profileData.platforms || [],
+                  notes: profileData.uniqueValue || '',
+                } : undefined)}>
+                  Re-run Strategy
+                </AetherButton>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Smart status banner: no profile yet */}
+        {currentPhase === 'idle' && !profileLoaded && !lastStrategy && (
+          <div className="p-4 rounded-lg bg-amber-600/10 border border-amber-500/20">
+            <p className="text-amber-300 text-sm">
+              Complete your{' '}
+              <a href="/nexus/setup" className="underline hover:text-amber-200 transition-colors">
+                Nexus profile
+              </a>{' '}
+              first and your strategy will be built automatically.
+            </p>
+          </div>
+        )}
+
         {/* Running controls */}
         {isRunning && (
           <div className="flex items-center justify-between">
@@ -585,7 +695,12 @@ export default function MarketStrategyPage() {
 
         {/* STATE 1: Idle — Show form */}
         {currentPhase === 'idle' && (
-          <StrategyForm onSubmit={executeStrategy} isRunning={isRunning} />
+          <StrategyForm
+            onSubmit={executeStrategy}
+            isRunning={isRunning}
+            initialData={profileData}
+            profileLoaded={profileLoaded}
+          />
         )}
 
         {/* STATE 2/3: Thinking / Building — Show pipeline */}

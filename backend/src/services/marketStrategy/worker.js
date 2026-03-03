@@ -135,6 +135,33 @@ function createWorker(redis) {
         // Execute the pipeline
         await executePipeline(jobId, businessInputs, { redis });
 
+        // Enrich BusinessProfile with strategy results (non-fatal)
+        try {
+          const userId = jobData.userId;
+          if (userId) {
+            const contextRaw = await redis.get(REDIS_KEYS.context(jobId));
+            if (contextRaw) {
+              const ctx = JSON.parse(contextRaw);
+              const enrichment = {};
+              if (ctx['nexus-research']?.marketIntel) enrichment.marketIntel = ctx['nexus-research'].marketIntel;
+              if (ctx['competitor-teardown']?.competitorIntel) enrichment.competitorIntel = ctx['competitor-teardown'].competitorIntel;
+              if (ctx['positioning']?.contentThemes) enrichment.contentThemes = ctx['positioning'].contentThemes;
+              if (ctx['channel-plan']?.audienceInsight) enrichment.audienceInsight = ctx['channel-plan'].audienceInsight;
+
+              if (Object.keys(enrichment).length > 0) {
+                const { prisma } = require('../../config/database');
+                await prisma.businessProfile.updateMany({
+                  where: { userId },
+                  data: enrichment,
+                });
+                console.log(`[Market Strategy] Enriched profile for user ${userId}: ${Object.keys(enrichment).join(', ')}`);
+              }
+            }
+          }
+        } catch (enrichErr) {
+          console.warn('[Market Strategy] Profile enrichment failed (non-fatal):', enrichErr.message);
+        }
+
         console.log(`[Market Strategy] Job ${jobId} completed`);
       } catch (err) {
         console.error(`[Market Strategy] Job ${jobId} failed:`, err.message);

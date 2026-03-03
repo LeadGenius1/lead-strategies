@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
     });
 
     if (profile) {
-      return res.json({ success: true, status: 'profile_exists', data: profile });
+      return res.json({ success: true, status: 'profile_exists', profile });
     }
 
     // No BusinessProfile yet — pull suggested values from user.metadata

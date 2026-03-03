@@ -12,6 +12,7 @@ import {
   Lock,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { UPGRADE_MESSAGE } from '@/lib/nexusFeatures';
 
 const ICON_MAP = {
   Activity,
@@ -36,7 +37,7 @@ export default function NexusBottomNav({ panels, pathname }) {
             <button
               key={panel.id}
               onClick={() =>
-                toast('Upgrade to UltraLead to unlock this feature', {
+                toast(UPGRADE_MESSAGE, {
                   icon: '🔒',
                   duration: 3000,
                 })

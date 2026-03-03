@@ -39,6 +39,7 @@ router.get('/features', authenticate, (req, res) => {
     tier,
     planName,
     panels,
+    upgradeMessage: tier < 5 ? 'Upgrade to UltraLead ($499/mo) to unlock all features' : null,
   });
 });
 

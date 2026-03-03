@@ -8,11 +8,17 @@
 // ═══════════════════════════════════════════════════════════════
 
 const { prisma } = require('../../config/database');
+const Anthropic = require('@anthropic-ai/sdk');
 const firecrawl = require('../marketStrategy/providers/firecrawl');
 const perplexity = require('../marketStrategy/providers/perplexity');
-const chatgpt = require('../marketStrategy/providers/chatgpt');
 const { trackCost } = require('../marketStrategy/costTracker');
 const { publishEvent } = require('../marketStrategy/sseManager');
+
+let anthropicClient = null;
+function getAnthropic() {
+  if (!anthropicClient) anthropicClient = new Anthropic();
+  return anthropicClient;
+}
 
 const LOG_PREFIX = '[Discovery]';
 
@@ -206,7 +212,7 @@ Provide:
     });
   }
 
-  // --- Task 5: AI Synthesis (ChatGPT) ---
+  // --- Task 5: AI Synthesis (Claude) ---
   if (tasks.includes('ai-synthesis')) {
     await runTask(redis, jobId, 'ai-synthesis', results, async () => {
       // Gather all data from previous tasks
@@ -221,13 +227,16 @@ Provide:
 
       const contextSummary = buildSynthesisContext(freshProfile, discoveredData, competitorIntel, marketIntel, socialProfiles);
 
-      const result = await chatgpt.chat({
-        systemPrompt: `You are an AI marketing strategist for "${freshProfile.businessName}". Analyze all provided data and generate actionable insights. Respond in valid JSON format only.`,
-        userPrompt: `Based on the following business data, generate a JSON object with these keys:
+      const response = await getAnthropic().messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{
+          role: 'user',
+          content: `You are an AI marketing strategist for "${freshProfile.businessName}". Analyze the following business data and generate actionable insights.
 
 ${contextSummary}
 
-Required JSON structure:
+Return ONLY valid JSON (no markdown fences, no explanation):
 {
   "contentThemes": [
     { "theme": "string", "description": "string", "frequency": "daily|3x-week|weekly", "platforms": ["string"] }
@@ -242,22 +251,22 @@ Required JSON structure:
   "recommendedTone": "string",
   "quickWins": [{ "action": "string", "impact": "high|medium|low", "effort": "low|medium|high" }]
 }`,
-        model: 'gpt-4o-mini',
-        maxTokens: 2000,
-        temperature: 0.3,
-      }, redis);
+        }],
+      });
 
-      await trackCost(redis, 'chatgpt', result.costUsd);
-      results.totalCost += result.costUsd || 0;
+      const costUsd = (response.usage.input_tokens * 3 + response.usage.output_tokens * 15) / 1_000_000;
+      await trackCost(redis, 'claude', costUsd);
+      results.totalCost += costUsd;
 
       // Parse JSON response
+      const rawText = response.content[0].text;
       let synthesis;
       try {
-        const cleaned = result.content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        const cleaned = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         synthesis = JSON.parse(cleaned);
       } catch {
         // If JSON parsing fails, store raw content
-        synthesis = { raw: result.content, parseError: true };
+        synthesis = { raw: rawText, parseError: true };
       }
 
       const updateData = {};
@@ -286,7 +295,7 @@ Required JSON structure:
         });
       }
 
-      return { cached: result.cached, fieldsUpdated: Object.keys(updateData) };
+      return { fieldsUpdated: Object.keys(updateData) };
     });
   }
 

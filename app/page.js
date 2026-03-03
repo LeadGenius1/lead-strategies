@@ -253,13 +253,13 @@ export default function HomePage() {
             <div className="flex flex-col z-10 w-full items-center justify-center">
               <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-3 md:gap-y-4 text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold text-white tracking-tighter mt-2 sm:mt-6 mb-4 sm:mb-6">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                  STOP DOING YOUR
+                  THE NEXT GENERATION
                 </span>
                 <span className="[animation:animationIn_0.8s_ease-out_0.25s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                  OWN MARKETING.
+                  OF OUTREACH MARKETING
                 </span>
                 <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
-                  START APPROVING IT.
+                  IS HERE.
                 </span>
               </h1>
             </div>
@@ -278,7 +278,7 @@ export default function HomePage() {
             </div>
 
             <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-xs sm:text-sm md:text-base lg:text-xl text-neutral-500 font-space-grotesk text-center max-w-2xl px-4 mt-2">
-              UltraLead.AI researches your market, writes your content, finds your leads, and posts to every channel — automatically. Set up once. AI handles the rest.
+              This isn&apos;t another lead finder. UltraLead.AI is an autonomous marketing engine — it researches your market, builds your strategy, writes your content, finds your prospects, and executes across every channel. You just approve.
             </div>
 
             {/* CTA Button */}
@@ -298,21 +298,21 @@ export default function HomePage() {
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="text-center animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase mb-8 text-white tracking-tighter font-space-grotesk font-light">
-              You Didn&apos;t Start a Business to Become a <span className="text-neutral-600">Full-Time Marketer</span>
+              Lead Finders Give You Names. <span className="text-neutral-600">We Give You Revenue.</span>
             </h2>
           </div>
           <div className="space-y-6 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
             <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist leading-relaxed">
-              You started your business because you&apos;re great at what you do — cleaning homes, fixing pipes, training clients, selling products. But somehow, marketing became your second full-time job.
+              Every platform out there does the same thing — scrapes a database, hands you a spreadsheet of emails, and wishes you luck. Then what?
             </p>
             <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist leading-relaxed">
-              Every week you&apos;re spending hours writing social posts nobody sees, sending emails nobody opens, updating a website nobody visits, and juggling 5 different tools that don&apos;t talk to each other.
+              You still have to write the emails. Still have to create the social posts. Still have to build the landing pages, monitor competitors, warm up your sender accounts, and figure out what&apos;s actually working. You&apos;re paying for leads and doing all the labor yourself.
             </p>
             <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist leading-relaxed">
-              Meanwhile, your competitors are everywhere — showing up in feeds, ranking on Google, getting the leads that should be yours.
+              Meanwhile, your competitors are everywhere — showing up in feeds, ranking on Google, closing the deals that should be yours.
             </p>
             <p className="text-sm sm:text-base md:text-lg text-white font-space-grotesk tracking-tight">
-              There&apos;s a better way.
+              This is the difference between a tool and a team.
             </p>
           </div>
         </div>
@@ -323,7 +323,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-16 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
             <h2 className="text-4xl sm:text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Meet Your <span className="text-gradient">AI Marketing Team</span>
+              Not a Tool. <span className="text-gradient">An Autonomous Marketing Engine.</span>
             </h2>
           </div>
 
@@ -381,7 +381,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-16 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
             <h2 className="text-4xl sm:text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Everything You Need. <span className="text-neutral-600">Nothing You Don&apos;t.</span>
+              7 AI Agents. <span className="text-neutral-600">Zero Busywork.</span>
             </h2>
           </div>
 
@@ -683,13 +683,13 @@ export default function HomePage() {
       <section className="border-subtle bg-center z-10 border-t pt-24 pb-24 relative">
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <h2 className="md:text-6xl uppercase text-3xl sm:text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6">
-            Your Competitors Are Already Using AI. <span className="text-gradient">Are You?</span>
+            This Is the Future of Outreach Marketing. <span className="text-gradient">And It&apos;s Already Here.</span>
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist max-w-2xl mx-auto mb-4 leading-relaxed">
-            Every day you spend doing marketing manually is a day your competitors get further ahead. UltraLead.AI levels the playing field — giving every small business access to the same AI-powered marketing that billion-dollar companies use.
+            The businesses that adopt it now will own their markets. The ones that wait will wonder what happened.
           </p>
           <p className="text-sm sm:text-base text-neutral-500 font-geist max-w-xl mx-auto mb-8">
-            Set up takes 2 minutes. Your first AI-generated strategy is ready in 15. And your marketing never stops working — even while you sleep.
+            Set up takes 2 minutes. Your first AI-generated strategy is ready in 15. Your marketing never stops — even while you sleep.
           </p>
           <Link href="/signup" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
             Start Free — See It Work in 15 Minutes →

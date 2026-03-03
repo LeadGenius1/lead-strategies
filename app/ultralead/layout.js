@@ -1,19 +1,19 @@
 import { generateSEOMetadata } from '@/lib/metadata';
 
 export const metadata = generateSEOMetadata({
-  title: 'UltraLead - AI Sales Command Center | Full CRM + 7 AI Agents',
+  title: 'UltraLead.AI — Your AI Marketing Team | 7 Agents, Every Channel, One Dashboard',
   description:
-    'Your Complete AI Sales Command Center. Full CRM, 7 self-healing AI agents, 22+ channel unified inbox, voice calling with AI transcription. $499/mo. Start free trial.',
+    'Stop doing your own marketing. UltraLead.AI gives you 7 AI agents that research your market, write your content, find your leads, and post to every channel — automatically. $499/mo. Start free.',
   canonical: 'https://aileadstrategies.com/ultralead',
   ogImage: '/og-image.png',
   keywords: [
-    'AI sales automation',
-    'CRM software',
+    'AI marketing automation',
+    'autonomous marketing',
     'AI agents',
-    'unified inbox',
-    'sales command center',
-    'B2B sales platform',
-    'enterprise CRM',
+    'outreach marketing',
+    'lead generation',
+    'content automation',
+    'marketing AI platform',
   ],
 });
 

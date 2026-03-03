@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { Icons } from '@/components/Icons';
@@ -11,9 +11,9 @@ function HomeSEO() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'UltraLead.AI',
+    name: 'AI Lead Strategies',
     url: 'https://aileadstrategies.com',
-    description: 'AI-powered autonomous marketing platform with 7 AI agents, every channel, one dashboard',
+    description: 'AI-powered B2B lead generation and sales automation platform with 5 integrated products',
     potentialAction: {
       '@type': 'SearchAction',
       target: 'https://aileadstrategies.com/search?q={search_term_string}',
@@ -32,50 +32,26 @@ function HomeSEO() {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'How long does setup take?',
+        name: 'What is AI Lead Strategies?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'About 2 minutes. You fill out a 3-step business profile. Our AI starts learning about your business immediately. First results appear within 15 minutes.'
+          text: 'AI Lead Strategies is a comprehensive B2B sales automation platform offering 4 integrated products: LeadSite.AI for lead scoring, LeadSite.IO for AI website building, ClientContact.IO for unified inbox and CRM (22+ channels, 7 AI agents), and VideoSite.AI for video monetization.'
         }
       },
       {
         '@type': 'Question',
-        name: 'Will the AI post without my approval?',
+        name: 'How much does AI Lead Strategies cost?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Only if you want it to. UltraLead.AI starts in Review Mode — every post, email, and action appears as a draft. You approve before anything goes live. Switch to Auto Mode when you\'re ready.'
+          text: 'Pricing varies by platform: LeadSite.AI is $49/mo, LeadSite.IO is $49/mo with a free website, ClientContact.IO is $99–$399/mo (3 tiers), UltraLead is $499/mo, VideoSite.AI is FREE (earn $1 per viewer).'
         }
       },
       {
         '@type': 'Question',
-        name: 'How is this different from ChatGPT?',
+        name: 'What AI features does the platform include?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'ChatGPT is a writing tool. UltraLead.AI is a complete marketing system. It researches your market, writes content, finds leads, posts to social media, sends emails, monitors competitors, and reports results — all autonomously.'
-        }
-      },
-      {
-        '@type': 'Question',
-        name: 'What if the AI creates something I don\'t like?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Reject it with one tap. The AI learns from your feedback and adjusts. You can also edit any draft before approving.'
-        }
-      },
-      {
-        '@type': 'Question',
-        name: 'What channels are supported?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Instagram, Facebook, Twitter/X, LinkedIn, Email, SMS, Landing Pages, and Video. All from one dashboard.'
-        }
-      },
-      {
-        '@type': 'Question',
-        name: 'Can I cancel anytime?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes. No contracts. Cancel from your dashboard anytime.'
+          text: 'AI Lead Strategies includes AI prospect discovery, automated lead scoring, AI-generated personalized emails, 7 self-healing AI agents, AI website generation, and intelligent follow-up automation across 22 communication channels.'
         }
       }
     ]
@@ -93,29 +69,10 @@ function HomeSEO() {
       />
       {/* Hidden SEO content for LLM discovery */}
       <div className="sr-only" aria-hidden="true" role="presentation">
-        <h1>UltraLead.AI - Your AI Marketing Team</h1>
-        <p>UltraLead.AI gives you 7 AI agents that research your market, write your content, find your leads, and post to every channel — automatically. $499/month, everything included. 14-day free trial. No credit card required. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
+        <h1>AI Lead Strategies - B2B Lead Generation Platform</h1>
+        <p>AI Lead Strategies offers 5 integrated AI-powered platforms for B2B sales automation: LeadSite.AI ($49/mo) for lead scoring and enrichment. LeadSite.IO ($49/mo + Free website) for AI website building. ClientContact.IO ($99–$399/mo) for 22+ channel unified inbox and full CRM with 7 AI agents. UltraLead ($499/mo) full CRM + 7 AI agents. VideoSite.AI (FREE - earn $1/viewer) for video monetization. Contact: support@aileadstrategies.com | (855) 506-8886 | 600 Eagleview Blvd, Suite 317, Exton PA 19341.</p>
       </div>
     </>
-  );
-}
-
-// FAQ Accordion Item
-function FAQItem({ question, answer }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border border-subtle bg-[#050505] transition-colors hover:border-white/10">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer"
-      >
-        <span className="text-sm sm:text-base text-white font-space-grotesk tracking-tight pr-4">{question}</span>
-        <span className={`text-neutral-500 text-xl transition-transform duration-300 flex-shrink-0 ${open ? 'rotate-45' : ''}`}>+</span>
-      </button>
-      <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-96 pb-5 sm:pb-6' : 'max-h-0'}`}>
-        <p className="px-5 sm:px-6 text-sm text-neutral-400 font-geist leading-relaxed">{answer}</p>
-      </div>
-    </div>
   );
 }
 
@@ -189,7 +146,7 @@ export default function HomePage() {
           <Link href="/" className="bg-white/5 hover:bg-white/10 px-3 sm:px-5 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-all text-neutral-300 font-geist">
             AI LEAD
           </Link>
-
+          
           <div className="hidden lg:flex items-center gap-1">
             <Link href="/leadsite-ai" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">LeadSite.AI</Link>
             <Link href="/leadsite-io" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">LeadSite.IO</Link>
@@ -240,7 +197,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Hero Content */}
+        {/* Hero Content - font sizes reduced 15% for readability, responsive */}
         <div className="relative z-10 pt-28 pb-16 sm:pt-36 sm:pb-20 md:pt-44 md:pb-28 lg:pt-52 lg:pb-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative max-w-7xl">
           <div className="flex flex-col text-center mb-12 sm:mb-20 relative items-center justify-center">
@@ -253,446 +210,270 @@ export default function HomePage() {
             <div className="flex flex-col z-10 w-full items-center justify-center">
               <h1 className="uppercase leading-[1.1] sm:leading-[1.0] flex flex-col justify-center gap-y-2 sm:gap-y-3 md:gap-y-4 text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold text-white tracking-tighter mt-2 sm:mt-6 mb-4 sm:mb-6">
                 <span className="[animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                  THE NEXT GENERATION
-                </span>
-                <span className="[animation:animationIn_0.8s_ease-out_0.25s_both] animate-on-scroll tracking-tighter font-space-grotesk font-light block">
-                  OF OUTREACH MARKETING
+                  ONE PLATFORM
                 </span>
                 <span className="text-gradient [animation:animationIn_0.8s_ease-out_0.3s_both] animate-on-scroll font-light tracking-tighter font-space-grotesk block">
-                  IS HERE.
+                  INFINITE REVENUE
                 </span>
               </h1>
             </div>
 
             <div className="flex flex-col z-10 w-full mt-6 mb-6 gap-y-3 items-center justify-center">
-              {/* Social Proof Bar */}
+              {/* Future of Outreach Marketing Badge */}
               <div className="[animation:animationIn_0.8s_ease-out_0.4s_both] animate-on-scroll">
                 <span className="px-3 py-1.5 bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[9px] sm:text-[10px] uppercase tracking-wider font-geist">
-                  7 AI Agents Working 24/7 &bull; Every Channel &bull; One Dashboard
+                  THE FUTURE OF OUTREACH MARKETING
                 </span>
               </div>
 
               <h2 className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll text-sm sm:text-base md:text-xl lg:text-2xl text-neutral-400 tracking-tight font-space-grotesk">
-                Your AI Marketing Team
+                Automated B2B Marketing Ecosystem
               </h2>
             </div>
 
             <div className="leading-relaxed [animation:animationIn_0.8s_ease-out_0.6s_both] animate-on-scroll text-xs sm:text-sm md:text-base lg:text-xl text-neutral-500 font-space-grotesk text-center max-w-2xl px-4 mt-2">
-              This isn&apos;t another lead finder. UltraLead.AI is an autonomous marketing engine — it researches your market, builds your strategy, writes your content, finds your prospects, and executes across every channel. You just approve.
-            </div>
-
-            {/* CTA Button */}
-            <div className="[animation:animationIn_0.8s_ease-out_0.7s_both] animate-on-scroll mt-8">
-              <Link href="/signup" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
-                Start Free — 14 Day Trial
-              </Link>
-              <p className="text-neutral-600 text-xs font-geist mt-3 tracking-wide">No credit card required</p>
+              Stop juggling 10 tools. One unified platform for lead generation, website building, omnichannel outreach, and enterprise sales automation.
             </div>
           </div>
-        </div>
-        </div>
-      </section>
 
-      {/* Problem Section */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <div className="text-center animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase mb-8 text-white tracking-tighter font-space-grotesk font-light">
-              Lead Finders Give You Names. <span className="text-neutral-600">We Give You Revenue.</span>
-            </h2>
-          </div>
-          <div className="space-y-6 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
-            <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist leading-relaxed">
-              Every platform out there does the same thing — scrapes a database, hands you a spreadsheet of emails, and wishes you luck. Then what?
-            </p>
-            <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist leading-relaxed">
-              You still have to write the emails. Still have to create the social posts. Still have to build the landing pages, monitor competitors, warm up your sender accounts, and figure out what&apos;s actually working. You&apos;re paying for leads and doing all the labor yourself.
-            </p>
-            <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist leading-relaxed">
-              Meanwhile, your competitors are everywhere — showing up in feeds, ranking on Google, closing the deals that should be yours.
-            </p>
-            <p className="text-sm sm:text-base md:text-lg text-white font-space-grotesk tracking-tight">
-              This is the difference between a tool and a team.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Solution Section — 3-Step Flow */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            <h2 className="text-4xl sm:text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Not a Tool. <span className="text-gradient">An Autonomous Marketing Engine.</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
-            {/* Step 1 */}
-            <div className="bg-[#050505] border border-subtle p-8 relative group hover:border-white/10 transition-colors">
+          {/* Stats Grid - modern flat icon style (dark grey square) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-6xl mx-auto counter-trigger [animation:animationIn_0.8s_ease-out_0.2s_both] animate-on-scroll">
+            {/* Card 1 */}
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[220px] relative group hover:border-white/10 transition-colors">
               <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">01</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center mb-6">
-                <Icons.Users className="w-5 h-5 text-purple-400" />
-              </div>
-              <div className="px-2 py-0.5 border border-purple-900/30 bg-purple-900/10 text-purple-400 text-[10px] uppercase tracking-wider font-geist inline-block mb-4">
-                2 minutes
-              </div>
-              <h3 className="text-xl text-white mb-3 tracking-tight font-space-grotesk">Tell Us About Your Business</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                Fill out a simple profile — your business, your customers, your competitors, your budget. That&apos;s it. Our AI immediately starts learning everything about your market.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="bg-[#050505] border border-subtle p-8 relative group hover:border-white/10 transition-colors">
-              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">02</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center mb-6">
-                <Icons.TrendingUp className="w-5 h-5 text-sky-400" />
-              </div>
-              <div className="px-2 py-0.5 border border-sky-900/30 bg-sky-900/10 text-sky-400 text-[10px] uppercase tracking-wider font-geist inline-block mb-4">
-                Real-time
-              </div>
-              <h3 className="text-xl text-white mb-3 tracking-tight font-space-grotesk">Watch Your AI Team Go to Work</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                Within minutes, your live strategy feed lights up. AI agents are scanning competitors, drafting social posts, finding prospects, and building your marketing strategy. Everything happens in real-time — you can watch it unfold.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="bg-[#050505] border border-subtle p-8 relative group hover:border-white/10 transition-colors">
-              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">03</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center mb-6">
-                <Icons.Grid className="w-5 h-5 text-emerald-400" />
-              </div>
-              <div className="px-2 py-0.5 border border-emerald-900/30 bg-emerald-900/10 text-emerald-400 text-[10px] uppercase tracking-wider font-geist inline-block mb-4">
-                One tap
-              </div>
-              <h3 className="text-xl text-white mb-3 tracking-tight font-space-grotesk">Approve and Go</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                Review what the AI created. Like the Instagram post? Tap Approve — it&apos;s posted. Like the email campaign? Tap Approve — it&apos;s sent. Want to go fully autonomous? Turn on auto-mode and let the AI handle everything.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section — 7 AI Agents + 6 Capabilities */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            <h2 className="text-4xl sm:text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              7 AI Agents. <span className="text-neutral-600">Zero Busywork.</span>
-            </h2>
-          </div>
-
-          {/* Live Strategy Feed */}
-          <div className="mb-12 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.25s_both]">
-            <div className="bg-[#050505] border border-subtle p-8 sm:p-10 hover:border-white/10 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex justify-between items-start">
                 <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
-                  <Icons.TrendingUp className="w-5 h-5 text-purple-400" />
+                  <Icons.Grid className="w-5 h-5 text-purple-400" />
                 </div>
-                <h3 className="text-xl sm:text-2xl text-white tracking-tight font-space-grotesk">Live Strategy Feed</h3>
-              </div>
-              <p className="text-sm sm:text-base text-neutral-400 font-geist leading-relaxed max-w-3xl">
-                Your marketing command center. Every action your AI agents take appears in a real-time feed — competitor insights, content drafts, new prospects, performance reports. No more checking 5 different dashboards.
-              </p>
-            </div>
-          </div>
-
-          {/* 7 AI Agents Grid */}
-          <div className="mb-12">
-            <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist mb-6 text-center animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">7 AI Agents Working Daily</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.35s_both]">
-              {[
-                { icon: '🔍', name: 'Competitor Watch', desc: 'Scans your competitors every morning for new content, pricing changes, and opportunities they\'re missing', color: 'purple' },
-                { icon: '✍️', name: 'Content Generator', desc: 'Writes Instagram posts, Facebook updates, email campaigns, and SMS messages in your brand\'s voice', color: 'sky' },
-                { icon: '🎯', name: 'Prospect Finder', desc: 'Identifies businesses and people matching your ideal customer profile, scored and ready for outreach', color: 'emerald' },
-                { icon: '📧', name: 'Sender Health', desc: 'Keeps your email accounts healthy with automatic warmup and deliverability monitoring', color: 'amber' },
-                { icon: '🔄', name: 'Strategy Refresh', desc: 'Rebuilds your complete go-to-market strategy every week with the latest market data', color: 'violet' },
-                { icon: '📊', name: 'Performance Report', desc: 'Weekly reports showing what worked, what didn\'t, and what to do next', color: 'blue' },
-                { icon: '📡', name: 'Market Intel', desc: 'Tracks industry trends, news, and shifts so your strategy stays current', color: 'rose' },
-              ].map((agent) => (
-                <div key={agent.name} className="bg-[#050505] border border-subtle p-5 hover:border-white/10 transition-colors group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-lg">{agent.icon}</span>
-                    <h4 className="text-sm text-white font-space-grotesk tracking-tight">{agent.name}</h4>
-                  </div>
-                  <p className="text-xs text-neutral-500 font-geist leading-relaxed">{agent.desc}</p>
+                <div className="px-2 py-0.5 border border-purple-900/30 bg-purple-900/10 text-purple-400 text-[10px] uppercase tracking-wider font-geist">
+                  Live
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Additional Capabilities */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.4s_both]">
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 hover:border-white/10 transition-colors">
-              <h3 className="text-lg text-white mb-3 tracking-tight font-space-grotesk">One-Click Execution</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                Approve a post — it&apos;s on Instagram. Approve leads — they&apos;re in your email campaign. Approve a landing page — it&apos;s live on your website. One button between &ldquo;AI recommended&rdquo; and &ldquo;done.&rdquo;
-              </p>
-            </div>
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 hover:border-white/10 transition-colors">
-              <h3 className="text-lg text-white mb-3 tracking-tight font-space-grotesk">Every Channel, One Place</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                Instagram, Facebook, Twitter, LinkedIn, Email, SMS, Landing Pages, Video — all managed from one feed. Create once, publish everywhere.
-              </p>
-            </div>
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 hover:border-white/10 transition-colors">
-              <h3 className="text-lg text-white mb-3 tracking-tight font-space-grotesk">Your Level of Control</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                <span className="text-white">Review Mode (default):</span> AI creates, you approve. <span className="text-white">Auto Mode:</span> AI creates AND publishes. Fully autonomous. <span className="text-white">Manual Mode:</span> AI recommends, you decide.
-              </p>
-            </div>
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 hover:border-white/10 transition-colors">
-              <h3 className="text-lg text-white mb-3 tracking-tight font-space-grotesk">AI Assistant</h3>
-              <p className="text-sm text-neutral-400 font-geist leading-relaxed">
-                Talk to your AI like a business partner. Ask &ldquo;What&apos;s working best?&rdquo; or say &ldquo;Focus on Instagram this week.&rdquo; Get strategy advice backed by your actual performance data.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Competitor Comparison Section */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-12 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            <h2 className="text-4xl sm:text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Replace Your Entire <span className="text-neutral-600">Marketing Stack</span>
-            </h2>
-          </div>
-
-          <div className="animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
-            <div className="bg-[#050505] border border-subtle overflow-hidden">
-              {/* Table Header */}
-              <div className="grid grid-cols-3 border-b border-subtle">
-                <div className="p-4 sm:p-5 text-xs uppercase tracking-widest text-neutral-500 font-geist">Feature</div>
-                <div className="p-4 sm:p-5 text-xs uppercase tracking-widest text-neutral-500 font-geist text-center border-x border-subtle">Others</div>
-                <div className="p-4 sm:p-5 text-xs uppercase tracking-widest text-purple-400 font-geist text-center">UltraLead.AI</div>
-              </div>
-              {/* Table Rows */}
-              {[
-                { feature: 'Email Marketing', other: 'Mailchimp' },
-                { feature: 'Social Posting', other: 'Hootsuite' },
-                { feature: 'AI Content', other: 'Jasper' },
-                { feature: 'Lead Prospecting', other: 'HubSpot' },
-                { feature: 'Competitor Monitoring', other: 'SEMrush' },
-                { feature: 'Landing Pages', other: 'Unbounce' },
-                { feature: 'SMS Campaigns', other: '—' },
-                { feature: 'Autonomous Execution', other: 'Nobody' },
-              ].map((row, i) => (
-                <div key={row.feature} className={`grid grid-cols-3 ${i < 7 ? 'border-b border-subtle' : ''} hover:bg-white/[0.02] transition-colors`}>
-                  <div className="p-4 sm:p-5 text-sm text-neutral-300 font-geist">{row.feature}</div>
-                  <div className="p-4 sm:p-5 text-sm text-neutral-600 font-geist text-center border-x border-subtle">{row.other}</div>
-                  <div className="p-4 sm:p-5 text-sm text-emerald-400 font-geist text-center">Built in</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Price Anchor */}
-          <div className="text-center mt-8 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.4s_both]">
-            <p className="text-neutral-400 font-geist text-sm sm:text-base">
-              Those 6 tools = <span className="text-white">$800+/month</span>. UltraLead.AI = <span className="text-purple-400">$499/month</span>.
-            </p>
-            <p className="text-neutral-500 font-geist text-sm mt-1">And the AI does the work — not you.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 counter-trigger animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            {/* Stat 1 */}
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[180px] sm:min-h-[200px] relative group hover:border-white/10 transition-colors">
-              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">01</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
-                <Icons.Grid className="w-5 h-5 text-purple-400" />
-              </div>
-              <div>
-                <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="7">7</span>
-                </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">AI Agents</h3>
-                <p className="text-[10px] text-neutral-600 font-geist mt-1">Working 24/7</p>
-              </div>
-            </div>
-
-            {/* Stat 2 */}
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[180px] sm:min-h-[200px] relative group hover:border-white/10 transition-colors">
-              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">02</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
-                <Icons.Users className="w-5 h-5 text-sky-400" />
-              </div>
-              <div>
-                <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="5">5</span>
-                </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Platforms</h3>
-                <p className="text-[10px] text-neutral-600 font-geist mt-1">All integrated</p>
-              </div>
-            </div>
-
-            {/* Stat 3 */}
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[180px] sm:min-h-[200px] relative group hover:border-white/10 transition-colors">
-              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">03</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
-                <Icons.TrendingUp className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
                 <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
                   <span data-target="400" data-prefix="+" data-suffix="%">+400%</span>
                 </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">ROI</h3>
-                <p className="text-[10px] text-neutral-600 font-geist mt-1">Average return</p>
+                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Average ROI</h3>
               </div>
             </div>
 
-            {/* Stat 4 */}
-            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[180px] sm:min-h-[200px] relative group hover:border-white/10 transition-colors">
-              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">04</div>
-              <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
-                <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            {/* Card 2 */}
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[220px] relative group hover:border-white/10 transition-colors">
+              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">02</div>
+              <div className="flex justify-between items-start">
+                <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
+                  <Icons.Users className="w-5 h-5 text-sky-400" />
+                </div>
               </div>
               <div>
                 <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
-                  <span data-target="2">2</span>
+                  <span data-target="97" data-suffix="%">97%</span>
                 </div>
-                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Minutes</h3>
-                <p className="text-[10px] text-neutral-600 font-geist mt-1">Setup time</p>
+                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Profit Margin</h3>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-[#050505] border border-subtle p-6 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[220px] relative group hover:border-white/10 transition-colors">
+              <div className="absolute top-4 right-4 text-xs text-white/20 font-geist">03</div>
+              <div className="flex justify-between items-start">
+                <div className="w-11 h-11 rounded-lg bg-neutral-800 flex items-center justify-center">
+                  <Icons.TrendingUp className="w-5 h-5 text-emerald-400" />
+                </div>
+              </div>
+              <div>
+                <div className="text-4xl text-white mb-1 tracking-tighter font-space-grotesk font-light">
+                  <span data-target="12">12</span>
+                </div>
+                <h3 className="text-xs uppercase tracking-widest text-neutral-500 font-geist">Customers to Break Even</h3>
               </div>
             </div>
           </div>
-
-          {/* Proof Line */}
-          <div className="text-center mt-8 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
-            <p className="text-neutral-500 font-geist text-sm">
-              Built for home services, real estate, fitness, e-commerce, and professional services businesses.
-            </p>
-          </div>
+        </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <div className="text-center mb-12 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            <h2 className="text-4xl sm:text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              One Platform. One Price. <span className="text-gradient">Everything Included.</span>
+      {/* Platform Tiers */}
+      <section className="py-24 relative z-10 border-t border-subtle bg-black">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-7xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
+              Choose Your <span className="text-neutral-600">Stack</span>
             </h2>
+            <p className="text-neutral-400 font-geist">Unified SaaS ecosystem. Start with one, scale as you grow.</p>
           </div>
 
-          {/* Single Price Card */}
-          <div className="animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
-            <div className="bg-[#050505] border border-purple-500/30 p-8 sm:p-10 relative shadow-[0_0_30px_rgba(168,85,247,0.1)]">
-              {/* Price */}
-              <div className="text-center mb-8">
-                <div className="text-6xl sm:text-7xl text-white tracking-tighter font-space-grotesk font-light mb-2">
-                  $499
-                </div>
-                <p className="text-neutral-500 font-geist text-sm">/month — everything included</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* 1: LeadSite.AI */}
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
               </div>
-
-              {/* Feature List */}
-              <div className="space-y-3 mb-8">
-                {[
-                  'All 7 AI agents active 24/7',
-                  'Every channel: Instagram, Facebook, Twitter, LinkedIn, Email, SMS, Landing Pages, Video',
-                  'Review + Auto modes',
-                  'Unlimited prospects',
-                  'Weekly strategy refresh + performance reports',
-                  'AI Assistant co-founder chat',
-                  'Competitor monitoring daily',
-                  'Full execution layer (approve → posted/sent/created)',
-                  'Priority support',
-                ].map((feature) => (
-                  <div key={feature} className="flex items-start gap-3 text-sm text-neutral-300 font-geist">
-                    <span className="text-emerald-400 mt-0.5 flex-shrink-0">&#10003;</span>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <p className="text-center text-xs text-neutral-600 font-geist mb-6">
-                No hidden fees. No add-ons. No per-seat pricing.
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">LeadSite.AI</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Email lead generation on autopilot. AI scrapes prospects, writes emails, manages follow-ups.
               </p>
-
-              {/* CTA */}
-              <div className="text-center">
-                <Link href="/signup" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors w-full sm:w-auto">
-                  Start Your 14-Day Free Trial
-                </Link>
-                <p className="text-neutral-600 text-xs font-geist mt-3">No credit card required. Cancel anytime.</p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <span>1,000 Leads/Month</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <span>Email Campaigns</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                  <span>Lead Scoring & Analytics</span>
+                </div>
               </div>
+              <Link href="/leadsite-ai" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                Explore LeadSite.AI
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </Link>
+            </div>
+
+            {/* 2: LeadSite.IO */}
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.264.26-2.466.733-3.559" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">LeadSite.IO</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                AI website builder + lead generation. Includes 1 free AI-built website.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                  <span>1 Free Website Included</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                  <span>AI Site Generator</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
+                  <span>Lead Forms + Analytics</span>
+                </div>
+              </div>
+              <Link href="/leadsite-io" className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium transition-colors">
+                Explore LeadSite.IO
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </Link>
+            </div>
+
+            {/* 3: ClientContact.IO */}
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">ClientContact.IO</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Unified inbox for 22+ channels. AI auto-responds and books meetings.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                  <span>22+ Channels Unified</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                  <span>AI Auto-Responder</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                  <span>3 Team Seats</span>
+                </div>
+              </div>
+              <Link href="/clientcontact-io" className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+                Explore ClientContact.IO
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </Link>
+            </div>
+
+            {/* 4: UltraLead.AI */}
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">UltraLead.AI</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Full CRM with 7 self-healing AI agents working around the clock to close deals for you.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                  <span>7 Self-Healing AI Agents</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                  <span>Full CRM Pipeline</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-400"></div>
+                  <span>Voice + AI Transcription</span>
+                </div>
+              </div>
+              <Link href="/ultralead" className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 font-medium transition-colors">
+                Explore UltraLead.AI
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </Link>
+            </div>
+
+            {/* 5: VideoSite.AI */}
+            <div className="bg-zinc-900/60 border border-white/10 rounded-2xl p-8 hover:-translate-y-1 transition-all duration-300 group">
+              <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-medium text-white mb-4 tracking-tight">VideoSite.AI</h3>
+              <p className="text-neutral-400 mb-6 leading-relaxed">
+                Monetize your video content. Earn per qualified view with instant Stripe payouts.
+              </p>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                  <span>Earn Per Qualified View</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                  <span>Instant Stripe Payouts</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-300">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                  <span>Unlimited Video Hosting</span>
+                </div>
+              </div>
+              <Link href="/videosite-ai" className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 font-medium transition-colors">
+                Explore VideoSite.AI
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              </Link>
             </div>
           </div>
 
-          {/* Price Anchor */}
-          <div className="text-center mt-8 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.4s_both]">
-            <p className="text-neutral-400 font-geist text-sm sm:text-base leading-relaxed">
-              A junior marketing hire: <span className="text-white">$4,000/month</span>. A marketing agency: <span className="text-white">$3,000–$10,000/month</span>.
-              <br />UltraLead.AI: your entire AI marketing team for <span className="text-purple-400">$499/month</span>.
-            </p>
-          </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 sm:py-28 relative z-10 border-t border-subtle bg-black">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <div className="text-center mb-12 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.2s_both]">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl uppercase mb-4 text-white tracking-tighter font-space-grotesk font-light">
-              Questions? <span className="text-neutral-600">Answers.</span>
-            </h2>
-          </div>
-
-          <div className="space-y-2 animate-on-scroll [animation:animationIn_0.8s_ease-out_0.3s_both]">
-            <FAQItem
-              question="How long does setup take?"
-              answer="About 2 minutes. You fill out a 3-step business profile. Our AI starts learning about your business immediately. First results appear within 15 minutes."
-            />
-            <FAQItem
-              question="Will the AI post without my approval?"
-              answer="Only if you want it to. UltraLead.AI starts in Review Mode — every post, email, and action appears as a draft. You approve before anything goes live. Switch to Auto Mode when you're ready."
-            />
-            <FAQItem
-              question="How is this different from ChatGPT?"
-              answer="ChatGPT is a writing tool. UltraLead.AI is a complete marketing system. It researches your market, writes content, finds leads, posts to social media, sends emails, monitors competitors, and reports results — all autonomously."
-            />
-            <FAQItem
-              question="What if the AI creates something I don't like?"
-              answer="Reject it with one tap. The AI learns from your feedback and adjusts. You can also edit any draft before approving."
-            />
-            <FAQItem
-              question="What channels are supported?"
-              answer="Instagram, Facebook, Twitter/X, LinkedIn, Email, SMS, Landing Pages, and Video. All from one dashboard."
-            />
-            <FAQItem
-              question="Can I cancel anytime?"
-              answer="Yes. No contracts. Cancel from your dashboard anytime."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
+      {/* Final Section */}
       <section className="border-subtle bg-center z-10 border-t pt-24 pb-24 relative">
         <div className="container mx-auto px-4 text-center max-w-4xl">
-          <h2 className="md:text-6xl uppercase text-3xl sm:text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6">
-            This Is the Future of Outreach Marketing. <span className="text-gradient">And It&apos;s Already Here.</span>
+          <h2 className="md:text-6xl uppercase text-4xl font-light text-white tracking-tighter font-space-grotesk mb-6">
+            Ready to <span className="text-neutral-600">Scale?</span>
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-neutral-400 font-geist max-w-2xl mx-auto mb-4 leading-relaxed">
-            The businesses that adopt it now will own their markets. The ones that wait will wonder what happened.
-          </p>
-          <p className="text-sm sm:text-base text-neutral-500 font-geist max-w-xl mx-auto mb-8">
-            Set up takes 2 minutes. Your first AI-generated strategy is ready in 15. Your marketing never stops — even while you sleep.
+          <p className="text-lg text-neutral-400 font-geist max-w-xl mx-auto mb-8">
+            5 platforms, 5 dashboards. Choose your product above — after signup you go straight to that product&apos;s dashboard. 14-day free trial. No credit card required.
           </p>
           <Link href="/signup" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
-            Start Free — See It Work in 15 Minutes →
+            Sign up at aileadstrategies.com
           </Link>
         </div>
       </section>

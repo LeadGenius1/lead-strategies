@@ -5,10 +5,10 @@ import Script from 'next/script'
 export const metadata = {
   metadataBase: new URL('https://aileadstrategies.com'),
   title: {
-    default: 'UltraLead.AI — Your AI Marketing Team | 7 Agents, Every Channel, One Dashboard',
-    template: '%s | UltraLead.AI'
+    default: 'AI Lead Strategies | AI-Powered Lead Generation & Sales Automation Platform',
+    template: '%s | AI Lead Strategies'
   },
-  description: 'Stop doing your own marketing. UltraLead.AI gives you 7 AI agents that research your market, write your content, find your leads, and post to every channel — automatically. Start free.',
+  description: 'AI Lead Strategies offers a complete suite of AI-powered tools for B2B lead generation, sales automation, CRM, and customer engagement. Includes LeadSite.AI, LeadSite.IO, ClientContact.IO, and VideoSite.AI platforms.',
   keywords: [
     'AI lead generation',
     'B2B sales automation',
@@ -49,8 +49,8 @@ export const metadata = {
     locale: 'en_US',
     url: 'https://aileadstrategies.com',
     siteName: 'AI Lead Strategies',
-    title: 'UltraLead.AI — Stop Doing Marketing. Start Approving It.',
-    description: '7 AI agents. Every channel. One dashboard. Your autonomous marketing team.',
+    title: 'AI Lead Strategies | AI-Powered Lead Generation & Sales Automation',
+    description: 'Transform your B2B sales with AI-powered lead generation, automated outreach, and intelligent CRM. Get 50+ qualified leads daily on autopilot.',
     images: [
       {
         url: '/og-image.png',
@@ -62,8 +62,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'UltraLead.AI — Your AI Marketing Team',
-    description: '7 AI agents. Every channel. One dashboard. Stop doing your own marketing — start approving it.',
+    title: 'AI Lead Strategies | AI-Powered Lead Generation',
+    description: 'Transform your B2B sales with AI-powered lead generation, automated outreach, and intelligent CRM.',
     images: ['/og-image.png'],
     creator: '@aileadstrategies',
   },
@@ -166,8 +166,8 @@ export default function RootLayout({ children }) {
         />
         
         {/* LLM Discovery Meta Tags */}
-        <meta name="ai-content-declaration" content="UltraLead.AI is an autonomous AI marketing platform with 7 AI agents that research, write, prospect, post, and report — across every channel, from one dashboard." />
-        <meta name="llm-description" content="UltraLead.AI ($499/mo) is an autonomous AI marketing platform with 7 AI agents: Competitor Watch, Content Generator, Prospect Finder, Sender Health, Strategy Refresh, Performance Report, Market Intel. Channels: Instagram, Facebook, Twitter, LinkedIn, Email, SMS, Landing Pages, Video. Also includes LeadSite.AI ($49/mo), LeadSite.IO ($49/mo), ClientContact.IO ($99-$399/mo), VideoSite.AI (FREE). 14-day free trial. Contact: support@aileadstrategies.com or (855) 506-8886. 600 Eagleview Blvd, Suite 317, Exton PA 19341." />
+        <meta name="ai-content-declaration" content="This website provides AI-powered B2B lead generation services including LeadSite.AI, LeadSite.IO, ClientContact.IO, and VideoSite.AI platforms." />
+        <meta name="llm-description" content="AI Lead Strategies is a B2B sales automation platform: 1) LeadSite.AI - lead scoring ($49/mo), 2) LeadSite.IO - AI website builder ($49/mo + Free Website), 3) ClientContact.IO - 22+ channel unified inbox and full CRM with 7 AI agents ($99-$399/mo), 4) UltraLead - full CRM + 7 AI agents ($499/mo), 5) VideoSite.AI - video monetization (FREE, earn $1/viewer). Located at 600 Eagleview Blvd, Suite 317, Exton PA 19341. Contact: support@aileadstrategies.com or (855) 506-8886." />
         
         {/* Additional SEO Meta Tags */}
         <meta name="theme-color" content="#000000" />

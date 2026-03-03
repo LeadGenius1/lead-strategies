@@ -13,6 +13,9 @@ const engine = require('../services/nexus2/scheduler/engine');
 const { TASKS, SCHED_KEYS, SCHED_EVENTS, ALL_TASK_IDS } = require('../services/nexus2/scheduler/constants');
 const { publishEvent, createSSEStream } = require('../services/marketStrategy/sseManager');
 const IORedis = require('ioredis');
+const { Queue } = require('bullmq');
+const { EXECUTION_TYPES } = require('../services/nexus2/execution/constants');
+const { QUEUE_NAME: EXEC_QUEUE_NAME } = require('../services/nexus2/execution/worker');
 
 // All routes require authentication
 router.use(authenticate);
@@ -346,7 +349,50 @@ router.post('/approve/:outputId', async (req, res) => {
       ts: new Date().toISOString(),
     });
 
-    res.json({ approved: true, outputId: key });
+    // --- Queue execution jobs (non-fatal) ---
+    let executionQueued = 0;
+    try {
+      const ioConn = process.env.REDIS_URL
+        ? new IORedis(process.env.REDIS_URL, { maxRetriesPerRequest: null })
+        : null;
+
+      if (ioConn) {
+        const execQueue = new Queue(EXEC_QUEUE_NAME, { connection: ioConn });
+
+        // Content drafts → one job per draft
+        if (output.output?.drafts && Array.isArray(output.output.drafts)) {
+          for (const draft of output.output.drafts) {
+            if (draft.status === 'failed' || !draft.executionType) continue;
+            if (!EXECUTION_TYPES[draft.executionType]) continue;
+            await execQueue.add(draft.executionType, {
+              userId,
+              outputId: key,
+              executionType: draft.executionType,
+              payload: { content: draft.content, channel: draft.channel, subject: draft.label },
+            });
+            executionQueued++;
+          }
+        }
+
+        // Prospects → one add-leads-campaign job
+        if (output.output?.prospects && Array.isArray(output.output.prospects)) {
+          await execQueue.add('add-leads-campaign', {
+            userId,
+            outputId: key,
+            executionType: 'add-leads-campaign',
+            payload: { leads: output.output.prospects },
+          });
+          executionQueued++;
+        }
+
+        await execQueue.close();
+        await ioConn.quit();
+      }
+    } catch (execErr) {
+      console.warn('[Scheduler API] Execution queue error (non-fatal):', execErr.message);
+    }
+
+    res.json({ approved: true, outputId: key, executionQueued });
   } catch (err) {
     console.error('[Scheduler API] POST /approve error:', err.message);
     res.status(500).json({ error: 'Failed to approve output' });

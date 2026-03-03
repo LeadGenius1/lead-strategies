@@ -8,6 +8,7 @@
 const chatgpt = require('../../../marketStrategy/providers/chatgpt');
 const { trackCost } = require('../../../marketStrategy/costTracker');
 const { SCHED_EVENTS } = require('../constants');
+const { CHANNEL_EXEC_MAP } = require('../../execution/constants');
 
 // Platform-specific constraints
 const PLATFORM_CONFIG = {
@@ -94,6 +95,7 @@ Offer: ${profile.offer}.`;
         theme: currentTheme,
         suggestedTime: getSuggestedPostTime(channel),
         status: draftStatus,
+        executionType: CHANNEL_EXEC_MAP[channel] || 'post-generic',
       });
     } catch (err) {
       drafts.push({

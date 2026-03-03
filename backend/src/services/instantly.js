@@ -72,6 +72,29 @@ class InstantlyService {
   }
 
   /**
+   * Create a new campaign (V2 API)
+   */
+  async createCampaign({ name, subject, body }) {
+    if (!INSTANTLY_API_KEY) {
+      console.warn('Instantly API key not configured — mock createCampaign');
+      return { success: true, campaignId: `mock-${Date.now()}`, _mock: true };
+    }
+
+    try {
+      const response = await this.client.post('/campaigns', {
+        name: name || `Campaign ${new Date().toISOString().slice(0, 10)}`,
+        campaign_schedule: { schedules: [] },
+      });
+
+      const campaignId = response.data?.id;
+      return { success: true, campaignId, data: response.data };
+    } catch (error) {
+      console.error('Instantly create campaign error:', error.response?.data || error.message);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
    * Get campaign details (V2 API)
    */
   async getCampaign(campaignId) {

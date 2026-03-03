@@ -107,7 +107,50 @@ function ResultCard({ item }) {
 
 // ── DraftCard — content awaiting approval ───────────────────────────
 
-function DraftCard({ item, approvalMode, onApprove, onReject }) {
+// ── ExecutionStatusBadge — shared inline status indicator ────────────
+
+function ExecutionStatusBadge({ item, onRetry }) {
+  if (!item.executionStatus) return null;
+
+  if (item.executionStatus === 'executing') {
+    return (
+      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-white/5">
+        <span className="inline-block w-3 h-3 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+        <span className="text-[10px] text-cyan-400">Executing...</span>
+      </div>
+    );
+  }
+
+  if (item.executionStatus === 'completed') {
+    return (
+      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-white/5">
+        <span className="text-emerald-400 text-sm">&#10003;</span>
+        <span className="text-[10px] text-emerald-400">Executed successfully</span>
+      </div>
+    );
+  }
+
+  if (item.executionStatus === 'failed') {
+    return (
+      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-white/5">
+        <span className="text-red-400 text-sm">&#10007;</span>
+        <span className="text-[10px] text-red-400">{item.execError || 'Execution failed'}</span>
+        {onRetry && item.execId && (
+          <button
+            onClick={() => onRetry(item.execId)}
+            className="text-[10px] text-amber-400 hover:text-amber-300 underline ml-auto"
+          >
+            Retry
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function DraftCard({ item, approvalMode, onApprove, onReject, onRetry }) {
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
 
@@ -121,6 +164,7 @@ function DraftCard({ item, approvalMode, onApprove, onReject }) {
           <AetherBadge variant="success">approved</AetherBadge>
           <span className="text-[10px] text-neutral-600">{timeAgo(item.ts)}</span>
         </div>
+        <ExecutionStatusBadge item={item} onRetry={onRetry} />
       </div>
     );
   }
@@ -220,7 +264,7 @@ function DraftCard({ item, approvalMode, onApprove, onReject }) {
 
 // ── ProspectCard — found prospects ──────────────────────────────────
 
-function ProspectCard({ item }) {
+function ProspectCard({ item, onRetry }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -254,6 +298,7 @@ function ProspectCard({ item }) {
           )}
         </>
       )}
+      <ExecutionStatusBadge item={item} onRetry={onRetry} />
     </div>
   );
 }
@@ -373,7 +418,7 @@ function MilestoneCard({ item }) {
 
 // ── FeedCard Dispatcher ─────────────────────────────────────────────
 
-export default function FeedCard({ item, approvalMode, onApprove, onReject }) {
+export default function FeedCard({ item, approvalMode, onApprove, onReject, onRetry }) {
   switch (item.cardType) {
     case CARD_TYPE.STATUS:
       return <StatusCard item={item} />;
@@ -386,10 +431,11 @@ export default function FeedCard({ item, approvalMode, onApprove, onReject }) {
           approvalMode={approvalMode}
           onApprove={onApprove}
           onReject={onReject}
+          onRetry={onRetry}
         />
       );
     case CARD_TYPE.PROSPECT:
-      return <ProspectCard item={item} />;
+      return <ProspectCard item={item} onRetry={onRetry} />;
     case CARD_TYPE.REPORT:
       return <ReportCard item={item} />;
     case CARD_TYPE.ALERT:

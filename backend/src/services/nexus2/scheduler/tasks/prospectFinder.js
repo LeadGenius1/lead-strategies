@@ -101,6 +101,7 @@ Return a JSON array of qualified prospects.`,
     highQuality,
     sources: researchResult.citations || [],
     feedMessage: `Found ${prospects.length} prospects — ${highQuality} high-quality matches for your ICP`,
+    executionType: 'add-leads-campaign',
   };
 
   return { status: 'completed', output, costUsd: totalCost };

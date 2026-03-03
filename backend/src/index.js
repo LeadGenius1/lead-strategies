@@ -440,6 +440,19 @@ if (featureFlags.ENABLE_NEXUS) {
     console.warn('Scheduler worker startup skipped:', err.message);
   }
 
+  // Execution Layer — routes + worker
+  app.use('/api/v1/execution', require('./routes/execution'));
+
+  try {
+    const { createWorker: createExecutionWorker } = require('./services/nexus2/execution/worker');
+    const executionRedis = getRedisClient();
+    if (executionRedis) {
+      createExecutionWorker(executionRedis);
+    }
+  } catch (err) {
+    console.warn('Execution worker startup skipped:', err.message);
+  }
+
   console.log('NEXUS routes enabled');
 }
 

@@ -61,19 +61,8 @@ function SignupForm() {
       })
       toast.success('Account created! Welcome to AI Lead Strategies.')
       
-      // Redirect each tier to their chosen platform dashboard
-      const tierDashboardMap = {
-        'leadsite-ai': '/prospects',
-        'leadsite-io': '/dashboard',
-        'clientcontact': '/inbox',
-        'clientcontact-io': '/inbox',
-        'ultralead': '/crm',
-        'clientcontact-crm': '/crm',
-        'videosite': '/dashboard',
-        'videosite-io': '/dashboard',
-      }
-      const dashboardPath = tierDashboardMap[selectedTier] || '/dashboard'
-      router.push(dashboardPath)
+      // NEXUS OS: all tiers land on the unified feed
+      router.push('/nexus/feed')
     } catch (error) {
       const status = error.response?.status
       const data = error.response?.data || {}

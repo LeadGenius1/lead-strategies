@@ -415,6 +415,7 @@ if (featureFlags.ENABLE_NEXUS) {
   app.use('/api/v1/nexus', nexusChatRoutes);   // NEXUS Chat & Sessions (no auth — Command Center)
   app.use('/api/v1/nexus', nexusRoutes);       // NEXUS Blueprint System (auth-gated)
   app.use('/api/v1/nexus', nexusUploadRoutes); // NEXUS File Upload
+  app.use('/api/v1/nexus', require('./routes/nexus-features')); // NEXUS OS Feature Gating
   app.use('/api/v1/business-profile', require('./routes/businessProfile')); // NEXUS 2.0 Business Profile
   app.use('/api/v1/scheduler', require('./routes/scheduler')); // NEXUS 2.0 Autonomous Scheduler
 

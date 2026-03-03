@@ -21,17 +21,8 @@ export default function LoginPage() {
     try {
       const { user } = await loginWithErrorHandling(formData.email, formData.password)
       toast.success('Welcome back!')
-      // Redirect to user's platform dashboard (tier: 1=LeadSite.AI, 2=LeadSite.IO, 3=ClientContact, 4=VideoSite, 5=UltraLead)
-    const tierDashboardMap = {
-      1: '/prospects',      // LeadSite.AI
-      2: '/dashboard',      // LeadSite.IO
-      3: '/inbox',          // ClientContact.IO
-      4: '/videos',         // VideoSite.AI
-      5: '/crm',            // UltraLead
-    }
-      const tier = user?.tier != null ? Number(user.tier) : null
-      const dashboardPath = tierDashboardMap[tier] || '/dashboard'
-      router.push(dashboardPath)
+      // NEXUS OS: all tiers land on the unified feed
+      router.push('/nexus/feed')
     } catch (error) {
       const msg = error?.message || 'Login failed'
       toast.error(msg)

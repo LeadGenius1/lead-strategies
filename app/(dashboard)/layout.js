@@ -10,6 +10,7 @@ import {
   detectPlatformFromDomain,
   detectPlatformFromUser,
 } from '@/lib/platformFeatures';
+import NexusOSShell from '@/components/nexus/NexusOSShell';
 import {
   BrainCircuit,
   MessageSquare,
@@ -246,6 +247,23 @@ export default function DashboardLayout({ children }) {
   const trialEndsAt = user?.trialEndsAt ? new Date(user.trialEndsAt) : null;
   const isTrial = user?.subscriptionStatus === 'trial' && trialEndsAt;
   const daysLeft = isTrial ? Math.max(0, Math.ceil((trialEndsAt - new Date()) / (1000 * 60 * 60 * 24))) : null;
+
+  // ── NEXUS OS: /nexus/* routes get the new shell instead of the sidebar ──
+  const isNexusRoute = pathname.startsWith('/nexus/feed')
+    || pathname.startsWith('/nexus/strategy')
+    || pathname.startsWith('/nexus/outreach')
+    || pathname.startsWith('/nexus/prospects')
+    || pathname.startsWith('/nexus/videos')
+    || pathname.startsWith('/nexus/websites')
+    || pathname.startsWith('/nexus/settings');
+
+  if (isNexusRoute) {
+    return (
+      <NexusOSShell user={user} platformType={platformType}>
+        {children}
+      </NexusOSShell>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black">

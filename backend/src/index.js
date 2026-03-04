@@ -492,6 +492,13 @@ function startNexusWorkers() {
     const { startVideoWorker } = require('./services/nexus2/video/worker');
     startVideoWorker();
   } catch (err) { console.warn('Video worker startup skipped:', err.message); }
+
+  if (featureFlags.ENABLE_MARKET_STRATEGY) {
+    try {
+      const { createWorker: createStrategyWorker } = require('./services/marketStrategy/worker');
+      createStrategyWorker(redis);
+    } catch (err) { console.warn('Market Strategy worker startup skipped:', err.message); }
+  }
 }
 
 // Initialize Redis asynchronously (non-blocking)

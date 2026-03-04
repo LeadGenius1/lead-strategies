@@ -17,8 +17,7 @@ let chatgptAgent = null;
 
 function getInstantly() {
   if (!instantlyService) {
-    const { InstantlyService } = require('../../instantly');
-    instantlyService = new InstantlyService();
+    instantlyService = require('../../instantly');
   }
   return instantlyService;
 }

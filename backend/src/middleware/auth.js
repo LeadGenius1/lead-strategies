@@ -8,13 +8,16 @@ if (!JWT_SECRET) {
 
 const authenticate = (req, res, next) => {
   try {
+    // Support both Authorization header and query param token (for SSE/EventSource)
     const authHeader = req.headers.authorization;
+    const token = (authHeader && authHeader.startsWith('Bearer '))
+      ? authHeader.split(' ')[1]
+      : req.query?.token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!token) {
       return res.status(401).json({ success: false, error: 'No token provided' });
     }
 
-    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
 
     req.user = decoded;

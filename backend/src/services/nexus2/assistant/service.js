@@ -10,6 +10,8 @@ const { executeTool, truncate } = require('./toolExecutor');
 const { profileToMissionInputs } = require('../profileBridge');
 const engine = require('../scheduler/engine');
 const { trackCost } = require('../../marketStrategy/costTracker');
+const { getFiles } = require('./fileProcessor');
+const { formatMemoriesForPrompt } = require('./memory');
 const crypto = require('crypto');
 
 const MODEL = 'claude-sonnet-4-20250514';
@@ -47,7 +49,7 @@ function sseHeaders(res) {
 
 // ─── System Prompt Builder ────────────────────────────────
 
-async function buildSystemPrompt(userId) {
+async function buildSystemPrompt(userId, { fileContext, integrations } = {}) {
   const parts = [
     'You are Lead Hunter, the AI marketing partner and co-founder for this business.',
     'Speak in first person: "I found...", "I drafted...", "I recommend..." — partner tone.',
@@ -55,6 +57,7 @@ async function buildSystemPrompt(userId) {
     'No preamble, no "Sure!", no "Great question!" — just answer.',
     'When you use a tool, briefly say what you did and the result.',
     'If data is available, cite numbers. If not, say so.',
+    'When the user tells you something important about their business, preferences, or contacts, use the save_memory tool to remember it.',
     '',
   ];
 
@@ -93,6 +96,39 @@ async function buildSystemPrompt(userId) {
     }
   } catch {
     // Schedule not available — not critical
+  }
+
+  // Inject persistent memory
+  try {
+    const memoryBlock = await formatMemoriesForPrompt(userId);
+    if (memoryBlock) {
+      parts.push('--- YOUR MEMORY ---');
+      parts.push(memoryBlock);
+      parts.push('');
+    }
+  } catch {
+    // Memory not available — not critical
+  }
+
+  // Inject uploaded file context
+  if (fileContext?.length) {
+    parts.push('--- UPLOADED FILES ---');
+    for (const f of fileContext) {
+      parts.push(`File: ${f.filename}`);
+      if (f.extractedText) {
+        parts.push(f.extractedText.substring(0, 15000));
+      }
+      parts.push('');
+    }
+  }
+
+  // Inject connected integrations
+  if (integrations?.length) {
+    parts.push('--- CONNECTED INTEGRATIONS ---');
+    for (const conn of integrations) {
+      parts.push(`- ${conn.name} (${conn.provider}) — status: ${conn.status}`);
+    }
+    parts.push('');
   }
 
   parts.push('Today: ' + new Date().toISOString().slice(0, 10));
@@ -162,14 +198,38 @@ async function saveMessages(userId, sessionId, userMessage, assistantText, toolC
  * Stream a chat response with tool-use loop.
  * @param {{ userId: string, message: string, sessionId: string, res: object, redis: object }} opts
  */
-async function streamChat({ userId, message, sessionId, res, redis }) {
+async function streamChat({ userId, message, sessionId, fileIds, res, redis }) {
   const client = getClient();
 
   // Set SSE headers
   sseHeaders(res);
 
   try {
-    const systemPrompt = await buildSystemPrompt(userId);
+    // Load file context if fileIds provided
+    let fileContext = null;
+    if (fileIds?.length) {
+      const files = await getFiles(userId, fileIds);
+      if (files.length) {
+        fileContext = files.map((f) => ({
+          filename: f.filename,
+          extractedText: f.extractedText,
+        }));
+      }
+    }
+
+    // Load connected integrations
+    let integrations = null;
+    try {
+      integrations = await prisma.mCPConnection.findMany({
+        where: { userId, status: 'active' },
+        select: { provider: true, name: true, status: true },
+      });
+      if (!integrations.length) integrations = null;
+    } catch {
+      // MCP table may not exist yet
+    }
+
+    const systemPrompt = await buildSystemPrompt(userId, { fileContext, integrations });
     const history = await loadHistory(userId, sessionId);
 
     // Build messages array

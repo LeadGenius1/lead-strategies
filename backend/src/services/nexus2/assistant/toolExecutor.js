@@ -8,6 +8,8 @@ const engine = require('../scheduler/engine');
 const { TASKS, ALL_TASK_IDS, SCHED_KEYS } = require('../scheduler/constants');
 const { profileToMissionInputs } = require('../profileBridge');
 const { trackCost } = require('../../marketStrategy/costTracker');
+const { getFiles } = require('./fileProcessor');
+const memoryService = require('./memory');
 
 // Lazy-loaded agents (same pattern as nexus-chat.js)
 let instantlyService = null;
@@ -293,6 +295,74 @@ async function executeTool(toolName, toolInput, ctx) {
         });
 
         return { status: 'queued', jobId: job.jobId, tier, topic, message: `Video "${topic}" queued for creation (${tier} tier).` };
+      }
+
+      // ─── File Analysis ─────────────────────────────────
+      case 'analyze_file': {
+        const { fileId, question } = toolInput;
+        if (!fileId) return { error: 'fileId is required' };
+
+        const files = await getFiles(userId, [fileId]);
+        if (!files.length) return { error: 'File not found' };
+
+        const file = files[0];
+        return {
+          filename: file.filename,
+          size: file.size,
+          extractedText: file.extractedText
+            ? file.extractedText.substring(0, 8000)
+            : '(no text extracted — this may be an image file)',
+          question: question || 'general analysis',
+        };
+      }
+
+      // ─── Memory Tools ──────────────────────────────────
+      case 'save_memory': {
+        const { category, key, value } = toolInput;
+        if (!key || !value) return { error: 'key and value are required' };
+        const result = await memoryService.saveMemory(userId, {
+          category: category || 'general',
+          key,
+          value,
+          source: 'assistant',
+        });
+        return { saved: true, id: result.id, key, category: result.category };
+      }
+
+      case 'recall_memories': {
+        const { query, category } = toolInput;
+        if (!query) return { error: 'query is required' };
+        const memories = await memoryService.searchMemories(userId, query, category);
+        return { count: memories.length, memories };
+      }
+
+      case 'forget_memory': {
+        const { memoryId } = toolInput;
+        if (!memoryId) return { error: 'memoryId is required' };
+        const deleted = await memoryService.deleteMemory(userId, memoryId);
+        return deleted ? { deleted: true } : { error: 'Memory not found or access denied' };
+      }
+
+      // ─── Integration Tools ─────────────────────────────
+      case 'list_integrations': {
+        const connections = await prisma.mCPConnection.findMany({
+          where: { userId, status: 'active' },
+          select: { id: true, provider: true, name: true, status: true, lastUsed: true },
+        });
+        return { count: connections.length, integrations: connections };
+      }
+
+      case 'use_integration': {
+        const { provider, action, params } = toolInput;
+        if (!provider || !action) return { error: 'provider and action are required' };
+
+        try {
+          const mcpManager = require('./mcpManager');
+          const result = await mcpManager.executeProviderTool(userId, provider, action, params || {});
+          return result;
+        } catch (err) {
+          return { error: `Integration action failed: ${err.message}` };
+        }
       }
 
       // ─── Platform Health ─────────────────────────────

@@ -267,6 +267,122 @@ const tools = [
       required: ['topic'],
     },
   },
+
+  // ─── File Analysis ──────────────────────────────────────
+  {
+    name: 'analyze_file',
+    description:
+      'Analyze an uploaded file in detail — summarize contents, extract data points, find patterns. Use when the user uploads a file and asks questions about it.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        fileId: {
+          type: 'string',
+          description: 'The ID of the uploaded file to analyze',
+        },
+        question: {
+          type: 'string',
+          description: 'Specific question about the file contents',
+        },
+      },
+      required: ['fileId'],
+    },
+  },
+
+  // ─── Memory Tools ──────────────────────────────────────
+  {
+    name: 'save_memory',
+    description:
+      'Save an important fact to persistent memory — business context, preferences, contacts, decisions. Use proactively when the user shares important information.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        category: {
+          type: 'string',
+          enum: ['preference', 'business', 'contact', 'decision', 'general'],
+          description: 'Memory category',
+        },
+        key: {
+          type: 'string',
+          description: 'Short key describing this memory (e.g. "preferred_tone", "main_competitor")',
+        },
+        value: {
+          type: 'string',
+          description: 'The information to remember',
+        },
+      },
+      required: ['category', 'key', 'value'],
+    },
+  },
+  {
+    name: 'recall_memories',
+    description:
+      'Search persistent memory for relevant information. Use when you need to recall something the user told you before.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Search query — matches against memory keys and values',
+        },
+        category: {
+          type: 'string',
+          enum: ['preference', 'business', 'contact', 'decision', 'general'],
+          description: 'Optional category filter',
+        },
+      },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'forget_memory',
+    description:
+      'Delete a specific memory. Use when the user asks you to forget something.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        memoryId: {
+          type: 'string',
+          description: 'The ID of the memory to delete',
+        },
+      },
+      required: ['memoryId'],
+    },
+  },
+
+  // ─── Integration Tools ─────────────────────────────────
+  {
+    name: 'list_integrations',
+    description:
+      'List the user\'s connected integrations (Instantly, Google Sheets, HubSpot, etc.) and their status.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+    },
+  },
+  {
+    name: 'use_integration',
+    description:
+      'Execute an action through a connected integration. Use when the user wants to interact with an external service.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        provider: {
+          type: 'string',
+          description: 'Integration provider ID (e.g. "instantly", "google_sheets", "hubspot")',
+        },
+        action: {
+          type: 'string',
+          description: 'Action to perform (provider-specific)',
+        },
+        params: {
+          type: 'object',
+          description: 'Parameters for the action',
+        },
+      },
+      required: ['provider', 'action'],
+    },
+  },
 ];
 
 module.exports = { tools };

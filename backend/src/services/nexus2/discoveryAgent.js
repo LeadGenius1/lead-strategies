@@ -270,8 +270,12 @@ Return ONLY valid JSON (no markdown fences, no explanation):
       }
 
       const updateData = {};
-      if (synthesis.contentThemes) {
+      if (synthesis.contentThemes && Array.isArray(synthesis.contentThemes) && synthesis.contentThemes.length > 0) {
         updateData.contentThemes = synthesis.contentThemes;
+      } else if (!synthesis.contentThemes || synthesis.parseError) {
+        // Fallback: generate basic contentThemes from profile so scheduler can activate
+        updateData.contentThemes = generateFallbackThemes(freshProfile);
+        console.warn(`${LOG_PREFIX} AI synthesis missing contentThemes — using fallback`);
       }
       if (synthesis.audienceInsights || synthesis.competitiveGaps || synthesis.quickWins) {
         updateData.audienceInsight = {
@@ -308,32 +312,40 @@ Return ONLY valid JSON (no markdown fences, no explanation):
     },
   });
 
-  await emitEvent(redis, jobId, 'discovery_complete', {
-    profileId,
-    completed: results.completed,
-    failed: results.failed,
-    totalCost: results.totalCost,
-  });
-
   console.log(`${LOG_PREFIX} Discovery complete for ${profile.businessName}: ${results.completed.length} tasks OK, ${results.failed.length} failed, cost $${results.totalCost.toFixed(4)}`);
+
+  // Track auto-trigger outcomes for visibility
+  const autoTriggers = { scheduler: null, marketStrategy: null };
 
   // Activate autonomous scheduler now that profile is enriched
   try {
     const scheduler = require('./scheduler/engine');
-    await scheduler.activateUser(userId);
-    await emitEvent(redis, jobId, 'schedule_activated', { message: 'Autonomous agents are now active' });
+    const schedResult = await scheduler.activateUser(userId);
+    autoTriggers.scheduler = { success: schedResult.activated, tasks: schedResult.tasks?.length || 0 };
+    if (schedResult.activated) {
+      await emitEvent(redis, jobId, 'schedule_activated', {
+        message: 'Autonomous agents are now active',
+        taskCount: schedResult.tasks?.length || 0,
+      });
+    } else {
+      console.warn(`${LOG_PREFIX} Scheduler not activated: ${schedResult.reason}`);
+      autoTriggers.scheduler.reason = schedResult.reason;
+    }
   } catch (schedErr) {
-    console.error(`${LOG_PREFIX} Scheduler activation failed (non-fatal):`, schedErr.message);
+    console.error(`${LOG_PREFIX} Scheduler activation failed:`, schedErr.message);
+    autoTriggers.scheduler = { success: false, error: schedErr.message };
   }
 
   // Auto-trigger market strategy pipeline using profile data
   try {
     const { profileToMissionInputs } = require('./profileBridge');
     const { addJob } = require('../marketStrategy/worker');
-    const freshProfile = await prisma.businessProfile.findUnique({ where: { id: profileId } });
-    if (freshProfile) {
-      const missionInputs = profileToMissionInputs(freshProfile);
+    // Profile was already updated above — fetch latest with all enriched fields
+    const enrichedProfile = await prisma.businessProfile.findUnique({ where: { id: profileId } });
+    if (enrichedProfile) {
+      const missionInputs = profileToMissionInputs(enrichedProfile);
       const strategyJobId = await addJob(missionInputs, userId, redis);
+      autoTriggers.marketStrategy = { success: true, strategyJobId };
       await emitEvent(redis, jobId, 'market_strategy_triggered', {
         strategyJobId,
         message: 'Market strategy pipeline queued automatically',
@@ -341,10 +353,47 @@ Return ONLY valid JSON (no markdown fences, no explanation):
       console.log(`${LOG_PREFIX} Auto-triggered market strategy (jobId: ${strategyJobId}) for user ${userId}`);
     }
   } catch (stratErr) {
-    console.error(`${LOG_PREFIX} Market strategy auto-trigger failed (non-fatal):`, stratErr.message);
+    console.error(`${LOG_PREFIX} Market strategy auto-trigger failed:`, stratErr.message);
+    autoTriggers.marketStrategy = { success: false, error: stratErr.message };
   }
 
+  // Emit discovery_complete WITH auto-trigger status so frontend knows the full outcome
+  await emitEvent(redis, jobId, 'discovery_complete', {
+    profileId,
+    completed: results.completed,
+    failed: results.failed,
+    totalCost: results.totalCost,
+    autoTriggers,
+  });
+
+  results.autoTriggers = autoTriggers;
   return results;
+}
+
+// ═══ Helper: Fallback content themes when AI synthesis fails ═══
+
+function generateFallbackThemes(profile) {
+  const channels = Array.isArray(profile.activeChannels) ? profile.activeChannels : ['email'];
+  return [
+    {
+      theme: `${profile.industry} insights`,
+      description: `Share industry expertise and trends for ${profile.targetMarket}`,
+      frequency: 'weekly',
+      platforms: channels.slice(0, 3),
+    },
+    {
+      theme: `Customer success stories`,
+      description: `Highlight how ${profile.offer} solves problems for ${profile.icp}`,
+      frequency: 'weekly',
+      platforms: channels.slice(0, 3),
+    },
+    {
+      theme: `Tips & how-tos`,
+      description: `Actionable advice that positions ${profile.businessName} as an authority`,
+      frequency: '3x-week',
+      platforms: channels.slice(0, 3),
+    },
+  ];
 }
 
 // ═══ Helper: Run a single task with error handling + SSE ═══

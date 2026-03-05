@@ -367,6 +367,20 @@ router.post('/discover', async (req, res) => {
       });
     }
 
+    // Cooldown: prevent re-discovery within 5 minutes
+    if (profile.lastDiscovery) {
+      const elapsed = Date.now() - new Date(profile.lastDiscovery).getTime();
+      const COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+      if (elapsed < COOLDOWN_MS) {
+        const retryAfter = Math.ceil((COOLDOWN_MS - elapsed) / 1000);
+        return res.status(429).json({
+          success: false,
+          error: `Discovery ran recently. Please wait ${retryAfter} seconds before re-triggering.`,
+          retryAfter,
+        });
+      }
+    }
+
     const q = getDiscoveryQueue();
     if (!q) {
       return res.status(503).json({

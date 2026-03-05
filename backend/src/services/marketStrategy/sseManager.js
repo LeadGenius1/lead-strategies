@@ -53,19 +53,18 @@ function createSSEStream(res, jobId, redis) {
    */
   function send(eventType, data) {
     if (closed) return;
-    res.write(`event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`);
+    res.write(`data: ${JSON.stringify({ type: eventType, ...data })}\n\n`);
   }
 
   /**
    * Send a raw JSON payload (already has .type field).
+   * Uses unnamed SSE format (data-only) so EventSource.onmessage receives it.
    */
   function sendRaw(payload) {
     if (closed) return;
     try {
-      const parsed = JSON.parse(payload);
-      if (parsed.type) {
-        res.write(`event: ${parsed.type}\ndata: ${payload}\n\n`);
-      }
+      JSON.parse(payload); // Validate JSON
+      res.write(`data: ${payload}\n\n`);
     } catch {
       // Skip malformed payloads
     }
@@ -124,7 +123,7 @@ function createSSEStream(res, jobId, redis) {
       // 3. Heartbeat: send every 30s if no other event
       heartbeatInterval = setInterval(() => {
         if (closed) return;
-        res.write(`event: heartbeat\ndata: ${JSON.stringify({ ts: new Date().toISOString() })}\n\n`);
+        res.write(`data: ${JSON.stringify({ type: "heartbeat", ts: new Date().toISOString() })}\n\n`);
       }, HEARTBEAT_INTERVAL_MS);
 
     } catch (err) {

@@ -10,7 +10,7 @@ const { executeTool, truncate } = require('./toolExecutor');
 const { profileToMissionInputs } = require('../profileBridge');
 const engine = require('../scheduler/engine');
 const { trackCost } = require('../../marketStrategy/costTracker');
-const { getFiles } = require('./fileProcessor');
+const { getFiles, getSessionFiles } = require('./fileProcessor');
 const { formatMemoriesForPrompt } = require('./memory');
 const crypto = require('crypto');
 
@@ -205,16 +205,30 @@ async function streamChat({ userId, message, sessionId, fileIds, res, redis }) {
   sseHeaders(res);
 
   try {
-    // Load file context if fileIds provided
+    // Load file context: explicit fileIds + all files from this session
     let fileContext = null;
+    const seenIds = new Set();
+    const allFiles = [];
+
+    // Load explicitly attached files
     if (fileIds?.length) {
       const files = await getFiles(userId, fileIds);
-      if (files.length) {
-        fileContext = files.map((f) => ({
-          filename: f.filename,
-          extractedText: f.extractedText,
-        }));
+      for (const f of files) { seenIds.add(f.id); allFiles.push(f); }
+    }
+
+    // Auto-load all files uploaded in this session (so they persist across messages)
+    if (sessionId) {
+      const sessionFiles = await getSessionFiles(userId, sessionId);
+      for (const f of sessionFiles) {
+        if (!seenIds.has(f.id)) allFiles.push(f);
       }
+    }
+
+    if (allFiles.length) {
+      fileContext = allFiles.map((f) => ({
+        filename: f.filename,
+        extractedText: f.extractedText,
+      }));
     }
 
     // Load connected integrations

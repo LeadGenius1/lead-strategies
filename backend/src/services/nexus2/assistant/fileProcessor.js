@@ -137,4 +137,23 @@ async function getFiles(userId, fileIds) {
   });
 }
 
-module.exports = { processFile, getFiles, extractText };
+/**
+ * Get all files for a session (auto-loads file context without explicit fileIds).
+ */
+async function getSessionFiles(userId, sessionId) {
+  if (!sessionId) return [];
+  return prisma.leadHunterFile.findMany({
+    where: { userId, sessionId },
+    orderBy: { createdAt: 'asc' },
+    select: {
+      id: true,
+      filename: true,
+      mimetype: true,
+      size: true,
+      extractedText: true,
+      createdAt: true,
+    },
+  });
+}
+
+module.exports = { processFile, getFiles, getSessionFiles, extractText };

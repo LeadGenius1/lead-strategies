@@ -101,6 +101,11 @@ model User {
   // NEXUS 2.0 Business Profile
   businessProfile BusinessProfile?
 
+  // Lead Hunter Intelligence (Phase 10)
+  leadHunterFiles    LeadHunterFile[]
+  leadHunterMemories LeadHunterMemory[]
+  mcpConnections     MCPConnection[]
+
   @@index([subscriptionStatus])
   @@index([stripeCustomerId])
   @@index([createdAt])
@@ -1746,4 +1751,57 @@ model AdCampaign {
   @@index([advertiserId])
   @@index([status])
   @@map("ad_campaigns")
+}
+
+// ==================== LEAD HUNTER INTELLIGENCE (Phase 10) ====================
+
+model LeadHunterFile {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  sessionId     String?
+  filename      String
+  mimetype      String
+  size          Int
+  r2Key         String
+  r2Url         String
+  extractedText String?  @db.Text
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model LeadHunterMemory {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  category   String   @default("general")
+  key        String
+  value      String   @db.Text
+  source     String   @default("assistant")
+  confidence Float    @default(1.0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, category, key])
+  @@index([userId])
+}
+
+model MCPConnection {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  provider  String
+  name      String
+  config    Json
+  status    String    @default("active")
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, provider])
+  @@index([userId])
 }

@@ -5,7 +5,7 @@ const express = require('express');
 
 const { authenticate } = require('../middleware/auth');
 const crypto = require('crypto');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const router = express.Router();
@@ -228,14 +228,15 @@ router.post('/upload/complete', async (req, res) => {
       }
     });
 
-    // In production, trigger video processing (transcoding, thumbnail generation)
-    // For now, mark as ready after short delay
-    setTimeout(async () => {
-      await prisma.video.update({
-        where: { id: videoId },
-        data: { status: 'ready' }
-      }).catch(() => {});
-    }, 2000);
+    // TODO: Add real video processing pipeline here
+    // - Thumbnail extraction (ffmpeg first frame)
+    // - Duration detection
+    // - Resolution/codec validation
+    // For now, videos go straight to 'ready' after upload completion
+    await prisma.video.update({
+      where: { id: videoId },
+      data: { status: 'ready' }
+    });
 
     res.json({
       success: true,
@@ -259,7 +260,21 @@ router.delete('/videos/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Video not found' });
     }
 
-    // In production, also delete from R2 storage
+    // Delete file from R2 storage (non-blocking — DB delete proceeds even if R2 fails)
+    if (s3Client && video.fileUrl) {
+      try {
+        // Extract key from public URL or use raw fileUrl
+        let key = video.fileUrl;
+        if (key.startsWith('http')) {
+          const urlObj = new URL(key);
+          key = urlObj.pathname.replace(/^\//, '');
+        }
+        await s3Client.send(new DeleteObjectCommand({ Bucket: R2_BUCKET, Key: key }));
+      } catch (r2Error) {
+        console.error('Failed to delete R2 file, orphaned:', video.fileUrl, r2Error.message);
+      }
+    }
+
     await prisma.video.delete({ where: { id: req.params.id } });
 
     res.json({ success: true, message: 'Video deleted' });

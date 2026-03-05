@@ -185,8 +185,11 @@ const AGENT_REGISTRY = {
 
       const result = await chatgpt.chat({
         systemPrompt:
-          "You are a market positioning strategist. Analyze the provided research data and create a positioning strategy. " +
-          "Return valid JSON with keys: positioning (string), differentiators (array of strings), " +
+          "You are a market positioning strategist for AI Lead Strategies LLC. " +
+          "The company operates: LeadSite.AI, LeadSite.IO, ClientContact.IO, UltraLead.AI, VideoSite.AI. " +
+          "Never recommend competitor products (Mailchimp, HubSpot, Hootsuite, Canva, etc.) as solutions — the user's own platforms ARE the solution. " +
+          "Analyze the provided research data and create a positioning strategy. " +
+          "Return valid JSON (no code fences) with keys: positioning (string), differentiators (array of strings), " +
           "targetKeywords (array of strings), competitiveGaps (array of strings).",
         userPrompt:
           `Business: ${businessInputs.targetMarket}\nICP: ${businessInputs.icp}\nOffer: ${businessInputs.offer}\n\n` +
@@ -235,8 +238,11 @@ const AGENT_REGISTRY = {
       const researchData = context["nexus-research"] || {};
       const result = await chatgpt.chat({
         systemPrompt:
-          "You are a digital marketing channel strategist. Create a comprehensive channel plan. " +
-          "Return valid JSON with keys: channels (array of {name, priority, budgetPercent, expectedROI}), " +
+          "You are a digital marketing channel strategist for AI Lead Strategies LLC. " +
+          "The company operates: LeadSite.AI, LeadSite.IO, ClientContact.IO, UltraLead.AI, VideoSite.AI. " +
+          "Never recommend competitor products (Mailchimp, HubSpot, Hootsuite, Canva, etc.) as solutions — the user's own platforms ARE the solution. " +
+          "Create a comprehensive channel plan. " +
+          "Return valid JSON (no code fences) with keys: channels (array of {name, priority, budgetPercent, expectedROI}), " +
           "contentCalendar (object with monthly themes), budgetAllocation (object by channel), " +
           "sequenceMap (object with phases: awareness, consideration, decision).",
         userPrompt:
@@ -282,8 +288,11 @@ const AGENT_REGISTRY = {
 
       const archResult = await chatgpt.chat({
         systemPrompt:
-          "You are a technical SEO architect. Design page architecture for a multi-platform SaaS. " +
-          "Return valid JSON with keys: pageArchitecture (object with comparison, integration, useCase, template pages), " +
+          "You are a technical SEO architect for AI Lead Strategies LLC. " +
+          "The company operates: LeadSite.AI, LeadSite.IO, ClientContact.IO, UltraLead.AI, VideoSite.AI. " +
+          "Never recommend competitor products (Mailchimp, HubSpot, Hootsuite, Canva, etc.) as solutions — the user's own platforms ARE the solution. " +
+          "Design page architecture for a multi-platform SaaS. " +
+          "Return valid JSON (no code fences) with keys: pageArchitecture (object with comparison, integration, useCase, template pages), " +
           "schemas (object with JSON-LD schema definitions for SoftwareApplication, FAQPage, VideoObject, Article), " +
           "sitemapPlan (object with structure and canonical rules).",
         userPrompt:
@@ -303,8 +312,9 @@ const AGENT_REGISTRY = {
 
       const templateResult = await chatgpt.chat({
         systemPrompt:
-          "You are a web development architect. Generate reusable page templates for programmatic SEO. " +
-          "Return valid JSON with keys: comparisonTemplate (HTML structure), integrationTemplate (HTML structure), " +
+          "You are a web development architect for AI Lead Strategies LLC. " +
+          "Generate reusable page templates for programmatic SEO. " +
+          "Return valid JSON (no code fences) with keys: comparisonTemplate (HTML structure), integrationTemplate (HTML structure), " +
           "ogTemplate (OpenGraph meta template), twitterCardTemplate (Twitter Card meta template).",
         userPrompt:
           `Platforms: ${(businessInputs.platforms || []).join(", ")}\n` +
@@ -353,8 +363,11 @@ const AGENT_REGISTRY = {
 
       const result = await chatgpt.chat({
         systemPrompt:
-          "You are a conversion copywriter and AEO specialist. Create conversion-optimized content. " +
-          "Return valid JSON with keys: " +
+          "You are a conversion copywriter and AEO specialist for AI Lead Strategies LLC. " +
+          "The company operates: LeadSite.AI, LeadSite.IO, ClientContact.IO, UltraLead.AI, VideoSite.AI. " +
+          "Never recommend competitor products (Mailchimp, HubSpot, Hootsuite, Canva, etc.) as solutions — the user's own platforms ARE the solution. " +
+          "Create conversion-optimized content. " +
+          "Return valid JSON (no code fences) with keys: " +
           "aeoSummaries (object by platform, each 40-60 word entity-rich summary), " +
           "faqSets (object by platform, each an array of {question, answer} for FAQPage schema), " +
           "outreachTemplates (array of email templates for link building), " +
@@ -404,14 +417,25 @@ const AGENT_REGISTRY = {
 
       emit("agent_progress", { progress: 40, message: "Synthesizing executive brief", provider: "chatgpt" });
 
+      const today = new Date().toISOString().split('T')[0];
       const result = await chatgpt.chat({
         systemPrompt:
-          "You are a senior marketing strategist writing an executive brief. " +
+          "You are a senior marketing strategist writing an executive brief for AI Lead Strategies LLC. " +
+          `Today's date is ${today}. ` +
+          "The company operates 5 SaaS platforms: " +
+          "LeadSite.AI (email lead generation, $49/$149/$349/mo), " +
+          "LeadSite.IO (AI website builder, $49/$149/$349/mo), " +
+          "ClientContact.IO (unified inbox, $99/$149/$399/mo), " +
+          "UltraLead.AI (all-in-one dashboard, $499/mo), " +
+          "VideoSite.AI (video monetization, free). " +
           "Synthesize ALL the research, positioning, channel plans, page architecture, and funnel content " +
           "into a comprehensive, actionable executive summary. " +
-          "Return valid JSON with keys: " +
+          "IMPORTANT: Never recommend Mailchimp, HubSpot, Hootsuite, Canva, or any competitor product as a solution. " +
+          "The user's own platforms (LeadSite.AI, UltraLead.AI, ClientContact.IO, VideoSite.AI, LeadSite.IO) ARE the solution. Always reference these instead. " +
+          "All deadlines must be realistic dates starting from today. " +
+          "Return valid JSON (no code fences) with keys: " +
           "summary (string, 1-page executive summary), " +
-          "actionItems (array of {priority: 1-5, action: string, owner: string, deadline: string}), " +
+          "actionItems (array of {priority: 1-5, action: string, owner: string, deadline: string in YYYY-MM-DD format}), " +
           "kpis (object: indexedPages, organicVisits, keywords, aiCitations targets), " +
           "timeline (object: 8-week implementation plan with weekly milestones), " +
           "budget (object: recommended allocation based on channel plan), " +

@@ -388,6 +388,14 @@ function deepParse(raw) {
   if (raw == null) return null;
   let data = raw;
 
+  // Strip ```json / ``` code fence markers that LLMs sometimes wrap around JSON
+  if (typeof data === 'string') {
+    data = data
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/```\s*$/i, '')
+      .trim();
+  }
+
   // If string, try to parse as JSON (handles double-stringified data)
   if (typeof data === 'string') {
     try { data = JSON.parse(data); } catch { /* keep as string */ }
@@ -453,17 +461,26 @@ function ExecSummaryCard({ output }) {
       {data.actionItems?.length > 0 && (
         <div className="mb-5">
           <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Action Items</h4>
-          <div className="space-y-1.5">
-            {data.actionItems.map((item, i) => (
-              <div key={i} className="flex items-start gap-2 text-sm text-neutral-300">
-                <span className="text-xs font-bold text-indigo-400 mt-0.5 min-w-[18px]">P{item.priority || i + 1}</span>
-                <div className="flex-1">
-                  <span>{cleanText(item.action || item)}</span>
-                  {item.owner && <span className="text-neutral-500 ml-1"> {item.owner}</span>}
-                  {item.deadline && <span className="text-neutral-600 ml-1">({item.deadline})</span>}
+          <div className="space-y-2">
+            {data.actionItems.map((item, i) => {
+              const p = item.priority || i + 1;
+              const priorityColor = p <= 1 ? 'bg-red-500/15 text-red-400 border-red-500/20'
+                : p <= 2 ? 'bg-amber-500/15 text-amber-400 border-amber-500/20'
+                : 'bg-blue-500/15 text-blue-400 border-blue-500/20';
+              const deadlineStr = item.deadline
+                ? (() => { try { const d = new Date(item.deadline); return isNaN(d) ? item.deadline : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return item.deadline; } })()
+                : null;
+              return (
+                <div key={i} className="flex items-start gap-2.5 text-sm text-neutral-300">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border mt-0.5 ${priorityColor}`}>P{p}</span>
+                  <div className="flex-1">
+                    <span>{cleanText(item.action || (typeof item === 'string' ? item : JSON.stringify(item)))}</span>
+                    {item.owner && <span className="text-neutral-500 ml-1.5 text-xs">({item.owner})</span>}
+                    {deadlineStr && <span className="text-neutral-600 ml-1.5 text-xs">Due: {deadlineStr}</span>}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

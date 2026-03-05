@@ -373,6 +373,155 @@ function PipelineProgress({ agents, stages, currentPhase }) {
   );
 }
 
+// ═══ Executive Summary Renderer ═══
+
+function ExecSummaryCard({ output }) {
+  // Parse output — could be a string (raw text) or structured object
+  let data = output;
+  if (typeof data === 'string') {
+    try { data = JSON.parse(data); } catch { /* keep as string */ }
+  }
+
+  // If it's still a string, render as formatted text
+  if (typeof data === 'string') {
+    return (
+      <AetherCard hover={false} variant="indigo" className="!p-6">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+        <div className="flex items-center gap-2.5 mb-4">
+          <span className="text-lg">{AGENT_MAP['exec-summary']?.icon}</span>
+          <h3 className="text-lg font-medium text-white">Executive Summary</h3>
+          <StatusBadge status="completed" />
+        </div>
+        <div className="whitespace-pre-wrap text-sm text-neutral-300 leading-relaxed">{data}</div>
+      </AetherCard>
+    );
+  }
+
+  // Structured output: { summary, actionItems, kpis, timeline, budget, risks }
+  return (
+    <AetherCard hover={false} variant="indigo" className="!p-6">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+      <div className="flex items-center gap-2.5 mb-4">
+        <span className="text-lg">{AGENT_MAP['exec-summary']?.icon}</span>
+        <h3 className="text-lg font-medium text-white">Executive Summary</h3>
+        <StatusBadge status="completed" />
+      </div>
+
+      {/* Summary text */}
+      {data.summary && (
+        <div className="whitespace-pre-wrap text-sm text-neutral-300 leading-relaxed mb-5">
+          {data.summary}
+        </div>
+      )}
+
+      {/* Action Items */}
+      {data.actionItems?.length > 0 && (
+        <div className="mb-5">
+          <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Action Items</h4>
+          <div className="space-y-1.5">
+            {data.actionItems.map((item, i) => (
+              <div key={i} className="flex items-start gap-2 text-sm text-neutral-300">
+                <span className="text-xs font-bold text-indigo-400 mt-0.5 min-w-[18px]">P{item.priority || i + 1}</span>
+                <div className="flex-1">
+                  <span>{item.action}</span>
+                  {item.owner && <span className="text-neutral-500 ml-1">— {item.owner}</span>}
+                  {item.deadline && <span className="text-neutral-600 ml-1">({item.deadline})</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* KPIs */}
+      {data.kpis && Object.keys(data.kpis).length > 0 && (
+        <div className="mb-5">
+          <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Target KPIs</h4>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {Object.entries(data.kpis).map(([key, value]) => (
+              <div key={key} className="bg-white/[0.03] rounded-lg px-3 py-2 border border-white/[0.06]">
+                <div className="text-lg font-semibold text-white">{typeof value === 'number' ? value.toLocaleString() : value}</div>
+                <div className="text-[10px] text-neutral-500 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Timeline */}
+      {data.timeline && Object.keys(data.timeline).length > 0 && (
+        <div className="mb-5">
+          <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Timeline</h4>
+          <div className="space-y-1.5">
+            {Object.entries(data.timeline).map(([period, milestone]) => (
+              <div key={period} className="flex items-start gap-2 text-sm">
+                <span className="text-xs font-medium text-indigo-400 min-w-[60px] capitalize">{period}</span>
+                <span className="text-neutral-300">{milestone}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Risks */}
+      {data.risks?.length > 0 && (
+        <div>
+          <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Risks</h4>
+          <div className="space-y-1.5">
+            {data.risks.map((r, i) => (
+              <div key={i} className="text-sm text-neutral-300">
+                <span className="text-amber-400 mr-1">!</span>
+                <span className="font-medium">{r.risk || r}</span>
+                {r.mitigation && <span className="text-neutral-500 ml-1">— {r.mitigation}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </AetherCard>
+  );
+}
+
+// ═══ Agent Output Renderer ═══
+
+function AgentOutputDisplay({ output }) {
+  let data = output;
+  if (typeof data === 'string') {
+    try { data = JSON.parse(data); } catch { /* keep as string */ }
+  }
+
+  if (typeof data === 'string') {
+    return <div className="whitespace-pre-wrap text-xs text-neutral-400 mt-3 leading-relaxed max-h-96 overflow-y-auto">{data}</div>;
+  }
+
+  // Render object fields as readable sections
+  return (
+    <div className="mt-3 space-y-3 max-h-96 overflow-y-auto">
+      {Object.entries(data).map(([key, value]) => {
+        if (key.startsWith('_')) return null; // Skip internal fields
+        return (
+          <div key={key}>
+            <h5 className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">
+              {key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim()}
+            </h5>
+            {typeof value === 'string' ? (
+              <div className="whitespace-pre-wrap text-xs text-neutral-400 leading-relaxed">{value}</div>
+            ) : Array.isArray(value) ? (
+              <ul className="list-disc list-inside space-y-0.5 text-xs text-neutral-400">
+                {value.map((item, i) => (
+                  <li key={i}>{typeof item === 'string' ? item : JSON.stringify(item)}</li>
+                ))}
+              </ul>
+            ) : (
+              <pre className="whitespace-pre-wrap text-xs text-neutral-400 leading-relaxed">{JSON.stringify(value, null, 2)}</pre>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ═══ STATE 4: Results ═══
 
 function StrategyResults({ outputs, agents, stats, onReset }) {
@@ -388,21 +537,7 @@ function StrategyResults({ outputs, agents, stats, onReset }) {
     <div className="space-y-6">
       {/* Executive Summary — prominent card */}
       {agentOutputs['exec-summary']?.output && (
-        <AetherCard hover={false} variant="indigo" className="!p-6">
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-          <div className="flex items-center gap-2.5 mb-4">
-            <span className="text-lg">{AGENT_MAP['exec-summary']?.icon}</span>
-            <h3 className="text-lg font-medium text-white">Executive Summary</h3>
-            <StatusBadge status="completed" />
-          </div>
-          <div className="prose prose-invert prose-sm max-w-none text-neutral-300 leading-relaxed">
-            <pre className="whitespace-pre-wrap font-sans text-sm text-neutral-300 bg-transparent p-0">
-              {typeof agentOutputs['exec-summary'].output === 'string'
-                ? agentOutputs['exec-summary'].output
-                : JSON.stringify(agentOutputs['exec-summary'].output, null, 2)}
-            </pre>
-          </div>
-        </AetherCard>
+        <ExecSummaryCard output={agentOutputs['exec-summary'].output} />
       )}
 
       {/* Per-agent results — collapsible */}
@@ -439,9 +574,7 @@ function StrategyResults({ outputs, agents, stats, onReset }) {
                 </button>
                 {isExpanded && data?.output && (
                   <div className="px-4 pb-4 border-t border-white/[0.04]">
-                    <pre className="whitespace-pre-wrap font-sans text-xs text-neutral-400 mt-3 leading-relaxed max-h-96 overflow-y-auto">
-                      {typeof data.output === 'string' ? data.output : JSON.stringify(data.output, null, 2)}
-                    </pre>
+                    <AgentOutputDisplay output={data.output} />
                   </div>
                 )}
               </div>

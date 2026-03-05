@@ -611,6 +611,14 @@ app._server = app.listen(PORT, '0.0.0.0', async () => {
   } catch (err) {
     console.warn('[Email Sentinel] Skip:', err.message);
   }
+
+  // NEXUS Healing Sentinel — 15-minute health check cron
+  try {
+    const { startHealthCheckCron } = require('./nexus/functions/healing-sentinel');
+    startHealthCheckCron();
+  } catch (err) {
+    console.warn('[Healing Sentinel] Skip:', err.message);
+  }
 });
 
 // ===========================================

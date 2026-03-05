@@ -326,3 +326,242 @@ curl -X POST https://api.aileadstrategies.com/api/auth/signup -H "Content-Type: 
 - Never reference a `master` branch (doesn't exist, use `main`)
 - Never mix frontend and backend dependencies
 - Never break existing functionality to add new features
+
+---
+
+## MASTER DEVELOPER RULES (Appended)
+
+# Claude Comprehensive Master Developer Rules
+## AI Lead Strategies LLC - Development Methodology v1.0
+**Effective:** February 12, 2026
+**Purpose:** Systematic development approach for production-ready SaaS platform serving 1M+ users
+
+---
+
+### CORE PRINCIPLE: NEVER BREAK EXISTING CODE
+
+#### Critical Safety Rules (Non-Negotiable)
+1. **NEVER GUESS IMPLEMENTATIONS** - Research existing patterns first
+2. **VERIFY DEPENDENCIES** - Check all imports, requires, and package versions
+3. **THINK THOROUGHLY** - Analyze impact before making changes
+4. **PRESERVE STRUCTURE** - Maintain existing architecture and patterns
+5. **INCREMENTAL CHANGES** - One feature at a time, test, then proceed
+
+---
+
+### RESEARCH-FIRST METHODOLOGY
+
+#### Before ANY Code Change:
+1. **SEARCH** relevant documentation and implementation patterns
+2. **EXAMINE** existing codebase structure and conventions
+3. **UNDERSTAND** current functionality and dependencies
+4. **PLAN** minimal changes that preserve existing functionality
+5. **IMPLEMENT** incrementally with verification at each step
+
+#### Research Sources Priority:
+1. **Official Documentation** (Express.js, Node.js, React, etc.)
+2. **Existing Codebase** (established patterns and conventions)
+3. **Production Examples** (verified implementations)
+4. **Stack Overflow/GitHub** (community solutions)
+5. **Never rely on assumptions or memory**
+
+---
+
+### ARCHITECTURE RULES
+
+#### Repository Structure (ABSOLUTE)
+- **Only Repository**: `LeadGenius1/lead-strategies` on `main` branch
+- **Monorepo Structure**: `/backend` = Railway backend, `/` = frontend (Next.js)
+- **NO master branch** - always use `main`
+- **OLD REPO DELETED**: Never reference `lead-strategies-backend`
+
+#### Dependency Management
+- **Backend deps**: `backend/package.json` ONLY
+- **Frontend deps**: Root `package.json` ONLY
+- **Never mix**: Backend and frontend dependencies
+- **Version locks**: Use exact versions for production stability
+
+#### Database Connection
+- **DATABASE_URL**: Must use Railway public URL (`switchyard.proxy.rlwy.net:32069`)
+- **NOT internal hostname**: `postgres.railway.internal` does NOT work
+- **Connection pooling**: Maintain existing Prisma configuration
+
+---
+
+### AUTHENTICATION & SECURITY
+
+#### OAuth Implementation
+- **Research OAuth patterns** before implementing
+- **Check existing auth middleware** before modifying
+- **Preserve session handling** mechanisms
+- **Never break JWT validation** or user context
+
+#### Security Protocols
+- **Environment variables** for all secrets
+- **CORS policies** properly configured
+- **Rate limiting** implemented
+- **Input validation** on all endpoints
+
+---
+
+### DEVELOPMENT WORKFLOW
+
+#### Change Implementation Process:
+1. **RESEARCH PHASE**
+   - Search documentation for best practices
+   - Examine existing code patterns
+   - Identify minimum viable change
+
+2. **PLANNING PHASE**
+   - Document exact changes needed
+   - Identify potential breaking points
+   - Plan rollback strategy
+
+3. **IMPLEMENTATION PHASE**
+   - Make minimal changes first
+   - Test at each step
+   - Commit frequently with descriptive messages
+
+4. **VERIFICATION PHASE**
+   - Verify functionality works
+   - Check for unintended side effects
+   - Test authentication and core flows
+
+#### Commit Standards:
+- **Descriptive messages**: `fix: use R2.dev public URLs for video playback`
+- **Small, focused commits**: One feature/fix per commit
+- **Test before commit**: Ensure changes work locally
+- **Clear commit history**: Easy to understand and revert if needed
+
+---
+
+### PLATFORM-SPECIFIC RULES
+
+#### Railway Deployment
+- **Auto-deploy on push** to main branch
+- **Monitor logs** during deployment
+- **Health checks** must pass
+- **Environment variables** properly set
+
+#### Cloudflare R2 Storage
+- **Public/private access** configured correctly
+- **CORS settings** for frontend domains
+- **Presigned URLs** for secure uploads
+- **CDN integration** for performance
+
+#### Frontend (Next.js)
+- **API routes** properly structured
+- **Authentication** integrated with backend
+- **Error handling** implemented
+- **Production builds** optimized
+
+#### Backend (Express.js)
+- **Route organization** by feature
+- **Middleware** properly ordered
+- **Error handling** centralized
+- **Database queries** optimized
+
+---
+
+### TESTING & VERIFICATION
+
+#### Before Any Deployment:
+1. **Local testing** - All functionality works locally
+2. **Database operations** - Queries execute successfully
+3. **Authentication flow** - Login/logout works
+4. **API endpoints** - All routes return expected responses
+5. **Frontend integration** - UI connects to backend properly
+
+#### Production Readiness Checklist:
+- All features functionally complete
+- Authentication working across all platforms
+- Database migrations successful
+- File uploads/storage working
+- Error handling implemented
+- Performance optimized for 1M+ users
+- Security protocols active
+- Monitoring and logging configured
+
+---
+
+### ERROR HANDLING PROTOCOL
+
+#### When Things Break:
+1. **IMMEDIATELY** check deployment logs
+2. **IDENTIFY** the exact error message
+3. **RESEARCH** the specific error pattern
+4. **REVERT** to last known working state if critical
+5. **FIX** incrementally with research-based solution
+
+#### Never Do:
+- Guess at solutions without research
+- Make multiple changes simultaneously
+- Ignore warning messages
+- Deploy without testing
+- Break working functionality to add features
+
+---
+
+### SUCCESS METRICS
+
+#### Platform Completion Criteria:
+1. **VideoSite.AI**: 100% functional (upload, playback, analytics)
+2. **LeadSite.IO**: Website creator fully operational
+3. **ClientContact.IO**: Unified inbox with channel integrations
+4. **UltraLead.AI**: All-in-one dashboard working
+5. **LeadSite.AI**: Email lead generation active
+6. **Stripe Integration**: Payment processing for all tiers
+7. **1M+ User Ready**: Infrastructure scaled appropriately
+
+#### Quality Standards:
+- **Zero breaking changes** during development
+- **Research-driven decisions** for all implementations
+- **Incremental progress** with verification at each step
+- **Production-ready code** from day one
+- **Comprehensive error handling** and user experience
+
+---
+
+### CURSOR INTEGRATION DIRECTIVES
+
+#### For Cursor IDE:
+1. **Always examine existing code** before making changes
+2. **Search documentation** for implementation patterns
+3. **Make minimal changes** that preserve functionality
+4. **Test incrementally** and commit frequently
+5. **Follow repository structure** rules absolutely
+6. **Verify dependencies** and imports before use
+7. **Research error messages** before attempting fixes
+
+#### Prompt Structure for Cursor:
+```
+RESEARCH FIRST: [Search relevant documentation]
+EXAMINE EXISTING: [Review current code patterns]
+PLAN MINIMAL: [Identify smallest viable change]
+IMPLEMENT: [Make change preserving existing functionality]
+VERIFY: [Test that change works and doesn't break other features]
+```
+
+---
+
+### ACCOUNTABILITY & ENFORCEMENT
+
+#### Rule Violations:
+- **Breaking existing functionality** = Immediate revert and research
+- **Guessing implementations** = Stop, research, then proceed
+- **Complex untested changes** = Break into smaller, tested increments
+- **Ignoring dependency checks** = Verify all imports and requirements
+
+#### Success Measures:
+- **Zero regressions** in working functionality
+- **Research-backed decisions** for all implementations
+- **Incremental progress** toward production readiness
+- **Systematic approach** to problem-solving
+
+---
+
+**REMEMBER: We are building a production platform for 1M+ users. Every change must be research-driven, tested, and preserve existing functionality. No guessing. No breaking changes. Systematic progress only.**
+
+---
+
+*This document serves as the foundation for all AI Lead Strategies LLC development work. Adherence to these rules is critical for successful platform completion and production deployment.*

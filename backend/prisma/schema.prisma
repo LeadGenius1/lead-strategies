@@ -1805,3 +1805,48 @@ model MCPConnection {
   @@unique([userId, provider])
   @@index([userId])
 }
+
+// ==================== NEXUS FUNCTIONS (Added for NEXUS Command Center) ====================
+
+// Health Check Logs — Stores periodic health check results from Healing Sentinel
+model HealthCheckLog {
+  id           String   @id @default(cuid())
+  timestamp    DateTime
+  overall      String // healthy, degraded, critical
+  servicesJson Json     @map("services_json")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([overall])
+  @@index([createdAt])
+  @@map("health_check_logs")
+}
+
+// SMS Campaigns — Tracks bulk SMS campaigns created via SMS Controller
+model SMSCampaign {
+  id             String    @id @default(cuid())
+  name           String
+  message        String
+  recipientsJson Json      @map("recipients_json")
+  status         String    @default("queued") // queued, sending, sent, failed
+  sentAt         DateTime? @map("sent_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("sms_campaigns")
+}
+
+// Compliance Logs — Audit trail for email compliance checks
+model ComplianceLog {
+  id        String   @id @default(cuid())
+  email     String
+  action    String // validate_email, can_spam_check, gdpr_check, validate_domain
+  result    String // compliant, non_compliant, valid, invalid
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([action])
+  @@index([createdAt])
+  @@map("compliance_logs")
+}

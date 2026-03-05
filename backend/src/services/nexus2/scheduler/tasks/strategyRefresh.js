@@ -42,7 +42,7 @@ async function execute({ profile, redis, emit }) {
 
   const output = {
     marketStrategyJobId: jobId,
-    feedMessage: `Weekly strategy refresh started — 7 agents analyzing your market (Job: ${jobId})`,
+    feedMessage: `I'm refreshing your strategy — analyzing your market now (Job: ${jobId})`,
   };
 
   return { status: 'completed', output, costUsd: 0 }; // Costs tracked by pipeline

@@ -207,9 +207,9 @@ function DiscoveryProgress() {
       <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
       </div>
-      <h2 className="text-2xl font-medium text-white mb-2">Nexus is learning about your business</h2>
+      <h2 className="text-2xl font-medium text-white mb-2">Lead Hunter is learning about your business</h2>
       <p className="text-neutral-500 text-sm font-light mb-8">
-        Our AI agents are researching your market, competitors, and audience. This takes 1-2 minutes.
+        I'm researching your market, competitors, and audience. This takes 1-2 minutes.
       </p>
       <div className="space-y-3 text-left">
         {tasks.map((task, i) => (
@@ -377,12 +377,12 @@ export default function NexusSetupPage() {
     <div className="max-w-2xl mx-auto py-8">
       {/* Header */}
       <div className="mb-8">
-        <p className="text-indigo-400 text-xs font-medium uppercase tracking-widest mb-2">Nexus 2.0</p>
+        <p className="text-indigo-400 text-xs font-medium uppercase tracking-widest mb-2">Lead Hunter</p>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-white mb-2">
-          Set up once. AI handles the rest.
+          Set up once. I handle the rest.
         </h1>
         <p className="text-neutral-500 text-sm font-light">
-          Tell Nexus about your business and we'll build your entire marketing strategy — automatically.
+          Tell me about your business and I'll build your entire marketing strategy — automatically.
         </p>
       </div>
 

@@ -9,7 +9,7 @@
 const NEXUS_AGENTS = [
   {
     id: "nexus-research",
-    name: "Nexus Research",
+    name: "Lead Hunter — Research",
     icon: "🔍",
     stage: 0,
     description: "Scrapes competitor sites, researches market landscape, collects raw intelligence",

@@ -773,14 +773,14 @@ End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
             sessionId: currentSessionId,
             role: 'user',
             content: message,
-            agentName: 'NEXUS',
+            agentName: 'lead-hunter',
           },
           {
             userId: String(userId),
             sessionId: currentSessionId,
             role: 'assistant',
             content: responseText,
-            agentName: 'NEXUS',
+            agentName: 'lead-hunter',
           },
         ],
       });
@@ -841,7 +841,7 @@ router.get('/sessions', async (req, res) => {
     const userId = (req.user && (req.user.userId || req.user.id)) || 'nexus-command-center';
 
     const sessions = await prisma.conversationHistory.findMany({
-      where: { userId: String(userId), agentName: 'NEXUS' },
+      where: { userId: String(userId), agentName: 'lead-hunter' },
       distinct: ['sessionId'],
       orderBy: { timestamp: 'desc' },
       take: 20,

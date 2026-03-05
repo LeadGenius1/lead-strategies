@@ -159,7 +159,7 @@ export default function AssistantChat() {
       <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06]">
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider">Nexus AI</span>
+          <span className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider">Lead Hunter</span>
         </div>
         <button
           onClick={newConversation}

@@ -42,7 +42,7 @@ async function generateGreeting(userId, redis) {
 
       // Check last conversation
       const lastMsg = await prisma.conversationHistory.findFirst({
-        where: { userId, agentName: 'nexus-assistant' },
+        where: { userId, agentName: 'lead-hunter' },
         orderBy: { timestamp: 'desc' },
         select: { timestamp: true },
       });

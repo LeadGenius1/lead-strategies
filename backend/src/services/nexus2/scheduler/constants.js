@@ -10,7 +10,7 @@ const TASKS = {
   // ── DAILY TASKS ──────────────────────────
   'sender-health': {
     id: 'sender-health',
-    name: 'Sender Health Check',
+    name: 'Lead Hunter — Sender Health',
     icon: '\uD83D\uDCE7',
     schedule: 'daily',
     cronPattern: '0 7 * * *',        // 7 AM UTC daily (first — before other tasks)
@@ -22,7 +22,7 @@ const TASKS = {
 
   'competitor-watch': {
     id: 'competitor-watch',
-    name: 'Competitor Watch',
+    name: 'Lead Hunter — Competitor Watch',
     icon: '\uD83D\uDD0D',
     schedule: 'daily',
     cronPattern: '0 8 * * *',        // 8 AM UTC daily
@@ -34,7 +34,7 @@ const TASKS = {
 
   'content-generator': {
     id: 'content-generator',
-    name: 'Content Generator',
+    name: 'Lead Hunter — Content',
     icon: '\u270D\uFE0F',
     schedule: 'daily',               // adjusted per contentFreq setting
     cronPattern: '0 9 * * *',        // 9 AM UTC daily
@@ -46,7 +46,7 @@ const TASKS = {
 
   'prospect-finder': {
     id: 'prospect-finder',
-    name: 'Prospect Finder',
+    name: 'Lead Hunter — Prospects',
     icon: '\uD83C\uDFAF',
     schedule: 'daily',
     cronPattern: '0 10 * * *',       // 10 AM UTC daily
@@ -59,7 +59,7 @@ const TASKS = {
   // ── WEEKLY TASKS ─────────────────────────
   'strategy-refresh': {
     id: 'strategy-refresh',
-    name: 'Strategy Refresh',
+    name: 'Lead Hunter — Strategy',
     icon: '\uD83D\uDD04',
     schedule: 'weekly',
     cronPattern: '0 6 * * 1',        // Monday 6 AM UTC
@@ -71,7 +71,7 @@ const TASKS = {
 
   'performance-report': {
     id: 'performance-report',
-    name: 'Performance Report',
+    name: 'Lead Hunter — Performance',
     icon: '\uD83D\uDCCA',
     schedule: 'weekly',
     cronPattern: '0 8 * * 1',        // Monday 8 AM UTC (after strategy refresh)
@@ -83,7 +83,7 @@ const TASKS = {
 
   'market-intel-refresh': {
     id: 'market-intel-refresh',
-    name: 'Market Intel Refresh',
+    name: 'Lead Hunter — Market Intel',
     icon: '\uD83D\uDCE1',
     schedule: 'weekly',
     cronPattern: '0 6 * * 4',        // Thursday 6 AM UTC

@@ -274,7 +274,7 @@ function ProspectCard({ item, onRetry }) {
         <span className="text-xl">🎯</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-white">Prospect Finder</span>
+            <span className="text-sm font-medium text-white">{item.taskName || 'Lead Hunter — Prospects'}</span>
             <AetherBadge variant="success">completed</AetherBadge>
           </div>
           {item.feedMessage && (

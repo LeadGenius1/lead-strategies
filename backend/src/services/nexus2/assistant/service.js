@@ -15,7 +15,7 @@ const crypto = require('crypto');
 const MODEL = 'claude-sonnet-4-20250514';
 const MAX_TOOL_ROUNDS = 5;
 const MAX_HISTORY = 20;
-const AGENT_NAME = 'nexus-assistant';
+const AGENT_NAME = 'lead-hunter';
 
 let anthropic = null;
 
@@ -49,7 +49,8 @@ function sseHeaders(res) {
 
 async function buildSystemPrompt(userId) {
   const parts = [
-    'You are Nexus, the AI marketing co-founder for this business.',
+    'You are Lead Hunter, the AI marketing partner and co-founder for this business.',
+    'Speak in first person: "I found...", "I drafted...", "I recommend..." — partner tone.',
     'Be direct and action-oriented. 1-3 sentences for actions, more for strategy.',
     'No preamble, no "Sure!", no "Great question!" — just answer.',
     'When you use a tool, briefly say what you did and the result.',

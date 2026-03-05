@@ -13,7 +13,7 @@ const { getRedisClient } = require('../config/redis');
 const { streamChat } = require('../services/nexus2/assistant/service');
 const { generateGreeting } = require('../services/nexus2/assistant/greeting');
 
-const AGENT_NAME = 'nexus-assistant';
+const AGENT_NAME = 'lead-hunter';
 
 // All routes require authentication
 router.use(authenticate);

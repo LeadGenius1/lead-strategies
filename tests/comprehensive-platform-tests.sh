@@ -81,7 +81,29 @@ test_endpoint "Channels API (no auth)" "$BASE_URL/api/v1/channels" "401"
 test_endpoint "CRM API (no auth)" "$BASE_URL/api/v1/crm" "401"
 
 echo ""
-echo "LAYER 3: FRONTEND PAGE TESTS"
+echo "LAYER 3: NEXUS API ENDPOINTS (public)"
+echo "------------------------------------------"
+
+test_endpoint "Orchestrator health" "$BASE_URL/api/v1/nexus/orchestrator/health" "200"
+test_endpoint "Orchestrator status" "$BASE_URL/api/v1/nexus/orchestrator/status" "200"
+test_endpoint "Nexus chat (no body)" "$BASE_URL/api/v1/nexus/chat" "200"
+test_endpoint "Nexus context" "$BASE_URL/api/v1/nexus/context" "200"
+
+echo ""
+echo "LAYER 4: NEXUS API ENDPOINTS (auth-protected)"
+echo "------------------------------------------"
+
+test_endpoint "Business profile (no auth)" "$BASE_URL/api/v1/business-profile" "401"
+test_endpoint "Business profile status (no auth)" "$BASE_URL/api/v1/business-profile/status" "401"
+test_endpoint "Scheduler (no auth)" "$BASE_URL/api/v1/scheduler" "401"
+test_endpoint "Execution history (no auth)" "$BASE_URL/api/v1/execution/history" "401"
+test_endpoint "Assistant greeting (no auth)" "$BASE_URL/api/v1/assistant/greeting" "401"
+test_endpoint "Nexus features (no auth)" "$BASE_URL/api/v1/nexus/features" "401"
+test_endpoint "Market strategy history (no auth)" "$BASE_URL/api/v1/market-strategy/history" "401"
+test_endpoint "Discover trigger (no auth)" "$BASE_URL/api/v1/business-profile/discover" "401" "POST"
+
+echo ""
+echo "LAYER 5: FRONTEND PAGE TESTS"
 echo "------------------------------------------"
 
 test_endpoint "Homepage" "$FRONTEND_URL" "200"
@@ -89,7 +111,20 @@ test_endpoint "Login page" "$FRONTEND_URL/login" "200"
 test_endpoint "Signup page" "$FRONTEND_URL/signup" "200"
 
 echo ""
-echo "LAYER 4: DATABASE MODEL TESTS (via /health)"
+echo "LAYER 6: FRONTEND NEXUS ROUTES"
+echo "------------------------------------------"
+
+# Nexus routes should return 200 (Next.js renders them; auth redirect happens client-side)
+test_endpoint "Nexus root" "$FRONTEND_URL/nexus" "200"
+test_endpoint "Nexus feed" "$FRONTEND_URL/nexus/feed" "200"
+test_endpoint "Nexus strategy" "$FRONTEND_URL/nexus/strategy" "200"
+test_endpoint "Nexus outreach" "$FRONTEND_URL/nexus/outreach" "200"
+test_endpoint "Nexus setup" "$FRONTEND_URL/nexus/setup" "200"
+test_endpoint "Nexus settings" "$FRONTEND_URL/nexus/settings" "200"
+test_endpoint "Nexus command center" "$FRONTEND_URL/nexus/command-center" "200"
+
+echo ""
+echo "LAYER 7: DATABASE MODEL TESTS (via /health)"
 echo "------------------------------------------"
 
 check_model() {
@@ -119,14 +154,60 @@ check_model "Conversation model (ClientContact)" "conversations_model"
 check_model "CRM Contact model (UltraLead)" "crm_model"
 
 echo ""
+echo "LAYER 8: BACKEND SYNTAX CHECK (Phases 2-7)"
+echo "------------------------------------------"
+
+# All backend files modified during Nexus OS Phases 2-7
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+
+check_syntax() {
+  local name="$1"
+  local filepath="$2"
+
+  printf "  %-40s " "$name"
+
+  if [ ! -f "$filepath" ]; then
+    echo "SKIP (file not found)"
+    return
+  fi
+
+  output=$(node --check "$filepath" 2>&1)
+  if [ $? -eq 0 ]; then
+    echo "PASS"
+    TESTS_PASSED=$((TESTS_PASSED + 1))
+  else
+    echo "FAIL"
+    echo "    $output"
+    TESTS_FAILED=$((TESTS_FAILED + 1))
+  fi
+}
+
+check_syntax "discoveryAgent.js" "$REPO_ROOT/backend/src/services/nexus2/discoveryAgent.js"
+check_syntax "discoveryWorker.js" "$REPO_ROOT/backend/src/services/nexus2/discoveryWorker.js"
+check_syntax "businessProfile.js" "$REPO_ROOT/backend/src/routes/businessProfile.js"
+check_syntax "scheduler/engine.js" "$REPO_ROOT/backend/src/services/nexus2/scheduler/engine.js"
+check_syntax "scheduler/constants.js" "$REPO_ROOT/backend/src/services/nexus2/scheduler/constants.js"
+check_syntax "profileBridge.js" "$REPO_ROOT/backend/src/services/nexus2/profileBridge.js"
+check_syntax "assistant/service.js" "$REPO_ROOT/backend/src/services/nexus2/assistant/service.js"
+check_syntax "assistant/greeting.js" "$REPO_ROOT/backend/src/services/nexus2/assistant/greeting.js"
+check_syntax "nexus-chat.js" "$REPO_ROOT/backend/src/routes/nexus-chat.js"
+check_syntax "nexus-features.js" "$REPO_ROOT/backend/src/routes/nexus-features.js"
+check_syntax "scheduler.js routes" "$REPO_ROOT/backend/src/routes/scheduler.js"
+check_syntax "execution.js routes" "$REPO_ROOT/backend/src/routes/execution.js"
+check_syntax "assistant.js routes" "$REPO_ROOT/backend/src/routes/assistant.js"
+check_syntax "marketStrategy constants" "$REPO_ROOT/backend/src/services/marketStrategy/constants.js"
+
+echo ""
 echo "=========================================="
-echo "  RESULTS: $TESTS_PASSED passed, $TESTS_FAILED failed"
+TOTAL=$((TESTS_PASSED + TESTS_FAILED))
+echo "  RESULTS: $TESTS_PASSED/$TOTAL passed, $TESTS_FAILED failed"
 echo "=========================================="
 
 if [ "$TESTS_FAILED" -eq 0 ]; then
-  echo "  ALL TESTS PASSED - SAFE TO PROCEED"
+  echo "  ALL TESTS PASSED - SAFE TO DEPLOY"
   exit 0
 else
-  echo "  TESTS FAILED - DO NOT DEPLOY"
+  echo "  $TESTS_FAILED TESTS FAILED - REVIEW BEFORE DEPLOY"
   exit 1
 fi

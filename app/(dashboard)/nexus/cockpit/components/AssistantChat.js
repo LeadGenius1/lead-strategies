@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import useAssistant from '@/lib/assistant/useAssistant';
+import { uploadFile } from '@/lib/assistant/api';
 
 const PLACEHOLDER_COMMANDS = [
   'Run content generator now...',
@@ -14,6 +15,8 @@ const PLACEHOLDER_COMMANDS = [
   'Update my ICP to...',
   'Show today\'s results',
 ];
+
+const ACCEPTED_FILE_TYPES = '.pdf,.docx,.csv,.xlsx,.txt,.md,.png,.jpg,.jpeg,.gif,.webp';
 
 function ToolPill({ tool, status }) {
   const isRunning = status === 'running';
@@ -35,6 +38,20 @@ function ToolPill({ tool, status }) {
   );
 }
 
+function FilePill({ filename, onRemove }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+      </svg>
+      {filename}
+      {onRemove && (
+        <button onClick={onRemove} className="ml-0.5 hover:text-red-400 transition-colors">&times;</button>
+      )}
+    </span>
+  );
+}
+
 function MessageBubble({ msg }) {
   const isUser = msg.role === 'user';
 
@@ -47,6 +64,15 @@ function MessageBubble({ msg }) {
             : 'bg-white/[0.04] text-neutral-300 border border-white/[0.06]'
         }`}
       >
+        {/* File attachment pills */}
+        {msg.files?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-1.5">
+            {msg.files.map((f, i) => (
+              <FilePill key={i} filename={typeof f === 'string' ? f : f.filename} />
+            ))}
+          </div>
+        )}
+
         {/* Tool pills */}
         {msg.toolCalls?.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-1.5">
@@ -88,6 +114,7 @@ function SuggestionChips({ suggestions, onSelect, disabled }) {
 export default function AssistantChat({ profileComplete }) {
   const {
     messages,
+    sessionId,
     isStreaming,
     suggestions,
     error,
@@ -97,8 +124,11 @@ export default function AssistantChat({ profileComplete }) {
 
   const [input, setInput] = useState('');
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [attachedFiles, setAttachedFiles] = useState([]); // [{ id, filename }]
+  const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   // Rotate placeholder text
   useEffect(() => {
@@ -118,15 +148,39 @@ export default function AssistantChat({ profileComplete }) {
     textareaRef.current?.focus();
   }, []);
 
+  const handleFileSelect = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || uploading) return;
+
+    setUploading(true);
+    try {
+      const result = await uploadFile(file, sessionId);
+      if (result.success) {
+        setAttachedFiles((prev) => [...prev, { id: result.file.id, filename: result.file.filename }]);
+      }
+    } catch (err) {
+      console.error('[AssistantChat] Upload error:', err.message);
+    } finally {
+      setUploading(false);
+      // Reset input so same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }, [uploading, sessionId]);
+
+  const removeFile = useCallback((index) => {
+    setAttachedFiles((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
   const handleSend = useCallback(() => {
     if (!input.trim() || isStreaming) return;
-    send(input.trim());
+    const fileIds = attachedFiles.map((f) => f.id);
+    send(input.trim(), fileIds.length ? { fileIds } : undefined);
     setInput('');
-    // Reset textarea height
+    setAttachedFiles([]);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
-  }, [input, isStreaming, send]);
+  }, [input, isStreaming, send, attachedFiles]);
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -207,9 +261,43 @@ export default function AssistantChat({ profileComplete }) {
         </div>
       )}
 
+      {/* Attached files */}
+      {attachedFiles.length > 0 && (
+        <div className="flex flex-wrap gap-1 px-2 pb-1">
+          {attachedFiles.map((f, i) => (
+            <FilePill key={f.id} filename={f.filename} onRemove={() => removeFile(i)} />
+          ))}
+        </div>
+      )}
+
       {/* Input */}
       <div className="border-t border-white/[0.06] p-2">
         <div className="flex items-end gap-1.5">
+          {/* Paperclip upload button */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isStreaming || uploading}
+            className="px-1.5 py-1.5 text-neutral-500 hover:text-neutral-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+            title="Attach file"
+          >
+            {uploading ? (
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
+            )}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ACCEPTED_FILE_TYPES}
+            onChange={handleFileSelect}
+            className="hidden"
+          />
           <textarea
             ref={textareaRef}
             value={input}

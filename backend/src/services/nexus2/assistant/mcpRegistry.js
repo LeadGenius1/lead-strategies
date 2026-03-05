@@ -4,6 +4,52 @@
 // ═══════════════════════════════════════════════════════════════
 
 const PROVIDERS = {
+  // ─── Social OAuth Providers ──────────────────────────────
+  facebook: {
+    id: 'facebook',
+    name: 'Facebook',
+    description: 'Post to Facebook Pages automatically',
+    icon: 'facebook',
+    category: 'social',
+    authType: 'oauth',
+    channelType: 'facebook',
+    requiredConfig: [],
+    tools: [],
+  },
+  instagram: {
+    id: 'instagram',
+    name: 'Instagram',
+    description: 'Post photos and reels to Instagram Business',
+    icon: 'instagram',
+    category: 'social',
+    authType: 'oauth',
+    channelType: 'instagram',
+    requiredConfig: [],
+    tools: [],
+  },
+  linkedin: {
+    id: 'linkedin',
+    name: 'LinkedIn',
+    description: 'Publish posts to LinkedIn profile and company page',
+    icon: 'linkedin',
+    category: 'social',
+    authType: 'oauth',
+    channelType: 'linkedin',
+    requiredConfig: [],
+    tools: [],
+  },
+  twitter: {
+    id: 'twitter',
+    name: 'Twitter / X',
+    description: 'Post tweets and threads automatically',
+    icon: 'twitter',
+    category: 'social',
+    authType: 'oauth',
+    channelType: 'twitter',
+    requiredConfig: [],
+    tools: [],
+  },
+  // ─── API Key Providers ───────────────────────────────────
   instantly: {
     id: 'instantly',
     name: 'Instantly',

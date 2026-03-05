@@ -425,8 +425,14 @@ if (featureFlags.ENABLE_NEXUS) {
   // AI Assistant (Phase 5) — streaming chat with tool-use
   app.use('/api/v1/assistant', aiLimiter, require('./routes/assistant'));
 
-  // MCP Integrations (Phase 10) — provider connections
+  // MCP Integrations (Phase 10) — provider connections + social OAuth
   app.use('/api/v1/mcp', require('./routes/mcp'));
+
+  // OAuth callbacks for social channels (must be accessible for OAuth redirect flow)
+  // Mounted here in addition to ClientContact.IO so social OAuth works from Nexus settings
+  if (!featureFlags.ENABLE_CLIENT_CONTACT) {
+    app.use('/api/v1/oauth/channels', oauthChannelsRoutes);
+  }
 
   // Video Creation Engine
   app.use('/api/v1/video', require('./routes/videoCreate'));

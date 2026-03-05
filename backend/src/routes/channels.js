@@ -87,8 +87,8 @@ router.get('/oauth/:channelId/authorize', async (req, res) => {
     if (!META_APP_ID) {
       return res.status(503).json({ success: false, error: 'Facebook app not configured', data: null });
     }
-    const state = Buffer.from(req.user.id).toString('base64');
-    const scope = 'pages_messaging,pages_manage_metadata,pages_read_engagement';
+    const state = Buffer.from(JSON.stringify({ userId: req.user.id, returnTo: req.query.returnTo || '' })).toString('base64');
+    const scope = 'pages_manage_posts,pages_manage_metadata,pages_read_engagement,pages_show_list';
     const url = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${META_APP_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/facebook/callback`)}&scope=${scope}&state=${state}`;
     return res.json({ success: true, data: { authUrl: url } });
   }
@@ -102,16 +102,42 @@ router.get('/oauth/:channelId/authorize', async (req, res) => {
     const codeVerifier = crypto.randomBytes(32).toString('base64url');
     const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
     const state = crypto.randomBytes(16).toString('hex');
-    pkceStore.set(state, { codeVerifier, userId: req.user.id });
-    const scope = 'dm.read dm.write users.read tweet.read offline.access';
+    await pkceStore.set(state, { codeVerifier, userId: req.user.id });
+    const scope = 'dm.read dm.write users.read tweet.read tweet.write offline.access';
     const url = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/twitter/callback`)}&scope=${encodeURIComponent(scope)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
     return res.json({ success: true, data: { authUrl: url } });
   }
 
-  // Other channels - mock or 503
-  res.json({
-    success: true,
-    data: { authUrl: `https://example.com/oauth/${channelId}/authorize` }
+  if (id === 'instagram') {
+    // Instagram uses Facebook Login with Instagram-specific scopes
+    const META_APP_ID = process.env.META_APP_ID;
+    const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    if (!META_APP_ID) {
+      return res.status(503).json({ success: false, error: 'Meta app not configured', data: null });
+    }
+    const state = Buffer.from(JSON.stringify({ userId: req.user.id, returnTo: req.query.returnTo || '' })).toString('base64');
+    const scope = 'instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement';
+    const url = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${META_APP_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/instagram/callback`)}&scope=${scope}&state=${state}`;
+    return res.json({ success: true, data: { authUrl: url } });
+  }
+
+  if (id === 'linkedin') {
+    const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
+    const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    if (!LINKEDIN_CLIENT_ID) {
+      return res.status(503).json({ success: false, error: 'LinkedIn app not configured', data: null });
+    }
+    const state = crypto.randomBytes(16).toString('hex');
+    await pkceStore.set(state, { userId: req.user.id, returnTo: req.query.returnTo || '' });
+    const scope = 'openid profile w_member_social';
+    const url = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/linkedin/callback`)}&scope=${encodeURIComponent(scope)}&state=${state}`;
+    return res.json({ success: true, data: { authUrl: url } });
+  }
+
+  // Other channels - not supported
+  res.status(400).json({
+    success: false,
+    error: `OAuth not available for ${channelId}`
   });
 });
 
@@ -142,8 +168,8 @@ router.get('/facebook/auth', async (req, res) => {
   if (!META_APP_ID) {
     return res.status(503).json({ success: false, error: 'Facebook app not configured', data: null });
   }
-  const state = Buffer.from(req.user.id).toString('base64');
-  const scope = 'pages_messaging,pages_manage_metadata,pages_read_engagement';
+  const state = Buffer.from(JSON.stringify({ userId: req.user.id, returnTo: req.query.returnTo || '' })).toString('base64');
+  const scope = 'pages_manage_posts,pages_manage_metadata,pages_read_engagement,pages_show_list';
   const url = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${META_APP_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/facebook/callback`)}&scope=${scope}&state=${state}`;
   res.json({ success: true, data: { url } });
 });
@@ -158,8 +184,8 @@ router.get('/twitter/auth', async (req, res) => {
   const codeVerifier = crypto.randomBytes(32).toString('base64url');
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
   const state = crypto.randomBytes(16).toString('hex');
-  pkceStore.set(state, { codeVerifier, userId: req.user.id });
-  const scope = 'dm.read dm.write users.read tweet.read offline.access';
+  await pkceStore.set(state, { codeVerifier, userId: req.user.id });
+  const scope = 'dm.read dm.write users.read tweet.read tweet.write offline.access';
   const url = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BACKEND_URL}/api/v1/oauth/channels/twitter/callback`)}&scope=${encodeURIComponent(scope)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
   res.json({ success: true, data: { url } });
 });

@@ -1,7 +1,7 @@
 // Publish Routes (Social Media Publishing)
 const express = require('express');
 const { authenticate } = require('../middleware/auth');
-const prisma = require('../config/database');
+const { prisma } = require('../config/database');
 
 const router = express.Router();
 

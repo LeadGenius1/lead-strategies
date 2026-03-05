@@ -42,9 +42,9 @@ async function postToChannel({ channelType, userId, content }) {
     case 'twitter':
       return postToTwitter(credentials, content);
     case 'instagram':
-      return { status: 'not_available', message: 'Instagram posting coming soon' };
+      return postToInstagram(credentials, content);
     case 'linkedin':
-      return { status: 'not_available', message: 'LinkedIn posting coming soon' };
+      return postToLinkedIn(credentials, content);
     default:
       return { status: 'not_available', message: `${channelType} posting coming soon` };
   }
@@ -112,6 +112,107 @@ async function postToTwitter(credentials, content) {
     return { status: 'completed', tweetId: data.data?.id, platform: 'twitter' };
   } catch (err) {
     return { status: 'failed', error: `Twitter post failed: ${err.message}` };
+  }
+}
+
+/**
+ * Post to Instagram via Graph API (2-step container creation).
+ */
+async function postToInstagram(credentials, content) {
+  const { instagramAccountId, pageAccessToken } = credentials;
+
+  if (!instagramAccountId || !pageAccessToken) {
+    return { status: 'failed', error: 'Instagram credentials missing. Re-connect in Settings.' };
+  }
+
+  try {
+    // Step 1: Create media container (text-only / carousel not supported without image)
+    const createRes = await fetch(
+      `https://graph.facebook.com/v18.0/${instagramAccountId}/media`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          caption: content,
+          media_type: 'TEXT',
+          access_token: pageAccessToken,
+        }),
+      }
+    );
+
+    const createData = await createRes.json();
+
+    if (!createRes.ok || createData.error) {
+      return { status: 'failed', error: createData.error?.message || 'Instagram container creation failed' };
+    }
+
+    // Step 2: Publish the container
+    const publishRes = await fetch(
+      `https://graph.facebook.com/v18.0/${instagramAccountId}/media_publish`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          creation_id: createData.id,
+          access_token: pageAccessToken,
+        }),
+      }
+    );
+
+    const publishData = await publishRes.json();
+
+    if (!publishRes.ok || publishData.error) {
+      return { status: 'failed', error: publishData.error?.message || 'Instagram publish failed' };
+    }
+
+    return { status: 'completed', postId: publishData.id, platform: 'instagram' };
+  } catch (err) {
+    return { status: 'failed', error: `Instagram post failed: ${err.message}` };
+  }
+}
+
+/**
+ * Post to LinkedIn via UGC Posts API.
+ */
+async function postToLinkedIn(credentials, content) {
+  const { accessToken, personId } = credentials;
+
+  if (!accessToken || !personId) {
+    return { status: 'failed', error: 'LinkedIn credentials missing. Re-connect in Settings.' };
+  }
+
+  try {
+    const response = await fetch('https://api.linkedin.com/v2/ugcPosts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0',
+      },
+      body: JSON.stringify({
+        author: `urn:li:person:${personId}`,
+        lifecycleState: 'PUBLISHED',
+        specificContent: {
+          'com.linkedin.ugc.ShareContent': {
+            shareCommentary: { text: content },
+            shareMediaCategory: 'NONE',
+          },
+        },
+        visibility: {
+          'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { status: 'failed', error: data.message || 'LinkedIn API error' };
+    }
+
+    return { status: 'completed', postId: data.id, platform: 'linkedin' };
+  } catch (err) {
+    return { status: 'failed', error: `LinkedIn post failed: ${err.message}` };
   }
 }
 

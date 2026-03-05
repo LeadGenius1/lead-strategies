@@ -373,16 +373,51 @@ function PipelineProgress({ agents, stages, currentPhase }) {
   );
 }
 
-// ═══ Executive Summary Renderer ═══
+// ═══ Text Cleaner — fixes double-encoded escape sequences ═══
 
-function ExecSummaryCard({ output }) {
-  // Parse output — could be a string (raw text) or structured object
-  let data = output;
+function cleanText(val) {
+  if (typeof val !== 'string') return val;
+  return val
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\');
+}
+
+function deepParse(raw) {
+  if (raw == null) return null;
+  let data = raw;
+
+  // If string, try to parse as JSON (handles double-stringified data)
+  if (typeof data === 'string') {
+    try { data = JSON.parse(data); } catch { /* keep as string */ }
+  }
+  // Still a string? Try one more parse in case of triple-encoding
   if (typeof data === 'string') {
     try { data = JSON.parse(data); } catch { /* keep as string */ }
   }
 
-  // If it's still a string, render as formatted text
+  // Handle truncated output from pipeline
+  if (data && typeof data === 'object' && data._truncated && typeof data.data === 'string') {
+    try { data = JSON.parse(data.data); } catch { data = data.data; }
+  }
+
+  // Clean escape sequences in all string values
+  if (typeof data === 'string') return cleanText(data);
+  if (typeof data === 'object' && data !== null) {
+    for (const key of Object.keys(data)) {
+      if (typeof data[key] === 'string') data[key] = cleanText(data[key]);
+    }
+  }
+  return data;
+}
+
+// ═══ Executive Summary Renderer ═══
+
+function ExecSummaryCard({ output }) {
+  const data = deepParse(output);
+
+  // Plain text fallback
   if (typeof data === 'string') {
     return (
       <AetherCard hover={false} variant="indigo" className="!p-6">
@@ -397,7 +432,9 @@ function ExecSummaryCard({ output }) {
     );
   }
 
-  // Structured output: { summary, actionItems, kpis, timeline, budget, risks }
+  if (!data || typeof data !== 'object') return null;
+
+  // Structured output
   return (
     <AetherCard hover={false} variant="indigo" className="!p-6">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
@@ -407,14 +444,12 @@ function ExecSummaryCard({ output }) {
         <StatusBadge status="completed" />
       </div>
 
-      {/* Summary text */}
       {data.summary && (
         <div className="whitespace-pre-wrap text-sm text-neutral-300 leading-relaxed mb-5">
-          {data.summary}
+          {cleanText(data.summary)}
         </div>
       )}
 
-      {/* Action Items */}
       {data.actionItems?.length > 0 && (
         <div className="mb-5">
           <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Action Items</h4>
@@ -423,8 +458,8 @@ function ExecSummaryCard({ output }) {
               <div key={i} className="flex items-start gap-2 text-sm text-neutral-300">
                 <span className="text-xs font-bold text-indigo-400 mt-0.5 min-w-[18px]">P{item.priority || i + 1}</span>
                 <div className="flex-1">
-                  <span>{item.action}</span>
-                  {item.owner && <span className="text-neutral-500 ml-1">— {item.owner}</span>}
+                  <span>{cleanText(item.action || item)}</span>
+                  {item.owner && <span className="text-neutral-500 ml-1"> {item.owner}</span>}
                   {item.deadline && <span className="text-neutral-600 ml-1">({item.deadline})</span>}
                 </div>
               </div>
@@ -433,14 +468,13 @@ function ExecSummaryCard({ output }) {
         </div>
       )}
 
-      {/* KPIs */}
       {data.kpis && Object.keys(data.kpis).length > 0 && (
         <div className="mb-5">
           <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Target KPIs</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {Object.entries(data.kpis).map(([key, value]) => (
               <div key={key} className="bg-white/[0.03] rounded-lg px-3 py-2 border border-white/[0.06]">
-                <div className="text-lg font-semibold text-white">{typeof value === 'number' ? value.toLocaleString() : value}</div>
+                <div className="text-lg font-semibold text-white">{typeof value === 'number' ? value.toLocaleString() : String(value)}</div>
                 <div className="text-[10px] text-neutral-500 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
               </div>
             ))}
@@ -448,7 +482,6 @@ function ExecSummaryCard({ output }) {
         </div>
       )}
 
-      {/* Timeline */}
       {data.timeline && Object.keys(data.timeline).length > 0 && (
         <div className="mb-5">
           <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Timeline</h4>
@@ -456,14 +489,13 @@ function ExecSummaryCard({ output }) {
             {Object.entries(data.timeline).map(([period, milestone]) => (
               <div key={period} className="flex items-start gap-2 text-sm">
                 <span className="text-xs font-medium text-indigo-400 min-w-[60px] capitalize">{period}</span>
-                <span className="text-neutral-300">{milestone}</span>
+                <span className="text-neutral-300">{cleanText(String(milestone))}</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Risks */}
       {data.risks?.length > 0 && (
         <div>
           <h4 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Risks</h4>
@@ -471,8 +503,8 @@ function ExecSummaryCard({ output }) {
             {data.risks.map((r, i) => (
               <div key={i} className="text-sm text-neutral-300">
                 <span className="text-amber-400 mr-1">!</span>
-                <span className="font-medium">{r.risk || r}</span>
-                {r.mitigation && <span className="text-neutral-500 ml-1">— {r.mitigation}</span>}
+                <span className="font-medium">{cleanText(r.risk || String(r))}</span>
+                {r.mitigation && <span className="text-neutral-500 ml-1"> {cleanText(r.mitigation)}</span>}
               </div>
             ))}
           </div>
@@ -485,31 +517,29 @@ function ExecSummaryCard({ output }) {
 // ═══ Agent Output Renderer ═══
 
 function AgentOutputDisplay({ output }) {
-  let data = output;
-  if (typeof data === 'string') {
-    try { data = JSON.parse(data); } catch { /* keep as string */ }
-  }
+  const data = deepParse(output);
 
   if (typeof data === 'string') {
     return <div className="whitespace-pre-wrap text-xs text-neutral-400 mt-3 leading-relaxed max-h-96 overflow-y-auto">{data}</div>;
   }
 
-  // Render object fields as readable sections
+  if (!data || typeof data !== 'object') return null;
+
   return (
     <div className="mt-3 space-y-3 max-h-96 overflow-y-auto">
       {Object.entries(data).map(([key, value]) => {
-        if (key.startsWith('_')) return null; // Skip internal fields
+        if (key.startsWith('_')) return null;
         return (
           <div key={key}>
             <h5 className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">
               {key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim()}
             </h5>
             {typeof value === 'string' ? (
-              <div className="whitespace-pre-wrap text-xs text-neutral-400 leading-relaxed">{value}</div>
+              <div className="whitespace-pre-wrap text-xs text-neutral-400 leading-relaxed">{cleanText(value)}</div>
             ) : Array.isArray(value) ? (
               <ul className="list-disc list-inside space-y-0.5 text-xs text-neutral-400">
                 {value.map((item, i) => (
-                  <li key={i}>{typeof item === 'string' ? item : JSON.stringify(item)}</li>
+                  <li key={i}>{typeof item === 'string' ? cleanText(item) : JSON.stringify(item)}</li>
                 ))}
               </ul>
             ) : (

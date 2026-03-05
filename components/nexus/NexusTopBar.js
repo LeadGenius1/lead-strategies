@@ -1,6 +1,7 @@
 'use client';
 
-import { LogOut } from 'lucide-react';
+import { LogOut, Shield } from 'lucide-react';
+import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { PLATFORM_DISPLAY_NAMES } from '@/lib/platformFeatures';
@@ -9,6 +10,7 @@ export default function NexusTopBar({ user, platformType, isConnected, isReconne
   const router = useRouter();
   const platformName = PLATFORM_DISPLAY_NAMES[platformType] || 'NEXUS';
   const planLabel = user?.plan_tier || user?.planTier || 'Free';
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin' || user?.is_admin;
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -49,8 +51,18 @@ export default function NexusTopBar({ user, platformType, isConnected, isReconne
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Right: User info + logout */}
+      {/* Right: Admin link + User info + logout */}
       <div className="flex items-center gap-3">
+        {isAdmin && (
+          <Link
+            href="/nexus/command-center"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-medium bg-indigo-600/15 border border-indigo-500/20 text-indigo-300 hover:bg-indigo-600/25 transition"
+            title="Command Center"
+          >
+            <Shield className="h-3 w-3" />
+            <span>Command Center</span>
+          </Link>
+        )}
         {user && (
           <>
             <div className="hidden sm:flex flex-col items-end">

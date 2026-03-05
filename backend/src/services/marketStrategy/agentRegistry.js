@@ -11,11 +11,18 @@ const chatgpt = require("./providers/chatgpt");
 
 // Platform domains for competitor-teardown audits
 const PLATFORM_DOMAINS = {
+  // Backend canonical names
   LeadSite:      "leadsiteio.com",
   LeadSiteAI:    "leadsiteai.com",
   ClientContact: "clientcontactio.com",
   VideoSite:     "videositeai.com",
   UltraLead:     "ultraleadai.com",
+  // Frontend kebab-case IDs (from PLATFORM_OPTIONS)
+  "leadsite-io":      "leadsiteio.com",
+  "leadsite-ai":      "leadsiteai.com",
+  "clientcontact-io":  "clientcontactio.com",
+  "videosite-ai":      "videositeai.com",
+  "ultralead":         "ultraleadai.com",
 };
 
 const AGENT_REGISTRY = {

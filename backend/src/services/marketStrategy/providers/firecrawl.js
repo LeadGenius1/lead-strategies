@@ -17,7 +17,9 @@ let client = null;
 
 function getClient() {
   if (!client) {
-    client = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+    const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+    // Firecrawl SDK v4: scrapeUrl/crawlUrl live on .v1 accessor
+    client = app.v1 || app;
   }
   return client;
 }

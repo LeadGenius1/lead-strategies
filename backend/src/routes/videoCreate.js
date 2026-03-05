@@ -6,14 +6,15 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const { authenticate, requireNexusPanel } = require('../middleware/auth');
 const { addVideoJob, getVideoQueue } = require('../services/nexus2/video/worker');
 const { VIDEO_TIERS, VIDEO_TEMPLATES, VIDEO_FORMATS } = require('../services/nexus2/video/constants');
 const { uploadToR2 } = require('../services/nexus2/video/r2Upload');
 const crypto = require('crypto');
 
-// All routes require authentication
+// All routes require authentication + videos panel access (tier 4+)
 router.use(authenticate);
+router.use(requireNexusPanel('videos'));
 
 // POST /create — Queue a video creation job
 router.post('/create', async (req, res) => {

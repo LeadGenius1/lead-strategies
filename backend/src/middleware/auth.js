@@ -166,4 +166,41 @@ const checkLeadLimit = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticate, optionalAuth, requireAdmin, requireFeature, checkLeadLimit, JWT_SECRET };
+// Nexus OS panel-level gating (mirrors lib/nexusFeatures.js)
+const NEXUS_PANEL_MIN_TIER = {
+  feed: 0,
+  strategy: 0,
+  outreach: 0,
+  prospects: 1,
+  websites: 2,
+  videos: 4,
+  settings: 0,
+};
+
+/**
+ * Middleware factory: blocks access if user tier < panel's minTier.
+ * Admins (role === 'admin') always pass.
+ * @param {string} panelId — one of: feed, strategy, outreach, prospects, websites, videos, settings
+ */
+const requireNexusPanel = (panelId) => {
+  const minTier = NEXUS_PANEL_MIN_TIER[panelId];
+  if (minTier === undefined) {
+    throw new Error(`requireNexusPanel: unknown panel "${panelId}"`);
+  }
+  return (req, res, next) => {
+    // Admins bypass all panel gating
+    if (req.user?.role === 'admin') return next();
+    const userTier = resolveTier(req.user || {});
+    if (userTier >= minTier) return next();
+    return res.status(403).json({
+      success: false,
+      error: 'Feature locked',
+      message: 'Upgrade to UltraLead ($499/mo) to unlock all features',
+      requiredTier: minTier,
+      currentTier: userTier,
+      panel: panelId,
+    });
+  };
+};
+
+module.exports = { authenticate, optionalAuth, requireAdmin, requireFeature, requireNexusPanel, checkLeadLimit, resolveTier, JWT_SECRET };

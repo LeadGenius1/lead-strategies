@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const { authenticate, resolveTier } = require('../middleware/auth');
 
 // Panel definitions (mirrors frontend lib/nexusFeatures.js)
 const NEXUS_PANELS = [
@@ -14,6 +14,7 @@ const NEXUS_PANELS = [
 ];
 
 const TIER_PLAN_NAMES = {
+  0: 'Free',
   1: 'LeadSite.AI',
   2: 'LeadSite.IO',
   3: 'ClientContact',
@@ -23,10 +24,10 @@ const TIER_PLAN_NAMES = {
 
 /**
  * GET /api/v1/nexus/features
- * Returns the user's tier, plan name, and which panels are available/locked.
+ * Returns the user's resolved tier, plan name, and which panels are available/locked.
  */
 router.get('/features', authenticate, (req, res) => {
-  const tier = Number(req.user?.tier) || 0;
+  const tier = resolveTier(req.user || {});
   const planName = TIER_PLAN_NAMES[tier] || 'Free';
 
   const panels = NEXUS_PANELS.map((p) => ({

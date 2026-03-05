@@ -251,6 +251,8 @@ export default function NexusSetupPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
 
   // Form state
@@ -277,13 +279,24 @@ export default function NexusSetupPage() {
         const res = await api.get('/api/v1/business-profile');
         const data = res.data;
 
-        if (data.status === 'profile_exists') {
-          // Already has profile — redirect to Activity feed
-          router.push('/nexus/feed');
-          return;
-        }
-
-        if (data.status === 'profile_not_created' && data.suggested) {
+        if (data.status === 'profile_exists' && data.profile) {
+          // Pre-fill form from existing profile for editing
+          const p = data.profile;
+          setIsEdit(true);
+          setForm({
+            businessName: p.businessName || '',
+            website: p.website || '',
+            industry: p.industry || '',
+            businessType: p.businessType || '',
+            targetMarket: p.targetMarket || '',
+            icp: p.icp || '',
+            offer: p.offer || '',
+            competitors: Array.isArray(p.competitors) ? p.competitors : [],
+            budgetRange: p.budgetRange || '',
+            activeChannels: Array.isArray(p.activeChannels) ? p.activeChannels : [],
+            platforms: Array.isArray(p.platforms) ? p.platforms : [],
+          });
+        } else if (data.status === 'profile_not_created' && data.suggested) {
           const s = data.suggested;
           const h = s._hints || {};
           setForm(prev => ({
@@ -325,27 +338,34 @@ export default function NexusSetupPage() {
     setSubmitting(true);
     setError('');
 
+    const payload = {
+      businessName: form.businessName.trim(),
+      website: form.website.trim() || undefined,
+      industry: form.industry,
+      businessType: form.businessType,
+      targetMarket: form.targetMarket.trim(),
+      icp: form.icp.trim(),
+      offer: form.offer.trim(),
+      competitors: form.competitors,
+      budgetRange: form.budgetRange,
+      platforms: form.platforms,
+      activeChannels: form.activeChannels,
+    };
+
     try {
-      await api.post('/api/v1/business-profile', {
-        businessName: form.businessName.trim(),
-        website: form.website.trim() || undefined,
-        industry: form.industry,
-        businessType: form.businessType,
-        targetMarket: form.targetMarket.trim(),
-        icp: form.icp.trim(),
-        offer: form.offer.trim(),
-        competitors: form.competitors,
-        budgetRange: form.budgetRange,
-        platforms: form.platforms,
-        activeChannels: form.activeChannels,
-      });
-
-      setSubmitted(true);
-
-      // Auto-redirect to Activity feed after 20 seconds (agents are running)
-      setTimeout(() => {
-        router.push('/nexus/feed');
-      }, 20000);
+      if (isEdit) {
+        await api.put('/api/v1/business-profile', payload);
+        setSaved(true);
+        setSubmitting(false);
+        setTimeout(() => setSaved(false), 3000);
+      } else {
+        await api.post('/api/v1/business-profile', payload);
+        setSubmitted(true);
+        // Auto-redirect to Activity feed after 20 seconds (agents are running)
+        setTimeout(() => {
+          router.push('/nexus/feed');
+        }, 20000);
+      }
     } catch (err) {
       const msg = err.response?.data?.error || err.message;
       const missing = err.response?.data?.missing;
@@ -379,12 +399,21 @@ export default function NexusSetupPage() {
       <div className="mb-8">
         <p className="text-indigo-400 text-xs font-medium uppercase tracking-widest mb-2">Lead Hunter</p>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-white mb-2">
-          Set up once. I handle the rest.
+          {isEdit ? 'Your Business Profile' : 'Set up once. I handle the rest.'}
         </h1>
         <p className="text-neutral-500 text-sm font-light">
-          Tell me about your business and I'll build your entire marketing strategy — automatically.
+          {isEdit
+            ? 'Update your business info. Key changes will re-trigger AI analysis automatically.'
+            : "Tell me about your business and I'll build your entire marketing strategy \u2014 automatically."}
         </p>
       </div>
+
+      {/* Saved confirmation */}
+      {saved && (
+        <div className="mb-6 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-400">
+          Profile updated successfully.
+        </div>
+      )}
 
       <StepIndicator current={step} total={3} />
 
@@ -511,7 +540,7 @@ export default function NexusSetupPage() {
             onClick={handleSubmit}
             disabled={!canProceed() || submitting}
           >
-            {submitting ? 'Launching...' : 'Launch My Strategy'}
+            {submitting ? (isEdit ? 'Saving...' : 'Launching...') : (isEdit ? 'Save Changes' : 'Launch My Strategy')}
           </AetherButton>
         )}
       </div>

@@ -9,7 +9,7 @@ const R2_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const R2_ACCESS_KEY = process.env.CLOUDFLARE_R2_ACCESS_KEY;
 const R2_SECRET_KEY = process.env.CLOUDFLARE_R2_SECRET_KEY;
 const R2_BUCKET = process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos';
-const R2_PUBLIC_URL = 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
+const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL || process.env.R2_PUBLIC_URL || 'https://pub-00746658f70a4185a900f207b96d9e3b.r2.dev';
 
 let s3Client = null;
 

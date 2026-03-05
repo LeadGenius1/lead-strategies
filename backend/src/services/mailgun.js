@@ -1,7 +1,7 @@
 // Mailgun Email Service - LeadSite.AI
 // Uses Mailgun HTTP API (no extra deps)
 
-const DOMAIN = process.env.MAILGUN_DOMAIN || process.env.MAILGUN_DOMAIN_NAME || 'mail.leadsiteai.com';
+const DOMAIN = process.env.MAILGUN_DOMAIN || process.env.MAILGUN_DOMAIN_NAME || 'leadsite.ai';
 const API_KEY = process.env.MAILGUN_API_KEY;
 
 async function sendEmail({ to, subject, body, from, text }) {

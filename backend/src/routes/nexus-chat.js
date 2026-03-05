@@ -258,6 +258,22 @@ Week 9-12: Catch-all campaign to non-openers with bold time-bound offer. Cross-p
 ### HERO STAT FOR SALES
 LeadSite.AI at $49/month vs typical SDR at $60K/year = 100x cost advantage with 24/7 autonomous operation
 
+## DECISION EXECUTION LOGIC (CRITICAL)
+When the user says "proceed", "yes", "go", "do it", "launch", "execute", "run it",
+"confirm", "approved", or any affirmative — execute the last recommended action
+IMMEDIATELY. Do NOT ask clarifying questions when an action has already been proposed
+and the user has confirmed. Take action, then report results.
+
+## FUNCTION AWARENESS
+You have access to 28 functions. Before telling the user something is unavailable,
+check the full tool list. Available: web_research, scrape_website, market_analysis,
+competitor_analysis, generate_email, get_campaigns, add_leads_to_campaign,
+launch_campaign, compliance_check, system_health_check, warmup_status, hunt_leads,
+sms_control, get_websites, create_website, update_website, get_inbox_messages,
+send_sms, get_contacts, get_videos, get_video_analytics, upload_video_url,
+get_pipeline, create_deal, get_transcriptions, sentiment_analysis,
+revenue_forecast, auto_heal.
+
 ## RESPONSE STYLE
 - Lead with data and current state
 - Provide numbered recommendations with specific actions
@@ -265,7 +281,7 @@ LeadSite.AI at $49/month vs typical SDR at $60K/year = 100x cost advantage with 
 - Coordinate AI agents when relevant
 - Use concrete numbers from the live data
 - End with a clear RECOMMENDED NEXT ACTION when appropriate
-- For system status requests: show ALL live service statuses with the timestamp`;
+- For system status requests: call system_health_check() and show ALL live service statuses`;
 }
 
 // Tools available to NEXUS via Anthropic tool_use
@@ -413,13 +429,166 @@ const nexusTools = [
       },
       required: ['to', 'subject', 'body']
     }
+  },
+  // #9 Compliance Guardian
+  {
+    name: 'compliance_check',
+    description: 'Validate email compliance for CAN-SPAM, GDPR, and domain reputation',
+    input_schema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['validate_email', 'can_spam_check', 'gdpr_check', 'validate_domain'], description: 'Compliance check type' },
+        payload: { type: 'object', description: 'Check-specific parameters (email, subject/body/senderName/physicalAddress, country/hasConsent/consentTimestamp, or domain)' }
+      },
+      required: ['action', 'payload']
+    }
+  },
+  // #10 System Health Check
+  {
+    name: 'system_health_check',
+    description: 'Run a full system health check across database, Redis, Instantly, Mailgun, and R2',
+    input_schema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['full_check', 'check_database', 'check_redis', 'check_instantly', 'check_mailgun', 'check_r2'], description: 'Which service to check (default: full_check)' }
+      }
+    }
+  },
+  // #11 Warmup Status
+  {
+    name: 'warmup_status',
+    description: 'Monitor and manage email account warmup health via Instantly.ai',
+    input_schema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['get_status', 'set_schedule', 'get_recommendations'], description: 'Warmup action' },
+        emailAccount: { type: 'string', description: 'Email account (optional for get_status)' },
+        dailyTarget: { type: 'number', description: 'Daily send target (for set_schedule)' }
+      },
+      required: ['action']
+    }
+  },
+  // #12 Hunt Leads
+  {
+    name: 'hunt_leads',
+    description: 'Search Apollo.io for leads matching ICP criteria and save to database',
+    input_schema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['search', 'enrich', 'run_job'], description: 'Lead hunting action (default: search)' },
+        jobTitles: { type: 'array', items: { type: 'string' }, description: 'Job titles to target (e.g. CEO, Founder)' },
+        industries: { type: 'array', items: { type: 'string' }, description: 'Industries to target' },
+        employeeRange: { type: 'array', items: { type: 'number' }, description: '[min, max] employee count' },
+        locations: { type: 'array', items: { type: 'string' }, description: 'Geographic locations' },
+        limit: { type: 'number', description: 'Max results (default 25, max 100)' },
+        email: { type: 'string', description: 'Email to enrich (for enrich action)' }
+      }
+    }
+  },
+  // #13 SMS Control
+  {
+    name: 'sms_control',
+    description: 'Send SMS messages and manage SMS campaigns via Twilio',
+    input_schema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['send_single', 'send_bulk', 'get_status', 'create_campaign'], description: 'SMS action' },
+        to: { type: 'string', description: 'Phone number (for send_single)' },
+        recipients: { type: 'array', items: { type: 'string' }, description: 'Phone numbers (for send_bulk)' },
+        message: { type: 'string', description: 'SMS message text' },
+        campaignId: { type: 'string', description: 'Campaign ID (for get_status)' },
+        name: { type: 'string', description: 'Campaign name (for create_campaign)' }
+      },
+      required: ['action']
+    }
+  },
+  // #14-#16 LeadSite.IO Platform
+  {
+    name: 'get_websites',
+    description: 'List all websites for a user (LeadSite.IO)',
+    input_schema: { type: 'object', properties: { userId: { type: 'string' } }, required: ['userId'] }
+  },
+  {
+    name: 'create_website',
+    description: 'Create a new website (LeadSite.IO)',
+    input_schema: { type: 'object', properties: { name: { type: 'string' }, template: { type: 'string' }, userId: { type: 'string' } }, required: ['name', 'userId'] }
+  },
+  {
+    name: 'update_website',
+    description: 'Update website properties (LeadSite.IO)',
+    input_schema: { type: 'object', properties: { websiteId: { type: 'string' }, changes: { type: 'object' } }, required: ['websiteId'] }
+  },
+  // #17-#19 ClientContact.IO Platform
+  {
+    name: 'get_inbox_messages',
+    description: 'Get conversations from unified inbox (ClientContact.IO)',
+    input_schema: { type: 'object', properties: { userId: { type: 'string' }, limit: { type: 'number' } }, required: ['userId'] }
+  },
+  {
+    name: 'send_sms',
+    description: 'Send a single SMS message (ClientContact.IO)',
+    input_schema: { type: 'object', properties: { to: { type: 'string' }, message: { type: 'string' } }, required: ['to', 'message'] }
+  },
+  {
+    name: 'get_contacts',
+    description: 'Get CRM contacts with optional filters (ClientContact.IO)',
+    input_schema: { type: 'object', properties: { userId: { type: 'string' }, filter: { type: 'object' } }, required: ['userId'] }
+  },
+  // #20-#22 VideoSite.AI Platform
+  {
+    name: 'get_videos',
+    description: 'Get all videos for a user (VideoSite.AI)',
+    input_schema: { type: 'object', properties: { userId: { type: 'string' } }, required: ['userId'] }
+  },
+  {
+    name: 'get_video_analytics',
+    description: 'Get analytics for a specific video (VideoSite.AI)',
+    input_schema: { type: 'object', properties: { videoId: { type: 'string' } }, required: ['videoId'] }
+  },
+  {
+    name: 'upload_video_url',
+    description: 'Create a video entry from a URL (VideoSite.AI)',
+    input_schema: { type: 'object', properties: { title: { type: 'string' }, url: { type: 'string' }, userId: { type: 'string' } }, required: ['title', 'url', 'userId'] }
+  },
+  // #23-#25 UltraLead.AI Platform
+  {
+    name: 'get_pipeline',
+    description: 'Get sales pipeline deals grouped by stage (UltraLead.AI)',
+    input_schema: { type: 'object', properties: { userId: { type: 'string' } }, required: ['userId'] }
+  },
+  {
+    name: 'create_deal',
+    description: 'Create a new deal in the sales pipeline (UltraLead.AI)',
+    input_schema: { type: 'object', properties: { name: { type: 'string' }, value: { type: 'number' }, stage: { type: 'string' }, contactId: { type: 'string' }, userId: { type: 'string' } }, required: ['name', 'userId'] }
+  },
+  {
+    name: 'get_transcriptions',
+    description: 'Get call transcriptions with AI analysis (UltraLead.AI)',
+    input_schema: { type: 'object', properties: { userId: { type: 'string' }, limit: { type: 'number' } }, required: ['userId'] }
+  },
+  // #26-#28 Advanced Agent Functions
+  {
+    name: 'sentiment_analysis',
+    description: 'Classify email reply sentiment (positive/negative/interested/not_interested) and suggest next action',
+    input_schema: { type: 'object', properties: { replyText: { type: 'string', description: 'The email reply text to analyze' } }, required: ['replyText'] }
+  },
+  {
+    name: 'revenue_forecast',
+    description: 'Project revenue from pipeline data with best/worst/expected scenarios and AI narrative',
+    input_schema: { type: 'object', properties: { leadsInPipeline: { type: 'number' }, avgDealValue: { type: 'number' }, conversionRate: { type: 'number' }, timeframeDays: { type: 'number' } }, required: ['leadsInPipeline', 'avgDealValue'] }
+  },
+  {
+    name: 'auto_heal',
+    description: 'Analyze failed email sends, classify errors, and retry transient failures',
+    input_schema: { type: 'object', properties: { failedSendLog: { type: 'array', items: { type: 'object' }, description: 'Array of failed send entries with error messages' } }, required: ['failedSendLog'] }
   }
 ];
 
-// Execute a tool call from Claude
+// Execute a tool call from Claude — supports all 28 NEXUS functions
 async function executeTool(toolName, toolInput) {
   try {
     switch (toolName) {
+      // Core Intelligence (#1-#4)
       case 'web_research':
         return await getPerplexityAgent().research(toolInput.query);
       case 'scrape_website':
@@ -428,6 +597,8 @@ async function executeTool(toolName, toolInput) {
         return await getPerplexityAgent().getMarketIntelligence(toolInput.topic);
       case 'competitor_analysis':
         return await getFirecrawlAgent().scrapeCompetitorPricing(toolInput.name, toolInput.url);
+
+      // Email (#5-#8)
       case 'generate_email':
         return await getChatGPTAgent().generateEmail(toolInput.recipient, toolInput.context);
       case 'get_campaigns':
@@ -435,11 +606,10 @@ async function executeTool(toolName, toolInput) {
       case 'add_leads_to_campaign':
         return await instantlyService.addLeadsBatch(toolInput.campaignId, toolInput.leads);
       case 'launch_campaign':
-        if (toolInput.action === 'launch') {
-          return await instantlyService.launchCampaign(toolInput.campaignId);
-        } else {
+        if (toolInput.action === 'pause') {
           return await instantlyService.pauseCampaign(toolInput.campaignId);
         }
+        return await instantlyService.launchCampaign(toolInput.campaignId);
       case 'get_campaign_analytics':
         return await instantlyService.getCampaignAnalytics(toolInput.campaignId);
       case 'send_email':
@@ -449,6 +619,105 @@ async function executeTool(toolName, toolInput) {
           body: toolInput.body,
           text: toolInput.text
         });
+
+      // Compliance (#9)
+      case 'compliance_check': {
+        const { complianceCheck } = require('../nexus/functions/compliance-guardian');
+        return await complianceCheck(toolInput);
+      }
+
+      // Infrastructure (#10-#11)
+      case 'system_health_check': {
+        const { systemHealthCheck } = require('../nexus/functions/healing-sentinel');
+        return await systemHealthCheck(toolInput);
+      }
+      case 'warmup_status': {
+        const { warmupStatus } = require('../nexus/functions/warmup-conductor');
+        return await warmupStatus(toolInput);
+      }
+
+      // Lead Generation (#12)
+      case 'hunt_leads': {
+        const { huntLeads } = require('../nexus/functions/lead-hunter');
+        return await huntLeads(toolInput);
+      }
+
+      // SMS (#13)
+      case 'sms_control': {
+        const { smsControl } = require('../nexus/functions/sms-controller');
+        return await smsControl(toolInput);
+      }
+
+      // Platform: LeadSite.IO (#14-#16)
+      case 'get_websites': {
+        const { getWebsites } = require('../nexus/functions/platform-functions');
+        return await getWebsites(toolInput);
+      }
+      case 'create_website': {
+        const { createWebsite } = require('../nexus/functions/platform-functions');
+        return await createWebsite(toolInput);
+      }
+      case 'update_website': {
+        const { updateWebsite } = require('../nexus/functions/platform-functions');
+        return await updateWebsite(toolInput);
+      }
+
+      // Platform: ClientContact.IO (#17-#19)
+      case 'get_inbox_messages': {
+        const { getInboxMessages } = require('../nexus/functions/platform-functions');
+        return await getInboxMessages(toolInput);
+      }
+      case 'send_sms': {
+        const { sendSmsWrapper } = require('../nexus/functions/platform-functions');
+        return await sendSmsWrapper(toolInput);
+      }
+      case 'get_contacts': {
+        const { getContacts } = require('../nexus/functions/platform-functions');
+        return await getContacts(toolInput);
+      }
+
+      // Platform: VideoSite.AI (#20-#22)
+      case 'get_videos': {
+        const { getVideos } = require('../nexus/functions/platform-functions');
+        return await getVideos(toolInput);
+      }
+      case 'get_video_analytics': {
+        const { getVideoAnalytics } = require('../nexus/functions/platform-functions');
+        return await getVideoAnalytics(toolInput);
+      }
+      case 'upload_video_url': {
+        const { uploadVideoUrl } = require('../nexus/functions/platform-functions');
+        return await uploadVideoUrl(toolInput);
+      }
+
+      // Platform: UltraLead.AI (#23-#25)
+      case 'get_pipeline': {
+        const { getPipeline } = require('../nexus/functions/platform-functions');
+        return await getPipeline(toolInput);
+      }
+      case 'create_deal': {
+        const { createDeal } = require('../nexus/functions/platform-functions');
+        return await createDeal(toolInput);
+      }
+      case 'get_transcriptions': {
+        const { getTranscriptions } = require('../nexus/functions/platform-functions');
+        return await getTranscriptions(toolInput);
+      }
+
+      // Advanced Agents (#26-#28)
+      case 'sentiment_analysis': {
+        const { sentimentAnalysis } = require('../nexus/functions/advanced-agents');
+        return await sentimentAnalysis(toolInput);
+      }
+      case 'revenue_forecast': {
+        const { revenueForecast } = require('../nexus/functions/advanced-agents');
+        return await revenueForecast(toolInput);
+      }
+      case 'auto_heal': {
+        const { autoHeal } = require('../nexus/functions/advanced-agents');
+        return await autoHeal(toolInput);
+      }
+
       default:
         return { error: `Unknown tool: ${toolName}` };
     }
@@ -717,7 +986,34 @@ You have access to live Instantly MCP, all 5 platforms, and 7 AI agents.
 ALWAYS reference the live numbers above. NEVER use stale assumptions.
 Every response must be grounded in current platform data.
 Lead with data and current state. Provide numbered recommendations with specific actions.
-End with a clear RECOMMENDED NEXT ACTION when appropriate.`;
+End with a clear RECOMMENDED NEXT ACTION when appropriate.
+
+## DECISION EXECUTION LOGIC (CRITICAL)
+When the user says "proceed", "yes", "go", "do it", "launch", "execute", "run it",
+"confirm", "approved", or any affirmative — execute the last recommended action
+IMMEDIATELY. Do NOT ask clarifying questions when an action has already been proposed
+and the user has confirmed. Take action, then report results.
+
+## LIVE METRICS
+When displaying system status, ALWAYS call system_health_check() to get real-time
+service health. For platform counts, use the live numbers injected above.
+Never report cached or hardcoded values.
+
+## FUNCTION AWARENESS
+You have access to 28 functions across all platforms. Before telling the user something
+is unavailable, check the full tool list. Never report a function as missing if it
+exists. Available function categories:
+- Intelligence: web_research, scrape_website, market_analysis, competitor_analysis
+- Email: generate_email, get_campaigns, add_leads_to_campaign, launch_campaign
+- Compliance: compliance_check (CAN-SPAM, GDPR, domain validation)
+- Infrastructure: system_health_check, warmup_status
+- Lead Gen: hunt_leads (Apollo.io)
+- SMS: sms_control, send_sms
+- LeadSite.IO: get_websites, create_website, update_website
+- ClientContact.IO: get_inbox_messages, send_sms, get_contacts
+- VideoSite.AI: get_videos, get_video_analytics, upload_video_url
+- UltraLead.AI: get_pipeline, create_deal, get_transcriptions
+- Advanced: sentiment_analysis, revenue_forecast, auto_heal`;
 
     // Load conversation history from DB for context
     let conversationHistory = [];

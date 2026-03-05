@@ -1,7 +1,7 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════
-# NEXUS OS — 25-POINT PRE-LAUNCH SMOKE TEST
-# March 7 Launch Readiness Check
+# NEXUS OS — 33-POINT PRE-LAUNCH SMOKE TEST
+# March 7 Launch Readiness Check (Phase 10: Lead Hunter Intelligence)
 # ═══════════════════════════════════════════════════════════════
 
 API="https://api.aileadstrategies.com"
@@ -19,7 +19,7 @@ fail() { echo "FAIL -- $1"; FAIL=$((FAIL+1)); }
 warn_() { echo "WARN -- $1"; WARN=$((WARN+1)); }
 
 echo "======================================================="
-echo "  NEXUS OS -- 25-POINT PRE-LAUNCH SMOKE TEST"
+echo "  NEXUS OS -- 33-POINT PRE-LAUNCH SMOKE TEST"
 echo "  $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "======================================================="
 echo ""
@@ -206,6 +206,63 @@ if [ "$count" = "8" ]; then ok; else fail "got $count panels"; fi
 p 25 "No hardcoded API keys in backend routes"
 secrets=$(grep -rn 'sk-[a-zA-Z0-9]\{20,\}\|AKIA[A-Z0-9]\{16\}\|ghp_[a-zA-Z0-9]\{36\}' "$REPO/backend/src/routes/" 2>/dev/null | head -3)
 if [ -z "$secrets" ]; then ok; else fail "hardcoded secrets found"; fi
+
+# --- 26. File upload requires auth ---
+p 26 "POST /assistant/upload -> 401 (no auth)"
+c=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X POST "$API/api/v1/assistant/upload")
+if [ "$c" = "401" ]; then ok; else fail "got $c"; fi
+
+# --- 27. Memory list requires auth ---
+p 27 "GET /assistant/memories -> 401 (no auth)"
+c=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 "$API/api/v1/assistant/memories")
+if [ "$c" = "401" ]; then ok; else fail "got $c"; fi
+
+# --- 28. Memory delete requires auth ---
+p 28 "DELETE /assistant/memories/fake -> 401 (no auth)"
+c=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X DELETE "$API/api/v1/assistant/memories/fake")
+if [ "$c" = "401" ]; then ok; else fail "got $c"; fi
+
+# --- 29. MCP providers catalog is public ---
+p 29 "GET /mcp/providers -> 200 (public catalog)"
+c=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 "$API/api/v1/mcp/providers")
+if [ "$c" = "200" ]; then ok; else fail "got $c"; fi
+
+# --- 30. MCP connections requires auth ---
+p 30 "GET /mcp/connections -> 401 (no auth)"
+c=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 "$API/api/v1/mcp/connections")
+if [ "$c" = "401" ]; then ok; else fail "got $c"; fi
+
+# --- 31. MCP connect requires auth ---
+p 31 "POST /mcp/connect -> 401 (no auth)"
+c=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X POST -H "Content-Type: application/json" -d '{}' "$API/api/v1/mcp/connect")
+if [ "$c" = "401" ]; then ok; else fail "got $c"; fi
+
+# --- 32. Syntax check on Phase 10 new files ---
+p 32 "Syntax: 5 Phase 10 backend files"
+syntax_ok=true
+for f in \
+  backend/src/services/nexus2/assistant/fileProcessor.js \
+  backend/src/services/nexus2/assistant/memory.js \
+  backend/src/services/nexus2/assistant/mcpRegistry.js \
+  backend/src/services/nexus2/assistant/mcpManager.js \
+  backend/src/routes/mcp.js; do
+  node --check "$REPO/$f" 2>/dev/null
+  if [ $? -ne 0 ]; then syntax_ok=false; fi
+done
+if $syntax_ok; then ok; else fail "syntax errors in Phase 10 files"; fi
+
+# --- 33. Original 25 tests still pass (meta-check: just verify test 23 files still valid) ---
+p 33 "Original Phase 2-7 files still valid"
+meta_ok=true
+for f in \
+  backend/src/services/nexus2/assistant/service.js \
+  backend/src/services/nexus2/assistant/tools.js \
+  backend/src/services/nexus2/assistant/toolExecutor.js \
+  backend/src/routes/assistant.js; do
+  node --check "$REPO/$f" 2>/dev/null
+  if [ $? -ne 0 ]; then meta_ok=false; fi
+done
+if $meta_ok; then ok; else fail "modified files have syntax errors"; fi
 
 echo ""
 echo "======================================================="

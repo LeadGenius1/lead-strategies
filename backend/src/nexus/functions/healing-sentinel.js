@@ -4,7 +4,7 @@ const { prisma, checkDatabaseHealth } = require('../../config/database');
 const { checkRedisHealth } = require('../../config/redis');
 
 const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
-const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN || 'mail.leadsiteai.com';
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN || process.env.MAILGUN_DOMAIN_NAME || 'leadsite.ai';
 
 /**
  * Check database health with latency measurement
@@ -85,7 +85,7 @@ async function checkMailgunAPI() {
 
   try {
     const auth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-    const res = await fetch(`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}`, {
+    const res = await fetch(`https://api.mailgun.net/v3/domains/${MAILGUN_DOMAIN}`, {
       method: 'GET',
       headers: { 'Authorization': `Basic ${auth}` },
       signal: AbortSignal.timeout(10000)
@@ -108,19 +108,21 @@ async function checkR2Storage() {
   const start = Date.now();
   const { S3Client, ListBucketsCommand } = require('@aws-sdk/client-s3');
 
-  const endpoint = process.env.R2_ENDPOINT || process.env.CLOUDFLARE_R2_ENDPOINT;
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID || process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY || process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY;
+  const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_KEY;
 
-  if (!endpoint || !accessKeyId || !secretAccessKey) {
+  if (!accountId || !accessKeyId || !secretAccessKey) {
     return { status: 'degraded', latency: 0, error: 'R2 credentials not configured' };
   }
 
   try {
     const s3 = new S3Client({
       region: 'auto',
-      endpoint,
-      credentials: { accessKeyId, secretAccessKey }
+      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+      credentials: { accessKeyId, secretAccessKey },
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
     });
     await s3.send(new ListBucketsCommand({}));
     const latency = Date.now() - start;

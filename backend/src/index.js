@@ -425,6 +425,9 @@ if (featureFlags.ENABLE_NEXUS) {
   // AI Assistant (Phase 5) — streaming chat with tool-use
   app.use('/api/v1/assistant', aiLimiter, require('./routes/assistant'));
 
+  // MCP Integrations (Phase 10) — provider connections
+  app.use('/api/v1/mcp', require('./routes/mcp'));
+
   // Video Creation Engine
   app.use('/api/v1/video', require('./routes/videoCreate'));
 

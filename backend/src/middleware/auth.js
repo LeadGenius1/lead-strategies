@@ -52,11 +52,11 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Feature access by tier - Website Builder available on ALL tiers (tier difference = email volume only)
+// Feature access by tier - Website Builder + Video available on ALL tiers
 const TIER_FEATURES = {
-  1: ['leads', 'campaigns', 'email', 'website_builder', 'forms'],        // LeadSite.AI / Free
-  2: ['leads', 'campaigns', 'email', 'website_builder', 'forms'],        // LeadSite.IO
-  3: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder'], // ClientContact.IO
+  1: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'video'],        // LeadSite.AI / Free
+  2: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'video'],        // LeadSite.IO
+  3: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video'], // ClientContact.IO
   4: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video'], // VideoSite.AI
   5: ['leads', 'campaigns', 'email', 'website_builder', 'forms', 'inbox', 'channels', 'auto_responder', 'video', 'crm', 'api', 'teams'] // UltraLead
 };
@@ -173,7 +173,7 @@ const NEXUS_PANEL_MIN_TIER = {
   outreach: 0,
   prospects: 1,
   websites: 2,
-  videos: 4,
+  videos: 0,
   settings: 0,
 };
 

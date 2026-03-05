@@ -5,9 +5,7 @@
 
 const { createLogger } = require('../utils/logger');
 const { checkRedisHealth } = require('../config/redis');
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const { prisma } = require('../config/database');
 const logger = createLogger('healing_sentinel');
 
 // AI model error tracking (in-memory rolling window)

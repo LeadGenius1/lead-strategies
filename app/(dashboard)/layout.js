@@ -195,7 +195,7 @@ export default function DashboardLayout({ children }) {
         const profileComplete = hasCompany && hasIndustry && hasServices && hasContact;
 
         // Hard redirect if profile incomplete and not on exempt route
-        const exemptRoutes = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus'];
+        const exemptRoutes = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus', '/nexus/setup'];
         const isExempt = exemptRoutes.some(r => pathname === r || pathname.startsWith(r + '/'));
         if (!profileComplete && !isExempt) {
           router.push('/nexus/setup');
@@ -230,7 +230,7 @@ export default function DashboardLayout({ children }) {
   }, [user]);
 
   // Block rendering until auth + profile check complete (prevents content flash)
-  const exemptFromProfileCheck = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus'].some(
+  const exemptFromProfileCheck = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus', '/nexus/setup'].some(
     r => pathname === r || pathname.startsWith(r + '/')
   );
   if (loading || (!profileChecked && !exemptFromProfileCheck)) {
@@ -248,14 +248,8 @@ export default function DashboardLayout({ children }) {
   const isTrial = user?.subscriptionStatus === 'trial' && trialEndsAt;
   const daysLeft = isTrial ? Math.max(0, Math.ceil((trialEndsAt - new Date()) / (1000 * 60 * 60 * 24))) : null;
 
-  // ── NEXUS OS: /nexus/* routes get the new shell instead of the sidebar ──
-  const isNexusRoute = pathname.startsWith('/nexus/feed')
-    || pathname.startsWith('/nexus/strategy')
-    || pathname.startsWith('/nexus/outreach')
-    || pathname.startsWith('/nexus/prospects')
-    || pathname.startsWith('/nexus/videos')
-    || pathname.startsWith('/nexus/websites')
-    || pathname.startsWith('/nexus/settings');
+  // ── NEXUS OS: all /nexus/* routes get the new shell instead of the sidebar ──
+  const isNexusRoute = pathname === '/nexus' || pathname.startsWith('/nexus/');
 
   if (isNexusRoute) {
     return (

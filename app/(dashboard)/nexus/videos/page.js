@@ -283,6 +283,18 @@ function CreateVideoForm({ onClose, onJobStarted }) {
       >
         {submitting ? 'Starting...' : 'Create Video'}
       </button>
+
+      {/* How it works */}
+      <div className="mt-5 pt-4 border-t border-white/5">
+        <p className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-2">How it works</p>
+        <ol className="space-y-1.5 text-xs text-neutral-500">
+          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">1.</span> Write your script or topic above</li>
+          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">2.</span> AI plans scenes and selects matching footage</li>
+          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">3.</span> Voiceover is generated from your script</li>
+          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">4.</span> Video is rendered and uploaded to your library</li>
+        </ol>
+        <p className="text-[10px] text-neutral-600 mt-2">Takes 2-5 minutes depending on length.</p>
+      </div>
     </div>
   );
 }

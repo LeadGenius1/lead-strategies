@@ -227,10 +227,8 @@ export default function UltraLeadPage() {
                 </p>
 
                 <div className="[animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-                  <Link href="/signup?tier=ultralead" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
-                    Start Free — 14 Day Trial
-                  </Link>
-                  <p className="text-neutral-600 text-xs font-geist mt-3 tracking-wide">No credit card required</p>
+                  <ShinyButton href="/signup?product=ultralead&tier=starter">Start Trial</ShinyButton>
+                  <p className="text-neutral-500 text-xs font-geist mt-3 tracking-wide">14-day free trial · No credit card required · Cancel anytime</p>
                 </div>
               </div>
             </div>
@@ -558,10 +556,8 @@ export default function UltraLeadPage() {
                 </p>
 
                 <div className="text-center">
-                  <Link href="/signup?tier=ultralead" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors w-full sm:w-auto">
-                    Start Your 14-Day Free Trial
-                  </Link>
-                  <p className="text-neutral-600 text-xs font-geist mt-3">No credit card required. Cancel anytime.</p>
+                  <ShinyButton href="/signup?product=ultralead&tier=starter">Start Trial</ShinyButton>
+                  <p className="text-neutral-500 text-xs font-geist mt-3">14-day free trial · No credit card required · Cancel anytime</p>
                 </div>
               </div>
             </div>
@@ -625,9 +621,8 @@ export default function UltraLeadPage() {
             <p className="text-sm sm:text-base text-neutral-500 font-geist max-w-xl mx-auto mb-8">
               Set up takes 2 minutes. Your first AI-generated strategy is ready in 15. Your marketing never stops — even while you sleep.
             </p>
-            <Link href="/signup?tier=ultralead" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
-              Start Free — See It Work in 15 Minutes →
-            </Link>
+            <ShinyButton href="/signup?product=ultralead&tier=starter">Start Trial</ShinyButton>
+            <p className="text-neutral-500 text-xs font-geist mt-3 tracking-wide">14-day free trial · No credit card required · Cancel anytime</p>
           </div>
         </section>
 

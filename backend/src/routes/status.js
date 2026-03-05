@@ -144,8 +144,9 @@ router.get('/api-keys', authenticate, (req, res, next) => {
           accessKeyId: CLOUDFLARE_R2_ACCESS_KEY,
           secretAccessKey: CLOUDFLARE_R2_SECRET_KEY,
         },
+        forcePathStyle: true,
       });
-      await client.send(new HeadBucketCommand({ Bucket: CLOUDFLARE_R2_BUCKET || 'videosite-videos' }));
+      await client.send(new HeadBucketCommand({ Bucket: CLOUDFLARE_R2_BUCKET || 'videosite' }));
       return { ok: true, message: 'Bucket OK' };
     } catch (e) {
       return { ok: false, error: e.message };

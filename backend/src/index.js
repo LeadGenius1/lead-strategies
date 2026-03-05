@@ -269,9 +269,10 @@ app.get('/api/health', async (req, res) => {
         credentials: {
           accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY,
           secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_KEY
-        }
+        },
+        forcePathStyle: true,
       });
-      await client.send(new HeadBucketCommand({ Bucket: process.env.CLOUDFLARE_R2_BUCKET || 'videosite-videos' }));
+      await client.send(new HeadBucketCommand({ Bucket: process.env.CLOUDFLARE_R2_BUCKET || 'videosite' }));
       checks.r2Storage = { status: 'healthy', message: 'Connected' };
     } catch (err) {
       checks.r2Storage = { status: 'unhealthy', error: err.message };

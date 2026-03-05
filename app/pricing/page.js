@@ -185,9 +185,6 @@ export default function PricingPage() {
             <Link href="/ultralead" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">UltraLead</Link>
             <Link href="/videosite-ai" className="hover:text-white px-2 py-2 text-[10px] sm:text-xs tracking-widest uppercase transition-colors text-neutral-500 font-geist">VideoSite</Link>
           </div>
-          <Link href="/signup" className="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-3 sm:px-4 py-2 text-[10px] sm:text-xs tracking-widest uppercase text-purple-300 font-geist transition-all">
-            Get Started
-          </Link>
         </div>
       </nav>
 
@@ -287,7 +284,7 @@ export default function PricingPage() {
                         : 'bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30'
                     }`}
                   >
-                    {loadingKey === key ? 'Redirecting...' : isFree ? 'Get Started Free' : 'Start Free Trial'}
+                    {loadingKey === key ? 'Redirecting...' : 'Start Trial'}
                   </button>
                 </div>
               );

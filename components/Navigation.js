@@ -50,10 +50,9 @@ export default function Navigation() {
               </div>
             )}
           </div>
-          <Link href="/signup" className="hover:text-white transition-colors">Get Started</Link>
         </div>
 
-        <Link 
+        <Link
           href="/login"
           className="hidden md:flex text-xs font-medium bg-white/10 hover:bg-white/20 border border-white/10 px-4 py-2 rounded-full transition-all text-white"
         >
@@ -77,7 +76,6 @@ export default function Navigation() {
             <Link href="/clientcontact-io" className="text-sm text-neutral-400 hover:text-white transition-colors">ClientContact.IO</Link>
             <Link href="/ultralead" className="text-sm text-neutral-400 hover:text-white transition-colors">UltraLead</Link>
             <Link href="/videosite-ai" className="text-sm text-neutral-400 hover:text-white transition-colors">VideoSite.AI</Link>
-            <Link href="/signup" className="text-sm text-neutral-400 hover:text-white transition-colors">Get Started</Link>
             <Link href="/login" className="text-sm text-white bg-white/10 px-4 py-2 rounded-full text-center">Client Login</Link>
           </div>
         </div>

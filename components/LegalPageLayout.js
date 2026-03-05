@@ -15,10 +15,10 @@ export default function LegalPageLayout({ title, lastUpdated, children }) {
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-neutral-400 hover:text-white transition">Login</Link>
             <Link
-              href="/signup"
+              href="/pricing"
               className="px-5 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-sm font-medium transition"
             >
-              Start Free Trial
+              View Pricing
             </Link>
           </div>
         </div>

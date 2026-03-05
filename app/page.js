@@ -160,9 +160,6 @@ export default function HomePage() {
             <span className="text-neutral-400 font-geist normal-case text-[10px] sm:text-xs hidden sm:inline">aileadstrategies.com</span>
           </div>
 
-          <Link href="/signup" className="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-3 sm:px-4 py-2 text-[10px] sm:text-xs tracking-widest uppercase text-purple-300 font-geist transition-all">
-            Get Started
-          </Link>
         </div>
       </nav>
 
@@ -472,9 +469,9 @@ export default function HomePage() {
           <p className="text-lg text-neutral-400 font-geist max-w-xl mx-auto mb-8">
             5 platforms, 5 dashboards. Choose your product above — after signup you go straight to that product&apos;s dashboard. 14-day free trial. No credit card required.
           </p>
-          <Link href="/signup" className="inline-block bg-purple-500 hover:bg-purple-600 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase font-geist transition-colors">
-            Sign up at aileadstrategies.com
-          </Link>
+          <p className="text-sm tracking-widest uppercase text-neutral-400 font-geist">
+            Choose a platform above to start your 14-day free trial
+          </p>
         </div>
       </section>
 

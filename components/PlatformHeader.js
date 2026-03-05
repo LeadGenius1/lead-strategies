@@ -35,12 +35,12 @@ export default function PlatformHeader({ activePlatform = 'ai-lead' }) {
           <span className="text-sm font-bold text-white tracking-wider">AI LEAD</span>
         </div>
 
-        {/* CTA Button */}
+        {/* Start Trial — routes to the active platform's signup */}
         <Link
-          href="/signup"
+          href={`/signup?product=${activePlatform === 'ai-lead' ? 'leadsite-ai' : activePlatform}`}
           className="px-6 py-2 bg-white text-black text-xs font-bold rounded hover:bg-gray-100 transition-colors"
         >
-          START FREE TRIAL
+          START TRIAL
         </Link>
       </div>
     </nav>

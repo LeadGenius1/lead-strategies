@@ -549,7 +549,7 @@ export default function LeadSiteIOPage() {
                   </div>
                   <p className="text-sm text-neutral-400 font-geist mb-4">{template.desc}</p>
                   <div className="flex items-center justify-between">
-                    <Link href="/signup?tier=leadsite-io" className="text-purple-400 hover:text-purple-300 font-geist text-sm uppercase tracking-widest">
+                    <Link href="/signup?product=leadsite_io&tier=starter" className="text-purple-400 hover:text-purple-300 font-geist text-sm uppercase tracking-widest">
                       Use Template →
                     </Link>
                     <span className="text-xs text-neutral-500 font-geist">{template.remixes} remixes</span>
@@ -560,7 +560,7 @@ export default function LeadSiteIOPage() {
           </div>
 
           <div className="text-center mt-12 [animation:animationIn_0.8s_ease-out_0.5s_both] animate-on-scroll">
-            <Link href="/signup?tier=leadsite-io" className="inline-block bg-purple-500/20 border border-purple-500/30 text-purple-300 px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/30 transition-colors font-geist">
+            <Link href="/signup?product=leadsite_io&tier=starter" className="inline-block bg-purple-500/20 border border-purple-500/30 text-purple-300 px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-purple-500/30 transition-colors font-geist">
               Browse All Templates →
             </Link>
           </div>

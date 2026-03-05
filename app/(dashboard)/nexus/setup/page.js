@@ -234,10 +234,10 @@ function DiscoveryProgress() {
         ))}
       </div>
       <button
-        onClick={() => window.location.href = '/nexus/market-strategy'}
+        onClick={() => window.location.href = '/nexus/feed'}
         className="mt-8 text-sm text-indigo-400 hover:text-indigo-300 underline underline-offset-4 transition-colors"
       >
-        Skip to Market Strategy
+        Skip to Activity Feed
       </button>
     </div>
   );
@@ -278,8 +278,8 @@ export default function NexusSetupPage() {
         const data = res.data;
 
         if (data.status === 'profile_exists') {
-          // Already has profile — redirect to market strategy
-          router.push('/nexus/market-strategy');
+          // Already has profile — redirect to Activity feed
+          router.push('/nexus/feed');
           return;
         }
 
@@ -342,9 +342,9 @@ export default function NexusSetupPage() {
 
       setSubmitted(true);
 
-      // Auto-redirect after 20 seconds
+      // Auto-redirect to Activity feed after 20 seconds (agents are running)
       setTimeout(() => {
-        router.push('/nexus/market-strategy');
+        router.push('/nexus/feed');
       }, 20000);
     } catch (err) {
       const msg = err.response?.data?.error || err.message;

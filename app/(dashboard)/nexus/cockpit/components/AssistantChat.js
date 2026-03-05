@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import useAssistant from '@/lib/assistant/useAssistant';
 
 const PLACEHOLDER_COMMANDS = [
@@ -84,7 +85,7 @@ function SuggestionChips({ suggestions, onSelect, disabled }) {
   );
 }
 
-export default function AssistantChat() {
+export default function AssistantChat({ profileComplete }) {
   const {
     messages,
     isStreaming,
@@ -185,6 +186,18 @@ export default function AssistantChat() {
           onSelect={handleSuggestion}
           disabled={isStreaming}
         />
+      )}
+
+      {/* FTUX: Profile CTA when incomplete */}
+      {profileComplete === false && messages.length <= 1 && (
+        <div className="px-2 mb-2">
+          <Link
+            href="/nexus/setup"
+            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-600/30 transition-colors"
+          >
+            Complete Your Profile {'\u2192'}
+          </Link>
+        </div>
       )}
 
       {/* Error */}

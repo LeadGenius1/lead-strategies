@@ -10,6 +10,8 @@ import {
   PlayCircle,
   Settings,
   Lock,
+  Zap,
+  User,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { UPGRADE_MESSAGE } from '@/lib/nexusFeatures';
@@ -22,9 +24,11 @@ const ICON_MAP = {
   Globe,
   PlayCircle,
   Settings,
+  Zap,
+  User,
 };
 
-export default function NexusBottomNav({ panels, pathname }) {
+export default function NexusBottomNav({ panels, pathname, profileComplete }) {
   return (
     <nav className="flex items-center bg-black/60 backdrop-blur-md border-t border-white/5 overflow-x-auto flex-shrink-0 z-30">
       {panels.map((panel) => {
@@ -57,7 +61,7 @@ export default function NexusBottomNav({ panels, pathname }) {
           <Link
             key={panel.id}
             href={panel.href}
-            className={`flex flex-col items-center justify-center gap-0.5 px-4 py-2.5 min-w-[72px] transition-colors ${
+            className={`flex flex-col items-center justify-center gap-0.5 px-4 py-2.5 min-w-[72px] transition-colors relative ${
               isActive
                 ? 'bg-indigo-500/10 border-t-2 border-indigo-500/60 text-white'
                 : 'text-neutral-400 hover:text-white hover:bg-white/5 border-t-2 border-transparent'
@@ -67,6 +71,10 @@ export default function NexusBottomNav({ panels, pathname }) {
               className={`h-5 w-5 ${isActive ? 'text-indigo-400' : 'text-neutral-500'}`}
             />
             <span className="text-[10px] truncate">{panel.name}</span>
+            {/* Profile red dot when incomplete */}
+            {panel.id === 'profile' && profileComplete === false && (
+              <span className="absolute top-1 right-2 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            )}
           </Link>
         );
       })}

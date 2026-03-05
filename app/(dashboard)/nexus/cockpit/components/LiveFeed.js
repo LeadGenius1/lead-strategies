@@ -1,5 +1,6 @@
 'use client';
 import { useRef, useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import FeedCard from './FeedCard';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -70,12 +71,18 @@ export default function LiveFeed({ feedItems, approvalMode, onApprove, onReject 
   if (feedItems.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-xs">
           <p className="text-4xl mb-3">🚀</p>
           <p className="text-sm text-neutral-400 mb-1">No activity yet</p>
-          <p className="text-xs text-neutral-600">
+          <p className="text-xs text-neutral-600 mb-4">
             When your agents start running, their activity will appear here in real-time.
           </p>
+          <Link
+            href="/nexus/setup"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-600/30 transition-colors"
+          >
+            Get Started — Complete your business profile to activate Lead Hunter
+          </Link>
         </div>
       </div>
     );

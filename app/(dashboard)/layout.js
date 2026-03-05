@@ -78,6 +78,7 @@ export default function DashboardLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const [suggestedHrefs, setSuggestedHrefs] = useState([]);
   const [profileChecked, setProfileChecked] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(null);
 
   // Detect platform: use user tier on main domain, else domain-based
   const getPlatform = () => {
@@ -128,6 +129,7 @@ export default function DashboardLayout({ children }) {
             plan_tier: 'UltraLead',
             planTier: 'UltraLead',
           });
+          setProfileComplete(true);
           setLoading(false);
           return;
         } catch (e) {
@@ -193,6 +195,7 @@ export default function DashboardLayout({ children }) {
         const hasServices = !!profile?.productsServices?.trim();
         const hasContact = !!(profile?.email?.trim() || profile?.phone?.trim());
         const profileComplete = hasCompany && hasIndustry && hasServices && hasContact;
+        setProfileComplete(profileComplete);
 
         // Hard redirect if profile incomplete and not on exempt route
         const exemptRoutes = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus', '/nexus/setup'];
@@ -222,6 +225,7 @@ export default function DashboardLayout({ children }) {
         setSuggestedHrefs(hrefs);
       } catch (e) {
         setProfileChecked(true); // Don't block on fetch failure
+        setProfileComplete(false); // Assume incomplete on failure
         setSuggestedHrefs(['/nexus/setup']); // Default: complete profile
       }
     }
@@ -253,7 +257,7 @@ export default function DashboardLayout({ children }) {
 
   if (isNexusRoute) {
     return (
-      <NexusOSShell user={user} platformType={platformType}>
+      <NexusOSShell user={user} platformType={platformType} profileComplete={profileComplete}>
         {children}
       </NexusOSShell>
     );

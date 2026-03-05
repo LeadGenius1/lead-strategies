@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { MessageSquare, X } from 'lucide-react';
 import NexusTopBar from './NexusTopBar';
@@ -9,9 +9,14 @@ import { getNexusPanels } from '@/lib/nexusFeatures';
 import { useSchedulerFeed } from '@/lib/scheduler/useSchedulerFeed';
 import AssistantChat from '@/app/(dashboard)/nexus/cockpit/components/AssistantChat';
 
-export default function NexusOSShell({ user, platformType, children }) {
+export default function NexusOSShell({ user, platformType, profileComplete, children }) {
   const pathname = usePathname();
   const [chatOpen, setChatOpen] = useState(false);
+
+  // FTUX: auto-open chat on mobile when profile is incomplete
+  useEffect(() => {
+    if (profileComplete === false) setChatOpen(true);
+  }, [profileComplete]);
 
   const panels = getNexusPanels(user?.tier);
 
@@ -37,8 +42,10 @@ export default function NexusOSShell({ user, platformType, children }) {
 
         {/* Assistant Chat — desktop: always visible, mobile: slide-over */}
         {/* Desktop: fixed 320px sidebar */}
-        <aside className="hidden lg:flex flex-col w-80 border-l border-white/5 bg-black/40 backdrop-blur-md">
-          <AssistantChat />
+        <aside className={`hidden lg:flex flex-col w-80 border-l border-white/5 bg-black/40 backdrop-blur-md ${
+          profileComplete === false ? 'ring-1 ring-indigo-500/30 animate-pulse' : ''
+        }`}>
+          <AssistantChat profileComplete={profileComplete} />
         </aside>
 
         {/* Mobile: slide-over panel */}
@@ -60,7 +67,7 @@ export default function NexusOSShell({ user, platformType, children }) {
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              <AssistantChat />
+              <AssistantChat profileComplete={profileComplete} />
             </aside>
           </div>
         )}
@@ -75,7 +82,7 @@ export default function NexusOSShell({ user, platformType, children }) {
       </div>
 
       {/* Bottom Nav */}
-      <NexusBottomNav panels={panels} pathname={pathname} />
+      <NexusBottomNav panels={panels} pathname={pathname} profileComplete={profileComplete} />
     </div>
   );
 }

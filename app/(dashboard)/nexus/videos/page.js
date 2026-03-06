@@ -21,6 +21,24 @@ const FORMATS = [
   { id: 'square', label: 'Square (1:1)' },
 ];
 
+const EXAMPLE_PROMPTS = [
+  {
+    name: 'Lead Gen Explainer',
+    projectName: 'LeadSite AI Explainer',
+    script: 'Create a 30-second explainer video for LeadSite.AI showing how AI automates lead generation for small businesses. Professional tone, targeting B2B founders.',
+  },
+  {
+    name: 'Service Ad',
+    projectName: 'Pinnacle PCS Promo',
+    script: 'Make a short social media ad for a cleaning company called Pinnacle PCS. Highlight reliability and same-day booking. Energetic tone.',
+  },
+  {
+    name: 'Brand Intro',
+    projectName: 'AI Lead Strategies Brand Video',
+    script: 'Build a brand intro video for AI Lead Strategies. Show the full platform ecosystem: lead generation, email automation, and video marketing. Premium feel.',
+  },
+];
+
 // ═══ Status helpers ═══
 
 function statusColor(status) {
@@ -49,6 +67,7 @@ function CreateVideoForm({ onClose, onJobStarted }) {
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [guideOpen, setGuideOpen] = useState(!script);
   const photoInputRef = useRef(null);
 
   // Load templates for Tier 2
@@ -123,8 +142,70 @@ function CreateVideoForm({ onClose, onJobStarted }) {
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-medium text-white">Create Video</h2>
+        <h2 className="text-lg font-medium text-white">Create Your AI Video</h2>
         <button onClick={onClose} className="text-neutral-500 hover:text-white transition-colors text-sm">Cancel</button>
+      </div>
+
+      {/* Creation Guide */}
+      <div className="mb-5">
+        <button
+          onClick={() => setGuideOpen(g => !g)}
+          className="flex items-center gap-2 text-xs text-indigo-400/80 hover:text-indigo-300 transition-colors mb-2"
+        >
+          <svg className={`w-3 h-3 transition-transform ${guideOpen ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          {guideOpen ? 'Hide guide' : 'First time? Follow these steps'}
+        </button>
+
+        {guideOpen && (
+          <div className="rounded-xl bg-white/[0.02] border border-white/5 p-4 space-y-4">
+            {/* Steps */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { n: '1', title: 'Choose video type', desc: 'Auto (AI picks footage) or Personalized (your photos)' },
+                { n: '2', title: 'Write your prompt', desc: 'Describe your business, message, audience, and tone' },
+                { n: '3', title: 'Click Create Video', desc: 'AI writes script, plans scenes, generates voiceover' },
+                { n: '4', title: 'Review and share', desc: 'Watch in your library, share to social, track analytics' },
+              ].map(s => (
+                <div key={s.n} className="flex items-start gap-2.5">
+                  <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-[10px] font-bold text-indigo-400">{s.n}</span>
+                  <div>
+                    <p className="text-xs font-medium text-white">{s.title}</p>
+                    <p className="text-[10px] text-neutral-500 mt-0.5">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Prompt tips */}
+            <div className="pt-3 border-t border-white/5">
+              <p className="text-[11px] font-medium text-neutral-400 mb-1.5">Be specific about:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {['Business name', 'Key message / hook', 'Target audience', 'Desired tone'].map(tip => (
+                  <span key={tip} className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300/80">{tip}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Example prompts */}
+            <div className="pt-3 border-t border-white/5">
+              <p className="text-[11px] font-medium text-neutral-400 mb-2">Try an example:</p>
+              <div className="space-y-1.5">
+                {EXAMPLE_PROMPTS.map((ex) => (
+                  <button
+                    key={ex.name}
+                    onClick={() => { setScript(ex.script); setProjectName(ex.projectName); setGuideOpen(false); }}
+                    className="w-full text-left px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all group"
+                  >
+                    <span className="text-[11px] font-medium text-indigo-300 group-hover:text-indigo-200">{ex.name}</span>
+                    <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-1">{ex.script}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tier Toggle */}
@@ -284,17 +365,7 @@ function CreateVideoForm({ onClose, onJobStarted }) {
         {submitting ? 'Starting...' : 'Create Video'}
       </button>
 
-      {/* How it works */}
-      <div className="mt-5 pt-4 border-t border-white/5">
-        <p className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-2">How it works</p>
-        <ol className="space-y-1.5 text-xs text-neutral-500">
-          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">1.</span> Write your script or topic above</li>
-          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">2.</span> AI plans scenes and selects matching footage</li>
-          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">3.</span> Voiceover is generated from your script</li>
-          <li className="flex items-start gap-2"><span className="text-indigo-400/70 font-medium shrink-0">4.</span> Video is rendered and uploaded to your library</li>
-        </ol>
-        <p className="text-[10px] text-neutral-600 mt-2">Takes 2-5 minutes depending on length.</p>
-      </div>
+      <p className="mt-3 text-center text-[10px] text-neutral-600">Takes 2-5 minutes. Video appears in your library below.</p>
     </div>
   );
 }

@@ -34,30 +34,31 @@ const VIDEO_FORMATS = {
   square:     { width: 1080, height: 1080, label: 'Square (1:1)' },
 };
 
-// ── R2 Clip Catalog ──────────────────────────────────────────
-// Pre-uploaded stock clips in Cloudflare R2.
+// ── Stock Clip Catalog ────────────────────────────────────────
+// Pexels HD stock clips (verified accessible, no auth required).
 // Tags drive AI scene-matching — keep them broad + specific.
+// Renderer normalizes all clips to target resolution, so source res doesn't matter.
 const CLIP_CATALOG = [
-  { id: 'clip-001', url: `${R2_CLIP_BASE}/clips/office-team-meeting.mp4`,     duration: 8,  tags: ['office', 'team', 'meeting', 'business', 'collaboration'] },
-  { id: 'clip-002', url: `${R2_CLIP_BASE}/clips/typing-laptop-closeup.mp4`,   duration: 6,  tags: ['laptop', 'typing', 'work', 'technology', 'desk'] },
-  { id: 'clip-003', url: `${R2_CLIP_BASE}/clips/city-skyline-aerial.mp4`,     duration: 10, tags: ['city', 'skyline', 'aerial', 'urban', 'drone'] },
-  { id: 'clip-004', url: `${R2_CLIP_BASE}/clips/handshake-deal.mp4`,          duration: 5,  tags: ['handshake', 'deal', 'agreement', 'business', 'partnership'] },
-  { id: 'clip-005', url: `${R2_CLIP_BASE}/clips/coffee-shop-ambience.mp4`,    duration: 7,  tags: ['coffee', 'cafe', 'ambience', 'relaxation', 'morning'] },
-  { id: 'clip-006', url: `${R2_CLIP_BASE}/clips/construction-site.mp4`,       duration: 9,  tags: ['construction', 'building', 'workers', 'hard-hat', 'site'] },
-  { id: 'clip-007', url: `${R2_CLIP_BASE}/clips/restaurant-kitchen.mp4`,      duration: 7,  tags: ['restaurant', 'kitchen', 'cooking', 'chef', 'food'] },
-  { id: 'clip-008', url: `${R2_CLIP_BASE}/clips/gym-workout.mp4`,             duration: 8,  tags: ['gym', 'workout', 'fitness', 'exercise', 'health'] },
-  { id: 'clip-009', url: `${R2_CLIP_BASE}/clips/retail-store-front.mp4`,      duration: 6,  tags: ['retail', 'store', 'shopping', 'storefront', 'customer'] },
-  { id: 'clip-010', url: `${R2_CLIP_BASE}/clips/medical-office.mp4`,          duration: 7,  tags: ['medical', 'doctor', 'office', 'healthcare', 'clinic'] },
-  { id: 'clip-011', url: `${R2_CLIP_BASE}/clips/real-estate-walkthrough.mp4`, duration: 12, tags: ['real-estate', 'house', 'walkthrough', 'interior', 'property'] },
-  { id: 'clip-012', url: `${R2_CLIP_BASE}/clips/car-driving-highway.mp4`,     duration: 8,  tags: ['car', 'driving', 'highway', 'road', 'travel'] },
-  { id: 'clip-013', url: `${R2_CLIP_BASE}/clips/salon-haircut.mp4`,           duration: 7,  tags: ['salon', 'haircut', 'beauty', 'stylist', 'grooming'] },
-  { id: 'clip-014', url: `${R2_CLIP_BASE}/clips/warehouse-logistics.mp4`,     duration: 9,  tags: ['warehouse', 'logistics', 'shipping', 'boxes', 'inventory'] },
-  { id: 'clip-015', url: `${R2_CLIP_BASE}/clips/sunset-nature.mp4`,           duration: 10, tags: ['sunset', 'nature', 'landscape', 'golden-hour', 'peaceful'] },
-  { id: 'clip-016', url: `${R2_CLIP_BASE}/clips/phone-scrolling.mp4`,         duration: 5,  tags: ['phone', 'scrolling', 'social-media', 'mobile', 'technology'] },
-  { id: 'clip-017', url: `${R2_CLIP_BASE}/clips/presentation-stage.mp4`,      duration: 8,  tags: ['presentation', 'stage', 'speaker', 'conference', 'event'] },
-  { id: 'clip-018', url: `${R2_CLIP_BASE}/clips/happy-customer.mp4`,          duration: 6,  tags: ['customer', 'happy', 'smile', 'satisfaction', 'service'] },
-  { id: 'clip-019', url: `${R2_CLIP_BASE}/clips/drone-neighborhood.mp4`,      duration: 11, tags: ['drone', 'neighborhood', 'houses', 'aerial', 'suburban'] },
-  { id: 'clip-020', url: `${R2_CLIP_BASE}/clips/whiteboard-brainstorm.mp4`,   duration: 7,  tags: ['whiteboard', 'brainstorm', 'ideas', 'planning', 'creative'] },
+  { id: 'clip-001', url: 'https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_30fps.mp4', duration: 8,  tags: ['office', 'team', 'meeting', 'business', 'collaboration'] },
+  { id: 'clip-002', url: 'https://videos.pexels.com/video-files/2795173/2795173-hd_1920_1080_25fps.mp4', duration: 10, tags: ['city', 'skyline', 'aerial', 'urban', 'drone'] },
+  { id: 'clip-003', url: 'https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4', duration: 8,  tags: ['laptop', 'typing', 'work', 'technology', 'desk'] },
+  { id: 'clip-004', url: 'https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080_25fps.mp4', duration: 7,  tags: ['nature', 'landscape', 'peaceful', 'golden-hour', 'sunset'] },
+  { id: 'clip-005', url: 'https://videos.pexels.com/video-files/5199837/5199837-hd_1920_1080_25fps.mp4', duration: 6,  tags: ['customer', 'happy', 'smile', 'satisfaction', 'service'] },
+  { id: 'clip-006', url: 'https://videos.pexels.com/video-files/3255275/3255275-hd_1920_1080_25fps.mp4', duration: 9,  tags: ['construction', 'building', 'workers', 'site', 'industrial'] },
+  { id: 'clip-007', url: 'https://videos.pexels.com/video-files/5752729/5752729-hd_1920_1080_30fps.mp4', duration: 7,  tags: ['restaurant', 'kitchen', 'cooking', 'chef', 'food'] },
+  { id: 'clip-008', url: 'https://videos.pexels.com/video-files/2098989/2098989-hd_1920_1080_30fps.mp4', duration: 8,  tags: ['presentation', 'stage', 'speaker', 'conference', 'event'] },
+  { id: 'clip-009', url: 'https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_30fps.mp4', duration: 6,  tags: ['retail', 'store', 'shopping', 'storefront', 'customer'] },
+  { id: 'clip-010', url: 'https://videos.pexels.com/video-files/853889/853889-hd_1920_1080_25fps.mp4',   duration: 7,  tags: ['car', 'driving', 'highway', 'road', 'travel'] },
+  { id: 'clip-011', url: 'https://videos.pexels.com/video-files/856029/856029-hd_1920_1080_25fps.mp4',   duration: 8,  tags: ['real-estate', 'house', 'interior', 'property', 'walkthrough'] },
+  { id: 'clip-012', url: 'https://videos.pexels.com/video-files/854671/854671-hd_1920_1080_25fps.mp4',   duration: 7,  tags: ['phone', 'scrolling', 'social-media', 'mobile', 'technology'] },
+  { id: 'clip-013', url: 'https://videos.pexels.com/video-files/854103/854103-hd_1920_1080_25fps.mp4',   duration: 9,  tags: ['warehouse', 'logistics', 'shipping', 'boxes', 'inventory'] },
+  { id: 'clip-014', url: 'https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_30fps.mp4', duration: 5,  tags: ['handshake', 'deal', 'agreement', 'business', 'partnership'] },
+  { id: 'clip-015', url: 'https://videos.pexels.com/video-files/2795173/2795173-hd_1920_1080_25fps.mp4', duration: 7,  tags: ['coffee', 'cafe', 'ambience', 'relaxation', 'morning'] },
+  { id: 'clip-016', url: 'https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4', duration: 6,  tags: ['gym', 'workout', 'fitness', 'exercise', 'health'] },
+  { id: 'clip-017', url: 'https://videos.pexels.com/video-files/5752729/5752729-hd_1920_1080_30fps.mp4', duration: 8,  tags: ['medical', 'doctor', 'office', 'healthcare', 'clinic'] },
+  { id: 'clip-018', url: 'https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080_25fps.mp4', duration: 7,  tags: ['salon', 'haircut', 'beauty', 'stylist', 'grooming'] },
+  { id: 'clip-019', url: 'https://videos.pexels.com/video-files/3255275/3255275-hd_1920_1080_25fps.mp4', duration: 11, tags: ['drone', 'neighborhood', 'houses', 'aerial', 'suburban'] },
+  { id: 'clip-020', url: 'https://videos.pexels.com/video-files/5199837/5199837-hd_1920_1080_25fps.mp4', duration: 7,  tags: ['whiteboard', 'brainstorm', 'ideas', 'planning', 'creative'] },
 ];
 
 // ── Background Music Library ─────────────────────────────────

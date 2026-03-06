@@ -39,6 +39,30 @@ router.post('/', (req, res) => {
     return res.status(503).json({ error: 'Renderer at capacity — try again shortly' });
   }
 
+  // Normalize clips: ensure every clip has a duration field.
+  // Backend may send duration directly, or scenes with start_time/end_time.
+  // If clips lack duration, try to compute from matching scene or fall back to 5s.
+  const scenes = data.scenes || [];
+  data.clips = data.clips.map((clip, i) => {
+    if (clip.duration && clip.duration > 0) return clip;
+    // Try matching scene by index
+    const scene = scenes[i];
+    if (scene && typeof scene.start_time === 'number' && typeof scene.end_time === 'number') {
+      return { ...clip, duration: scene.end_time - scene.start_time };
+    }
+    // Fall back to 5 seconds
+    return { ...clip, duration: 5 };
+  });
+
+  // Normalize scenes: ensure every scene has a duration field
+  data.scenes = scenes.map((scene) => {
+    if (scene.duration && scene.duration > 0) return scene;
+    if (typeof scene.start_time === 'number' && typeof scene.end_time === 'number') {
+      return { ...scene, duration: scene.end_time - scene.start_time };
+    }
+    return { ...scene, duration: 5 };
+  });
+
   const jobId = uuidv4();
   createJob(jobId, data);
 

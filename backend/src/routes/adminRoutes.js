@@ -11,6 +11,21 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
 
 function getPrisma() { return require('../config/database').prisma; }
 
+// Middleware: verify admin JWT on protected admin endpoints
+function requireAdminJwt(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const token = (authHeader && authHeader.startsWith('Bearer ')) ? authHeader.split(' ')[1] : null;
+  if (!token) return res.status(401).json({ success: false, error: 'Admin authentication required' });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== 'admin') return res.status(403).json({ success: false, error: 'Admin access required' });
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, error: 'Invalid or expired admin token' });
+  }
+}
+
 function hashPassword(plain) {
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = crypto.pbkdf2Sync(plain, salt, 100000, 64, 'sha512').toString('hex');
@@ -155,12 +170,106 @@ router.get('/stats', (req, res) => {
   });
 });
 
-// GET /admin/users
-router.get('/users', (req, res) => {
-  res.json({
-    success: true,
-    data: { users: [], total: 0 }
-  });
+// GET /admin/users — list active users (real DB query)
+router.get('/users', requireAdminJwt, async (req, res) => {
+  try {
+    const db = getPrisma();
+    const users = await db.user.findMany({
+      where: { deleted_at: null },
+      select: { id: true, email: true, name: true, tier: true, subscription_tier: true, is_admin: true, createdAt: true },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+    res.json({ success: true, data: { users, total: users.length } });
+  } catch (err) {
+    console.error('Admin list users error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to list users' });
+  }
+});
+
+// GET /admin/users/deactivated — list soft-deleted users
+router.get('/users/deactivated', requireAdminJwt, async (req, res) => {
+  try {
+    const db = getPrisma();
+    const users = await db.user.findMany({
+      where: { deleted_at: { not: null } },
+      select: { id: true, email: true, name: true, deleted_at: true, deleted_by: true, createdAt: true },
+      orderBy: { deleted_at: 'desc' },
+    });
+    res.json({ success: true, data: { users, total: users.length } });
+  } catch (err) {
+    console.error('Admin list deactivated error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to list deactivated users' });
+  }
+});
+
+// POST /admin/users/:id/deactivate — soft delete (preserve data)
+router.post('/users/:id/deactivate', requireAdminJwt, async (req, res) => {
+  try {
+    const db = getPrisma();
+    const user = await db.user.findUnique({ where: { id: req.params.id }, select: { id: true, email: true, is_admin: true, deleted_at: true } });
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    if (user.is_admin) return res.status(403).json({ success: false, error: 'Cannot deactivate admin accounts' });
+    if (user.deleted_at) return res.status(400).json({ success: false, error: 'User is already deactivated' });
+
+    const updated = await db.user.update({
+      where: { id: req.params.id },
+      data: { deleted_at: new Date(), deleted_by: 'admin' },
+      select: { id: true, email: true, deleted_at: true },
+    });
+    console.log(`[Admin] User deactivated: ${updated.email} by admin ${req.user.email}`);
+    res.json({ success: true, message: 'User deactivated', userId: updated.id, deleted_at: updated.deleted_at });
+  } catch (err) {
+    console.error('Admin deactivate error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to deactivate user' });
+  }
+});
+
+// POST /admin/users/:id/reactivate — undo soft delete
+router.post('/users/:id/reactivate', requireAdminJwt, async (req, res) => {
+  try {
+    const db = getPrisma();
+    const user = await db.user.findUnique({ where: { id: req.params.id }, select: { id: true, email: true, deleted_at: true } });
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    if (!user.deleted_at) return res.status(400).json({ success: false, error: 'User is not deactivated' });
+
+    const updated = await db.user.update({
+      where: { id: req.params.id },
+      data: { deleted_at: null, deleted_by: null },
+      select: { id: true, email: true },
+    });
+    console.log(`[Admin] User reactivated: ${updated.email} by admin ${req.user.email}`);
+    res.json({ success: true, message: 'User reactivated', userId: updated.id });
+  } catch (err) {
+    console.error('Admin reactivate error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to reactivate user' });
+  }
+});
+
+// DELETE /admin/users/:id — HARD DELETE (permanent, cascade removes all data)
+// Requires X-Confirm-Delete: permanent header to prevent accidental deletion
+router.delete('/users/:id', requireAdminJwt, async (req, res) => {
+  try {
+    const confirm = req.headers['x-confirm-delete'];
+    if (confirm !== 'permanent') {
+      return res.status(400).json({
+        success: false,
+        error: 'Hard delete requires header: X-Confirm-Delete: permanent',
+      });
+    }
+
+    const db = getPrisma();
+    const user = await db.user.findUnique({ where: { id: req.params.id }, select: { id: true, email: true, is_admin: true } });
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    if (user.is_admin) return res.status(403).json({ success: false, error: 'Cannot delete admin accounts' });
+
+    await db.user.delete({ where: { id: req.params.id } });
+    console.log(`[Admin] HARD DELETE: User ${user.email} (${user.id}) permanently removed by admin ${req.user.email}`);
+    res.json({ success: true, message: 'User and all data permanently deleted', userId: user.id });
+  } catch (err) {
+    console.error('Admin hard delete error:', err.message);
+    res.status(500).json({ success: false, error: 'Failed to delete user' });
+  }
 });
 
 module.exports = router;

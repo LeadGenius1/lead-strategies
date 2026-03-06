@@ -54,6 +54,10 @@ model User {
   balance_available Decimal? @default(0) @db.Decimal(15, 2)
   stripe_account_id String?
 
+  // Soft Delete
+  deleted_at DateTime?
+  deleted_by String?
+
   // Timestamps
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -1664,7 +1668,7 @@ model SmsMessage {
   direction  String   @default("outbound")
   campaignId String?
   createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([direction])
@@ -1680,7 +1684,7 @@ model SmsSequence {
   contactIds Json
   status     String   @default("active")
   createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("sms_sequences")
@@ -1691,7 +1695,7 @@ model SmsSequence {
 model ViewerPass {
   id              String   @id @default(cuid())
   userId          String
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   stripePaymentId String?
   viewsTotal      Int      @default(10)
   viewsRemaining  Int      @default(10)
@@ -1758,7 +1762,7 @@ model AdCampaign {
 model LeadHunterFile {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionId     String?
   filename      String
   mimetype      String
@@ -1777,7 +1781,7 @@ model LeadHunterFile {
 model LeadHunterMemory {
   id         String   @id @default(cuid())
   userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   category   String   @default("general")
   key        String
   value      String   @db.Text
@@ -1793,7 +1797,7 @@ model LeadHunterMemory {
 model MCPConnection {
   id        String    @id @default(cuid())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   provider  String
   name      String
   config    Json

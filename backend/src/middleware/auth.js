@@ -6,7 +6,7 @@ if (!JWT_SECRET) {
   console.error('WARNING: JWT_SECRET environment variable is not set. Using unsafe fallback. Set JWT_SECRET in production!');
 }
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     // Support both Authorization header and query param token (for SSE/EventSource)
     const authHeader = req.headers.authorization;
@@ -19,6 +19,25 @@ const authenticate = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Check if user has been soft-deleted (deactivated)
+    if (decoded.id && decoded.role !== 'admin') {
+      try {
+        const { prisma } = require('../config/database');
+        const user = await prisma.user.findUnique({
+          where: { id: decoded.id },
+          select: { deleted_at: true },
+        });
+        if (user && user.deleted_at) {
+          return res.status(401).json({
+            success: false,
+            error: 'This account has been deactivated. Contact support to reactivate.',
+          });
+        }
+      } catch (_) {
+        // DB check failed — allow through (don't block auth if DB is temporarily unavailable)
+      }
+    }
 
     req.user = decoded;
     next();

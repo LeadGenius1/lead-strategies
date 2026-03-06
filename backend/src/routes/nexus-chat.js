@@ -100,7 +100,7 @@ async function getSystemContext() {
   let userCount = 0, websiteCount = 0, campaignCount = 0, leadCount = 0;
   try {
     [userCount, websiteCount, campaignCount, leadCount] = await Promise.all([
-      prisma.user.count(),
+      prisma.user.count({ where: { deleted_at: null } }),
       prisma.website.count(),
       prisma.campaign.count(),
       prisma.lead.count(),
@@ -741,13 +741,13 @@ router.get('/context', async (req, res) => {
       recentLeads,
       recentUsers
     ] = await Promise.all([
-      prisma.user.count(),
+      prisma.user.count({ where: { deleted_at: null } }),
       prisma.lead.count().catch(() => 0),
       prisma.website.count().catch(() => 0),
       prisma.video.count().catch(() => 0),
       prisma.campaign.groupBy({ by: ['status'], _count: { id: true } }).catch(() => []),
       prisma.lead.findMany({ take: 5, orderBy: { createdAt: 'desc' } }).catch(() => []),
-      prisma.user.findMany({ take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan_tier: true } }).catch(() => [])
+      prisma.user.findMany({ where: { deleted_at: null }, take: 5, orderBy: { createdAt: 'desc' }, select: { email: true, createdAt: true, plan_tier: true } }).catch(() => [])
     ]);
 
     const campaignBreakdown = {
@@ -808,7 +808,15 @@ function selectModel(message) {
 /**
  * Provider fallback chain: Claude (smart routing) → GPT-4o → Perplexity → null (degraded)
  */
-async function tryProviders(messages, systemPrompt, tools, userMessage) {
+// Tools that require userId — backend auto-injects it so the AI never needs to guess
+const USER_SCOPED_TOOLS = [
+  'get_videos', 'get_video_analytics', 'upload_video_url',
+  'get_websites', 'create_website', 'update_website',
+  'get_inbox_messages', 'get_contacts',
+  'get_pipeline', 'create_deal', 'get_transcriptions',
+];
+
+async function tryProviders(messages, systemPrompt, tools, userMessage, userId) {
   // Provider 1: Anthropic Claude — smart model routing + tool-use loop
   const anthropic = getAnthropicClient();
   if (anthropic) {
@@ -833,8 +841,13 @@ async function tryProviders(messages, systemPrompt, tools, userMessage) {
         const toolUseBlocks = chatMessage.content.filter(b => b.type === 'tool_use');
         const toolResults = [];
         for (const toolBlock of toolUseBlocks) {
-          console.log(`  → Executing tool: ${toolBlock.name}`, JSON.stringify(toolBlock.input).substring(0, 200));
-          const result = await executeTool(toolBlock.name, toolBlock.input);
+          // Auto-inject userId for user-scoped tools so AI never needs to guess
+          const toolInput = { ...toolBlock.input };
+          if (USER_SCOPED_TOOLS.includes(toolBlock.name) && userId && userId !== 'nexus-command-center') {
+            toolInput.userId = userId;
+          }
+          console.log(`  → Executing tool: ${toolBlock.name}`, JSON.stringify(toolInput).substring(0, 200));
+          const result = await executeTool(toolBlock.name, toolInput);
           toolResults.push({ type: 'tool_result', tool_use_id: toolBlock.id, content: JSON.stringify(result).substring(0, 10000) });
         }
         messages.push({ role: 'assistant', content: chatMessage.content });
@@ -914,6 +927,21 @@ router.post('/chat', async (req, res) => {
 
     const userId = (req.user && (req.user.userId || req.user.id)) || 'nexus-command-center';
 
+    // Fetch user-specific counts for authenticated users
+    let userCounts = null;
+    if (userId && userId !== 'nexus-command-center') {
+      try {
+        const [videos, websites, leads] = await Promise.all([
+          prisma.video.count({ where: { userId } }).catch(() => 0),
+          prisma.website.count({ where: { userId } }).catch(() => 0),
+          prisma.lead.count({ where: { userId } }).catch(() => 0),
+        ]);
+        userCounts = { videos, websites, leads };
+      } catch (err) {
+        console.warn('Failed to fetch user counts:', err.message);
+      }
+    }
+
     // Build dynamic system prompt from injected frontend context + server-side fallback
     const injected = req.body.context || {};
     let ctx;
@@ -947,11 +975,18 @@ router.post('/chat', async (req, res) => {
     const systemPrompt = `You are NEXUS, the Master AI Agent for AI Lead Strategies LLC.
 You report directly to Michael (the owner). Be data-driven, proactive, and action-oriented.
 
-LIVE PLATFORM DATA (fetched at ${ctx.fetchedAt || new Date().toISOString()}):
+CURRENT USER: ${userId !== 'nexus-command-center' ? `ID ${userId}` : 'Unauthenticated (Command Center)'}
+${userCounts ? `YOUR DATA:
+- Your Videos: ${userCounts.videos}
+- Your Websites: ${userCounts.websites}
+- Your Leads: ${userCounts.leads}
+All data queries are automatically scoped to this user. Tool calls do NOT need a userId parameter — the backend injects it automatically.` : ''}
+
+PLATFORM-WIDE STATS (fetched at ${ctx.fetchedAt || new Date().toISOString()}):
 - Total Users: ${ctx.platform?.users ?? 'unknown'}
 - Total Leads: ${ctx.platform?.leads ?? 'unknown'}
-- Websites Built: ${ctx.platform?.websites ?? 'unknown'}
-- Videos Uploaded: ${ctx.platform?.videos ?? 'unknown'}
+- Total Websites: ${ctx.platform?.websites ?? 'unknown'}
+- Total Videos: ${ctx.platform?.videos ?? 'unknown'}
 - Campaigns: ${ctx.platform?.campaigns?.total ?? ctx.platform?.campaigns ?? 0} total | ${ctx.platform?.campaigns?.active ?? 0} active | ${ctx.platform?.campaigns?.paused ?? 0} paused | ${ctx.platform?.campaigns?.draft ?? 0} draft
 
 ACTIVE CAPABILITIES:
@@ -1043,7 +1078,7 @@ exists. Available function categories:
 
     // Run provider fallback chain: Claude (smart routing) → GPT-4o → Perplexity → degraded
     console.log(`🤖 NEXUS chat: calling provider chain for user ${userId}...`);
-    const result = await tryProviders(conversationHistory, systemPrompt, nexusTools, message);
+    const result = await tryProviders(conversationHistory, systemPrompt, nexusTools, message, userId);
 
     if (!result) {
       // All providers exhausted

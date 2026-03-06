@@ -510,4 +510,38 @@ router.post('/refresh', async (req, res) => {
   }
 });
 
+// DELETE /api/v1/auth/account — User self-deactivation (soft delete only)
+router.delete('/account', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.token;
+    if (!token) return res.status(401).json({ success: false, error: 'Not authenticated' });
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = decoded.id;
+    if (!userId) return res.status(401).json({ success: false, error: 'Invalid token' });
+
+    const db = getPrisma();
+    if (!db) return res.status(503).json({ success: false, error: 'Database unavailable' });
+
+    const user = await db.user.findUnique({ where: { id: userId }, select: { id: true, email: true, deleted_at: true, is_admin: true } });
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    if (user.is_admin) return res.status(403).json({ success: false, error: 'Admin accounts cannot self-delete. Use admin panel.' });
+    if (user.deleted_at) return res.status(400).json({ success: false, error: 'Account is already deactivated' });
+
+    await db.user.update({
+      where: { id: userId },
+      data: { deleted_at: new Date(), deleted_by: 'self' },
+    });
+
+    console.log(`[Auth] User self-deactivated: ${user.email}`);
+    res.json({ success: true, message: 'Account deactivated. Contact support within 30 days to reactivate.' });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, error: 'Invalid or expired token' });
+    }
+    console.error('Self-delete error:', error.message);
+    res.status(500).json({ success: false, error: 'Failed to deactivate account' });
+  }
+});
+
 module.exports = router;

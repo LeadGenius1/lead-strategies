@@ -36,7 +36,7 @@ function dayLabel(ts) {
 
 // ── LiveFeed Component ──────────────────────────────────────────────
 
-export default function LiveFeed({ feedItems, approvalMode, onApprove, onReject }) {
+export default function LiveFeed({ feedItems, approvalMode, onApprove, onReject, profileComplete }) {
   const scrollRef = useRef(null);
   const [autoScroll, setAutoScroll] = useState(true);
   const [showJump, setShowJump] = useState(false);
@@ -77,12 +77,14 @@ export default function LiveFeed({ feedItems, approvalMode, onApprove, onReject 
           <p className="text-xs text-neutral-600 mb-4">
             When your agents start running, their activity will appear here in real-time.
           </p>
-          <Link
-            href="/nexus/setup"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-600/30 transition-colors"
-          >
-            Get Started — Complete your business profile to activate Lead Hunter
-          </Link>
+          {profileComplete === false && (
+            <Link
+              href="/nexus/setup"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-600/30 transition-colors"
+            >
+              Get Started — Complete your business profile to activate Lead Hunter
+            </Link>
+          )}
         </div>
       </div>
     );

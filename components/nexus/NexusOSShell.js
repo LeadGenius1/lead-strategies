@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { MessageSquare, X } from 'lucide-react';
 import NexusTopBar from './NexusTopBar';
@@ -12,11 +12,17 @@ import AssistantChat from '@/app/(dashboard)/nexus/cockpit/components/AssistantC
 export default function NexusOSShell({ user, platformType, profileComplete, children }) {
   const pathname = usePathname();
   const [chatOpen, setChatOpen] = useState(false);
+  const [hasNewUpdate, setHasNewUpdate] = useState(false);
 
   // FTUX: auto-open chat on mobile when profile is incomplete
   useEffect(() => {
     if (profileComplete === false) setChatOpen(true);
   }, [profileComplete]);
+
+  // Clear pulse when user interacts with chat sidebar
+  const handleChatFocus = useCallback(() => {
+    setHasNewUpdate(false);
+  }, []);
 
   const panels = getNexusPanels(user?.tier);
 
@@ -42,9 +48,12 @@ export default function NexusOSShell({ user, platformType, profileComplete, chil
 
         {/* Assistant Chat — desktop: always visible, mobile: slide-over */}
         {/* Desktop: fixed 320px sidebar */}
-        <aside className={`hidden lg:flex flex-col w-80 border-l border-white/5 bg-black/40 backdrop-blur-md ${
-          profileComplete === false ? 'ring-1 ring-indigo-500/30 animate-pulse' : ''
-        }`}>
+        <aside
+          className={`hidden lg:flex flex-col w-80 border-l border-white/5 bg-black/40 backdrop-blur-md ${
+            hasNewUpdate ? 'ring-1 ring-indigo-500/30 animate-pulse' : ''
+          }`}
+          onClick={handleChatFocus}
+        >
           <AssistantChat profileComplete={profileComplete} />
         </aside>
 

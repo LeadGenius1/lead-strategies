@@ -61,6 +61,7 @@ export default function NexusFeedPage() {
           approvalMode={schedule?.approvalMode}
           onApprove={approveOutput}
           onReject={rejectOutput}
+          profileComplete={profile?.profileComplete ?? null}
         />
       </div>
     </div>

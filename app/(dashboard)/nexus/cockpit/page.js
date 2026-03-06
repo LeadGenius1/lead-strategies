@@ -67,6 +67,7 @@ export default function CockpitPage() {
           approvalMode={schedule?.approvalMode}
           onApprove={approveOutput}
           onReject={rejectOutput}
+          profileComplete={profile?.profileComplete ?? null}
         />
       </div>
     </div>

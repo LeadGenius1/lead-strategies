@@ -231,7 +231,7 @@ export default function DashboardLayout({ children }) {
     }
 
     loadNextStep();
-  }, [user]);
+  }, [user, pathname]);
 
   // Block rendering until auth + profile check complete (prevents content flash)
   const exemptFromProfileCheck = ['/profile', '/settings', '/logout', '/inbox/settings', '/nexus', '/nexus/setup'].some(
